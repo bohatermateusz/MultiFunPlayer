@@ -164,6 +164,21 @@
                           ItemsSource="{Binding HismithPresetModes}"
                           SelectedItem="{Binding HismithPresetMode}"
                           ToolTip="Built-in modes 1-8 (0 = none). Only used in auto mode."/>
+                <TextBlock Margin="25 0 8 0" VerticalAlignment="Center" Text="Sequence"/>
+                <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                              IsChecked="{Binding HismithSequenceActive}"
+                              ToolTip="Run the built-in modes 1-8 in turn and pause the funscripts for this machine"/>
+                <TextBox Width="40"
+                         Margin="8 0 0 0"
+                         VerticalAlignment="Center"
+                         Text="{Binding HismithSequenceSeconds, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="Seconds per mode"/>
+                <TextBlock Margin="4 0 8 0" VerticalAlignment="Center" Text="s"/>
+                <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                              IsChecked="{Binding HismithSequenceHeld}"
+                              ToolTip="Hold the current mode"/>
+                <TextBlock Margin="4 0 8 0" VerticalAlignment="Center" Text="Hold"/>
+                <TextBlock VerticalAlignment="Center" Text="{Binding HismithSequenceStatus}"/>
             </StackPanel>
 
             <StackPanel Margin="0 0 0 20"

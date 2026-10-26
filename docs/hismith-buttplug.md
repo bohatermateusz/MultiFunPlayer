@@ -68,3 +68,31 @@ Notes:
   pause too when the key reaches it; use another key or a controller button.
 * Output targets that are set to "polled update" may not follow the loop; the Buttplug.io target
   uses "fixed update" by default and does.
+
+## One key for script loop, mode sequence and funscripts (HISMITH S2)
+
+Two state-aware actions on the Buttplug.io output (`<target>` is its name, e.g. `Buttplug.io/0`):
+
+| State | `<target>::Hismith::Key::SinglePress` | `<target>::Hismith::Key::DoublePress` |
+|---|---|---|
+| Funscripts playing | start/stop the script loop (see above) | start the mode sequence |
+| Mode sequence running | **hold** the current mode (its countdown stops) | back to the funscripts |
+| Mode sequence held | **release**: the queue goes on | back to the funscripts |
+
+Bind them in Settings -> Shortcuts: add a shortcut of type **Button Click** with your key (e.g. Space),
+**Click count = 1** and action `...::Key::SinglePress`; add a second one with **Click count = 2** and
+action `...::Key::DoublePress`. A single click therefore fires about 200 ms after you release the key
+(the shortcut's "maximum click interval"), because MultiFunPlayer has to wait for a possible second click.
+
+The mode sequence plays the machine's built-in modes 1-8 in turn, **2 minutes each** (changeable in
+the HISMITH S2 row, 5-3600 s), and wraps around after mode 8:
+
+1. Start: the script loop is cleared, the machine goes to auto mode and mode 1 starts.
+2. While it runs, the funscript output to that machine is paused (other devices, e.g. the Lube
+   Launcher, keep following their scripts). The film and the scripts' clock keep running.
+3. Back to the funscripts: manual mode is sent first, then the script values are sent again, so the
+   machine follows the film's current position.
+
+The same things are available as buttons in the HISMITH S2 row (Sequence switch, seconds per mode,
+Hold switch, status text) and as actions `...::Hismith::Sequence::Start`, `::Stop`,
+`::Hold::Toggle`. If the key is also play/pause in the player, the player will react too.

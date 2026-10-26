@@ -32,7 +32,7 @@ namespace MultiFunPlayer.UI.Controls.ViewModels;
 internal sealed class ScriptViewModel : Screen, IDeviceAxisValueProvider, IDisposable,
     IHandle<MediaPositionChangedMessage>, IHandle<MediaPlayingChangedMessage>, IHandle<MediaPathChangedMessage>, IHandle<MediaDurationChangedMessage>,
     IHandle<MediaSpeedChangedMessage>, IHandle<SettingsMessage>, IHandle<SyncRequestMessage>, IHandle<ReloadScriptsRequestMessage>, IHandle<ChangeScriptMessage>,
-    IHandle<MediaResetMessage>
+    IHandle<MediaResetMessage>, IHandle<ScriptLoopMessage>
 {
     private static Logger Logger { get; } = LogManager.GetCurrentClassLogger();
 
@@ -660,6 +660,14 @@ internal sealed class ScriptViewModel : Screen, IDeviceAxisValueProvider, IDispo
         {
             _internalMediaPosition += 0.33 * (newPosition - _internalMediaPosition);
         }
+    }
+
+    public void Handle(ScriptLoopMessage message)
+    {
+        if (message.Command == ScriptLoopCommand.Toggle)
+            ToggleScriptLoop();
+        else
+            ClearScriptLoop();
     }
 
     public void Handle(MediaResetMessage message)

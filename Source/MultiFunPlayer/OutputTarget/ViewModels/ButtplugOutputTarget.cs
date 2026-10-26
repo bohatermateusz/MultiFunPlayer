@@ -131,7 +131,11 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
             if (!SetAndNotify(ref _lubeAutoSpray, value))
                 return;
 
-            _lubeAutoCancellationSource?.Cancel();
+            _hismithSequenceSource?.Cancel();
+        _hismithSequenceSource?.Dispose();
+        _hismithSequenceSource = null;
+
+        _lubeAutoCancellationSource?.Cancel();
             _lubeAutoCancellationSource?.Dispose();
             _lubeAutoCancellationSource = null;
 
@@ -158,6 +162,188 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
             }
         }
         catch (OperationCanceledException) { }
+    }
+
+    // Built-in mode sequence of the HISMITH S2: runs the machine's preset modes 1-8 in turn, each for
+    // HismithSequenceSeconds, with the funscript output to that machine paused. Hold keeps the current
+    // mode (and freezes its countdown) until released; Exit goes back to the funscripts.
+    private CancellationTokenSource _hismithSequenceSource;
+    private bool _hismithSequenceHeld;
+    private int _hismithSequenceMode;
+    private double _hismithSequenceRemaining;
+    private int _hismithSequenceSeconds = 120;
+    private volatile bool _forceResend;
+    private volatile bool _hismithSequenceExiting;
+
+    public bool HismithSequenceActive
+    {
+        get => _hismithSequenceSource != null;
+        set
+        {
+            if (value)
+                StartHismithSequence();
+            else
+                StopHismithSequence();
+        }
+    }
+
+    public bool HismithSequenceHeld
+    {
+        get => _hismithSequenceHeld;
+        set
+        {
+            if (!HismithSequenceActive && value)
+                return;
+
+            if (SetAndNotify(ref _hismithSequenceHeld, value))
+                NotifyOfPropertyChange(nameof(HismithSequenceStatus));
+        }
+    }
+
+    public int HismithSequenceSeconds
+    {
+        get => _hismithSequenceSeconds;
+        set => SetAndNotify(ref _hismithSequenceSeconds, Math.Clamp(value, 5, 3600));
+    }
+
+    public string HismithSequenceStatus => !HismithSequenceActive
+        ? "off"
+        : $"mode {_hismithSequenceMode}/{PresetModeMax}, {TimeSpan.FromSeconds(Math.Ceiling(_hismithSequenceRemaining)):m\\:ss}{(_hismithSequenceHeld ? " (held)" : string.Empty)}";
+
+    private bool IsSequenceSuppressed(ButtplugDeviceSettings settings)
+    {
+        if (!HismithSequenceActive && !_hismithSequenceExiting)
+            return false;
+
+        var device = GetDeviceFromSettings(settings);
+        return device != null && device.ScalarActuators.Any(a => a.ActuatorType == ActuatorType.Position
+                                                              && a.FeatureDescriptor?.StartsWith(PresetModeDescription, StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    public void StartHismithSequence()
+    {
+        if (HismithSequenceActive)
+            return;
+
+        if (!GetQuickActuators(PresetModeDescription).Any())
+        {
+            Logger.Info("No device with a \"{0}\" actuator is connected, not starting the mode sequence", PresetModeDescription);
+            return;
+        }
+
+        EventAggregator.Publish(new ScriptLoopMessage(ScriptLoopCommand.Clear));
+
+        _hismithSequenceHeld = false;
+        _hismithSequenceMode = 1;
+        _hismithSequenceRemaining = _hismithSequenceSeconds;
+        _hismithSequenceSource = new CancellationTokenSource();
+        _ = RunHismithSequenceAsync(_hismithSequenceSource.Token);
+
+        NotifyOfPropertyChange(nameof(HismithSequenceActive));
+        NotifyOfPropertyChange(nameof(HismithSequenceHeld));
+        NotifyOfPropertyChange(nameof(HismithSequenceStatus));
+    }
+
+    public void StopHismithSequence(bool sendToDevice = true)
+    {
+        var source = _hismithSequenceSource;
+        if (source == null)
+            return;
+
+        _hismithSequenceSource = null;
+        _hismithSequenceHeld = false;
+        source.Cancel();
+        source.Dispose();
+
+        // back to the funscripts: manual mode first, then the current script values again. The script
+        // output for the machine stays paused until the manual mode command has been sent, so it cannot
+        // overtake it (or be overtaken by the last preset mode command still in flight).
+        _hismithManualMode = true;
+        _hismithPresetMode = 0;
+        if (sendToDevice)
+        {
+            _hismithSequenceExiting = true;
+            _ = ExitHismithSequenceAsync();
+        }
+        else
+        {
+            _forceResend = true;
+        }
+
+        NotifyOfPropertyChange(nameof(HismithSequenceActive));
+        NotifyOfPropertyChange(nameof(HismithSequenceHeld));
+        NotifyOfPropertyChange(nameof(HismithSequenceStatus));
+        NotifyOfPropertyChange(nameof(HismithManualMode));
+        NotifyOfPropertyChange(nameof(HismithPresetMode));
+    }
+
+    private async Task ExitHismithSequenceAsync()
+    {
+        try
+        {
+            await Task.Delay(300);
+            await SendQuickActuatorsAsync(RunModeDescription, 1, 1);
+        }
+        finally
+        {
+            _forceResend = true;
+            _hismithSequenceExiting = false;
+        }
+    }
+
+    // One key, state aware: single press = hold/release the sequence, or the script loop when no sequence runs.
+    public void HismithKeySinglePress()
+    {
+        if (HismithSequenceActive)
+            HismithSequenceHeld = !HismithSequenceHeld;
+        else
+            EventAggregator.Publish(new ScriptLoopMessage(ScriptLoopCommand.Toggle));
+    }
+
+    // Double press = start the sequence, or go back to the funscripts when it is running (held or not).
+    public void HismithKeyDoublePress()
+        => HismithSequenceActive = !HismithSequenceActive;
+
+    private async Task RunHismithSequenceAsync(CancellationToken token)
+    {
+        try
+        {
+            // auto mode first, the preset modes only run there
+            _hismithManualMode = false;
+            NotifyOfPropertyChange(nameof(HismithManualMode));
+            await SendQuickActuatorsAsync(RunModeDescription, 0, 1);
+            await Task.Delay(300, token);
+
+            while (!token.IsCancellationRequested)
+            {
+                _hismithPresetMode = _hismithSequenceMode;
+                NotifyOfPropertyChange(nameof(HismithPresetMode));
+                _hismithSequenceRemaining = _hismithSequenceSeconds;
+                await SendQuickActuatorsAsync(PresetModeDescription, _hismithSequenceMode, PresetModeMax);
+
+                var lastStatusSecond = -1;
+                while (_hismithSequenceRemaining > 0)
+                {
+                    await Task.Delay(100, token);
+                    if (!_hismithSequenceHeld)
+                        _hismithSequenceRemaining -= 0.1;
+
+                    var second = (int)Math.Ceiling(_hismithSequenceRemaining);
+                    if (second != lastStatusSecond)
+                    {
+                        lastStatusSecond = second;
+                        NotifyOfPropertyChange(nameof(HismithSequenceStatus));
+                    }
+                }
+
+                _hismithSequenceMode = _hismithSequenceMode % PresetModeMax + 1;
+            }
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception e)
+        {
+            Logger.Debug(e, "Hismith mode sequence exception");
+        }
     }
 
     private IEnumerable<ButtplugDeviceScalarActuator> GetQuickActuators(string descriptionPrefix)
@@ -291,6 +477,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
             _ = DialogHelper.ShowErrorAsync(e, $"{Identifier} failed with exception", "RootDialog");
         }
 
+        StopHismithSequence(sendToDevice: false);
         AvailableDevices.Clear();
     }
 
@@ -301,6 +488,9 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         bool CheckDirtyAndUpdate(ButtplugDeviceSettings settings)
         {
             if (settings.UpdateType != DeviceAxisUpdateType.FixedUpdate)
+                return false;
+
+            if (IsSequenceSuppressed(settings))
                 return false;
 
             var device = GetDeviceFromSettings(settings);
@@ -320,7 +510,8 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
             if (!AxisSettings[axis].Enabled)
                 return false;
 
-            var shouldUpdate = !double.IsFinite(lastValue)
+            var shouldUpdate = _forceResend
+                            || !double.IsFinite(lastValue)
                             || (currentValue == 0 && lastValue != 0)
                             || Math.Abs(lastValue - currentValue) >= 0.005;
 
@@ -344,7 +535,8 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
                 lastSentValuesPerDevice.Remove(orphanedDevice);
             }
 
-            var dirtySettings = DeviceSettings.Where(CheckDirtyAndUpdate);
+            var dirtySettings = DeviceSettings.Where(CheckDirtyAndUpdate).ToList();
+            _forceResend = false;
             var tasks = GetDeviceTasks(currentValues, elapsed * 1000, dirtySettings, token).ToList();
 
             try
@@ -365,7 +557,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         {
             Logger.Trace("Begin PolledUpdate [Axis: {0}, Event: {1}, Elapsed: {2}]", axis, axisEvent, elapsed);
 
-            var settings = DeviceSettings.Where(x => x.SourceAxis == axis && x.UpdateType == DeviceAxisUpdateType.PolledUpdate);
+            var settings = DeviceSettings.Where(x => x.SourceAxis == axis && x.UpdateType == DeviceAxisUpdateType.PolledUpdate && !IsSequenceSuppressed(x));
             var tasks = GetDeviceTasks(axisEvent, settings, token).ToList();
 
             try
@@ -548,6 +740,11 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         #region Hismith quick controls
         s.RegisterAction<bool>($"{Identifier}::Hismith::ManualMode::Set", s => s.WithLabel("Manual run mode"), manual => HismithManualMode = manual);
         s.RegisterAction<int>($"{Identifier}::Hismith::PresetMode::Set", s => s.WithLabel("Preset mode (0-8)"), mode => HismithPresetMode = mode);
+        s.RegisterAction($"{Identifier}::Hismith::Key::SinglePress", HismithKeySinglePress);
+        s.RegisterAction($"{Identifier}::Hismith::Key::DoublePress", HismithKeyDoublePress);
+        s.RegisterAction($"{Identifier}::Hismith::Sequence::Start", StartHismithSequence);
+        s.RegisterAction($"{Identifier}::Hismith::Sequence::Stop", () => StopHismithSequence());
+        s.RegisterAction($"{Identifier}::Hismith::Sequence::Hold::Toggle", () => HismithSequenceHeld = !HismithSequenceHeld);
         s.RegisterAction($"{Identifier}::Hismith::LubeLauncher::Fire", FireLubeLauncher);
         s.RegisterAction<bool>($"{Identifier}::Hismith::LubeLauncher::AutoSpray::Set", s => s.WithLabel("Lube Launcher auto spray"), enabled => LubeAutoSpray = enabled);
         #endregion
@@ -559,6 +756,11 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         s.UnregisterAction($"{Identifier}::Endpoint::Set");
         s.UnregisterAction($"{Identifier}::Hismith::ManualMode::Set");
         s.UnregisterAction($"{Identifier}::Hismith::PresetMode::Set");
+        s.UnregisterAction($"{Identifier}::Hismith::Key::SinglePress");
+        s.UnregisterAction($"{Identifier}::Hismith::Key::DoublePress");
+        s.UnregisterAction($"{Identifier}::Hismith::Sequence::Start");
+        s.UnregisterAction($"{Identifier}::Hismith::Sequence::Stop");
+        s.UnregisterAction($"{Identifier}::Hismith::Sequence::Hold::Toggle");
         s.UnregisterAction($"{Identifier}::Hismith::LubeLauncher::Fire");
         s.UnregisterAction($"{Identifier}::Hismith::LubeLauncher::AutoSpray::Set");
     }
