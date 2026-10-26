@@ -57,6 +57,61 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
     public uint? SelectedActuatorIndex { get; set; }
     public bool CanAddSelected => SelectedDevice != null && SelectedDeviceAxis != null && SelectedActuatorType != null && SelectedActuatorIndex != null;
 
+    // Quick controls for devices that expose the HISMITH S2 style "Run mode" and "Preset mode"
+    // Position actuators (see the Buttplug fork). Values are sent when changed; the machine's
+    // current state is not read back.
+    private const string RunModeDescription = "Run mode";
+    private const string PresetModeDescription = "Preset mode";
+    private const int PresetModeMax = 8;
+    private bool _hismithManualMode;
+    private int _hismithPresetMode;
+
+    public IReadOnlyList<int> HismithPresetModes { get; } = [.. Enumerable.Range(0, PresetModeMax + 1)];
+    public bool HasHismithControls => GetQuickActuators(RunModeDescription).Any() || GetQuickActuators(PresetModeDescription).Any();
+
+    public bool HismithManualMode
+    {
+        get => _hismithManualMode;
+        set
+        {
+            if (SetAndNotify(ref _hismithManualMode, value))
+                _ = SendQuickActuatorsAsync(RunModeDescription, value ? 1 : 0, 1);
+        }
+    }
+
+    public int HismithPresetMode
+    {
+        get => _hismithPresetMode;
+        set
+        {
+            value = Math.Clamp(value, 0, PresetModeMax);
+            if (SetAndNotify(ref _hismithPresetMode, value))
+                _ = SendQuickActuatorsAsync(PresetModeDescription, value, PresetModeMax);
+        }
+    }
+
+    private IEnumerable<ButtplugDeviceScalarActuator> GetQuickActuators(string descriptionPrefix)
+        => AvailableDevices.ToList()
+                           .SelectMany(d => d.ScalarActuators)
+                           .Where(a => a.ActuatorType == ActuatorType.Position
+                                    && a.FeatureDescriptor?.StartsWith(descriptionPrefix, StringComparison.OrdinalIgnoreCase) == true);
+
+    private async Task SendQuickActuatorsAsync(string descriptionPrefix, int value, int max)
+    {
+        try
+        {
+            foreach (var actuator in GetQuickActuators(descriptionPrefix).ToList())
+            {
+                Logger.Debug("Sending \"{value}/{max}\" to \"{actuator}\"", value, max, actuator);
+                await actuator.ScalarAsync(Math.Clamp(value / (double)max, 0, 1), CancellationToken.None);
+            }
+        }
+        catch (Exception e)
+        {
+            Logger.Debug(e, "Buttplug quick control exception");
+        }
+    }
+
     public ObservableConcurrentCollection<ButtplugDeviceSettings> DeviceSettings { get; }
 
     public ButtplugOutputTarget(int instanceIndex, IEventAggregator eventAggregator, IDeviceAxisValueProvider valueProvider)
@@ -65,7 +120,11 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         AvailableDevices = [];
         DeviceSettings = [];
 
-        AvailableDevices.CollectionChanged += (s, e) => DeviceSettings.Refresh();
+        AvailableDevices.CollectionChanged += (s, e) =>
+        {
+            DeviceSettings.Refresh();
+            NotifyOfPropertyChange(nameof(HasHismithControls));
+        };
 
         _scanSemaphore = new SemaphoreSlim(0, 1);
     }
@@ -414,12 +473,19 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
                 Endpoint = endpoint;
         });
         #endregion
+
+        #region Hismith quick controls
+        s.RegisterAction<bool>($"{Identifier}::Hismith::ManualMode::Set", s => s.WithLabel("Manual run mode"), manual => HismithManualMode = manual);
+        s.RegisterAction<int>($"{Identifier}::Hismith::PresetMode::Set", s => s.WithLabel("Preset mode (0-8)"), mode => HismithPresetMode = mode);
+        #endregion
     }
 
     public override void UnregisterActions(IShortcutManager s)
     {
         base.UnregisterActions(s);
         s.UnregisterAction($"{Identifier}::Endpoint::Set");
+        s.UnregisterAction($"{Identifier}::Hismith::ManualMode::Set");
+        s.UnregisterAction($"{Identifier}::Hismith::PresetMode::Set");
     }
 
     public override void RegisterProperties(IPropertyManager p)

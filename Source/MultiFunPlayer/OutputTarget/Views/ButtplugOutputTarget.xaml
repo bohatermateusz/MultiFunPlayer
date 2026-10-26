@@ -146,6 +146,26 @@
                 </DockPanel>
             </DockPanel>
 
+            <StackPanel Margin="0 0 0 20"
+                        Orientation="Horizontal"
+                        Visibility="{Binding HasHismithControls, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Margin="0 0 15 0"
+                           VerticalAlignment="Center"
+                           FontWeight="Bold"
+                           Text="HISMITH S2"
+                           Typography.Capitals="AllSmallCaps"/>
+                <TextBlock Margin="0 0 8 0" VerticalAlignment="Center" Text="Auto"/>
+                <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                              IsChecked="{Binding HismithManualMode}"
+                              ToolTip="Off: auto, the machine strokes on its own (speed and preset modes). On: manual, it follows the position axis."/>
+                <TextBlock Margin="8 0 25 0" VerticalAlignment="Center" Text="Manual"/>
+                <TextBlock Margin="0 0 8 0" VerticalAlignment="Center" Text="Preset mode:"/>
+                <ComboBox Width="60"
+                          ItemsSource="{Binding HismithPresetModes}"
+                          SelectedItem="{Binding HismithPresetMode}"
+                          ToolTip="Built-in modes 1-8 (0 = none). Only used in auto mode."/>
+            </StackPanel>
+
             <TextBlock HorizontalAlignment="Left"
                        VerticalAlignment="Center"
                        FontWeight="Bold"
