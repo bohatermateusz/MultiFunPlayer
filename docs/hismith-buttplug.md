@@ -64,7 +64,8 @@ Notes:
   switched on** (axis settings, "Bypass" section). That is on by default for axis V1 (`.lube` / `.pump`
   scripts), so the Lube Launcher keeps following the film and its script is never replayed. Turn it on
   for any other axis that drives something you do not want looped. Axes without a script are not affected.
-* The loop keeps running while the video is paused. It ends by itself when the media changes.
+* The loop keeps running while the video is paused (the scripts replay on a paused film). It ends by
+  itself when the media changes.
 * The end of the loop jumps back to its start without smoothing, so a script whose value at the loop
   end differs a lot from the value at the loop start gives a sudden move. Use the axis speed limit.
 * If the key is also the play/pause key of your video player (space usually is), the player will
@@ -112,3 +113,39 @@ New S2 actions for it: `...::Hismith::Sequence::Hold::Set` (bool) and `...::Hism
 `::Speed::Offset` (auto-mode speed, 0-100).
 
 `tools/voice-control` is a Polish push-to-talk voice control built on it; see its README.
+
+## Known behaviour and fixes (verification pass)
+
+* **Repeated commands.** The Buttplug server drops a command identical to the previous one for the
+  same feature. The Spray button, auto-spray and the voice command therefore send `1` then `0`
+  (150 ms later); a preset mode is sent as `0` then `n`. Without this a second squirt or a
+  re-selected mode never reached the machine.
+* **Auto-spray switch** used to stop the UDP listener and the mode sequence (a misplaced edit), and
+  the UDP port stayed taken after removing the Buttplug.io output. Both fixed.
+* **Remote commands at start-up.** Settings load before the actions are registered, so a command
+  arriving in the first moments after start is rejected with a warning in the log; later ones work.
+* **Sequence restart.** A double press right after leaving the sequence waits for the manual-mode
+  command (300 ms) before starting again.
+
+## Checklist on Windows with the machine
+
+1. Engine from the Buttplug fork: `intiface_engine.exe --websocket-port 12345 --use-bluetooth-le --log info`;
+   after switching the S2 on, the log shows `Hismith Device Identifier: XXXX`. If it is not `1101`,
+   add that code to the servo entry in `hismith-mini.yml` (one line).
+2. **Without the machine** (fake S2 from the Buttplug fork, `tools/e2e/README.md`): MultiFunPlayer
+   shows "Hismith Servo Sex Machine", the HISMITH S2 row appears, and the fake device prints bytes
+   for every slider, key and voice command.
+3. With the machine, from the engine's own test page or any v3 client: `Position/5 = 1` (manual),
+   `Position/3 = 0.3` and `0.7` (does `CC 0A` move it; does the position scale to the stroke
+   window), `Position/5 = 0`, `Oscillate/0 = 0.2`, `Position/6 = 0.125` (mode 1).
+4. MultiFunPlayer: build from a clean clone; two Button Click shortcuts (click count 1 and 2) on a
+   gamepad button; the four transitions of the table above; status text `mode N/8, m:ss (held)`;
+   toggle Auto-spray *while* the sequence runs; remove and re-add the Buttplug.io output with
+   Remote commands on; click Spray twice (two squirts).
+5. `python voice_control.py text "tryb ręczny"` with Remote commands on: the Auto/Manual switch in
+   MultiFunPlayer flips.
+6. Lube Launcher: Spray = one squirt, second click = second squirt, Stop in MultiFunPlayer = none.
+7. Voice: `run --dry-run`, 10x "spuść się na mnie" and 10 non-commands; check `voice_log.jsonl`;
+   then `run`.
+8. HereSphere: film + `Film.funscript`, `L0 -> Position/3`, manual mode, small stroke window, axis
+   speed limit.

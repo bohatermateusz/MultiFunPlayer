@@ -71,11 +71,21 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
     public IReadOnlyList<int> HismithPresetModes { get; } = [.. Enumerable.Range(0, PresetModeMax + 1)];
     public bool HasHismithControls => GetQuickActuators(RunModeDescription).Any() || GetQuickActuators(PresetModeDescription).Any();
 
+    // While the mode sequence runs it owns run mode and preset mode; the manual switch and the preset
+    // picker are disabled in the view (HismithControlsEnabled) so they cannot fight the sequence.
+    public bool HismithControlsEnabled => !HismithSequenceActive;
+
     public bool HismithManualMode
     {
         get => _hismithManualMode;
         set
         {
+            if (HismithSequenceActive)
+            {
+                Execute.PostToUIThread(() => NotifyOfPropertyChange(nameof(HismithManualMode)));
+                return;
+            }
+
             if (SetAndNotify(ref _hismithManualMode, value))
                 _ = SendQuickActuatorsAsync(RunModeDescription, value ? 1 : 0, 1);
         }
@@ -86,6 +96,12 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         get => _hismithPresetMode;
         set
         {
+            if (HismithSequenceActive)
+            {
+                Execute.PostToUIThread(() => NotifyOfPropertyChange(nameof(HismithPresetMode)));
+                return;
+            }
+
             value = Math.Clamp(value, 0, PresetModeMax);
             if (SetAndNotify(ref _hismithPresetMode, value))
                 _ = SendPresetModeAsync(value);
@@ -144,14 +160,18 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
             if (!SetAndNotify(ref _lubeAutoSpray, value))
                 return;
 
-            _lubeAutoCancellationSource?.Cancel();
-            _lubeAutoCancellationSource?.Dispose();
-            _lubeAutoCancellationSource = null;
+            var previous = Interlocked.Exchange(ref _lubeAutoCancellationSource, null);
+            if (previous != null)
+            {
+                previous.Cancel();
+                previous.Dispose();
+            }
 
             if (value)
             {
-                _lubeAutoCancellationSource = new CancellationTokenSource();
-                _ = RunLubeAutoSprayAsync(_lubeAutoCancellationSource.Token);
+                var source = new CancellationTokenSource();
+                _lubeAutoCancellationSource = source;
+                _ = RunLubeAutoSprayAsync(source.Token);
             }
         }
     }
@@ -231,21 +251,32 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
          || name.StartsWith("Script::Loop::", StringComparison.Ordinal)
          || name.StartsWith("Media::PlayPause::", StringComparison.Ordinal));
 
+    private Task _remoteListenerTask;
+
     private void RestartRemoteCommandListener()
     {
-        _remoteCommandSource?.Cancel();
-        _remoteCommandSource?.Dispose();
-        _remoteCommandSource = null;
+        var previous = Interlocked.Exchange(ref _remoteCommandSource, null);
+        if (previous != null)
+        {
+            previous.Cancel();
+            previous.Dispose();
+        }
 
         if (!_remoteCommandsEnabled)
             return;
 
-        _remoteCommandSource = new CancellationTokenSource();
-        _ = RunRemoteCommandListenerAsync(_remoteCommandsPort, _remoteCommandSource.Token);
+        var source = new CancellationTokenSource();
+        _remoteCommandSource = source;
+        var previousTask = _remoteListenerTask;
+        _remoteListenerTask = RunRemoteCommandListenerAsync(_remoteCommandsPort, source.Token, previousTask);
     }
 
-    private async Task RunRemoteCommandListenerAsync(int port, CancellationToken token)
+    private async Task RunRemoteCommandListenerAsync(int port, CancellationToken token, Task previousListener)
     {
+        // wait for the previous listener to release the port before binding again
+        if (previousListener != null)
+            await previousListener;
+
         try
         {
             using var client = new UdpClient(new IPEndPoint(IPAddress.Loopback, port));
@@ -256,8 +287,12 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
                 var result = await client.ReceiveAsync(token);
                 try
                 {
-                    await HandleRemoteCommandAsync(Encoding.UTF8.GetString(result.Buffer));
+                    // same queue as keyboard/gamepad shortcuts, so commands never run concurrently
+                    await _commandQueue.WaitAsync(token);
+                    try { await HandleRemoteCommandAsync(Encoding.UTF8.GetString(result.Buffer)); }
+                    finally { _commandQueue.Release(); }
                 }
+                catch (OperationCanceledException) { throw; }
                 catch (Exception e)
                 {
                     Logger.Warn(e, "Failed to handle remote command");
@@ -268,8 +303,19 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         catch (Exception e)
         {
             Logger.Error(e, "Remote command listener failed [Port: {0}]", port);
+            if (!token.IsCancellationRequested)
+            {
+                // e.g. the port is taken: show the switch as off rather than pretending to listen
+                Execute.PostToUIThread(() =>
+                {
+                    _remoteCommandsEnabled = false;
+                    NotifyOfPropertyChange(nameof(RemoteCommandsEnabled));
+                });
+            }
         }
     }
+
+    private readonly SemaphoreSlim _commandQueue = new(1, 1);
 
     private async Task HandleRemoteCommandAsync(string message)
     {
@@ -311,6 +357,8 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
     private volatile bool _forceResend;
     private volatile bool _hismithSequenceExiting;
     private Task _hismithExitTask;
+    private volatile bool _hismithStartPending;
+    private readonly object _hismithLock = new();
 
     public bool HismithSequenceActive
     {
@@ -331,8 +379,8 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         {
             if (!HismithSequenceActive && value)
             {
-                // keep the switch in the UI in step with the (unchanged) value
-                NotifyOfPropertyChange(nameof(HismithSequenceHeld));
+                // a notification raised inside the binding's own update is ignored by WPF, so post it
+                Execute.PostToUIThread(() => NotifyOfPropertyChange(nameof(HismithSequenceHeld)));
                 return;
             }
 
@@ -363,68 +411,88 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
     private bool IsSequenceSuppressed(ButtplugDeviceSettings settings)
         => (HismithSequenceActive || _hismithSequenceExiting) && IsHismithMachine(settings);
 
-    public void StartHismithSequence()
+    private void NotifySequenceChanged()
     {
-        if (HismithSequenceActive)
-            return;
-
-        // a previous sequence is still switching the machine back to manual mode: start after that,
-        // otherwise its manual-mode command would arrive after our auto-mode command
-        if (_hismithSequenceExiting)
-        {
-            _ = StartHismithSequenceAfterExitAsync();
-            return;
-        }
-
-        if (!GetQuickActuators(PresetModeDescription).Any())
-        {
-            Logger.Info("No device with a \"{0}\" actuator is connected, not starting the mode sequence", PresetModeDescription);
-            NotifyOfPropertyChange(nameof(HismithSequenceActive));
-            return;
-        }
-
-        EventAggregator.Publish(new ScriptLoopMessage(ScriptLoopCommand.Clear));
-
-        _hismithSequenceHeld = false;
-        _hismithSequenceMode = 1;
-        _hismithSequenceRemaining = _hismithSequenceSeconds;
-        _hismithSequenceSource = new CancellationTokenSource();
-        _ = RunHismithSequenceAsync(_hismithSequenceSource.Token);
-
         NotifyOfPropertyChange(nameof(HismithSequenceActive));
+        NotifyOfPropertyChange(nameof(HismithControlsEnabled));
         NotifyOfPropertyChange(nameof(HismithSequenceHeld));
         NotifyOfPropertyChange(nameof(HismithSequenceStatus));
     }
 
+    // Start/Stop can be called from the UI thread, the shortcut thread and the remote command
+    // listener; the lock keeps the state transitions atomic.
+    public void StartHismithSequence()
+    {
+        lock (_hismithLock)
+        {
+            if (HismithSequenceActive)
+                return;
+
+            // a previous sequence is still switching the machine back to manual mode: start after that,
+            // otherwise its manual-mode command would arrive after our auto-mode command
+            if (_hismithSequenceExiting)
+            {
+                if (!_hismithStartPending)
+                {
+                    _hismithStartPending = true;
+                    _ = StartHismithSequenceAfterExitAsync();
+                }
+                return;
+            }
+
+            if (!GetQuickActuators(PresetModeDescription).Any())
+            {
+                Logger.Info("No device with a \"{0}\" actuator is connected, not starting the mode sequence", PresetModeDescription);
+                Execute.PostToUIThread(() => NotifyOfPropertyChange(nameof(HismithSequenceActive)));
+                return;
+            }
+
+            EventAggregator.Publish(new ScriptLoopMessage(ScriptLoopCommand.Clear));
+
+            _hismithSequenceHeld = false;
+            _hismithSequenceMode = 1;
+            _hismithSequenceRemaining = _hismithSequenceSeconds;
+            var source = new CancellationTokenSource();
+            _hismithSequenceSource = source;
+            _ = RunHismithSequenceAsync(source.Token);
+        }
+
+        NotifySequenceChanged();
+    }
+
     public void StopHismithSequence(bool sendToDevice = true)
     {
-        var source = _hismithSequenceSource;
-        if (source == null)
-            return;
-
-        _hismithSequenceSource = null;
-        _hismithSequenceHeld = false;
-        source.Cancel();
-        source.Dispose();
-
-        // back to the funscripts: manual mode first, then the current script values again. The script
-        // output for the machine stays paused until the manual mode command has been sent, so it cannot
-        // overtake it (or be overtaken by the last preset mode command still in flight).
-        _hismithManualMode = true;
-        _hismithPresetMode = 0;
-        if (sendToDevice)
+        lock (_hismithLock)
         {
-            _hismithSequenceExiting = true;
-            _hismithExitTask = ExitHismithSequenceAsync();
-        }
-        else
-        {
-            _forceResend = true;
+            _hismithStartPending = false;   // a start queued behind the exit is cancelled too
+
+            var source = Interlocked.Exchange(ref _hismithSequenceSource, null);
+            if (source == null)
+                return;
+
+            _hismithSequenceHeld = false;
+            _hismithManualMode = true;
+            _hismithPresetMode = 0;
+
+            // back to the funscripts: manual mode first, then the current script values again. The script
+            // output for the machine stays paused (_hismithSequenceExiting) until the manual mode command
+            // has been sent. _forceResend is set before suppression is lifted, so the update loop
+            // cannot clear it in between.
+            if (sendToDevice)
+            {
+                _hismithSequenceExiting = true;
+                _hismithExitTask = ExitHismithSequenceAsync();
+            }
+            else
+            {
+                _forceResend = true;
+            }
+
+            source.Cancel();
+            source.Dispose();
         }
 
-        NotifyOfPropertyChange(nameof(HismithSequenceActive));
-        NotifyOfPropertyChange(nameof(HismithSequenceHeld));
-        NotifyOfPropertyChange(nameof(HismithSequenceStatus));
+        NotifySequenceChanged();
         NotifyOfPropertyChange(nameof(HismithManualMode));
         NotifyOfPropertyChange(nameof(HismithPresetMode));
     }
@@ -448,6 +516,14 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         var exitTask = _hismithExitTask;
         if (exitTask != null)
             await exitTask;
+
+        lock (_hismithLock)
+        {
+            if (!_hismithStartPending)
+                return;
+            _hismithStartPending = false;
+        }
+
         StartHismithSequence();
     }
 
@@ -645,6 +721,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
     {
         var currentValues = DeviceAxis.All.ToDictionary(a => a, _ => double.NaN);
         var lastSentValuesPerDevice = new Dictionary<ButtplugDevice, Dictionary<DeviceAxis, double>>();
+        var forceResendConsumed = false;
         bool CheckDirtyAndUpdate(ButtplugDeviceSettings settings)
         {
             if (settings.UpdateType != DeviceAxisUpdateType.FixedUpdate)
@@ -670,7 +747,11 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
             if (!AxisSettings[axis].Enabled)
                 return false;
 
-            var shouldUpdate = (_forceResend && IsHismithMachine(settings))
+            var forcedResend = _forceResend && IsHismithMachine(settings);
+            if (forcedResend)
+                forceResendConsumed = true;
+
+            var shouldUpdate = forcedResend
                             || !double.IsFinite(lastValue)
                             || (currentValue == 0 && lastValue != 0)
                             || Math.Abs(lastValue - currentValue) >= 0.005;
@@ -695,8 +776,12 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
                 lastSentValuesPerDevice.Remove(orphanedDevice);
             }
 
+            // the flag is only cleared once a machine setting has actually been re-sent, so a tick that
+            // ran while the machine was still suppressed cannot lose the request
+            forceResendConsumed = false;
             var dirtySettings = DeviceSettings.Where(CheckDirtyAndUpdate).ToList();
-            _forceResend = false;
+            if (forceResendConsumed)
+                _forceResend = false;
             var tasks = GetDeviceTasks(currentValues, elapsed * 1000, dirtySettings, token).ToList();
 
             try
@@ -987,15 +1072,15 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         base.Dispose(disposing);
 
         // the UDP listener must go, or the port stays taken when this output is removed and re-added
-        _remoteCommandSource?.Cancel();
-        _remoteCommandSource?.Dispose();
-        _remoteCommandSource = null;
+        var remote = Interlocked.Exchange(ref _remoteCommandSource, null);
+        remote?.Cancel();
+        remote?.Dispose();
 
         StopHismithSequence(sendToDevice: false);
 
-        _lubeAutoCancellationSource?.Cancel();
-        _lubeAutoCancellationSource?.Dispose();
-        _lubeAutoCancellationSource = null;
+        var lube = Interlocked.Exchange(ref _lubeAutoCancellationSource, null);
+        lube?.Cancel();
+        lube?.Dispose();
 
         _scanSemaphore?.Dispose();
         _scanSemaphore = null;
