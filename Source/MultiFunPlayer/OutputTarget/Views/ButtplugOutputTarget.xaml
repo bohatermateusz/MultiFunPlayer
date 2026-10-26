@@ -166,6 +166,36 @@
                           ToolTip="Built-in modes 1-8 (0 = none). Only used in auto mode."/>
             </StackPanel>
 
+            <StackPanel Margin="0 0 0 20"
+                        Orientation="Horizontal"
+                        Visibility="{Binding HasLubeLauncherControls, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Margin="0 0 15 0"
+                           VerticalAlignment="Center"
+                           FontWeight="Bold"
+                           Text="LUBE LAUNCHER"
+                           Typography.Capitals="AllSmallCaps"/>
+                <Button Style="{StaticResource MaterialDesignFlatButton}"
+                        Margin="0 0 20 0"
+                        Click="{s:Action FireLubeLauncher}"
+                        Content="Spray"
+                        ToolTip="One squirt"/>
+                <TextBlock Margin="0 0 8 0" VerticalAlignment="Center" Text="Auto"/>
+                <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                              IsChecked="{Binding LubeAutoSpray}"
+                              ToolTip="Squirt after a random number of seconds between min and max"/>
+                <TextBlock Margin="12 0 8 0" VerticalAlignment="Center" Text="every"/>
+                <TextBox Width="40"
+                         VerticalAlignment="Center"
+                         Text="{Binding LubeAutoMinSeconds, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="Minimum seconds"/>
+                <TextBlock Margin="8 0 8 0" VerticalAlignment="Center" Text="-"/>
+                <TextBox Width="40"
+                         VerticalAlignment="Center"
+                         Text="{Binding LubeAutoMaxSeconds, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="Maximum seconds"/>
+                <TextBlock Margin="8 0 0 0" VerticalAlignment="Center" Text="s"/>
+            </StackPanel>
+
             <TextBlock HorizontalAlignment="Left"
                        VerticalAlignment="Center"
                        FontWeight="Bold"

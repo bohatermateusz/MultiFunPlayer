@@ -90,6 +90,76 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         }
     }
 
+    // Hismith Lube Launcher (PiuPiu): any value above 0 on its "Spray" Position actuator is one
+    // squirt. The automatic mode squirts after a random number of seconds between min and max,
+    // like the random timer of the official app.
+    private const string SprayDescription = "Spray";
+    private int _lubeAutoMinSeconds = 5;
+    private int _lubeAutoMaxSeconds = 15;
+    private bool _lubeAutoSpray;
+    private CancellationTokenSource _lubeAutoCancellationSource;
+
+    public bool HasLubeLauncherControls => GetQuickActuators(SprayDescription).Any();
+
+    public int LubeAutoMinSeconds
+    {
+        get => _lubeAutoMinSeconds;
+        set
+        {
+            value = Math.Clamp(value, 1, 3600);
+            if (SetAndNotify(ref _lubeAutoMinSeconds, value) && _lubeAutoMaxSeconds < value)
+                LubeAutoMaxSeconds = value;
+        }
+    }
+
+    public int LubeAutoMaxSeconds
+    {
+        get => _lubeAutoMaxSeconds;
+        set
+        {
+            value = Math.Clamp(value, 1, 3600);
+            if (SetAndNotify(ref _lubeAutoMaxSeconds, value) && _lubeAutoMinSeconds > value)
+                LubeAutoMinSeconds = value;
+        }
+    }
+
+    public bool LubeAutoSpray
+    {
+        get => _lubeAutoSpray;
+        set
+        {
+            if (!SetAndNotify(ref _lubeAutoSpray, value))
+                return;
+
+            _lubeAutoCancellationSource?.Cancel();
+            _lubeAutoCancellationSource?.Dispose();
+            _lubeAutoCancellationSource = null;
+
+            if (value)
+            {
+                _lubeAutoCancellationSource = new CancellationTokenSource();
+                _ = RunLubeAutoSprayAsync(_lubeAutoCancellationSource.Token);
+            }
+        }
+    }
+
+    public void FireLubeLauncher()
+        => _ = SendQuickActuatorsAsync(SprayDescription, 1, 1);
+
+    private async Task RunLubeAutoSprayAsync(CancellationToken token)
+    {
+        try
+        {
+            while (!token.IsCancellationRequested)
+            {
+                var seconds = Random.Shared.Next(Math.Min(_lubeAutoMinSeconds, _lubeAutoMaxSeconds), Math.Max(_lubeAutoMinSeconds, _lubeAutoMaxSeconds) + 1);
+                await Task.Delay(TimeSpan.FromSeconds(seconds), token);
+                await SendQuickActuatorsAsync(SprayDescription, 1, 1);
+            }
+        }
+        catch (OperationCanceledException) { }
+    }
+
     private IEnumerable<ButtplugDeviceScalarActuator> GetQuickActuators(string descriptionPrefix)
         => AvailableDevices.ToList()
                            .SelectMany(d => d.ScalarActuators)
@@ -124,6 +194,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         {
             DeviceSettings.Refresh();
             NotifyOfPropertyChange(nameof(HasHismithControls));
+            NotifyOfPropertyChange(nameof(HasLubeLauncherControls));
         };
 
         _scanSemaphore = new SemaphoreSlim(0, 1);
@@ -477,6 +548,8 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         #region Hismith quick controls
         s.RegisterAction<bool>($"{Identifier}::Hismith::ManualMode::Set", s => s.WithLabel("Manual run mode"), manual => HismithManualMode = manual);
         s.RegisterAction<int>($"{Identifier}::Hismith::PresetMode::Set", s => s.WithLabel("Preset mode (0-8)"), mode => HismithPresetMode = mode);
+        s.RegisterAction($"{Identifier}::Hismith::LubeLauncher::Fire", FireLubeLauncher);
+        s.RegisterAction<bool>($"{Identifier}::Hismith::LubeLauncher::AutoSpray::Set", s => s.WithLabel("Lube Launcher auto spray"), enabled => LubeAutoSpray = enabled);
         #endregion
     }
 
@@ -486,6 +559,8 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         s.UnregisterAction($"{Identifier}::Endpoint::Set");
         s.UnregisterAction($"{Identifier}::Hismith::ManualMode::Set");
         s.UnregisterAction($"{Identifier}::Hismith::PresetMode::Set");
+        s.UnregisterAction($"{Identifier}::Hismith::LubeLauncher::Fire");
+        s.UnregisterAction($"{Identifier}::Hismith::LubeLauncher::AutoSpray::Set");
     }
 
     public override void RegisterProperties(IPropertyManager p)
@@ -534,6 +609,10 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);
+
+        _lubeAutoCancellationSource?.Cancel();
+        _lubeAutoCancellationSource?.Dispose();
+        _lubeAutoCancellationSource = null;
 
         _scanSemaphore?.Dispose();
         _scanSemaphore = null;
