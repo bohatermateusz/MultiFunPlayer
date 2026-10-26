@@ -102,3 +102,13 @@ Hold switch, status text) and as actions `...::Hismith::Sequence::Start`, `::Sto
 
 The mode sequence only touches the HISMITH S2 itself (the device with the "Preset mode" actuator):
 the Lube Launcher is neither paused during the sequence nor sent anything when the sequence ends.
+
+## Remote commands and voice control
+
+The Buttplug.io output has a **Remote commands** switch (off by default): a UDP listener on
+127.0.0.1 (port 23555) that runs one action per message, `{"action": "<name>", "args": [<value>]}`.
+Only the actions `<target>::Hismith::*`, `Script::Loop::*` and `Media::PlayPause::*` are accepted.
+New S2 actions for it: `...::Hismith::Sequence::Hold::Set` (bool) and `...::Hismith::Speed::Set` /
+`::Speed::Offset` (auto-mode speed, 0-100).
+
+`tools/voice-control` is a Polish push-to-talk voice control built on it; see its README.

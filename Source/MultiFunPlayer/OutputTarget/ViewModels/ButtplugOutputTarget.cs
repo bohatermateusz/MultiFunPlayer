@@ -11,6 +11,8 @@ using PropertyChanged;
 using Stylet;
 using System.ComponentModel;
 using System.Net;
+using System.Net.Sockets;
+using System.Text;
 using System.Windows;
 
 namespace MultiFunPlayer.OutputTarget.ViewModels;
@@ -131,7 +133,11 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
             if (!SetAndNotify(ref _lubeAutoSpray, value))
                 return;
 
-            _hismithSequenceSource?.Cancel();
+            _remoteCommandSource?.Cancel();
+        _remoteCommandSource?.Dispose();
+        _remoteCommandSource = null;
+
+        _hismithSequenceSource?.Cancel();
         _hismithSequenceSource?.Dispose();
         _hismithSequenceSource = null;
 
@@ -162,6 +168,124 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
             }
         }
         catch (OperationCanceledException) { }
+    }
+
+    // Speed of the machine's auto mode (the "Fucking Machine Oscillation Speed" actuator, 0-100). In manual
+    // mode the machine follows the position instead.
+    private const string SpeedDescription = "Fucking Machine Oscillation Speed";
+    private int _hismithSpeed;
+
+    public int HismithSpeed
+    {
+        get => _hismithSpeed;
+        set
+        {
+            value = Math.Clamp(value, 0, 100);
+            if (SetAndNotify(ref _hismithSpeed, value))
+                _ = SendQuickActuatorsAsync(SpeedDescription, value, 100, ActuatorType.Oscillate);
+        }
+    }
+
+    // Remote commands: a local UDP listener (127.0.0.1 only, off by default) that runs a few named
+    // actions, used by the voice control tool. Message: {"action": "<name>", "args": [<optional value>]}.
+    private IShortcutManager _shortcutManager;
+    private CancellationTokenSource _remoteCommandSource;
+    private bool _remoteCommandsEnabled;
+    private int _remoteCommandsPort = 23555;
+
+    public bool RemoteCommandsEnabled
+    {
+        get => _remoteCommandsEnabled;
+        set
+        {
+            if (SetAndNotify(ref _remoteCommandsEnabled, value))
+                RestartRemoteCommandListener();
+        }
+    }
+
+    public int RemoteCommandsPort
+    {
+        get => _remoteCommandsPort;
+        set
+        {
+            if (SetAndNotify(ref _remoteCommandsPort, Math.Clamp(value, 1024, 65535)) && _remoteCommandsEnabled)
+                RestartRemoteCommandListener();
+        }
+    }
+
+    private bool IsRemoteActionAllowed(string name)
+        => !string.IsNullOrWhiteSpace(name)
+        && (name.StartsWith($"{Identifier}::Hismith::", StringComparison.Ordinal)
+         || name.StartsWith("Script::Loop::", StringComparison.Ordinal)
+         || name.StartsWith("Media::PlayPause::", StringComparison.Ordinal));
+
+    private void RestartRemoteCommandListener()
+    {
+        _remoteCommandSource?.Cancel();
+        _remoteCommandSource?.Dispose();
+        _remoteCommandSource = null;
+
+        if (!_remoteCommandsEnabled)
+            return;
+
+        _remoteCommandSource = new CancellationTokenSource();
+        _ = RunRemoteCommandListenerAsync(_remoteCommandsPort, _remoteCommandSource.Token);
+    }
+
+    private async Task RunRemoteCommandListenerAsync(int port, CancellationToken token)
+    {
+        try
+        {
+            using var client = new UdpClient(new IPEndPoint(IPAddress.Loopback, port));
+            Logger.Info("Listening for remote commands on 127.0.0.1:{0}", port);
+
+            while (!token.IsCancellationRequested)
+            {
+                var result = await client.ReceiveAsync(token);
+                try
+                {
+                    await HandleRemoteCommandAsync(Encoding.UTF8.GetString(result.Buffer));
+                }
+                catch (Exception e)
+                {
+                    Logger.Warn(e, "Failed to handle remote command");
+                }
+            }
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception e)
+        {
+            Logger.Error(e, "Remote command listener failed [Port: {0}]", port);
+        }
+    }
+
+    private async Task HandleRemoteCommandAsync(string message)
+    {
+        var json = JObject.Parse(message);
+        var name = json.Value<string>("action");
+        if (!IsRemoteActionAllowed(name))
+        {
+            Logger.Warn("Remote command \"{0}\" is not allowed", name);
+            return;
+        }
+
+        if (_shortcutManager == null || !_shortcutManager.TryGetAction(name, out var action) || action is not AbstractShortcutAction concreteAction)
+        {
+            Logger.Warn("Remote command \"{0}\" is not a known action", name);
+            return;
+        }
+
+        var args = json["args"] as JArray ?? [];
+        var argumentTypes = action.GetType().GetGenericArguments();
+        if (args.Count != argumentTypes.Length || argumentTypes.Any(t => t.IsAssignableTo(typeof(MultiFunPlayer.Input.IInputGestureData))))
+        {
+            Logger.Warn("Remote command \"{0}\" has the wrong arguments", name);
+            return;
+        }
+
+        var arguments = args.Select((a, i) => a.ToObject(argumentTypes[i])).ToArray();
+        Logger.Info("Remote command \"{0}\" [Arguments: {1}]", name, string.Join(", ", arguments));
+        await concreteAction.Invoke(arguments);
     }
 
     // Built-in mode sequence of the HISMITH S2: runs the machine's preset modes 1-8 in turn, each for
@@ -348,17 +472,17 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         }
     }
 
-    private IEnumerable<ButtplugDeviceScalarActuator> GetQuickActuators(string descriptionPrefix)
+    private IEnumerable<ButtplugDeviceScalarActuator> GetQuickActuators(string descriptionPrefix, ActuatorType actuatorType = ActuatorType.Position)
         => AvailableDevices.ToList()
                            .SelectMany(d => d.ScalarActuators)
-                           .Where(a => a.ActuatorType == ActuatorType.Position
+                           .Where(a => a.ActuatorType == actuatorType
                                     && a.FeatureDescriptor?.StartsWith(descriptionPrefix, StringComparison.OrdinalIgnoreCase) == true);
 
-    private async Task SendQuickActuatorsAsync(string descriptionPrefix, int value, int max)
+    private async Task SendQuickActuatorsAsync(string descriptionPrefix, int value, int max, ActuatorType actuatorType = ActuatorType.Position)
     {
         try
         {
-            foreach (var actuator in GetQuickActuators(descriptionPrefix).ToList())
+            foreach (var actuator in GetQuickActuators(descriptionPrefix, actuatorType).ToList())
             {
                 Logger.Debug("Sending \"{value}/{max}\" to \"{actuator}\"", value, max, actuator);
                 await actuator.ScalarAsync(Math.Clamp(value / (double)max, 0, 1), CancellationToken.None);
@@ -716,6 +840,8 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         {
             settings[nameof(Endpoint)] = Endpoint?.ToUriString();
             settings[nameof(DeviceSettings)] = JArray.FromObject(DeviceSettings);
+            settings[nameof(RemoteCommandsEnabled)] = RemoteCommandsEnabled;
+            settings[nameof(RemoteCommandsPort)] = RemoteCommandsPort;
         }
         else if (action == SettingsAction.Loading)
         {
@@ -724,12 +850,18 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
 
             if (settings.TryGetValue<List<ButtplugDeviceSettings>>(nameof(DeviceSettings), out var deviceSettings))
                 DeviceSettings.SetFrom(deviceSettings.Where(d => d.SourceAxis != null));
+
+            if (settings.TryGetValue<int>(nameof(RemoteCommandsPort), out var remoteCommandsPort))
+                RemoteCommandsPort = remoteCommandsPort;
+            if (settings.TryGetValue<bool>(nameof(RemoteCommandsEnabled), out var remoteCommandsEnabled))
+                RemoteCommandsEnabled = remoteCommandsEnabled;
         }
     }
 
     public override void RegisterActions(IShortcutManager s)
     {
         base.RegisterActions(s);
+        _shortcutManager = s;
 
         #region Endpoint
         s.RegisterAction<string>($"{Identifier}::Endpoint::Set", s => s.WithLabel("Endpoint").WithDescription("ipOrHost:port"), endpointString =>
@@ -747,6 +879,9 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         s.RegisterAction($"{Identifier}::Hismith::Sequence::Start", StartHismithSequence);
         s.RegisterAction($"{Identifier}::Hismith::Sequence::Stop", () => StopHismithSequence());
         s.RegisterAction($"{Identifier}::Hismith::Sequence::Hold::Toggle", () => HismithSequenceHeld = !HismithSequenceHeld);
+        s.RegisterAction<bool>($"{Identifier}::Hismith::Sequence::Hold::Set", s => s.WithLabel("Hold the current mode"), held => HismithSequenceHeld = held);
+        s.RegisterAction<int>($"{Identifier}::Hismith::Speed::Set", s => s.WithLabel("Speed (0-100)"), speed => HismithSpeed = speed);
+        s.RegisterAction<int>($"{Identifier}::Hismith::Speed::Offset", s => s.WithLabel("Speed offset"), offset => HismithSpeed += offset);
         s.RegisterAction($"{Identifier}::Hismith::LubeLauncher::Fire", FireLubeLauncher);
         s.RegisterAction<bool>($"{Identifier}::Hismith::LubeLauncher::AutoSpray::Set", s => s.WithLabel("Lube Launcher auto spray"), enabled => LubeAutoSpray = enabled);
         #endregion
@@ -763,6 +898,9 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         s.UnregisterAction($"{Identifier}::Hismith::Sequence::Start");
         s.UnregisterAction($"{Identifier}::Hismith::Sequence::Stop");
         s.UnregisterAction($"{Identifier}::Hismith::Sequence::Hold::Toggle");
+        s.UnregisterAction($"{Identifier}::Hismith::Sequence::Hold::Set");
+        s.UnregisterAction($"{Identifier}::Hismith::Speed::Set");
+        s.UnregisterAction($"{Identifier}::Hismith::Speed::Offset");
         s.UnregisterAction($"{Identifier}::Hismith::LubeLauncher::Fire");
         s.UnregisterAction($"{Identifier}::Hismith::LubeLauncher::AutoSpray::Set");
     }

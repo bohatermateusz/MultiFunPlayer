@@ -211,6 +211,17 @@
                 <TextBlock Margin="8 0 0 0" VerticalAlignment="Center" Text="s"/>
             </StackPanel>
 
+            <StackPanel Margin="0 0 0 20" Orientation="Horizontal">
+                <TextBlock Margin="0 0 8 0" VerticalAlignment="Center" Text="Remote commands (voice control), 127.0.0.1 port:"/>
+                <TextBox Width="60"
+                         Margin="0 0 12 0"
+                         VerticalAlignment="Center"
+                         Text="{Binding RemoteCommandsPort, UpdateSourceTrigger=LostFocus}"/>
+                <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                              IsChecked="{Binding RemoteCommandsEnabled}"
+                              ToolTip="Lets a program on this computer run a few MultiFunPlayer actions over UDP"/>
+            </StackPanel>
+
             <TextBlock HorizontalAlignment="Left"
                        VerticalAlignment="Center"
                        FontWeight="Bold"

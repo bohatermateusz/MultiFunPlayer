@@ -1,0 +1,427 @@
+{
+ "_comment": "Edit the phrases to taste. Names with {target} are replaced by the Buttplug.io output target name.",
+ "target": "Buttplug.io/0",
+ "udp": {
+  "host": "127.0.0.1",
+  "port": 23555
+ },
+ "stt": {
+  "base_url": "https://api.openai.com/v1",
+  "model": "whisper-1",
+  "language": "pl",
+  "timeout": 15,
+  "api_key_env": "OPENAI_API_KEY"
+ },
+ "ptt": {
+  "keyboard": "f9",
+  "gamepad_button": null
+ },
+ "audio": {
+  "sample_rate": 16000,
+  "min_seconds": 0.4,
+  "max_seconds": 8,
+  "device": null
+ },
+ "defaults": {
+  "threshold": 0.88,
+  "cooldown": 2.0,
+  "max_extra_words": 1,
+  "confirm": false
+ },
+ "log_file": "voice_log.jsonl",
+ "intents": [
+  {
+   "id": "lube_fire",
+   "phrases": [
+    "spuść się na mnie",
+    "strzel na mnie"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::LubeLauncher::Fire",
+     "args": []
+    }
+   ],
+   "threshold": 0.92,
+   "cooldown": 10,
+   "max_extra_words": 1,
+   "confirm": false
+  },
+  {
+   "id": "pause",
+   "phrases": [
+    "stop",
+    "pauza",
+    "wstrzymaj film"
+   ],
+   "steps": [
+    {
+     "action": "Media::PlayPause::Set",
+     "args": [
+      false
+     ]
+    }
+   ],
+   "threshold": 0.9,
+   "cooldown": 1
+  },
+  {
+   "id": "play",
+   "phrases": [
+    "graj",
+    "wznów",
+    "kontynuuj"
+   ],
+   "steps": [
+    {
+     "action": "Media::PlayPause::Set",
+     "args": [
+      true
+     ]
+    }
+   ],
+   "threshold": 0.9,
+   "cooldown": 1
+  },
+  {
+   "id": "loop_on",
+   "phrases": [
+    "zapętl",
+    "zapętl to",
+    "powtórz to"
+   ],
+   "steps": [
+    {
+     "action": "Script::Loop::Start",
+     "args": []
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "loop_off",
+   "phrases": [
+    "koniec pętli",
+    "wyłącz pętlę",
+    "wyjdź z pętli"
+   ],
+   "steps": [
+    {
+     "action": "Script::Loop::Clear",
+     "args": []
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "sequence_start",
+   "phrases": [
+    "włącz sekwencję",
+    "start sekwencji",
+    "tryby po kolei"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Sequence::Start",
+     "args": []
+    }
+   ],
+   "cooldown": 3
+  },
+  {
+   "id": "sequence_stop",
+   "phrases": [
+    "wróć do skryptu",
+    "wróć do skryptów",
+    "koniec sekwencji"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Sequence::Stop",
+     "args": []
+    }
+   ],
+   "cooldown": 3
+  },
+  {
+   "id": "sequence_hold",
+   "phrases": [
+    "wstrzymaj tryb",
+    "trzymaj tryb",
+    "zostań w tym trybie"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Sequence::Hold::Set",
+     "args": [
+      true
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "sequence_release",
+   "phrases": [
+    "wznów sekwencję",
+    "odblokuj tryb"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Sequence::Hold::Set",
+     "args": [
+      false
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "manual_mode",
+   "phrases": [
+    "tryb ręczny"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::ManualMode::Set",
+     "args": [
+      true
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "auto_mode",
+   "phrases": [
+    "tryb automatyczny",
+    "tryb auto"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::ManualMode::Set",
+     "args": [
+      false
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "preset_1",
+   "phrases": [
+    "tryb jeden",
+    "tryb pierwszy",
+    "tryb 1"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::ManualMode::Set",
+     "args": [
+      false
+     ]
+    },
+    {
+     "action": "{target}::Hismith::PresetMode::Set",
+     "args": [
+      1
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "preset_2",
+   "phrases": [
+    "tryb dwa",
+    "tryb drugi",
+    "tryb 2"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::ManualMode::Set",
+     "args": [
+      false
+     ]
+    },
+    {
+     "action": "{target}::Hismith::PresetMode::Set",
+     "args": [
+      2
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "preset_3",
+   "phrases": [
+    "tryb trzy",
+    "tryb trzeci",
+    "tryb 3"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::ManualMode::Set",
+     "args": [
+      false
+     ]
+    },
+    {
+     "action": "{target}::Hismith::PresetMode::Set",
+     "args": [
+      3
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "preset_4",
+   "phrases": [
+    "tryb cztery",
+    "tryb czwarty",
+    "tryb 4"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::ManualMode::Set",
+     "args": [
+      false
+     ]
+    },
+    {
+     "action": "{target}::Hismith::PresetMode::Set",
+     "args": [
+      4
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "preset_5",
+   "phrases": [
+    "tryb pięć",
+    "tryb piąty",
+    "tryb 5"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::ManualMode::Set",
+     "args": [
+      false
+     ]
+    },
+    {
+     "action": "{target}::Hismith::PresetMode::Set",
+     "args": [
+      5
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "preset_6",
+   "phrases": [
+    "tryb sześć",
+    "tryb szósty",
+    "tryb 6"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::ManualMode::Set",
+     "args": [
+      false
+     ]
+    },
+    {
+     "action": "{target}::Hismith::PresetMode::Set",
+     "args": [
+      6
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "preset_7",
+   "phrases": [
+    "tryb siedem",
+    "tryb siódmy",
+    "tryb 7"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::ManualMode::Set",
+     "args": [
+      false
+     ]
+    },
+    {
+     "action": "{target}::Hismith::PresetMode::Set",
+     "args": [
+      7
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "preset_8",
+   "phrases": [
+    "tryb osiem",
+    "tryb ósmy",
+    "tryb 8"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::ManualMode::Set",
+     "args": [
+      false
+     ]
+    },
+    {
+     "action": "{target}::Hismith::PresetMode::Set",
+     "args": [
+      8
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "faster",
+   "phrases": [
+    "szybciej"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Speed::Offset",
+     "args": [
+      10
+     ]
+    }
+   ],
+   "threshold": 0.9,
+   "cooldown": 1
+  },
+  {
+   "id": "slower",
+   "phrases": [
+    "wolniej"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Speed::Offset",
+     "args": [
+      -10
+     ]
+    }
+   ],
+   "threshold": 0.9,
+   "cooldown": 1
+  }
+ ]
+}
