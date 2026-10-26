@@ -34,7 +34,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         => SelectedDevice != null ? [.. SelectedDevice.Actuators.Select(a => a.ActuatorType).Distinct()] : null;
 
     [DependsOn(nameof(SelectedDevice), nameof(AvailableActuatorTypes))]
-    public IReadOnlyCollection<uint> AvailableActuatorIndices
+    public IReadOnlyCollection<ButtplugActuatorChoice> AvailableActuatorIndices
     {
         get
         {
@@ -42,10 +42,12 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
                 return null;
 
             var actuators = SelectedDevice.GetActuators(SelectedActuatorType.Value);
-            var indices = actuators.Select(a => a.Index);
-            var usedIndices = GetSettingsForDevice(SelectedDevice).Where(s => s.ActuatorType == SelectedActuatorType.Value).Select(s => s.ActuatorIndex);
-            var allowedIndices = indices.Except(usedIndices).ToList();
-            return allowedIndices.Count == 0 ? null : allowedIndices;
+            var usedIndices = GetSettingsForDevice(SelectedDevice).Where(s => s.ActuatorType == SelectedActuatorType.Value).Select(s => s.ActuatorIndex).ToHashSet();
+            var allowedChoices = actuators.Where(a => !usedIndices.Contains(a.Index))
+                                          .GroupBy(a => a.Index)
+                                          .Select(g => new ButtplugActuatorChoice(g.Key, g.First().FeatureDescriptor))
+                                          .ToList();
+            return allowedChoices.Count == 0 ? null : allowedChoices;
         }
     }
 
@@ -435,6 +437,8 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
 
     public void OnSettingsAdd()
     {
+        SelectedDevice.TryGetActuator(SelectedActuatorIndex.Value, SelectedActuatorType.Value, out var selectedActuator);
+
         DeviceSettings.Add(new()
         {
             DeviceName = SelectedDevice.Name,
@@ -442,6 +446,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
             SourceAxis = SelectedDeviceAxis,
             ActuatorIndex = SelectedActuatorIndex.Value,
             ActuatorType = SelectedActuatorType.Value,
+            ActuatorDescription = selectedActuator?.FeatureDescriptor,
             UpdateType = DeviceAxisUpdateType.FixedUpdate
         });
 
@@ -477,5 +482,13 @@ internal sealed class ButtplugDeviceSettings : PropertyChangedBase
     [JsonProperty] public DeviceAxis SourceAxis { get; set; }
     [JsonProperty] public ActuatorType ActuatorType { get; set; }
     [JsonProperty] public uint ActuatorIndex { get; set; }
+    [JsonProperty] public string ActuatorDescription { get; set; }
     [JsonProperty] public DeviceAxisUpdateType UpdateType { get; set; }
+
+    public string ActuatorLabel => string.IsNullOrWhiteSpace(ActuatorDescription) ? null : $" ({ActuatorDescription})";
+}
+
+internal sealed record ButtplugActuatorChoice(uint Index, string Description)
+{
+    public override string ToString() => string.IsNullOrWhiteSpace(Description) ? $"{Index}" : $"{Index} - {Description}";
 }

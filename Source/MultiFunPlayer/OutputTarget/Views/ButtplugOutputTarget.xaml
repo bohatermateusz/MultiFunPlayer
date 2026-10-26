@@ -359,6 +359,7 @@
                                                                    Typography.Capitals="Normal"/>
                                                         <TextBlock FontSize="11" Text="{Binding ActuatorType}"/>
                                                         <TextBlock FontSize="11" Text="{Binding ActuatorIndex, StringFormat=/{0}}"/>
+                                                        <TextBlock FontSize="11" Text="{Binding ActuatorLabel}"/>
                                                     </StackPanel>
                                                 </StackPanel>
                                             </StackPanel>
@@ -435,8 +436,9 @@
                                       IsEnabled="{Binding SelectedDevice, Converter={StaticResource InvertedNullableToBooleanConverter}}"/>
 
                             <ComboBox ItemsSource="{Binding AvailableActuatorIndices}"
-                                      SelectedItem="{Binding SelectedActuatorIndex}"
-                                      Width="50"
+                                      SelectedValuePath="Index"
+                                      SelectedValue="{Binding SelectedActuatorIndex}"
+                                      Width="250"
                                       Margin="0 0 10 0"
                                       material:HintAssist.HelperText="Indices"
                                       material:TextFieldAssist.HasClearButton="True"
