@@ -58,14 +58,19 @@ def report(outcome, transcript):
 
 
 def main():
+    def add_options(parser, suppress):
+        # the options work before and after the command name: "--dry-run run" and "run --dry-run"
+        d = {"default": argparse.SUPPRESS} if suppress else {}
+        parser.add_argument("--config", **({"default": argparse.SUPPRESS} if suppress else {"default": os.path.join(HERE, "commands.json")}))
+        parser.add_argument("--dry-run", action="store_true", help="match and log, but send nothing", **d)
+        parser.add_argument("--no-log", action="store_true", help="do not write voice_log.jsonl", **d)
+
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--config", default=os.path.join(HERE, "commands.json"))
-    ap.add_argument("--dry-run", action="store_true", help="match and log, but send nothing")
-    ap.add_argument("--no-log", action="store_true")
+    add_options(ap, suppress=False)
     sub = ap.add_subparsers(dest="cmd", required=True)
-    sub.add_parser("run")
-    t = sub.add_parser("text"); t.add_argument("transcript")
-    w = sub.add_parser("wav"); w.add_argument("file")
+    add_options(sub.add_parser("run"), suppress=True)
+    t = sub.add_parser("text"); t.add_argument("transcript"); add_options(t, suppress=True)
+    w = sub.add_parser("wav"); w.add_argument("file"); add_options(w, suppress=True)
     args = ap.parse_args()
 
     cfg, controller, stt = build(args)

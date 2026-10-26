@@ -214,5 +214,20 @@ class SttTests(unittest.TestCase):
             CloudStt("http://127.0.0.1:9/v1", api_key="k", timeout=1).transcribe_wav(b"x")
 
 
+class CommandLine(unittest.TestCase):
+    """the options must work before and after the command name"""
+
+    def run_cli(self, *args):
+        import subprocess
+        script = os.path.join(os.path.dirname(__file__), "..", "voice_control.py")
+        return subprocess.run([sys.executable, "-I", script, *args], capture_output=True, text=True, timeout=20)
+
+    def test_option_order(self):
+        for args in (["--dry-run", "--no-log", "text", "spuść się na mnie"], ["text", "spuść się na mnie", "--dry-run", "--no-log"]):
+            r = self.run_cli(*args)
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertIn("dry-run [lube_fire", r.stdout)
+
+
 if __name__ == "__main__":
     unittest.main()
