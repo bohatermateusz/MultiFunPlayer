@@ -847,6 +847,15 @@
                                                         <DockPanel Margin="0 0 0 5" LastChildFill="True">
                                                             <ToggleButton DockPanel.Dock="Right"
                                                                           Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                                                                          IsChecked="{Binding Value.Settings.ExcludeFromScriptLoop}"
+                                                                          ToolTip="Keep following the video while the script loop is active (e.g. the Lube Launcher axis)"/>
+                                                            <TextBlock DockPanel.Dock="Left"
+                                                                       VerticalAlignment="Center"
+                                                                       Text="Ignore script loop:"/>
+                                                        </DockPanel>
+                                                        <DockPanel Margin="0 0 0 5" LastChildFill="True">
+                                                            <ToggleButton DockPanel.Dock="Right"
+                                                                          Style="{StaticResource MaterialDesignSwitchToggleButton}"
                                                                           IsChecked="{Binding Value.Settings.BypassMotionProvider}"/>
                                                             <TextBlock DockPanel.Dock="Left"
                                                                        Margin="0 0 10 0"

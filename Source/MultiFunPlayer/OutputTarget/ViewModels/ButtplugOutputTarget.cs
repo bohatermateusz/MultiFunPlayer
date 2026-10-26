@@ -210,15 +210,17 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         ? "off"
         : $"mode {_hismithSequenceMode}/{PresetModeMax}, {TimeSpan.FromSeconds(Math.Ceiling(_hismithSequenceRemaining)):m\\:ss}{(_hismithSequenceHeld ? " (held)" : string.Empty)}";
 
-    private bool IsSequenceSuppressed(ButtplugDeviceSettings settings)
+    // Only the machine itself (the device with the "Preset mode" actuator) is affected by the mode
+    // sequence; other devices, such as the Lube Launcher, are left alone.
+    private bool IsHismithMachine(ButtplugDeviceSettings settings)
     {
-        if (!HismithSequenceActive && !_hismithSequenceExiting)
-            return false;
-
         var device = GetDeviceFromSettings(settings);
         return device != null && device.ScalarActuators.Any(a => a.ActuatorType == ActuatorType.Position
                                                               && a.FeatureDescriptor?.StartsWith(PresetModeDescription, StringComparison.OrdinalIgnoreCase) == true);
     }
+
+    private bool IsSequenceSuppressed(ButtplugDeviceSettings settings)
+        => (HismithSequenceActive || _hismithSequenceExiting) && IsHismithMachine(settings);
 
     public void StartHismithSequence()
     {
@@ -510,7 +512,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
             if (!AxisSettings[axis].Enabled)
                 return false;
 
-            var shouldUpdate = _forceResend
+            var shouldUpdate = (_forceResend && IsHismithMachine(settings))
                             || !double.IsFinite(lastValue)
                             || (currentValue == 0 && lastValue != 0)
                             || Math.Abs(lastValue - currentValue) >= 0.005;

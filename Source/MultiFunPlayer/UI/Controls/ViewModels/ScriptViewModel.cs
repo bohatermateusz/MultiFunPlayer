@@ -782,7 +782,12 @@ internal sealed class ScriptViewModel : Screen, IDeviceAxisValueProvider, IDispo
         }
     }
 
-    private double GetAxisPosition(DeviceAxis axis) => ScriptPosition - GlobalOffset - AxisSettings[axis].Offset;
+    private double GetAxisPosition(DeviceAxis axis)
+    {
+        var settings = AxisSettings[axis];
+        var position = settings.ExcludeFromScriptLoop ? MediaPosition : ScriptPosition;
+        return position - GlobalOffset - settings.Offset;
+    }
 
     public void SetScriptLoopFromMediaPosition()
     {
@@ -809,7 +814,7 @@ internal sealed class ScriptViewModel : Screen, IDeviceAxisValueProvider, IDispo
         _scriptLoop = null;
         _scriptLoopElapsed = 0;
         NotifyOfPropertyChange(nameof(IsScriptLoopActive));
-        ResetSync();
+        ResetSync(true, DeviceAxis.All.Where(a => !AxisSettings[a].ExcludeFromScriptLoop));
     }
 
     public void ToggleScriptLoop()
@@ -2445,6 +2450,9 @@ internal sealed class AxisSettings : PropertyChangedBase
     [JsonProperty] public double ScriptScale { get; set; } = 1;
     [JsonProperty] public bool LockScript { get; set; } = false;
     [JsonProperty] public bool BypassScript { get; set; } = false;
+    // Axes with this set keep following the media position while the script loop is active
+    // (default for V1, the "lube"/"pump" axis, so a Lube Launcher script is not replayed).
+    [JsonProperty] public bool ExcludeFromScriptLoop { get; set; } = false;
     [JsonProperty] public bool BypassMotionProvider { get; set; } = false;
     [JsonProperty] public bool BypassTransition { get; set; } = false;
     [JsonProperty] public double MotionProviderBlend { get; set; } = 0;
@@ -2462,6 +2470,7 @@ internal sealed class AxisSettings : PropertyChangedBase
     {
         SmartLimitTargetValue = axis.DefaultValue;
         AutoHomeTargetValue = axis.DefaultValue;
+        ExcludeFromScriptLoop = axis.Name == "V1";
 
         if (axis.Name is "R0" or "R1" or "R2")
         {

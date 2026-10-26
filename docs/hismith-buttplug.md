@@ -60,7 +60,10 @@ Property for other shortcuts and displays: `Script::Loop::IsActive`, `Script::Lo
 
 Notes:
 
-* All axes loop together, so a multi-axis script stays in sync. Axes without a script are not affected.
+* All axes loop together, so a multi-axis script stays in sync, **except axes with "Ignore script loop"
+  switched on** (axis settings, "Bypass" section). That is on by default for axis V1 (`.lube` / `.pump`
+  scripts), so the Lube Launcher keeps following the film and its script is never replayed. Turn it on
+  for any other axis that drives something you do not want looped. Axes without a script are not affected.
 * The loop keeps running while the video is paused. It ends by itself when the media changes.
 * The end of the loop jumps back to its start without smoothing, so a script whose value at the loop
   end differs a lot from the value at the loop start gives a sudden move. Use the axis speed limit.
@@ -96,3 +99,6 @@ the HISMITH S2 row, 5-3600 s), and wraps around after mode 8:
 The same things are available as buttons in the HISMITH S2 row (Sequence switch, seconds per mode,
 Hold switch, status text) and as actions `...::Hismith::Sequence::Start`, `::Stop`,
 `::Hold::Toggle`. If the key is also play/pause in the player, the player will react too.
+
+The mode sequence only touches the HISMITH S2 itself (the device with the "Preset mode" actuator):
+the Lube Launcher is neither paused during the sequence nor sent anything when the sequence ends.
