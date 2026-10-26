@@ -42,3 +42,29 @@ Shortcut actions: `<target>::Hismith::LubeLauncher::Fire` and
 
 You can also map any axis to `Position/0`; every value above 0 squirts, at most once per 100 ms
 (enforced by the Buttplug fork), so prefer the buttons or shortcuts.
+
+## Script loop (hold a movement you like)
+
+While the video keeps playing, the scripts replay the **last N seconds** (default 5) over and over.
+Switching it off makes the scripts continue from wherever the video is *now*. It never seeks the
+player, unlike the existing "Media::Loop" actions, which loop the video together with the script.
+
+Actions (Settings -> Shortcuts -> add a shortcut, pick a gesture such as a key, gamepad or MIDI
+button, then the action):
+
+* `Script::Loop::Toggle`: first press starts the loop from the current position, second press ends it.
+* `Script::Loop::Start` / `Script::Loop::Clear`: separate on/off.
+* `Script::Loop::Duration::Set`: length in seconds (0.5-600, saved with the settings).
+
+Property for other shortcuts and displays: `Script::Loop::IsActive`, `Script::Loop::Duration`.
+
+Notes:
+
+* All axes loop together, so a multi-axis script stays in sync. Axes without a script are not affected.
+* The loop keeps running while the video is paused. It ends by itself when the media changes.
+* The end of the loop jumps back to its start without smoothing, so a script whose value at the loop
+  end differs a lot from the value at the loop start gives a sudden move. Use the axis speed limit.
+* If the key is also the play/pause key of your video player (space usually is), the player will
+  pause too when the key reaches it; use another key or a controller button.
+* Output targets that are set to "polled update" may not follow the loop; the Buttplug.io target
+  uses "fixed update" by default and does.

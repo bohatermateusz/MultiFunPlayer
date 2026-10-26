@@ -57,6 +57,16 @@ internal sealed class ScriptViewModel : Screen, IDeviceAxisValueProvider, IDispo
 
     public MediaLoopSegment MediaLoopSegment { get; }
 
+    // "Script loop": keeps the media playing but replays the last few seconds of the scripts, until it is
+    // switched off and the scripts continue from the current media position again. Unlike the media loop
+    // it never seeks the player.
+    private sealed record ScriptLoopSegment(double Start, double Length);
+    private volatile ScriptLoopSegment _scriptLoop;
+    private double _scriptLoopElapsed;
+
+    [JsonProperty] public double ScriptLoopDuration { get; set; } = 5;
+    public bool IsScriptLoopActive => _scriptLoop != null;
+
     public IScriptRepositoryManager ScriptRepositoryManager { get; }
     public IMotionProviderManager MotionProviderManager { get; }
     public MediaResourceInfo MediaResource { get; set; }
@@ -142,6 +152,9 @@ internal sealed class ScriptViewModel : Screen, IDeviceAxisValueProvider, IDispo
 
         bool UpdateValues()
         {
+            if (_scriptLoop != null)
+                _scriptLoopElapsed += deltaTime * PlaybackSpeed;
+
             if (IsPlaying)
             {
                 _internalMediaPosition += deltaTime * PlaybackSpeed;
@@ -558,6 +571,7 @@ internal sealed class ScriptViewModel : Screen, IDeviceAxisValueProvider, IDispo
             return;
 
         MediaResource = resource;
+        ClearScriptLoop();
         if (SyncSettings.SyncOnMediaResourceChanged)
             ResetSync(true);
 
@@ -654,6 +668,7 @@ internal sealed class ScriptViewModel : Screen, IDeviceAxisValueProvider, IDispo
         if (MediaResource == null)
             return;
 
+        ClearScriptLoop();
         if (SyncSettings.SyncOnMediaResourceChanged)
             ResetSync(true);
 
@@ -704,6 +719,7 @@ internal sealed class ScriptViewModel : Screen, IDeviceAxisValueProvider, IDispo
             if (settings.TryGetValue<bool>(nameof(HeatmapShowRange), out var heatmapShowRange)) HeatmapShowRange = heatmapShowRange;
             if (settings.TryGetValue<bool>(nameof(AutoSkipToScriptStartEnabled), out var autoSkipToScriptStartEnabled)) AutoSkipToScriptStartEnabled = autoSkipToScriptStartEnabled;
             if (settings.TryGetValue<double>(nameof(AutoSkipToScriptStartOffset), out var autoSkipToScriptStartOffset)) AutoSkipToScriptStartOffset = autoSkipToScriptStartOffset;
+            if (settings.TryGetValue<double>(nameof(ScriptLoopDuration), out var scriptLoopDuration)) ScriptLoopDuration = Math.Clamp(scriptLoopDuration, 0.5, 600);
 
             if (settings.TryGetValue(nameof(SyncSettings), out var syncSettingsToken)) syncSettingsToken.Populate(SyncSettings);
         }
@@ -749,7 +765,52 @@ internal sealed class ScriptViewModel : Screen, IDeviceAxisValueProvider, IDispo
         }
     }
 
-    private double GetAxisPosition(DeviceAxis axis) => MediaPosition - GlobalOffset - AxisSettings[axis].Offset;
+    private double ScriptPosition
+    {
+        get
+        {
+            var scriptLoop = _scriptLoop;
+            return scriptLoop == null ? MediaPosition : scriptLoop.Start + _scriptLoopElapsed % scriptLoop.Length;
+        }
+    }
+
+    private double GetAxisPosition(DeviceAxis axis) => ScriptPosition - GlobalOffset - AxisSettings[axis].Offset;
+
+    public void SetScriptLoopFromMediaPosition()
+    {
+        var end = MediaPosition;
+        if (!double.IsFinite(end))
+            return;
+
+        var length = Math.Min(Math.Max(ScriptLoopDuration, 0.5), end);
+        if (length < 0.5)
+            return;
+
+        Logger.Debug("Starting script loop [Start: {0}, Length: {1}]", end - length, length);
+        _scriptLoopElapsed = 0;
+        _scriptLoop = new ScriptLoopSegment(end - length, length);
+        NotifyOfPropertyChange(nameof(IsScriptLoopActive));
+    }
+
+    public void ClearScriptLoop()
+    {
+        if (_scriptLoop == null)
+            return;
+
+        Logger.Debug("Ending script loop");
+        _scriptLoop = null;
+        _scriptLoopElapsed = 0;
+        NotifyOfPropertyChange(nameof(IsScriptLoopActive));
+        ResetSync();
+    }
+
+    public void ToggleScriptLoop()
+    {
+        if (_scriptLoop == null)
+            SetScriptLoopFromMediaPosition();
+        else
+            ClearScriptLoop();
+    }
     public double GetValue(DeviceAxis axis) => MathUtils.Clamp01(AxisStates[axis].Value);
 
     public void BeginEventPolling(object context)
@@ -1492,6 +1553,15 @@ internal sealed class ScriptViewModel : Screen, IDeviceAxisValueProvider, IDispo
         s.RegisterAction("Media::Loop::End::Set::FromMediaPosition", SetMediaLoopEndFromMediaPosition);
         #endregion
 
+        #region Script::Loop
+        s.RegisterAction("Script::Loop::Toggle", ToggleScriptLoop);
+        s.RegisterAction("Script::Loop::Start", SetScriptLoopFromMediaPosition);
+        s.RegisterAction("Script::Loop::Clear", ClearScriptLoop);
+        s.RegisterAction<double>("Script::Loop::Duration::Set",
+            s => s.WithLabel("Seconds").AsNumericUpDown(minimum: 0.5, maximum: 600, interval: 0.5, stringFormat: "{0:F1}s"),
+            seconds => ScriptLoopDuration = Math.Clamp(seconds, 0.5, 600));
+        #endregion
+
         #region Media::AutoSkipToScriptStartEnabled
         s.RegisterAction<bool>("Media::AutoSkipToScriptStartEnabled::Set",
             s => s.WithLabel("Auto-skip to script start enabled"), enabled => AutoSkipToScriptStartEnabled = enabled);
@@ -2039,6 +2109,9 @@ internal sealed class ScriptViewModel : Screen, IDeviceAxisValueProvider, IDispo
         p.RegisterProperty("Media::Loop::IsValid", () => MediaLoopSegment.IsValid);
         p.RegisterProperty("Media::Loop::Start", () => MediaLoopSegment.StartPosition);
         p.RegisterProperty("Media::Loop::End", () => MediaLoopSegment.EndPosition);
+
+        p.RegisterProperty("Script::Loop::IsActive", () => IsScriptLoopActive);
+        p.RegisterProperty("Script::Loop::Duration", () => ScriptLoopDuration);
 
         p.RegisterProperty("Media::AutoSkipToScriptStartEnabled", () => AutoSkipToScriptStartEnabled);
         p.RegisterProperty("Media::AutoSkipToScriptStartOffset", () => AutoSkipToScriptStartOffset);
