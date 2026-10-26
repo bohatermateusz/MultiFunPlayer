@@ -88,8 +88,19 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         {
             value = Math.Clamp(value, 0, PresetModeMax);
             if (SetAndNotify(ref _hismithPresetMode, value))
-                _ = SendQuickActuatorsAsync(PresetModeDescription, value, PresetModeMax);
+                _ = SendPresetModeAsync(value);
         }
+    }
+
+    // Same server-side de-duplication as for the launcher: re-selecting the mode that was sent last
+    // (e.g. after a sequence) would be dropped, so a "0" (not sent to the machine) goes first.
+    private async Task SendPresetModeAsync(int mode)
+    {
+        if (mode <= 0)
+            return;
+
+        await SendQuickActuatorsAsync(PresetModeDescription, 0, PresetModeMax);
+        await SendQuickActuatorsAsync(PresetModeDescription, mode, PresetModeMax);
     }
 
     // Hismith Lube Launcher (PiuPiu): any value above 0 on its "Spray" Position actuator is one
@@ -133,15 +144,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
             if (!SetAndNotify(ref _lubeAutoSpray, value))
                 return;
 
-            _remoteCommandSource?.Cancel();
-        _remoteCommandSource?.Dispose();
-        _remoteCommandSource = null;
-
-        _hismithSequenceSource?.Cancel();
-        _hismithSequenceSource?.Dispose();
-        _hismithSequenceSource = null;
-
-        _lubeAutoCancellationSource?.Cancel();
+            _lubeAutoCancellationSource?.Cancel();
             _lubeAutoCancellationSource?.Dispose();
             _lubeAutoCancellationSource = null;
 
@@ -154,7 +157,16 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
     }
 
     public void FireLubeLauncher()
-        => _ = SendQuickActuatorsAsync(SprayDescription, 1, 1);
+        => _ = FireLubeLauncherAsync();
+
+    // The server drops a command that is identical to the last one sent to the same feature, so a
+    // second "1" would never reach the launcher. "1" squirts, "0" does nothing but resets that state.
+    private async Task FireLubeLauncherAsync()
+    {
+        await SendQuickActuatorsAsync(SprayDescription, 1, 1);
+        await Task.Delay(150);
+        await SendQuickActuatorsAsync(SprayDescription, 0, 1);
+    }
 
     private async Task RunLubeAutoSprayAsync(CancellationToken token)
     {
@@ -164,7 +176,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
             {
                 var seconds = Random.Shared.Next(Math.Min(_lubeAutoMinSeconds, _lubeAutoMaxSeconds), Math.Max(_lubeAutoMinSeconds, _lubeAutoMaxSeconds) + 1);
                 await Task.Delay(TimeSpan.FromSeconds(seconds), token);
-                await SendQuickActuatorsAsync(SprayDescription, 1, 1);
+                await FireLubeLauncherAsync();
             }
         }
         catch (OperationCanceledException) { }
@@ -298,6 +310,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
     private int _hismithSequenceSeconds = 120;
     private volatile bool _forceResend;
     private volatile bool _hismithSequenceExiting;
+    private Task _hismithExitTask;
 
     public bool HismithSequenceActive
     {
@@ -317,7 +330,11 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         set
         {
             if (!HismithSequenceActive && value)
+            {
+                // keep the switch in the UI in step with the (unchanged) value
+                NotifyOfPropertyChange(nameof(HismithSequenceHeld));
                 return;
+            }
 
             if (SetAndNotify(ref _hismithSequenceHeld, value))
                 NotifyOfPropertyChange(nameof(HismithSequenceStatus));
@@ -351,9 +368,18 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         if (HismithSequenceActive)
             return;
 
+        // a previous sequence is still switching the machine back to manual mode: start after that,
+        // otherwise its manual-mode command would arrive after our auto-mode command
+        if (_hismithSequenceExiting)
+        {
+            _ = StartHismithSequenceAfterExitAsync();
+            return;
+        }
+
         if (!GetQuickActuators(PresetModeDescription).Any())
         {
             Logger.Info("No device with a \"{0}\" actuator is connected, not starting the mode sequence", PresetModeDescription);
+            NotifyOfPropertyChange(nameof(HismithSequenceActive));
             return;
         }
 
@@ -389,7 +415,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         if (sendToDevice)
         {
             _hismithSequenceExiting = true;
-            _ = ExitHismithSequenceAsync();
+            _hismithExitTask = ExitHismithSequenceAsync();
         }
         else
         {
@@ -415,6 +441,14 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
             _forceResend = true;
             _hismithSequenceExiting = false;
         }
+    }
+
+    private async Task StartHismithSequenceAfterExitAsync()
+    {
+        var exitTask = _hismithExitTask;
+        if (exitTask != null)
+            await exitTask;
+        StartHismithSequence();
     }
 
     // One key, state aware: single press = hold/release the sequence, or the script loop when no sequence runs.
@@ -445,7 +479,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
                 _hismithPresetMode = _hismithSequenceMode;
                 NotifyOfPropertyChange(nameof(HismithPresetMode));
                 _hismithSequenceRemaining = _hismithSequenceSeconds;
-                await SendQuickActuatorsAsync(PresetModeDescription, _hismithSequenceMode, PresetModeMax);
+                await SendPresetModeAsync(_hismithSequenceMode);
 
                 var lastStatusSecond = -1;
                 while (_hismithSequenceRemaining > 0)
@@ -951,6 +985,13 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);
+
+        // the UDP listener must go, or the port stays taken when this output is removed and re-added
+        _remoteCommandSource?.Cancel();
+        _remoteCommandSource?.Dispose();
+        _remoteCommandSource = null;
+
+        StopHismithSequence(sendToDevice: false);
 
         _lubeAutoCancellationSource?.Cancel();
         _lubeAutoCancellationSource?.Dispose();
