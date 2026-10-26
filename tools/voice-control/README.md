@@ -10,10 +10,13 @@ default). Use a service whose data terms you accept.
 
 ## Setup
 
+**Quick install (Windows):** double-click `install.bat` (installs the packages, stores the key, runs a self-check), then do steps 1 and 4 below.
+The Buttplug engine may run on another machine (e.g. Linux, `--websocket-use-all-interfaces`); MultiFunPlayer and this tool must run on the same Windows PC (UDP to 127.0.0.1).
+
 1. MultiFunPlayer fork: in the Buttplug.io output, switch on **Remote commands** (127.0.0.1, port 23555).
    It only listens on this computer and only accepts a few action families (`<target>::Hismith::*`,
    `Script::Loop::*`, `Media::PlayPause::*`).
-2. `pip install sounddevice numpy pynput` (the tests and `text` mode need nothing).
+2. `pip install -r requirements.txt` (the tests and `text` mode need nothing).
 3. Set the key: `set OPENAI_API_KEY=...` (any OpenAI-compatible `/audio/transcriptions` endpoint works;
    change `stt.base_url` and `stt.model` in `commands.json`).
 4. Check the microphone Windows uses (for a headset such as the Pimax Crystal, set it as the default
