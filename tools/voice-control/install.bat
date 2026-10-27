@@ -17,8 +17,7 @@ if errorlevel 1 (
 )
 
 echo Installing packages...
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
+python -m pip install --user -r requirements.txt
 if errorlevel 1 ( echo pip install failed. & pause & exit /b 1 )
 
 if "%OPENAI_API_KEY%"=="" (
