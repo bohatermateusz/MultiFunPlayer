@@ -4,6 +4,12 @@ cd /d "%~dp0"
 echo === MultiFunPlayer voice control ===
 echo Hold F9, speak, release. Close this window to stop.
 echo.
+python -c "import pynput, sounddevice, numpy" >nul 2>nul
+if errorlevel 1 (
+  echo Missing packages, installing them for this Python...
+  python -m pip install -r requirements.txt
+  if errorlevel 1 ( echo pip install failed. & pause & exit /b 1 )
+)
 if /i "%~1"=="live" (
   python voice_control.py run
 ) else (
