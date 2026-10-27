@@ -36,7 +36,7 @@ if "%OPENAI_API_KEY%"=="" (
 
 echo.
 echo Self-check ^(no microphone, no network^):
-python voice_control.py text "spuść się na mnie" --dry-run --no-log
+python voice_control.py text "kochanie spuść się na mnie" --dry-run --no-log
 if errorlevel 1 ( echo Self-check failed. & pause & exit /b 1 )
 
 echo.
