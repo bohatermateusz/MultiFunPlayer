@@ -479,11 +479,11 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
 
-                        <StackPanel Margin="0 0 0 10" Orientation="Horizontal">
+                        <WrapPanel Margin="0 0 0 2" Orientation="Horizontal">
                             <ComboBox ItemsSource="{Binding Source={x:Static common:DeviceAxis.All}}"
                                       SelectedItem="{Binding SelectedDeviceAxis}"
                                       Width="50"
-                                      Margin="5 0 10 0"
+                                      Margin="5 0 10 8"
                                       HorizontalAlignment="Center"
                                       material:HintAssist.HelperText="Axes"
                                       material:TextFieldAssist.HasClearButton="True"/>
@@ -491,7 +491,7 @@
                             <ComboBox ItemsSource="{Binding AvailableDevices}"
                                       SelectedItem="{Binding SelectedDevice}"
                                       Width="215"
-                                      Margin="0 0 10 0"
+                                      Margin="0 0 10 8"
                                       material:HintAssist.HelperText="Connected devices"
                                       material:TextFieldAssist.HasClearButton="True"
                                       IsEnabled="{Binding AvailableDevices.Count, Converter={StaticResource NotZeroConverter}}">
@@ -508,7 +508,7 @@
                             <ComboBox ItemsSource="{Binding AvailableActuatorTypes}"
                                       SelectedItem="{Binding SelectedActuatorType}"
                                       Width="130"
-                                      Margin="0 0 10 0"
+                                      Margin="0 0 10 8"
                                       material:HintAssist.HelperText="Actuator types"
                                       material:TextFieldAssist.HasClearButton="True"
                                       IsEnabled="{Binding SelectedDevice, Converter={StaticResource InvertedNullableToBooleanConverter}}"/>
@@ -517,7 +517,7 @@
                                       SelectedValuePath="Index"
                                       SelectedValue="{Binding SelectedActuatorIndex}"
                                       Width="250"
-                                      Margin="0 0 10 0"
+                                      Margin="0 0 10 8"
                                       material:HintAssist.HelperText="Indices"
                                       material:TextFieldAssist.HasClearButton="True"
                                       IsEnabled="{Binding SelectedActuatorType, Converter={StaticResource InvertedNullableToBooleanConverter}}"/>
@@ -525,6 +525,7 @@
                             <Button Style="{StaticResource MaterialDesignIconButton}"
                                     Width="24"
                                     Height="24"
+                                    Margin="0 0 0 8"
                                     Padding="0"
                                     material:RippleAssist.Feedback="{DynamicResource MaterialDesignSuccessBrush}"
                                     Click="{s:Action OnSettingsAdd}"
@@ -538,7 +539,7 @@
                                                    Height="20"
                                                    Kind="Plus"/>
                             </Button>
-                        </StackPanel>
+                        </WrapPanel>
                     </StackPanel>
                 </Expander>
             </material:Card>
