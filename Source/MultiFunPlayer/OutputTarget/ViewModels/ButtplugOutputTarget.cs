@@ -18,7 +18,7 @@ using System.Windows;
 namespace MultiFunPlayer.OutputTarget.ViewModels;
 
 [DisplayName("Buttplug.io")]
-internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
+internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
 {
     private SemaphoreSlim _scanSemaphore;
 
@@ -205,7 +205,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
     // Speed of the machine's auto mode (the "Fucking Machine Oscillation Speed" actuator, 0-100). In manual
     // mode the machine follows the position instead.
     private const string SpeedDescription = "Fucking Machine Oscillation Speed";
-    private int _hismithSpeed;
+    private int _hismithSpeed = 50;
 
     public int HismithSpeed
     {
@@ -409,7 +409,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
     }
 
     private bool IsSequenceSuppressed(ButtplugDeviceSettings settings)
-        => (HismithSequenceActive || _hismithSequenceExiting) && IsHismithMachine(settings);
+        => (HismithSequenceActive || _hismithSequenceExiting || _hismithMode != 0) && IsHismithMachine(settings);
 
     private void NotifySequenceChanged()
     {
@@ -471,7 +471,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
                 return;
 
             _hismithSequenceHeld = false;
-            _hismithManualMode = true;
+            _hismithManualMode = HasDirectPositionActuator;
             _hismithPresetMode = 0;
 
             // back to the funscripts: manual mode first, then the current script values again. The script
@@ -502,7 +502,13 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         try
         {
             await Task.Delay(300);
-            await SendQuickActuatorsAsync(RunModeDescription, 1, 1);
+            if (HasDirectPositionActuator)
+                await SendQuickActuatorsAsync(RunModeDescription, 1, 1);
+
+            // a speed command ends the built-in mode, and the server drops a command identical to the last
+            // one: go through 0 so that the script's speed is surely sent
+            await SendQuickActuatorsAsync(SpeedDescription, 0, 100, ActuatorType.Oscillate);
+            await Task.Delay(150);
         }
         finally
         {
@@ -538,7 +544,12 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
 
     // Double press = start the sequence, or go back to the funscripts when it is running (held or not).
     public void HismithKeyDoublePress()
-        => HismithSequenceActive = !HismithSequenceActive;
+    {
+        if (_hismithMode != 0)
+            SetHismithMode(0);
+        else
+            HismithSequenceActive = !HismithSequenceActive;
+    }
 
     private async Task RunHismithSequenceAsync(CancellationToken token)
     {
@@ -714,6 +725,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         }
 
         StopHismithSequence(sendToDevice: false);
+        ResetHismithMode();
         AvailableDevices.Clear();
     }
 
@@ -827,7 +839,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
     private IEnumerable<Task> GetDeviceTasks(Dictionary<DeviceAxis, double> values, double interval, IEnumerable<ButtplugDeviceSettings> settings, CancellationToken token)
         => GetDeviceTasks(settings, (s, a) =>
         {
-            var value = values[s.SourceAxis];
+            var value = ApplyBoost(a, values[s.SourceAxis]);
             if (a is ButtplugDeviceLinearActuator linearActuator)
             {
                 var duration = (uint)Math.Floor(interval + 0.75);
@@ -857,7 +869,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
                 return Task.CompletedTask;
 
             var axisSettings = AxisSettings[s.SourceAxis];
-            var value = MathUtils.Lerp(axisSettings.Minimum, axisSettings.Maximum, axisEvent.TargetValue);
+            var value = ApplyBoost(a, MathUtils.Lerp(axisSettings.Minimum, axisSettings.Maximum, axisEvent.TargetValue));
             if (a is ButtplugDeviceLinearActuator linearActuator)
             {
                 var duration = (uint)Math.Floor(axisEvent.Duration * 1000 + 0.75);
@@ -961,6 +973,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
             settings[nameof(DeviceSettings)] = JArray.FromObject(DeviceSettings);
             settings[nameof(RemoteCommandsEnabled)] = RemoteCommandsEnabled;
             settings[nameof(RemoteCommandsPort)] = RemoteCommandsPort;
+            SaveHismithModeSettings(settings);
         }
         else if (action == SettingsAction.Loading)
         {
@@ -974,6 +987,8 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
                 RemoteCommandsPort = remoteCommandsPort;
             if (settings.TryGetValue<bool>(nameof(RemoteCommandsEnabled), out var remoteCommandsEnabled))
                 RemoteCommandsEnabled = remoteCommandsEnabled;
+
+            LoadHismithModeSettings(settings);
         }
     }
 
@@ -1003,6 +1018,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         s.RegisterAction<int>($"{Identifier}::Hismith::Speed::Offset", s => s.WithLabel("Speed offset"), offset => HismithSpeed += offset);
         s.RegisterAction($"{Identifier}::Hismith::LubeLauncher::Fire", FireLubeLauncher);
         s.RegisterAction<bool>($"{Identifier}::Hismith::LubeLauncher::AutoSpray::Set", s => s.WithLabel("Lube Launcher auto spray"), enabled => LubeAutoSpray = enabled);
+        RegisterHismithModeActions(s);
         #endregion
     }
 
@@ -1022,6 +1038,7 @@ internal sealed class ButtplugOutputTarget : AsyncAbstractOutputTarget
         s.UnregisterAction($"{Identifier}::Hismith::Speed::Offset");
         s.UnregisterAction($"{Identifier}::Hismith::LubeLauncher::Fire");
         s.UnregisterAction($"{Identifier}::Hismith::LubeLauncher::AutoSpray::Set");
+        UnregisterHismithModeActions(s);
     }
 
     public override void RegisterProperties(IPropertyManager p)

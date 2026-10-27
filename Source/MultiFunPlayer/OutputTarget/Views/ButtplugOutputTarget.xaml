@@ -183,6 +183,231 @@
                 <TextBlock VerticalAlignment="Center" Text="{Binding HismithSequenceStatus}"/>
             </StackPanel>
 
+            <WrapPanel Margin="0 0 0 6"
+                       Orientation="Horizontal"
+                       Visibility="{Binding HasHismithControls, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Margin="0 0 15 0"
+                           VerticalAlignment="Center"
+                           FontWeight="Bold"
+                           Text="MODES"
+                           Typography.Capitals="AllSmallCaps"/>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
+                            Command="{s:Action OnHismithModeButton}" CommandParameter="1"
+                            Content="1"
+                            ToolTip="Built-in mode 1 (replaces the funscript)"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text="Num 1"/>
+                </StackPanel>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
+                            Command="{s:Action OnHismithModeButton}" CommandParameter="2"
+                            Content="2"
+                            ToolTip="Built-in mode 2 (replaces the funscript)"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text="Num 2"/>
+                </StackPanel>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
+                            Command="{s:Action OnHismithModeButton}" CommandParameter="3"
+                            Content="3"
+                            ToolTip="Built-in mode 3 (replaces the funscript)"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text="Num 3"/>
+                </StackPanel>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
+                            Command="{s:Action OnHismithModeButton}" CommandParameter="4"
+                            Content="4"
+                            ToolTip="Built-in mode 4 (replaces the funscript)"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text="Num 4"/>
+                </StackPanel>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
+                            Command="{s:Action OnHismithModeButton}" CommandParameter="5"
+                            Content="5"
+                            ToolTip="Built-in mode 5 (replaces the funscript)"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text="Num 5"/>
+                </StackPanel>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
+                            Command="{s:Action OnHismithModeButton}" CommandParameter="6"
+                            Content="6"
+                            ToolTip="Built-in mode 6 (replaces the funscript)"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text="Num 6"/>
+                </StackPanel>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
+                            Command="{s:Action OnHismithModeButton}" CommandParameter="7"
+                            Content="7"
+                            ToolTip="Built-in mode 7 (replaces the funscript)"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text="Num 7"/>
+                </StackPanel>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
+                            Command="{s:Action OnHismithModeButton}" CommandParameter="8"
+                            Content="8"
+                            ToolTip="Built-in mode 8 (replaces the funscript)"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text="Num 8"/>
+                </StackPanel>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
+                            Command="{s:Action OnHismithModeButton}" CommandParameter="9"
+                            Content="A"
+                            ToolTip="Mode A: fastest, full depth, smallest stroke"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text="Num 9"/>
+                </StackPanel>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
+                            Command="{s:Action OnHismithModeButton}" CommandParameter="10"
+                            Content="B"
+                            ToolTip="Mode B: slowest, full depth, smallest stroke"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text="Num 0"/>
+                </StackPanel>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
+                            Click="{s:Action HismithModeScript}"
+                            Content="Script"
+                            ToolTip="Back to the funscripts"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text="Num ."/>
+                </StackPanel>
+            </WrapPanel>
+
+            <WrapPanel Margin="0 0 0 20"
+                       Orientation="Horizontal"
+                       Visibility="{Binding HasHismithControls, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Margin="0 0 15 6"
+                           VerticalAlignment="Center"
+                           FontWeight="Bold"
+                           Text="BOOST"
+                           Typography.Capitals="AllSmallCaps"/>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
+                            Click="{s:Action HismithFaster}"
+                            Content="Faster"
+                            ToolTip="Speed up (on top of the funscript)"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text="Num +"/>
+                </StackPanel>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
+                            Click="{s:Action HismithSlower}"
+                            Content="Slower"
+                            ToolTip="Slow down"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text="Num -"/>
+                </StackPanel>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
+                            Click="{s:Action HismithDeeper}"
+                            Content="Deeper"
+                            ToolTip="Go deeper"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text="Num *"/>
+                </StackPanel>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
+                            Click="{s:Action HismithShallower}"
+                            Content="Shallower"
+                            ToolTip="Go shallower"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text="Num /"/>
+                </StackPanel>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
+                            Click="{s:Action HismithBoostReset}"
+                            Content="Reset"
+                            ToolTip="Remove the boost"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text="Num ."/>
+                </StackPanel>
+                <TextBlock Margin="8 0 4 6" VerticalAlignment="Center" Text="Step speed"/>
+                <TextBox Width="36"
+                         Margin="0 0 8 6"
+                         VerticalAlignment="Center"
+                         Text="{Binding HismithSpeedStep, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="Percentage points per Faster/Slower"/>
+                <TextBlock Margin="0 0 4 6" VerticalAlignment="Center" Text="depth"/>
+                <TextBox Width="36"
+                         Margin="0 0 12 6"
+                         VerticalAlignment="Center"
+                         Text="{Binding HismithDepthStep, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="Percentage points per Deeper/Shallower"/>
+                <TextBlock Margin="0 0 0 6" VerticalAlignment="Center" Text="{Binding HismithModeStatus}"/>
+            </WrapPanel>
+
             <StackPanel Margin="0 0 0 20"
                         Orientation="Horizontal"
                         Visibility="{Binding HasLubeLauncherControls, Converter={StaticResource BooleanToVisibilityConverter}}">
