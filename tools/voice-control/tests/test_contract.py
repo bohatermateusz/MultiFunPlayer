@@ -14,6 +14,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 MFP = os.path.normpath(os.path.join(HERE, "..", "..", "..", "Source", "MultiFunPlayer"))
 VIEWMODELS = [
     os.path.join(MFP, "OutputTarget", "ViewModels", "ButtplugOutputTarget.cs"),
+    os.path.join(MFP, "OutputTarget", "ViewModels", "ButtplugOutputTarget.HismithModes.cs"),
     os.path.join(MFP, "UI", "Controls", "ViewModels", "ScriptViewModel.cs"),
 ]
 TARGET = "Buttplug.io/0"
@@ -79,7 +80,9 @@ class ContractTests(unittest.TestCase):
 
     def test_key_actions_are_present(self):
         for name in [f"{TARGET}::Hismith::LubeLauncher::Fire", f"{TARGET}::Hismith::Key::SinglePress",
-                     f"{TARGET}::Hismith::Key::DoublePress", "Script::Loop::Toggle", "Media::PlayPause::Set"]:
+                     f"{TARGET}::Hismith::Key::DoublePress", "Script::Loop::Toggle", "Media::PlayPause::Set",
+                     f"{TARGET}::Hismith::Mode::Set", f"{TARGET}::Hismith::Speed::Faster", f"{TARGET}::Hismith::Depth::Deeper",
+                     f"{TARGET}::Hismith::LubeLauncher::FireMany"]:
             self.assertIn(name, self.actions)
 
 

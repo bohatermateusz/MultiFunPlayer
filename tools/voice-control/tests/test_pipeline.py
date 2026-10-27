@@ -65,11 +65,31 @@ class PipelineTests(unittest.TestCase):
         msgs = self.mfp.wait(1)
         self.assertEqual(msgs, [{"action": "Buttplug.io/0::Hismith::LubeLauncher::Fire", "args": []}])
 
-    def test_preset_mode_sends_auto_mode_then_the_mode(self):
+    def test_built_in_mode_is_one_mode_action(self):
         self.assertEqual(self.heard("tryb trzeci"), ["executed"])
+        msgs = self.mfp.wait(1)
+        self.assertEqual(msgs, [{"action": "Buttplug.io/0::Hismith::Mode::Set", "args": [3]}])
+
+    def test_custom_modes_a_and_b(self):
+        self.assertEqual(self.heard("na maksa", "najwolniej"), ["executed", "executed"])
         msgs = self.mfp.wait(2)
-        self.assertEqual([m["action"].split("::")[-2] for m in msgs], ["ManualMode", "PresetMode"])
-        self.assertEqual([m["args"] for m in msgs], [[False], [3]])
+        self.assertEqual([m["args"] for m in msgs], [[9], [10]])
+
+    def test_speed_and_depth_boost(self):
+        self.assertEqual(self.heard("szybciej", "wolniej", "głębiej", "płycej"), ["executed"] * 4)
+        msgs = self.mfp.wait(4)
+        self.assertEqual([m["action"].split("::", 1)[-1] for m in msgs],
+                         ["Hismith::Speed::Faster", "Hismith::Speed::Slower", "Hismith::Depth::Deeper", "Hismith::Depth::Shallower"])
+
+    def test_normal_leaves_the_mode_and_resets_the_boost(self):
+        self.assertEqual(self.heard("normalnie"), ["executed"])
+        msgs = self.mfp.wait(2)
+        self.assertEqual([m["action"].split("::")[-2:] for m in msgs], [["Mode", "Script"], ["Boost", "Reset"]])
+
+    def test_lube_several_times(self):
+        self.assertEqual(self.heard("spuść się na mnie kilka razy"), ["executed"])
+        msgs = self.mfp.wait(1)
+        self.assertEqual(msgs, [{"action": "Buttplug.io/0::Hismith::LubeLauncher::FireMany", "args": [3]}])
 
     def test_pause_play_and_loop(self):
         self.assertEqual(self.heard("stop", "graj", "zapętl to", "koniec pętli"), ["executed"] * 4)

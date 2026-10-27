@@ -17,7 +17,7 @@ class FakeInputStream:
     """calls the callback with 10 ms blocks of silence until the stream is closed"""
     chunk_calls = 0
 
-    def __init__(self, samplerate, channels, dtype, device, callback):
+    def __init__(self, samplerate, channels, dtype, device, callback, blocksize=None):
         self.samplerate, self.callback, self._stop = samplerate, callback, threading.Event()
 
     def __enter__(self):
@@ -76,6 +76,17 @@ class AudioTests(unittest.TestCase):
     def test_beep_is_silent_and_harmless_off_windows(self):
         for kind in ("ok", "ignored", "error", "confirm", "unknown"):
             self.audio.beep(kind)
+
+    def test_continuous_listening_stops_and_yields_nothing_for_silence(self):
+        start = time.monotonic()
+        got = list(self.audio.listen_segments(SAMPLE_RATE, stop=lambda: time.monotonic() - start > 0.6))
+        self.assertEqual(got, [])
+        self.assertLess(time.monotonic() - start, 3.0)
+
+    def test_muted_listening_resets_the_detector(self):
+        start = time.monotonic()
+        got = list(self.audio.listen_segments(SAMPLE_RATE, stop=lambda: time.monotonic() - start > 0.4, muted=lambda: True))
+        self.assertEqual(got, [])
 
     def test_wav_from_pcm(self):
         from stt import pcm_to_wav

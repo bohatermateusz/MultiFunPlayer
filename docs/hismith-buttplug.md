@@ -104,6 +104,27 @@ Hold switch, status text) and as actions `...::Hismith::Sequence::Start`, `::Sto
 The mode sequence only touches the HISMITH S2 itself (the device with the "Preset mode" actuator):
 the Lube Launcher is neither paused during the sequence nor sent anything when the sequence ends.
 
+## Boost, built-in modes A/B and the two-slider S2
+
+With the Buttplug fork's current S2 (speed, depth, stroke width, run mode, preset mode) the HISMITH S2
+row of the Buttplug.io output has:
+
+* **MODES**: buttons 1-8 (the machine's built-in modes), **A** (fastest, full depth, smallest stroke),
+  **B** (the same, slowest) and **Script** (back to the funscripts). A mode replaces the script for
+  the machine only; the Lube Launcher keeps following its script. Each button shows its keyboard
+  shortcut (Num 1..8, Num 9 = A, Num 0 = B, Num . = script), see `tools/voice-control`.
+* **BOOST**: Faster / Slower (default +/- 20 points) and Deeper / Shallower (+/- 15) are added to the
+  funscript's speed / depth (clamped to 0-100 %), without stopping the script. Reset removes it.
+  If no axis is mapped to speed or depth, or a mode runs, the same buttons set absolute values.
+
+Actions (for shortcuts and remote commands): `<target>::Hismith::Mode::Set` (0 = script, 1-8, 9 = A,
+10 = B), `::Mode::Script`, `::Speed::Faster`, `::Speed::Slower`, `::Depth::Deeper`,
+`::Depth::Shallower`, `::Boost::Reset`, `::LubeLauncher::FireMany` (1-5 shots, 1 s apart).
+
+Going back to the script from a built-in mode sends speed 0 first (the server drops a command
+identical to the last one, and a speed command is what ends a built-in mode), then the script's values
+again, and puts the stroke width back to 40.
+
 ## Remote commands and voice control
 
 The Buttplug.io output has a **Remote commands** switch (off by default): a UDP listener on

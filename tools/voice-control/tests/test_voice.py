@@ -45,7 +45,7 @@ class MatchPositive(unittest.TestCase):
 
     def test_others(self):
         cases = {"Stop.": "pause", "pauza": "pause", "Graj": "play", "zapętl": "loop_on", "Zapętl to!": "loop_on",
-                 "koniec pętli": "loop_off", "włącz sekwencję": "sequence_start", "wróć do skryptu": "sequence_stop",
+                 "koniec pętli": "loop_off", "włącz sekwencję": "sequence_start", "wróć do skryptu": "script", "koniec sekwencji": "sequence_stop",
                  "wstrzymaj tryb": "sequence_hold", "wznów sekwencję": "sequence_release", "tryb ręczny": "manual_mode",
                  "tryb automatyczny": "auto_mode", "szybciej": "faster", "wolniej": "slower"}
         for text, intent in cases.items():
@@ -56,14 +56,14 @@ class MatchPositive(unittest.TestCase):
         ordinals = ["pierwszy", "drugi", "trzeci", "czwarty", "piąty", "szósty", "siódmy", "ósmy"]
         for n in range(1, 9):
             for t in (f"tryb {words[n-1]}", f"Tryb {ordinals[n-1]}.", f"tryb {n}"):
-                self.assertEqual(best(t)[0], f"preset_{n}", t)
+                self.assertEqual(best(t)[0], f"mode_{n}", t)
 
 
 class MatchNegative(unittest.TestCase):
     """Things that must NOT run anything - dialogue, partial phrases, typical speech-to-text hallucinations."""
 
     def test_lube_needs_the_whole_phrase(self):
-        for t in ["spuść się", "na mnie", "spuść wodę", "spuść się na niego", "spuść mnie", "spuścić się na mnie wczoraj rano"]:
+        for t in ["na mnie", "spuść wodę", "spuść się na niego", "spuść mnie", "spuścić się na mnie wczoraj rano"]:
             self.assertNotEqual(best(t)[0], "lube_fire", t)
 
     def test_noise_dialogue_and_hallucinations(self):
@@ -73,13 +73,13 @@ class MatchNegative(unittest.TestCase):
             self.assertIsNone(best(t)[0], t)
 
     def test_similar_but_wrong_words(self):
-        for t in ["top", "stół", "gra", "tryb dziewięć", "tryb dziesięć", "tryb", "szybko"]:
+        for t in ["top", "stół", "gra", "tryb dziewięć", "tryb dziesięć", "tryb", "szybkość"]:
             self.assertIsNone(best(t)[0], t)
 
     def test_mode_numbers_are_not_mixed_up(self):
-        self.assertEqual(best("tryb trzy")[0], "preset_3")
-        self.assertEqual(best("tryb cztery")[0], "preset_4")
-        self.assertNotEqual(best("tryb siedem")[0], "preset_6")
+        self.assertEqual(best("tryb trzy")[0], "mode_3")
+        self.assertEqual(best("tryb cztery")[0], "mode_4")
+        self.assertNotEqual(best("tryb siedem")[0], "mode_6")
 
 
 class FakeClock:
@@ -134,13 +134,12 @@ class ControllerTests(unittest.TestCase):
             for i in INTENTS:
                 i.confirm = False
 
-    def test_preset_mode_steps_switch_to_auto_first(self):
+    def test_mode_is_one_action_with_the_number(self):
         c = self.make()
         c.handle("tryb trzy")
         steps = self.runs[0]
-        self.assertEqual([s["action"].split("::")[-3:] for s in steps], [["Hismith", "ManualMode", "Set"], ["Hismith", "PresetMode", "Set"]])
-        self.assertEqual(steps[0]["args"], [False])
-        self.assertEqual(steps[1]["args"], [3])
+        self.assertEqual([s["action"].split("::")[-3:] for s in steps], [["Hismith", "Mode", "Set"]])
+        self.assertEqual(steps[0]["args"], [3])
 
     def test_log_file(self):
         with tempfile.TemporaryDirectory() as d:
@@ -223,7 +222,7 @@ class CommandLine(unittest.TestCase):
         return subprocess.run([sys.executable, "-I", script, *args], capture_output=True, text=True, timeout=20)
 
     def test_option_order(self):
-        for args in (["--dry-run", "--no-log", "text", "spuść się na mnie"], ["text", "spuść się na mnie", "--dry-run", "--no-log"]):
+        for args in (["--dry-run", "--no-log", "text", "kochanie spuść się na mnie"], ["text", "kochanie spuść się na mnie", "--dry-run", "--no-log"]):
             r = self.run_cli(*args)
             self.assertEqual(r.returncode, 0, r.stderr)
             self.assertIn("dry-run [lube_fire", r.stdout)

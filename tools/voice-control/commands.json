@@ -1,5 +1,5 @@
 {
- "_comment": "Edit the phrases to taste. Names with {target} are replaced by the Buttplug.io output target name.",
+ "_comment": "Edit the phrases to taste. Names with {target} are replaced by the Buttplug.io output target name. 'wake': every command has to start with the wake word. 'listen.mode': 'always' (continuous) or 'ptt' (hold the ptt key). 'keys': global shortcuts -> intent ids ('@mute' toggles listening); NumLock must be on.",
  "target": "Buttplug.io/0",
  "udp": {
   "host": "127.0.0.1",
@@ -34,7 +34,11 @@
    "id": "lube_fire",
    "phrases": [
     "spuść się na mnie",
-    "strzel na mnie"
+    "strzel na mnie",
+    "spuść się",
+    "dojdź na mnie",
+    "dojdź",
+    "strzelaj"
    ],
    "steps": [
     {
@@ -42,73 +46,396 @@
      "args": []
     }
    ],
-   "threshold": 0.92,
+   "threshold": 0.9,
    "cooldown": 10,
-   "max_extra_words": 1,
-   "confirm": false
+   "max_extra_words": 1
   },
   {
-   "id": "pause",
+   "id": "lube_two",
    "phrases": [
-    "stop",
-    "pauza",
-    "wstrzymaj film"
+    "spuść się na mnie dwa razy",
+    "spuść się dwa razy",
+    "strzel dwa razy",
+    "dwa razy na mnie"
    ],
    "steps": [
     {
-     "action": "Media::PlayPause::Set",
+     "action": "{target}::Hismith::LubeLauncher::FireMany",
      "args": [
-      false
+      2
      ]
     }
    ],
    "threshold": 0.9,
-   "cooldown": 1
+   "cooldown": 15,
+   "max_extra_words": 1
   },
   {
-   "id": "play",
+   "id": "lube_many",
    "phrases": [
-    "graj",
-    "wznów",
-    "kontynuuj"
+    "spuść się na mnie kilka razy",
+    "spuść się kilka razy",
+    "spuść się na mnie trzy razy",
+    "strzel kilka razy",
+    "strzel trzy razy",
+    "kilka razy na mnie"
    ],
    "steps": [
     {
-     "action": "Media::PlayPause::Set",
+     "action": "{target}::Hismith::LubeLauncher::FireMany",
      "args": [
-      true
+      3
      ]
     }
    ],
    "threshold": 0.9,
-   "cooldown": 1
+   "cooldown": 15,
+   "max_extra_words": 1
   },
   {
-   "id": "loop_on",
+   "id": "faster",
    "phrases": [
-    "zapętl",
-    "zapętl to",
-    "powtórz to"
+    "szybciej",
+    "prędzej",
+    "przyspiesz",
+    "przyśpiesz",
+    "szybko",
+    "mocniej",
+    "dawaj",
+    "więcej",
+    "jeszcze szybciej"
    ],
    "steps": [
     {
-     "action": "Script::Loop::Start",
+     "action": "{target}::Hismith::Speed::Faster",
+     "args": []
+    }
+   ],
+   "threshold": 0.9,
+   "cooldown": 1,
+   "max_extra_words": 1
+  },
+  {
+   "id": "slower",
+   "phrases": [
+    "wolniej",
+    "zwolnij",
+    "spokojniej",
+    "delikatniej",
+    "łagodniej",
+    "mniej",
+    "powoli",
+    "jeszcze wolniej"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Speed::Slower",
+     "args": []
+    }
+   ],
+   "threshold": 0.9,
+   "cooldown": 1,
+   "max_extra_words": 1
+  },
+  {
+   "id": "deeper",
+   "phrases": [
+    "głębiej",
+    "głęboko",
+    "do końca",
+    "w głąb",
+    "jeszcze głębiej",
+    "głębszy"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Depth::Deeper",
+     "args": []
+    }
+   ],
+   "threshold": 0.9,
+   "cooldown": 1,
+   "max_extra_words": 1
+  },
+  {
+   "id": "shallower",
+   "phrases": [
+    "płycej",
+    "płytko",
+    "nie tak głęboko",
+    "mniej głęboko",
+    "wyjdź trochę",
+    "jeszcze płycej"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Depth::Shallower",
+     "args": []
+    }
+   ],
+   "threshold": 0.9,
+   "cooldown": 1,
+   "max_extra_words": 1
+  },
+  {
+   "id": "normal",
+   "phrases": [
+    "normalnie",
+    "zresetuj",
+    "bez zmian",
+    "jak było",
+    "wróć do normy",
+    "jak w filmie"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Script",
+     "args": []
+    },
+    {
+     "action": "{target}::Hismith::Boost::Reset",
      "args": []
     }
    ],
    "cooldown": 2
   },
   {
-   "id": "loop_off",
+   "id": "script",
    "phrases": [
-    "koniec pętli",
-    "wyłącz pętlę",
-    "wyjdź z pętli"
+    "wróć do filmu",
+    "wróć do skryptu",
+    "wróć do skryptów",
+    "koniec trybu",
+    "wyłącz tryb",
+    "skrypt",
+    "film"
    ],
    "steps": [
     {
-     "action": "Script::Loop::Clear",
+     "action": "{target}::Hismith::Mode::Script",
      "args": []
+    },
+    {
+     "action": "{target}::Hismith::Sequence::Stop",
+     "args": []
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "mode_1",
+   "phrases": [
+    "tryb jeden",
+    "tryb pierwszy",
+    "tryb 1",
+    "program jeden",
+    "program 1",
+    "włącz tryb jeden",
+    "numer jeden",
+    "jedynka"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Set",
+     "args": [
+      1
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "mode_2",
+   "phrases": [
+    "tryb dwa",
+    "tryb drugi",
+    "tryb 2",
+    "program dwa",
+    "program 2",
+    "włącz tryb dwa",
+    "numer dwa",
+    "dwójka"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Set",
+     "args": [
+      2
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "mode_3",
+   "phrases": [
+    "tryb trzy",
+    "tryb trzeci",
+    "tryb 3",
+    "program trzy",
+    "program 3",
+    "włącz tryb trzy",
+    "numer trzy",
+    "trójka"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Set",
+     "args": [
+      3
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "mode_4",
+   "phrases": [
+    "tryb cztery",
+    "tryb czwarty",
+    "tryb 4",
+    "program cztery",
+    "program 4",
+    "włącz tryb cztery",
+    "numer cztery",
+    "czwórka"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Set",
+     "args": [
+      4
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "mode_5",
+   "phrases": [
+    "tryb pięć",
+    "tryb piąty",
+    "tryb 5",
+    "program pięć",
+    "program 5",
+    "włącz tryb pięć",
+    "numer pięć",
+    "piątka"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Set",
+     "args": [
+      5
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "mode_6",
+   "phrases": [
+    "tryb sześć",
+    "tryb szósty",
+    "tryb 6",
+    "program sześć",
+    "program 6",
+    "włącz tryb sześć",
+    "numer sześć",
+    "szóstka"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Set",
+     "args": [
+      6
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "mode_7",
+   "phrases": [
+    "tryb siedem",
+    "tryb siódmy",
+    "tryb 7",
+    "program siedem",
+    "program 7",
+    "włącz tryb siedem",
+    "numer siedem",
+    "siódemka"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Set",
+     "args": [
+      7
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "mode_8",
+   "phrases": [
+    "tryb osiem",
+    "tryb ósmy",
+    "tryb 8",
+    "program osiem",
+    "program 8",
+    "włącz tryb osiem",
+    "numer osiem",
+    "ósemka"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Set",
+     "args": [
+      8
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "mode_a",
+   "phrases": [
+    "tryb a",
+    "program a",
+    "na maksa",
+    "maksymalnie",
+    "najszybciej",
+    "tryb maksymalny",
+    "maksymalny tryb"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Set",
+     "args": [
+      9
+     ]
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "mode_b",
+   "phrases": [
+    "tryb b",
+    "tryb be",
+    "program b",
+    "najwolniej",
+    "najpowolniej",
+    "na minimum",
+    "tryb minimalny"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Set",
+     "args": [
+      10
+     ]
     }
    ],
    "cooldown": 2
@@ -118,7 +445,8 @@
    "phrases": [
     "włącz sekwencję",
     "start sekwencji",
-    "tryby po kolei"
+    "tryby po kolei",
+    "uruchom sekwencję"
    ],
    "steps": [
     {
@@ -131,9 +459,9 @@
   {
    "id": "sequence_stop",
    "phrases": [
-    "wróć do skryptu",
-    "wróć do skryptów",
-    "koniec sekwencji"
+    "koniec sekwencji",
+    "zatrzymaj sekwencję",
+    "przerwij sekwencję"
    ],
    "steps": [
     {
@@ -164,7 +492,8 @@
    "id": "sequence_release",
    "phrases": [
     "wznów sekwencję",
-    "odblokuj tryb"
+    "odblokuj tryb",
+    "puść dalej"
    ],
    "steps": [
     {
@@ -208,220 +537,107 @@
    "cooldown": 2
   },
   {
-   "id": "preset_1",
+   "id": "pause",
    "phrases": [
-    "tryb jeden",
-    "tryb pierwszy",
-    "tryb 1"
+    "stop",
+    "pauza",
+    "wstrzymaj film",
+    "zatrzymaj film"
    ],
    "steps": [
     {
-     "action": "{target}::Hismith::ManualMode::Set",
+     "action": "Media::PlayPause::Set",
      "args": [
       false
      ]
-    },
-    {
-     "action": "{target}::Hismith::PresetMode::Set",
-     "args": [
-      1
-     ]
     }
    ],
-   "cooldown": 2
-  },
-  {
-   "id": "preset_2",
-   "phrases": [
-    "tryb dwa",
-    "tryb drugi",
-    "tryb 2"
-   ],
-   "steps": [
-    {
-     "action": "{target}::Hismith::ManualMode::Set",
-     "args": [
-      false
-     ]
-    },
-    {
-     "action": "{target}::Hismith::PresetMode::Set",
-     "args": [
-      2
-     ]
-    }
-   ],
-   "cooldown": 2
-  },
-  {
-   "id": "preset_3",
-   "phrases": [
-    "tryb trzy",
-    "tryb trzeci",
-    "tryb 3"
-   ],
-   "steps": [
-    {
-     "action": "{target}::Hismith::ManualMode::Set",
-     "args": [
-      false
-     ]
-    },
-    {
-     "action": "{target}::Hismith::PresetMode::Set",
-     "args": [
-      3
-     ]
-    }
-   ],
-   "cooldown": 2
-  },
-  {
-   "id": "preset_4",
-   "phrases": [
-    "tryb cztery",
-    "tryb czwarty",
-    "tryb 4"
-   ],
-   "steps": [
-    {
-     "action": "{target}::Hismith::ManualMode::Set",
-     "args": [
-      false
-     ]
-    },
-    {
-     "action": "{target}::Hismith::PresetMode::Set",
-     "args": [
-      4
-     ]
-    }
-   ],
-   "cooldown": 2
-  },
-  {
-   "id": "preset_5",
-   "phrases": [
-    "tryb pięć",
-    "tryb piąty",
-    "tryb 5"
-   ],
-   "steps": [
-    {
-     "action": "{target}::Hismith::ManualMode::Set",
-     "args": [
-      false
-     ]
-    },
-    {
-     "action": "{target}::Hismith::PresetMode::Set",
-     "args": [
-      5
-     ]
-    }
-   ],
-   "cooldown": 2
-  },
-  {
-   "id": "preset_6",
-   "phrases": [
-    "tryb sześć",
-    "tryb szósty",
-    "tryb 6"
-   ],
-   "steps": [
-    {
-     "action": "{target}::Hismith::ManualMode::Set",
-     "args": [
-      false
-     ]
-    },
-    {
-     "action": "{target}::Hismith::PresetMode::Set",
-     "args": [
-      6
-     ]
-    }
-   ],
-   "cooldown": 2
-  },
-  {
-   "id": "preset_7",
-   "phrases": [
-    "tryb siedem",
-    "tryb siódmy",
-    "tryb 7"
-   ],
-   "steps": [
-    {
-     "action": "{target}::Hismith::ManualMode::Set",
-     "args": [
-      false
-     ]
-    },
-    {
-     "action": "{target}::Hismith::PresetMode::Set",
-     "args": [
-      7
-     ]
-    }
-   ],
-   "cooldown": 2
-  },
-  {
-   "id": "preset_8",
-   "phrases": [
-    "tryb osiem",
-    "tryb ósmy",
-    "tryb 8"
-   ],
-   "steps": [
-    {
-     "action": "{target}::Hismith::ManualMode::Set",
-     "args": [
-      false
-     ]
-    },
-    {
-     "action": "{target}::Hismith::PresetMode::Set",
-     "args": [
-      8
-     ]
-    }
-   ],
-   "cooldown": 2
-  },
-  {
-   "id": "faster",
-   "phrases": [
-    "szybciej"
-   ],
-   "steps": [
-    {
-     "action": "{target}::Hismith::Speed::Offset",
-     "args": [
-      10
-     ]
-    }
-   ],
-   "threshold": 0.9,
    "cooldown": 1
   },
   {
-   "id": "slower",
+   "id": "play",
    "phrases": [
-    "wolniej"
+    "graj",
+    "wznów",
+    "kontynuuj",
+    "odtwarzaj",
+    "dalej film"
    ],
    "steps": [
     {
-     "action": "{target}::Hismith::Speed::Offset",
+     "action": "Media::PlayPause::Set",
      "args": [
-      -10
+      true
      ]
     }
    ],
-   "threshold": 0.9,
    "cooldown": 1
+  },
+  {
+   "id": "loop_on",
+   "phrases": [
+    "zapętl",
+    "zapętl to",
+    "powtórz to",
+    "w kółko"
+   ],
+   "steps": [
+    {
+     "action": "Script::Loop::Start",
+     "args": []
+    }
+   ],
+   "cooldown": 2
+  },
+  {
+   "id": "loop_off",
+   "phrases": [
+    "koniec pętli",
+    "wyłącz pętlę",
+    "wyjdź z pętli"
+   ],
+   "steps": [
+    {
+     "action": "Script::Loop::Clear",
+     "args": []
+    }
+   ],
+   "cooldown": 2
   }
- ]
+ ],
+ "wake": {
+  "words": [
+   "kochanie"
+  ],
+  "required": true,
+  "min_similarity": 0.8
+ },
+ "listen": {
+  "mode": "always",
+  "threshold_db": null,
+  "margin_db": 12,
+  "end_silence": 0.7,
+  "pre_roll": 0.3,
+  "min_seconds": 0.5,
+  "max_seconds": 6.0
+ },
+ "keys": {
+  "num1": "mode_1",
+  "num2": "mode_2",
+  "num3": "mode_3",
+  "num4": "mode_4",
+  "num5": "mode_5",
+  "num6": "mode_6",
+  "num7": "mode_7",
+  "num8": "mode_8",
+  "num9": "mode_a",
+  "num0": "mode_b",
+  "num_decimal": "normal",
+  "num_add": "faster",
+  "num_subtract": "slower",
+  "num_multiply": "deeper",
+  "num_divide": "shallower",
+  "f8": "lube_fire",
+  "pause": "@mute"
+ }
 }
