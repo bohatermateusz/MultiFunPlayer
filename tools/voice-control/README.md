@@ -10,7 +10,7 @@ default). Use a service whose data terms you accept.
 
 ## Setup
 
-**Quick install (Windows):** double-click `install.bat` (installs the packages, stores the key, runs a self-check), then do steps 1 and 4 below.
+**Quick install (Windows):** double-click `install.bat` (installs the packages, stores the key, runs a self-check), then do steps 1 and 4 below. Start it with `run.bat` (dry run, only shows what it would do) or `run.bat live` (sends commands).
 The Buttplug engine may run on another machine (e.g. Linux, `--websocket-use-all-interfaces`); MultiFunPlayer and this tool must run on the same Windows PC (UDP to 127.0.0.1).
 
 1. MultiFunPlayer fork: in the Buttplug.io output, switch on **Remote commands** (127.0.0.1, port 23555).
