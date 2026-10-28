@@ -80,7 +80,7 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
         get => _hismithManualMode;
         set
         {
-            if (HismithSequenceActive)
+            if (HismithSequenceActive || RejectedByLock("the run mode"))
             {
                 Execute.PostToUIThread(() => NotifyOfPropertyChange(nameof(HismithManualMode)));
                 return;
@@ -96,7 +96,7 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
         get => _hismithPresetMode;
         set
         {
-            if (HismithSequenceActive)
+            if (HismithSequenceActive || RejectedByLock("the preset mode"))
             {
                 Execute.PostToUIThread(() => NotifyOfPropertyChange(nameof(HismithPresetMode)));
                 return;
@@ -212,6 +212,9 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
         get => _hismithSpeed;
         set
         {
+            if (RejectedByLock("the speed"))
+                return;
+
             value = Math.Clamp(value, 0, 100);
             if (SetAndNotify(ref _hismithSpeed, value))
                 _ = SendQuickActuatorsAsync(SpeedDescription, value, 100, ActuatorType.Oscillate);
@@ -423,6 +426,9 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
     // listener; the lock keeps the state transitions atomic.
     public void StartHismithSequence()
     {
+        if (RejectedByLock("the mode sequence"))
+            return;
+
         lock (_hismithLock)
         {
             if (HismithSequenceActive)
@@ -536,6 +542,9 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
     // One key, state aware: single press = hold/release the sequence, or the script loop when no sequence runs.
     public void HismithKeySinglePress()
     {
+        if (RejectedByLock("the key"))
+            return;
+
         if (HismithSequenceActive)
             HismithSequenceHeld = !HismithSequenceHeld;
         else
@@ -545,6 +554,9 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
     // Double press = start the sequence, or go back to the funscripts when it is running (held or not).
     public void HismithKeyDoublePress()
     {
+        if (RejectedByLock("the key"))
+            return;
+
         if (_hismithMode != 0)
             SetHismithMode(0);
         else
@@ -572,7 +584,7 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
                 while (_hismithSequenceRemaining > 0)
                 {
                     await Task.Delay(100, token);
-                    if (!_hismithSequenceHeld)
+                    if (!_hismithSequenceHeld && !HismithLocked)   // a hold freezes the sequence too
                         _hismithSequenceRemaining -= 0.1;
 
                     var second = (int)Math.Ceiling(_hismithSequenceRemaining);

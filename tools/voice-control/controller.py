@@ -37,7 +37,7 @@ class _NeedLlm:
 
 class Controller:
     def __init__(self, intents, run_steps, dry_run=False, log_path=None, clock=time.monotonic, confirm_timeout=6.0,
-                 wake_words=None, wake_min_similarity=0.8, llm=None, llm_cfg=None):
+                 wake_words=None, wake_min_similarity=0.8, llm=None, llm_cfg=None, lock_cfg=None):
         self.intents = intents
         self.wake_words = [normalize(w) for w in (wake_words or []) if normalize(w)]
         self.wake_min_similarity = wake_min_similarity
@@ -52,6 +52,8 @@ class Controller:
         self._last = {}                   # intent id -> time of last execution
         self._pending = None              # (Match, deadline, override)
         self._recent = []                 # ids of the last executed commands
+        self.lock_cfg = dict({"allow": []}, **(lock_cfg or {}))
+        self._locked_until = None         # "hold": until then only the allowed commands run
 
     def _log(self, transcript, outcome):
         if not self.log_path:
@@ -83,10 +85,15 @@ class Controller:
             intent = next((i for i in self.intents if i.id == intent_id), None)
             if intent is None:
                 outcome = Outcome("ignored", f"no intent {intent_id}")
+            elif (blocked := self._blocked_by_lock(intent)) is not None:
+                outcome = blocked
+                outcome.via = "key"
             elif self.dry_run:
+                self._track_lock(intent)
                 outcome = Outcome("dry-run", f"would run {len(intent.steps)} step(s)", intent.id, 1.0, "key")
             else:
                 self.run_steps(intent.steps)
+                self._track_lock(intent)
                 self._remember(intent.id)
                 outcome = Outcome("executed", "key", intent.id, 1.0, "key")
             self._log(f"[key] {intent_id}", outcome)
@@ -103,6 +110,29 @@ class Controller:
         if not any(_sim(w, tokens[0]) >= self.wake_min_similarity for w in self.wake_words):
             return None
         return " ".join(tokens[1:])
+
+    def lock_remaining(self) -> float:
+        if self._locked_until is None:
+            return 0.0
+        left = self._locked_until - self.clock()
+        if left <= 0:
+            self._locked_until = None
+            return 0.0
+        return left
+
+    def _blocked_by_lock(self, intent):
+        """the hold ("utrzymaj to") ignores everything except the configured commands (Lube Launcher, stop, release)"""
+        left = self.lock_remaining()
+        if left > 0 and intent.id not in self.lock_cfg["allow"]:
+            return Outcome("locked", f"held for another {left:.0f}s (say 'odblokuj' or 'koniec')", intent.id)
+        return None
+
+    def _track_lock(self, intent):
+        if intent.id == "lock":
+            minutes = next((a for step in intent.steps for a in step.get("args", []) if isinstance(a, int)), 5)
+            self._locked_until = self.clock() + max(1, minutes) * 60
+        elif intent.id in ("unlock", "halt"):
+            self._locked_until = None
 
     def _remember(self, intent_id):
         self._recent.append(intent_id)
@@ -153,6 +183,11 @@ class Controller:
         return fallback
 
     def _run_match(self, m: Match, now: float, override=None, via="fast", extra=None):
+        blocked = self._blocked_by_lock(m.intent)
+        if blocked is not None:
+            blocked.score, blocked.via, blocked.extra = m.score, via, extra or {}
+            return blocked
+
         last = self._last.get(m.intent.id)
         if last is not None and now - last < m.intent.cooldown:
             return Outcome("cooldown", f"{now - last:.1f}s < {m.intent.cooldown}s", m.intent.id, m.score, via, extra or {})
@@ -228,6 +263,7 @@ class Controller:
     def _execute(self, m: Match, now: float, override=None, via="fast", extra=None) -> Outcome:
         self._last[m.intent.id] = now
         steps = self._steps_for(m.intent, override)
+        self._track_lock(m.intent)
         if self.dry_run:
             return Outcome("dry-run", f"would run {len(steps)} step(s)", m.intent.id, m.score, via, extra or {})
         self.run_steps(steps)

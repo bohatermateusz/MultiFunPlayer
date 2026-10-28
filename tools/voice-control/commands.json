@@ -902,6 +902,59 @@
    "cooldown": 2,
    "threshold": 0.88,
    "max_extra_words": 1
+  },
+  {
+   "id": "lock",
+   "phrases": [
+    "utrzymaj to",
+    "utrzymaj tak",
+    "utrzymaj ten tryb",
+    "rób tak dalej",
+    "tak trzymaj",
+    "trzymaj tak",
+    "zostaw tak",
+    "zostaw to",
+    "nie zmieniaj",
+    "tak ma być",
+    "tak jest dobrze",
+    "zostań przy tym",
+    "dokładnie tak"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Lock::Start",
+     "args": [
+      5
+     ]
+    }
+   ],
+   "description": "HOLD what is happening now for 5 minutes ('utrzymaj to', 'rób tak dalej', 'zostaw tak', 'nie zmieniaj'): the machine's controls are then ignored (only the Lube Launcher, stop and release still work).",
+   "cooldown": 2,
+   "threshold": 0.88,
+   "max_extra_words": 1
+  },
+  {
+   "id": "unlock",
+   "phrases": [
+    "odblokuj",
+    "koniec blokady",
+    "możesz zmieniać",
+    "zdejmij blokadę",
+    "zmieniaj",
+    "już możesz zmienić",
+    "puść blokadę"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Lock::Clear",
+     "args": []
+    }
+   ],
+   "description": "RELEASE the 5-minute hold at once ('odblokuj', 'możesz zmieniać').",
+   "cooldown": 1,
+   "llm_min_confidence": 0.7,
+   "threshold": 0.9,
+   "max_extra_words": 1
   }
  ],
  "wake": {
@@ -941,7 +994,9 @@
   "end": "halt",
   "home": "calm",
   "insert": "surprise",
-  "delete": "surprise_again"
+  "delete": "surprise_again",
+  "page_up": "lock",
+  "page_down": "unlock"
  },
  "llm": {
   "enabled": true,
@@ -959,5 +1014,16 @@
   "max_faster": 3,
   "max_deeper": 3
  },
- "sounds": "off"
+ "sounds": "off",
+ "lock": {
+  "_comment": "While held (5 min after 'utrzymaj to', length in the lock command's argument) only these commands run; everything else is answered 'locked'. 'halt' (koniec) always works and releases the hold.",
+  "allow": [
+   "lube_fire",
+   "lube_two",
+   "lube_many",
+   "halt",
+   "unlock",
+   "lock"
+  ]
+ }
 }

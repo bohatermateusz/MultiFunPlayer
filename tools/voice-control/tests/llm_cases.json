@@ -346,5 +346,25 @@
  {
   "say": "kochanie, zmieniłem zdanie co do pracy",
   "intent": "none"
+ },
+ {
+  "say": "kochanie, utrzymaj to",
+  "intent": "lock"
+ },
+ {
+  "say": "rochanie, rób tak dalej",
+  "intent": "lock"
+ },
+ {
+  "say": "kochanie, zostaw to tak jak jest",
+  "intent": "lock"
+ },
+ {
+  "say": "kochanie, możesz już zmieniać",
+  "intent": "unlock"
+ },
+ {
+  "say": "kochanie, nie zmieniaj zdania",
+  "intent": "none"
  }
 ]

@@ -60,7 +60,8 @@ def build(args):
                         api_key_env=lc.get("api_key_env", "OPENAI_API_KEY"), timeout=lc.get("timeout", 6),
                         temperature=lc.get("temperature", 0), max_steps=lc.get("max_steps", 4))
     controller = Controller(intents, executor.run_steps, dry_run=args.dry_run, log_path=log_path,
-                            wake_words=wake_words, wake_min_similarity=wake.get("min_similarity", 0.8), llm=llm, llm_cfg=lc)
+                            wake_words=wake_words, wake_min_similarity=wake.get("min_similarity", 0.8), llm=llm, llm_cfg=lc,
+                            lock_cfg=cfg.get("lock"))
     s = cfg.get("stt", {})
     stt = CloudStt(s.get("base_url", "https://api.openai.com/v1"), s.get("model", "whisper-1"), s.get("language", "pl"),
                    api_key_env=s.get("api_key_env", "OPENAI_API_KEY"), timeout=s.get("timeout", 15), prompt=stt_prompt(intents, wake_words))

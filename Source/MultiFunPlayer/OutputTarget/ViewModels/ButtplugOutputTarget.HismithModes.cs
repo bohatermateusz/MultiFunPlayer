@@ -53,6 +53,8 @@ internal sealed partial class ButtplugOutputTarget
         get => _hismithSpeedBoost;
         set
         {
+            if (RejectedByLock("the speed boost"))
+                return;
             if (SetAndNotify(ref _hismithSpeedBoost, Math.Clamp(value, -100, 100)))
             {
                 _forceResend = true;
@@ -66,6 +68,8 @@ internal sealed partial class ButtplugOutputTarget
         get => _hismithDepthBoost;
         set
         {
+            if (RejectedByLock("the depth boost"))
+                return;
             if (SetAndNotify(ref _hismithDepthBoost, Math.Clamp(value, -100, 100)))
             {
                 _forceResend = true;
@@ -80,6 +84,8 @@ internal sealed partial class ButtplugOutputTarget
         get => _hismithDepth;
         set
         {
+            if (RejectedByLock("the depth"))
+                return;
             if (SetAndNotify(ref _hismithDepth, Math.Clamp(value, 0, 100)))
             {
                 _ = SendQuickActuatorsAsync(DepthDescription, _hismithDepth, 100);
@@ -105,6 +111,8 @@ internal sealed partial class ButtplugOutputTarget
             var text = _hismithMode == 0
                 ? $"{mode}; boost: speed {_hismithSpeedBoost:+0;-0;0}, depth {_hismithDepthBoost:+0;-0;0}"
                 : $"{mode}; speed {HismithSpeed}, depth {_hismithDepth}";
+            if (_lockRemaining > 0)
+                text += $"; HELD for {TimeSpan.FromSeconds(_lockRemaining):m\\:ss}";
             return _surpriseRemaining > 0 ? $"{text}; next surprise in {TimeSpan.FromSeconds(_surpriseRemaining):m\\:ss}" : text;
         }
     }
@@ -216,7 +224,11 @@ internal sealed partial class ButtplugOutputTarget
     // custom A / B (never the one that runs now), otherwise unchanged. Lube Launcher: nothing, one shot or three
     // shots, each with the same chance. At least one of them always happens (the surprise may be only a shot,
     // or only a mode).
-    public void HismithSurprise() => _ = HismithSurpriseAsync();
+    public void HismithSurprise()
+    {
+        if (!RejectedByLock("the surprise"))
+            _ = HismithSurpriseAsync();
+    }
 
     // "No, something else": the NEXT draw is made and put into effect only after HismithSurpriseDelaySeconds
     // (default 120 s), counted from the command; until then the current surprise stays. Shots of the previous
@@ -234,6 +246,76 @@ internal sealed partial class ButtplugOutputTarget
         set => SetAndNotify(ref _surpriseDelaySeconds, Math.Clamp(value, 5, 3600));
     }
 
+    // Hold ("utrzymaj to"): for HismithLockMinutes (default 5) the machine keeps whatever it does now. Every
+    // control of the machine (modes, surprise, boost, speed / depth, sequence, keys) is ignored, except Stop,
+    // which always works and releases the hold. The Lube Launcher is never affected. Saying it again restarts
+    // the time; HismithLockClear releases it early. A pending surprise draw is dropped when the hold starts.
+    private CancellationTokenSource _lockSource;
+    private volatile int _lockMinutes = 5;
+    private double _lockRemaining;
+
+    public int HismithLockMinutes
+    {
+        get => _lockMinutes;
+        set => SetAndNotify(ref _lockMinutes, Math.Clamp(value, 1, 60));
+    }
+
+    public bool HismithLocked => _lockRemaining > 0;
+
+    public void HismithLockDefault() => HismithLockStart(_lockMinutes);
+
+    public void HismithLockStart(int minutes)
+    {
+        var seconds = (minutes > 0 ? Math.Clamp(minutes, 1, 60) : _lockMinutes) * 60;
+        EndSurprise();
+        var source = new CancellationTokenSource();
+        Interlocked.Exchange(ref _lockSource, source)?.Cancel();
+        _ = RunLockAsync(source, seconds);
+    }
+
+    public void HismithLockClear()
+    {
+        Interlocked.Exchange(ref _lockSource, null)?.Cancel();
+        if (_lockRemaining > 0)
+            Logger.Info("Hold released");
+        _lockRemaining = 0;
+        NotifyOfPropertyChange(nameof(HismithLocked));
+        NotifyOfPropertyChange(nameof(HismithModeStatus));
+    }
+
+    private async Task RunLockAsync(CancellationTokenSource source, int seconds)
+    {
+        try
+        {
+            _lockRemaining = seconds;
+            Logger.Info("Hold for {0} s: the machine's controls are ignored (Lube Launcher and Stop still work)", seconds);
+            NotifyOfPropertyChange(nameof(HismithLocked));
+            while (_lockRemaining > 0)
+            {
+                NotifyOfPropertyChange(nameof(HismithModeStatus));
+                await Task.Delay(1000, source.Token);
+                _lockRemaining -= 1;
+            }
+
+            _lockRemaining = 0;
+            Interlocked.CompareExchange(ref _lockSource, null, source);
+            Logger.Info("Hold ended");
+            NotifyOfPropertyChange(nameof(HismithLocked));
+            NotifyOfPropertyChange(nameof(HismithModeStatus));
+        }
+        catch (OperationCanceledException) { }
+    }
+
+    private bool RejectedByLock(string what)
+    {
+        if (!HismithLocked)
+            return false;
+
+        Logger.Info("Held for another {0:0} s, ignoring {1}", _lockRemaining, what);
+        Execute.PostToUIThread(() => NotifyOfPropertyChange(nameof(HismithModeStatus)));
+        return true;
+    }
+
     private void EndSurprise()
     {
         _surpriseActive = false;
@@ -244,6 +326,8 @@ internal sealed partial class ButtplugOutputTarget
 
     public void HismithSurpriseAgain()
     {
+        if (RejectedByLock("the new draw"))
+            return;
         if (!_surpriseActive)
         {
             Logger.Info("No surprise in force, nothing to draw again");
@@ -270,7 +354,8 @@ internal sealed partial class ButtplugOutputTarget
 
             _surpriseRemaining = 0;
             Interlocked.CompareExchange(ref _surpriseTimerSource, null, source);
-            await HismithSurpriseAsync();
+            if (!HismithLocked)
+                await HismithSurpriseAsync();
         }
         catch (OperationCanceledException) { }
     }
@@ -313,10 +398,15 @@ internal sealed partial class ButtplugOutputTarget
 
     private void SetHismithModeCore(int mode, bool fromSurprise)
     {
+        mode = Math.Clamp(mode, 0, ModeCalm);
+        if (mode == ModeHalt)
+            HismithLockClear();    // Stop always works and releases the hold
+        else if (!fromSurprise && RejectedByLock($"mode {mode}"))
+            return;
+
         if (!fromSurprise)
             EndSurprise();         // a mode chosen by hand ends the surprise and any pending draw
 
-        mode = Math.Clamp(mode, 0, ModeCalm);
         if (mode == ModeHalt && !GetQuickActuators(SpeedDescription, ActuatorType.Oscillate).Any())
         {
             Logger.Info("No device with a speed actuator is connected, nothing to stop");
@@ -442,6 +532,8 @@ internal sealed partial class ButtplugOutputTarget
         s.RegisterAction($"{Identifier}::Hismith::Mode::Script", HismithModeScript);
         s.RegisterAction($"{Identifier}::Hismith::Mode::Random", HismithModeRandom);
         s.RegisterAction($"{Identifier}::Hismith::Surprise", HismithSurprise);
+        s.RegisterAction<int>($"{Identifier}::Hismith::Lock::Start", s => s.WithLabel("Hold the machine as it is (minutes, 0 = default)"), HismithLockStart);
+        s.RegisterAction($"{Identifier}::Hismith::Lock::Clear", HismithLockClear);
         s.RegisterAction($"{Identifier}::Hismith::Surprise::Again", HismithSurpriseAgain);
         s.RegisterAction($"{Identifier}::Hismith::Halt", () => SetHismithMode(ModeHalt));
         s.RegisterAction($"{Identifier}::Hismith::Calm", () => SetHismithMode(ModeCalm));
@@ -459,6 +551,8 @@ internal sealed partial class ButtplugOutputTarget
         s.UnregisterAction($"{Identifier}::Hismith::Mode::Script");
         s.UnregisterAction($"{Identifier}::Hismith::Mode::Random");
         s.UnregisterAction($"{Identifier}::Hismith::Surprise");
+        s.UnregisterAction($"{Identifier}::Hismith::Lock::Start");
+        s.UnregisterAction($"{Identifier}::Hismith::Lock::Clear");
         s.UnregisterAction($"{Identifier}::Hismith::Surprise::Again");
         s.UnregisterAction($"{Identifier}::Hismith::Halt");
         s.UnregisterAction($"{Identifier}::Hismith::Calm");
@@ -476,6 +570,7 @@ internal sealed partial class ButtplugOutputTarget
         settings[nameof(HismithDepthStep)] = HismithDepthStep;
         settings[nameof(HismithSlowestSpeed)] = HismithSlowestSpeed;
         settings[nameof(HismithSurpriseDelaySeconds)] = HismithSurpriseDelaySeconds;
+        settings[nameof(HismithLockMinutes)] = HismithLockMinutes;
     }
 
     private void LoadHismithModeSettings(JObject settings)
@@ -488,6 +583,8 @@ internal sealed partial class ButtplugOutputTarget
             HismithSlowestSpeed = slowest;
         if (settings.TryGetValue<int>(nameof(HismithSurpriseDelaySeconds), out var surpriseDelay))
             HismithSurpriseDelaySeconds = surpriseDelay;
+        if (settings.TryGetValue<int>(nameof(HismithLockMinutes), out var lockMinutes))
+            HismithLockMinutes = lockMinutes;
     }
 
     public int HismithSlowestSpeed
@@ -498,6 +595,7 @@ internal sealed partial class ButtplugOutputTarget
 
     private void ResetHismithMode()
     {
+        HismithLockClear();
         EndSurprise();
         _hismithMode = 0;
         _hismithSpeedBoost = 0;
