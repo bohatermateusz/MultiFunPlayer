@@ -113,6 +113,9 @@ row of the Buttplug.io output has:
   **B** (the same, slowest) and **Script** (back to the funscripts). A mode replaces the script for
   the machine only; the Lube Launcher keeps following its script. Each button shows its keyboard
   shortcut (Num 1..8, Num 9 = A, Num 0 = B, Num . = script), see `tools/voice-control`.
+  **Calm** (Home) keeps the machine going at the slowest speed at medium depth ("enough" without stopping);
+  **Stop** (End) is the only one that stops everything: speed 0 and the script is held back for the machine
+  until another mode or Script is chosen. Actions: `::Hismith::Calm`, `::Hismith::Halt` (`Mode::Set` 12 / 11).
 * **BOOST**: Faster / Slower (default +/- 20 points) and Deeper / Shallower (+/- 15) are added to the
   funscript's speed / depth (clamped to 0-100 %), without stopping the script. Reset removes it.
   If no axis is mapped to speed or depth, or a mode runs, the same buttons set absolute values.

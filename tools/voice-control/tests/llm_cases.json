@@ -245,11 +245,11 @@
  },
  {
   "say": "kochanie, dość",
-  "intent": "halt"
+  "intent": "calm"
  },
  {
   "say": "kochanie, wystarczy",
-  "intent": "halt"
+  "intent": "calm"
  },
  {
   "say": "rochanie, pieprz mnie mocno",
@@ -257,11 +257,11 @@
  },
  {
   "say": "trwanie, wystarczy już",
-  "intent": "halt"
+  "intent": "calm"
  },
  {
   "say": "kochanie, nie mogę więcej, starczy",
-  "intent": "halt"
+  "intent": "calm"
  },
  {
   "say": "kochanie, jestem twoją małą dziwką, zrób ze mną co chcesz",
@@ -302,5 +302,17 @@
  {
   "say": "dość tego, wyłączam telewizor",
   "intent": "none"
+ },
+ {
+  "say": "kochanie, koniec",
+  "intent": "halt"
+ },
+ {
+  "say": "kochanie, wyłącz maszynę",
+  "intent": "halt"
+ },
+ {
+  "say": "trwanie, koniec zabawy",
+  "intent": "halt"
  }
 ]

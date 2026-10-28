@@ -663,15 +663,12 @@
   {
    "id": "halt",
    "phrases": [
-    "dość",
-    "wystarczy",
-    "starczy",
-    "przestań",
-    "stój",
-    "stop maszyna",
+    "koniec",
+    "koniec wszystkiego",
     "wyłącz maszynę",
+    "stop maszyna",
     "koniec zabawy",
-    "wystarczy kochanie"
+    "zatrzymaj maszynę"
    ],
    "steps": [
     {
@@ -679,7 +676,31 @@
      "args": []
     }
    ],
-   "description": "STOP the machine at once (speed 0): enough, stop, I can't take more, red light.",
+   "description": "END everything: stop the machine completely (speed 0). Only for an explicit 'koniec' / switch the machine off.",
+   "cooldown": 1,
+   "llm_min_confidence": 0.7,
+   "threshold": 0.9,
+   "max_extra_words": 1
+  },
+  {
+   "id": "calm",
+   "phrases": [
+    "dość",
+    "wystarczy",
+    "starczy",
+    "przestań",
+    "stój",
+    "wystarczy kochanie",
+    "zwolnij maksymalnie",
+    "spokojnie"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Calm",
+     "args": []
+    }
+   ],
+   "description": "Enough / too much / slow down at once (dość, wystarczy, starczy, przestań, stój): switch to the slowest speed at medium depth - the machine KEEPS going, it does not stop. Not 'koniec' (that is halt).",
    "cooldown": 1,
    "llm_min_confidence": 0.6,
    "threshold": 0.9,
@@ -863,7 +884,8 @@
   "num_divide": "shallower",
   "f8": "lube_fire",
   "pause": "@mute",
-  "end": "halt"
+  "end": "halt",
+  "home": "calm"
  },
  "llm": {
   "enabled": true,

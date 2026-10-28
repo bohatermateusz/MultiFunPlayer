@@ -89,7 +89,8 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.17 | Przeczenia i dialog: „kochanie, nie spuszczaj się", „a nie spuść się", „kochanie, kup mleko" | `ignored`, nic nie jest wysłane |
 | 6.18 | Odłącz internet i powiedz „trwanie, spuścić się"; potem „kochanie szybciej" | pierwsze: `ignored (llm unavailable)`; drugie dalej działa (ścisła ścieżka offline) |
 | 6.19 | Film z dialogami w głośnikach 5 min, `voice_log.jsonl` | w logu brak wpisów `via: llm` wykonanych jako komenda; nieliczne wywołania modelu kończą się `ignored` |
-| 6.20 | Stop: „kochanie, dość" / „wystarczy", klawisz **End**, przycisk **Stop** w MFP (przy chodzącej maszynie na niskiej prędkości) | prędkość 0 od razu, status „STOPPED"; skrypt nie rusza maszyny, dopóki nie wybierzesz trybu lub **Script** |
+| 6.20 | „kochanie, dość" / „wystarczy" / klawisz **Home** / przycisk **Calm** (maszyna chodzi szybciej) | **nie staje**: najwolniejsza prędkość, średnia głębokość, status „CALM"; po „kochanie szybciej" przyspiesza dalej |
+| 6.20b | „kochanie, koniec" / „wyłącz maszynę" / klawisz **End** / przycisk **Stop** | prędkość 0 od razu, status „STOPPED"; skrypt nie rusza maszyny, dopóki nie wybierzesz trybu lub **Script** |
 | 6.21 | Sceny: „kochanie, pieprz mnie" / „rozepchaj mnie" / „drażnij mnie" / „użyj mnie" (dry-run, potem live) | odpowiednio: szybciej+głębiej / głębiej ×2 / wolniej+płycej / szybciej+głębiej; zmiana wyraźna, ale nie skokowa |
 | 6.22 | Improwizacja (potrzebny klucz): „kochanie, jestem twoją małą dziwką, zrób ze mną co chcesz", „kochanie, błagam, weź mnie" | `executed [improvise llm 0.8x]`, w oknie i w `voice_log.jsonl` widać `plan`; kilka razy pod rząd plany się różnią |
 | 6.23 | Granice improwizacji: czy kiedykolwiek strzeli lube, włączy tryb A/B albo zrobi więcej niż 3 kroki „szybciej" na jedno zdanie? | **nigdy**; jeśli tak → zgłoś, zaostrzę |

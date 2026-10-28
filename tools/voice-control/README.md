@@ -60,7 +60,7 @@ when `"wake": {"required": false}`). The tool is silent by default; the result i
 | play / pause the video | graj, wznów / stop, pauza | |
 | script loop on / off | zapętl to, powtórz to / koniec pętli, wyłącz pętlę | |
 | mode sequence (2 min per mode) | włącz sekwencję, wstrzymaj tryb, wznów sekwencję, koniec sekwencji | |
-| stop the machine | dość, wystarczy, starczy, przestań | End |
+| calm (slowest, medium depth) / stop everything | dość, wystarczy, starczy / koniec | Home / End |
 | listening on / off | | Pause |
 
 The keys are global and **NumLock must be on**. They are observed, not swallowed: if HereSphere
@@ -115,7 +115,8 @@ a single step; the same words work for the model when they are said loosely:
 | użyj mnie, jestem twoją dziwką / suką / suczką / dziewczynką / sissy, zrób ze mnie dziewczynkę | **use me**: builds up (faster + deeper) |
 | jeszcze, nie przestawaj, właśnie tak | **more**: a bit faster |
 | zalej mnie, obryzgaj mnie, wytrysnij na mnie, oznacz mnie (+ "kilka razy") | Lube Launcher |
-| **dość, wystarczy, starczy, przestań, stój, wyłącz maszynę** (key **End**, button **Stop**) | **stop**: speed 0 at once; the script is held back until you pick a mode or Script |
+| **dość, wystarczy, starczy, przestań, stój, spokojnie** (key **Home**, button **Calm**) | **calm**: the machine **keeps going** at the slowest speed, medium depth (not a stop) |
+| **koniec, koniec wszystkiego, wyłącz maszynę, koniec zabawy** (key **End**, button **Stop**) | **stop everything**: speed 0 at once; the script is held back until you pick a mode or Script |
 
 **Improvising.** When you say something erotic (sissy / submissive talk, begging, praise, teasing)
 that matches none of the phrases, the model composes a **short plan** from a fixed, harmless menu:
@@ -129,9 +130,10 @@ steps per utterance, confidence at least 0.75, a 5 s cooldown. The Output range 
 MultiFunPlayer still apply on top. Every improvised plan is printed and written to
 `voice_log.jsonl` (`plan`). Switch the model off with `--no-llm` (the scene phrases above keep working).
 
-**Stop is always strict**: "dość" / "wystarczy" work offline (no model), and the model may also pick
-it with a low bar (0.6). Keep **End** in mind for when you cannot speak. Note that plain "stop" only
-pauses the video (it never stopped the machine).
+**"Enough" is not "stop".** "dość / wystarczy / starczy" never stops the machine, it drops to the slowest
+speed at medium depth so you can catch your breath; only **"koniec"** (or key **End**) stops
+everything. Both work offline (no model); the model may also pick them with a low bar (0.6 / 0.7). Keep
+**End** in mind for when you cannot speak. Plain "stop" only pauses the video.
 
 ## How mistakes are kept out
 

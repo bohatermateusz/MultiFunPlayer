@@ -42,7 +42,8 @@ class StrictScenes(unittest.TestCase):
                  "głęboko w dupcię": "fill", "drażnij mnie": "tease", "pieść mnie": "tease", "użyj mnie": "use_me",
                  "jestem twoją sissy": "use_me", "jestem twoją suczką": "use_me", "kochanie jeszcze": None,
                  "nie przestawaj": "more", "zalej mnie": "lube_fire", "obryzgaj mnie kilka razy": "lube_many",
-                 "dość": "halt", "wystarczy": "halt", "stój": "halt", "przestań": "halt"}
+                 "dość": "calm", "wystarczy": "calm", "stój": "calm", "przestań": "calm", "koniec": "halt",
+                 "wyłącz maszynę": "halt", "koniec pętli": "loop_off", "koniec sekwencji": "sequence_stop"}
         for text, intent in cases.items():
             if intent is None:
                 continue
@@ -63,12 +64,22 @@ class StrictScenes(unittest.TestCase):
             self.assertEqual(c.handle(t).status, "ignored", t)
         self.assertEqual(self.runs, [])
 
-    def test_halt_runs_the_halt_action(self):
+    def test_enough_goes_to_calm_and_does_not_stop(self):
         c = self.make()
-        self.assertEqual(c.handle("kochanie, dość").status, "executed")
-        self.assertEqual(self.runs[-1], [{"action": "{target}::Hismith::Halt", "args": []}])
+        for text in ["kochanie, dość", "kochanie, wystarczy", "kochanie, starczy", "kochanie, przestań", "kochanie, stój"]:
+            c._last.clear()
+            self.assertEqual(c.handle(text).intent, "calm", text)
+            self.assertEqual(self.runs[-1], [{"action": "{target}::Hismith::Calm", "args": []}], text)
 
-    def test_halt_key_is_configured(self):
+    def test_only_koniec_stops_everything(self):
+        c = self.make()
+        for text in ["kochanie, koniec", "kochanie, wyłącz maszynę", "kochanie, koniec zabawy"]:
+            c._last.clear()
+            self.assertEqual(c.handle(text).intent, "halt", text)
+            self.assertEqual(self.runs[-1], [{"action": "{target}::Hismith::Halt", "args": []}], text)
+
+    def test_keys_for_calm_and_halt(self):
+        self.assertEqual(CFG["keys"]["home"], "calm")
         self.assertEqual(CFG["keys"]["end"], "halt")
 
     def test_dialogue_next_to_the_scene_words_is_not_a_command(self):
@@ -79,7 +90,7 @@ class StrictScenes(unittest.TestCase):
     def test_improvise_has_no_strict_phrases_and_atomic_steps_only(self):
         self.assertEqual(BY_ID["improvise"].phrases, [])
         allowed = {i.id for i in INTENTS if i.improvise}
-        for forbidden in ["lube_fire", "lube_many", "mode_a", "mode_b", "hard", "fill", "tease", "use_me", "halt", "pause", "play", "sequence_start"]:
+        for forbidden in ["lube_fire", "lube_many", "mode_a", "mode_b", "hard", "fill", "tease", "use_me", "halt", "calm", "pause", "play", "sequence_start"]:
             self.assertNotIn(forbidden, allowed)
         for needed in ["faster", "slower", "deeper", "shallower", "script", "mode_3"]:
             self.assertIn(needed, allowed)
