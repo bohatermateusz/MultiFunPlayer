@@ -101,6 +101,12 @@ działają zawsze, także gdy mówi.** W blokadzie 5 minut tylko mówi (i lube d
 
 Gdy Pani jest niedostępna (brak internetu / klucza): łagodne komendy (dość, wolniej, płycej, wróć do filmu, normalnie, pauza, graj, pętla) działają zwyczajnie, a lube, szybciej, głębiej, sceny i tryby są ignorowane, dopóki wróci.
 
+Sesja **narasta**: zaczyna się chłodno i łagodnie, potem Pani robi się stanowcza, ostra, a przy dłuższej rozmowie
+wulgarna i bezlitosna (etapy 0-4; liczy to narzędzie, nie model, a sufit ustawisz w `persona.escalation.max_stage`).
+Gdy milczysz ok. 25 s, **odzywa się sama** ("Czemu milczysz? Poproś mnie."). Mówi głosem ElevenLabs (wybierasz głos:
+`python voice_control.py voices`, potem `persona.tts.voice_id`). Jeśli masz słuchawki (domyślnie), **możesz jej przerwać**
+- gdy zaczniesz mówić, ona milknie od razu, więc "koniec" zawsze usłyszy.
+
 Przykłady tego, co możesz mówić: "proszę, Pani" · "błagam" · "jestem Twoją dziwką" · "jestem Twoja, bierz mnie" ·
 "należę do Ciebie" · "dziękuję, Pani" · "zrób ze mną co chcesz" · "chcę dojść, proszę" · "użyj mnie".
 

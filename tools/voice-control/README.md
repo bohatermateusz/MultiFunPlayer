@@ -175,8 +175,19 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   faster, deeper, the scenes, the modes, the surprise) is ignored until she is back.
 * **Answering her**: for 15 s after her line (`reply_window`) you speak without "kochanie" ("proszę, Pani",
   "jestem Twoją małą dziwką"). The safe word and the ungated commands work in that window too.
-* **The microphone is deaf while she speaks** (and 0.6 s after), so her voice from the loudspeakers cannot
-  trigger anything. Mute (`Pause`) also silences her.
+* **Her voice: ElevenLabs, streamed** (the first sound after ~0.5 s, not after the whole sentence), with OpenAI TTS as a
+  fallback when ElevenLabs is down or refuses a text. Set `ELEVENLABS_API_KEY`, run
+  `python voice_control.py voices`, put the id of a voice you like into `persona.tts.voice_id`. Model
+  `eleven_flash_v2_5` (fastest; try `eleven_multilingual_v2` for quality). The voice settings follow the stage.
+* **Escalation**: the tool counts the heat of the session (+1 per turn, +1 per refusal, +2 per confession, +2 per grant;
+  thresholds 0 / 5 / 12 / 22 / 35; cooling down after 10 min of silence) and gives the model the **stage 0-4** and its tone
+  (`persona.stages`, Polish, edit freely): cool and gentle -> firm -> sharp and degrading -> vulgar and merciless ->
+  all out. Higher stages also tease more often when she refuses. `escalation.max_stage` is your ceiling.
+* **She speaks first**: when you stay silent for 25 s during a session she says something herself ("Czemu
+  milczysz? Poproś mnie.", questions, orders), up to 3 times in a row (`persona.initiative`, `--no-nudge`).
+* **Safe word while she talks**: `persona.output = "headphones"` (default; a VR headset): the microphone stays on and
+  **your voice cuts her off at once**, so "koniec" is always heard. With `"speakers"` the microphone is deaf while she
+  speaks (and 0.6 s after, against echo) - then the safe word is the **End key**.
 * **Bounds**: her steps are validated like an improvised scene (allowed ids, ≤ 3 faster / 3 deeper, ≤ 1 shot);
   she can never stop or calm the machine, start a hold or a surprise. In a hold she only talks (and the Lube
   Launcher still goes through her dice).

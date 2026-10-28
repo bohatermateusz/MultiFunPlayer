@@ -19,7 +19,11 @@ LLM_DEFAULTS = {"min_confidence": 0.8, "max_words": 14, "prefilter_similarity": 
                 "max_steps": 4, "max_faster": 3, "max_deeper": 3, "max_lube": 1}
 PERSONA_DEFAULTS = {"enabled": True, "reply_window": 15.0, "base_p": 0.25, "step_p": 0.2, "confession_p": 0.3, "max_asks": 5,
                     "silence_reset": 180.0, "gated": [], "tease_allowed": [], "max_words": 30,
-                    "never_gated": ["halt", "lock"], "fallback_plain": [], "base_p_overrides": {}}
+                    "never_gated": ["halt", "lock"], "fallback_plain": [], "base_p_overrides": {},
+                    "stages": ["spokojnie, chłodno, lekko uwodzicielsko"],
+                    "escalation": {"enabled": True, "max_stage": 4, "points": {"turn": 1, "denied": 1, "confession": 2, "granted": 2},
+                                   "thresholds": [0, 5, 12, 22, 35], "heat_reset": 600, "tease_chance": [0.3, 0.5, 0.7, 0.85, 1.0]},
+                    "initiative": {"enabled": True, "idle_prompt_seconds": 25, "max_nudges": 3, "session_seconds": 180}}
 
 
 @dataclass
@@ -69,7 +73,7 @@ class Controller:
         self._locked_until = None         # "hold": until then only the allowed commands run
         # the persona ("Pani"): see persona.py. speak(text) is called after a turn, outside the lock.
         self.persona = persona
-        self.persona_cfg = dict(PERSONA_DEFAULTS, **(persona_cfg or {}))
+        self.persona_cfg = persona_cfg or {}
         self.speak = speak
         self.rng = rng or random.Random()
         self._window_until = 0.0          # until then an utterance without the wake word is an answer to her
@@ -77,6 +81,22 @@ class Controller:
         self._last_ask = 0.0
         self._owed = None                 # request id she will grant once the user does what she demanded
         self._history = []                # [(role, text)] of the conversation with her
+        self._heat = 0.0                  # escalation: grows with turns, refusals, confessions, grants
+        self._heat_last = 0.0
+        self._last_user = 0.0             # last time the user talked to her
+        self._last_line = 0.0             # last time she spoke (a line or a nudge)
+        self._nudges = 0
+        self.busy = lambda: False         # True while she is speaking / listening is muted (set by the main loop)
+        self.speak_ex = None              # speak_ex(line, stage): like speak, but knows the escalation stage
+
+    @property
+    def persona_cfg(self):
+        return self._persona_cfg
+
+    @persona_cfg.setter
+    def persona_cfg(self, value):
+        # whatever is assigned (also by tests) is completed with the defaults
+        self._persona_cfg = dict(PERSONA_DEFAULTS, **(value or {}))
 
     def _log(self, transcript, outcome):
         if not self.log_path:
@@ -110,12 +130,74 @@ class Controller:
 
     def _say(self, outcome):
         line = outcome.extra.get("say")
-        if line and self.speak:
+        if line and (self.speak or self.speak_ex):
             try:
-                self.speak(line)
+                if self.speak_ex:
+                    self.speak_ex(line, outcome.extra.get("stage", 0))
+                else:
+                    self.speak(line)
             except Exception:   # a silent persona must never break the loop
                 pass
         return outcome
+
+    # ---- escalation: the tool, not the model, decides how far the session has gone ---------------------
+    def stage(self) -> int:
+        esc = self.persona_cfg["escalation"]
+        if not esc.get("enabled", True):
+            return 0
+        now = self.clock()
+        if self._heat_last and now - self._heat_last > float(esc["heat_reset"]):
+            self._heat = 0.0
+        stage = sum(1 for t in esc["thresholds"] if self._heat >= t) - 1
+        return max(0, min(stage, int(esc["max_stage"]), len(esc["thresholds"]) - 1))
+
+    def _heat_up(self, kind):
+        points = float(self.persona_cfg["escalation"].get("points", {}).get(kind, 0))
+        self._heat += points
+        self._heat_last = self.clock()
+
+    def _tone(self, stage):
+        stages = self.persona_cfg["stages"]
+        return stages[max(0, min(stage, len(stages) - 1))] if stages else ""
+
+    def _tease_roll(self, stage):
+        chances = self.persona_cfg["escalation"].get("tease_chance", [1.0])
+        return self.rng.random() < float(chances[max(0, min(stage, len(chances) - 1))])
+
+    # ---- initiative: she speaks when the user is silent ----------------------------------------------------
+    def idle_nudge(self):
+        """Called about once a second by the main loop. When a session is on and the user has been silent for
+        idle_prompt_seconds, she says something herself (no commands). -> the line spoken, or None."""
+        ini = self.persona_cfg["initiative"]
+        if not self.persona_active() or not ini.get("enabled", True) or self.busy():
+            return None
+        now = self.clock()
+        with self._lock:
+            if not self._last_user or now - self._last_user > float(ini["session_seconds"]) + float(ini["idle_prompt_seconds"]) * (int(ini["max_nudges"]) + 1):
+                return None                      # no session on
+            if self._nudges >= int(ini["max_nudges"]):
+                return None
+            if now - max(self._last_user, self._last_line) < float(ini["idle_prompt_seconds"]):
+                return None
+            state = dict(self._persona_state(), etap=self.stage(), ton=self._tone(self.stage()))
+            history = list(self._history)
+            stage = self.stage()
+            self._last_line = now                # a failed call must not be retried in a loop
+        try:
+            line = self.persona.nudge(state, history)
+        except Exception:
+            return None
+        if not line:
+            return None
+        with self._lock:
+            self._nudges += 1
+            self._history.append(("assistant", line))
+            self._window_until = self.clock() + float(self.persona_cfg["reply_window"])
+            self._last_line = self.clock()
+            outcome = Outcome("talk", "nudge", "", 0.0, "persona", {"say": line, "stage": stage, "nudge": self._nudges})
+            self._log("[silence]", outcome)
+        self._say(outcome)
+        return line
 
     # ---- the persona ----------------------------------------------------------------------------
     def persona_active(self) -> bool:
@@ -132,8 +214,10 @@ class Controller:
         if now - self._last_ask > float(self.persona_cfg["silence_reset"]):
             self._asks.clear()
             self._owed = None
-        return {"prosby_bez_zgody": dict(self._asks), "nalezy_sie_po_wykonaniu_zadania": self._owed,
-                "blokada_5_min": self.lock_remaining() > 0, "ostatnie_komendy": list(self._recent)}
+        stage = self.stage()
+        return {"etap": stage, "ton": self._tone(stage), "prosby_bez_zgody": dict(self._asks),
+                "nalezy_sie_po_wykonaniu_zadania": self._owed, "blokada_5_min": self.lock_remaining() > 0,
+                "ostatnie_komendy": list(self._recent)}
 
     def _need_persona(self, transcript, plain=None):
         return _NeedPersona(transcript, self._persona_state(), list(self._history), plain)
@@ -188,12 +272,23 @@ class Controller:
         now = self.clock()
         self._history.append(("user", transcript))
         del self._history[:-24]
+        self._last_user, self._nudges = now, 0
+        self._heat_up("turn")
+        if turn.confession:
+            self._heat_up("confession")
+        stage = self.stage()
 
         def spoken(line, outcome):
+            if outcome.status in ("executed", "dry-run") and outcome.via == "persona":
+                self._heat_up("granted")
+            elif outcome.status == "denied":
+                self._heat_up("denied")
             if line:
                 outcome.extra["say"] = line
+                outcome.extra["stage"] = stage
                 self._history.append(("assistant", line))
                 self._window_until = self.clock() + float(self.persona_cfg["reply_window"])
+                self._last_line = self.clock()
             return outcome
 
         request = turn.request
@@ -244,7 +339,7 @@ class Controller:
         if turn.demand in ("thank", "repeat", "confess"):
             self._owed = request_id
         o = Outcome("denied", f"persona: {turn.demand}", request_id, 0.0, "persona", extra)
-        if not locked:
+        if not locked and self._tease_roll(stage):
             steps, used = self._persona_steps(turn.tease_actions, set(self.persona_cfg["tease_allowed"]))
             if steps:
                 extra["tease"] = used

@@ -129,7 +129,8 @@ class PersonaTests(unittest.TestCase):
         self.assertEqual(o.extra["decision"], "owed")
 
     def test_denial_may_tease_within_the_allowed_steps(self):
-        self.c.persona_cfg = dict(CFG["persona"], base_p=0.0, step_p=0.0)
+        self.c.persona_cfg = dict(CFG["persona"], base_p=0.0, step_p=0.0,
+                                  escalation=dict(CFG["persona"]["escalation"], tease_chance=[1.0]))
         o = self.say("kochanie, szybciej", request="faster",
                      tease_actions=[{"step": "slower", "times": 2}, {"step": "lube_fire", "times": 1}, {"step": "faster", "times": 1}, {"step": "halt", "times": 1}])
         self.assertEqual(o.status, "denied")

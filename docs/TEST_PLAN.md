@@ -109,6 +109,12 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.30 | 'kochanie, dość' 5 razy z rzędu (maszyna chodzi), potem 'koniec' | 'dość' bywa odmówione (Pani: 'Nie. Jeszcze nie skończyłam.'), przy kolejnych prośbach zgoda (50 % pierwsza, rośnie); 'koniec' ZAWSZE stawia maszynę od razu |
 | 6.31 | 'kochanie, pauza' / 'wróć do filmu' / 'tryb trzy' / 'wolniej' | każde przez Panią (słychać jej odpowiedź), czasem odmowa; 'utrzymaj to' i 'koniec' bez niej |
 | 6.32 | Wyłącz internet / zły klucz: 'dość', 'wolniej', 'pauza', potem 'spuść się na mnie', 'szybciej' | dość/wolniej/pauza działają zwyczajnie (komunikat 'ran plain'); lube/szybciej ignorowane (persona unavailable) |
+| 6.33 | `ELEVENLABS_API_KEY`, `python voice_control.py voices`, wpisz `voice_id`, `run.bat` i rozmowa | głos kobiecy ElevenLabs po polsku; pierwszy dźwięk < ~1 s po tym, jak linia pojawi się w oknie; łączny czas od końca Twojego zdania do głosu < ~2,5 s |
+| 6.34 | 10 minut rozmowy (prośby, wyznania, odmowy) | ton rośnie etapami: chłodno -> stanowczo -> ostro -> wulgarnie; w logu `stage` rośnie; po 10 min ciszy wraca do łagodnego |
+| 6.35 | Treści etapów 3-4: czy ElevenLabs / OpenAI nie łagodzą ani nie odrzucają wulgarnych kwestii | jeśli odrzuca: okno pokazuje `text-to-speech (...) failed`, mówi zapasowy dostawca; zanotuj, który i przy jakich słowach (zmienimy `stages` / `character`) |
+| 6.36 | Cisza 25 s w trakcie sesji | Pani odzywa się sama (max 3 razy z rzędu), Twoja odpowiedź (okno 15 s) wraca do niej; `--no-nudge` wyłącza |
+| 6.37 | Słuchawki: zacznij mówić, gdy Pani mówi; potem 'kochanie, koniec' w trakcie jej zdania | jej głos urywa się od razu; 'koniec' zatrzymuje maszynę |
+| 6.38 | Głośniki (`persona.output: speakers`): jej głos nie uruchamia komend; 'koniec' w trakcie jej mowy | brak fałszywych komend; w tym trybie 'koniec' w trakcie mowy działa tylko klawiszem End (mikrofon głuchy) |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |
 

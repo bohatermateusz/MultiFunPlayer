@@ -13,6 +13,7 @@ import json
 import os
 import sys
 import threading
+import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -93,6 +94,7 @@ def main():
         parser.add_argument("--no-llm", action="store_true", help="strict matching only (offline, no guessing)", **d)
         parser.add_argument("--no-persona", action="store_true", help="no talking persona (plain commands)", **d)
         parser.add_argument("--no-tts", action="store_true", help="print the persona's lines instead of speaking them", **d)
+        parser.add_argument("--no-nudge", action="store_true", help="the persona never speaks first", **d)
 
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     add_options(ap, suppress=False)
@@ -102,6 +104,7 @@ def main():
     w = sub.add_parser("wav"); w.add_argument("file"); add_options(w, suppress=True)
     e = sub.add_parser("eval"); e.add_argument("file", nargs="?"); add_options(e, suppress=True)
     add_options(sub.add_parser("keys"), suppress=True)
+    add_options(sub.add_parser("voices"), suppress=True)
     add_options(sub.add_parser("mic"), suppress=True)
     args = ap.parse_args()
 
@@ -110,6 +113,17 @@ def main():
     if args.cmd == "eval":
         from llm_eval import run_eval
         sys.exit(run_eval(controller, args.file))
+    if args.cmd == "voices":
+        from tts import ElevenLabsSpeaker, TtsError
+        t = cfg.get("persona", {}).get("tts", {})
+        try:
+            voices = ElevenLabsSpeaker(api_key=None, base_url=t.get("base_url", "https://api.elevenlabs.io")).voices()
+        except TtsError as e:
+            sys.exit(f"voices: {e}")
+        print("Put the id of the voice you like into commands.json -> persona.tts.voice_id")
+        for vid, name, labels in voices:
+            print(f"  {vid}  {name}  {', '.join(f'{k}={v}' for k, v in labels.items())}")
+        return
     if args.cmd == "keys":
         from hotkeys import cheat_sheet
         print("Keyboard shortcuts (global, NumLock on):")
@@ -158,46 +172,76 @@ def main():
 
     muted = {"value": False}
 
-    # the persona speaks through the loudspeakers; the microphone is deaf while she talks (and 0.6 s after)
-    from audio import SpeechGate, play_pcm
-    gate = SpeechGate(tail=cfg.get("persona", {}).get("echo_tail", 0.6))
-    speaker, speaking_thread = None, {"t": None, "stop": False}
-    if controller.persona is not None and not args.no_tts:
-        from tts import PCM_RATE, Speaker, TtsError
-        t = cfg.get("persona", {}).get("tts", {})
-        speaker = Speaker(t.get("base_url", cfg.get("llm", {}).get("base_url", "https://api.openai.com/v1")), t.get("model", "gpt-4o-mini-tts"),
-                          t.get("voice", "sage"), t.get("instructions", ""), api_key_env=t.get("api_key_env", "OPENAI_API_KEY"),
-                          timeout=t.get("timeout", 15), speed=t.get("speed", 1.0))
+    # the persona speaks (ElevenLabs, streamed; OpenAI as a fallback). With headphones the microphone stays on and
+    # your voice cuts her off, so the safe word is always heard; with speakers it is deaf while she speaks.
+    from audio import SpeechGate, play_stream
+    from tts import PCM_RATE, ElevenLabsSpeaker, Speaker, TtsError, stream_openai
+    pcfg = cfg.get("persona", {})
+    tcfg = pcfg.get("tts", {})
+    headphones = pcfg.get("output", "headphones") == "headphones"
+    gate = SpeechGate(tail=pcfg.get("echo_tail", 0.6))
+    talk = {"t": None, "stop": False}
 
-    def speak(line):
-        print(f"  Pani: {line}")
-        if speaker is None or muted["value"]:
+    def build_speakers():
+        out = {}
+        if tcfg.get("provider", "elevenlabs") == "elevenlabs" or tcfg.get("fallback_provider") == "elevenlabs":
+            out["elevenlabs"] = ElevenLabsSpeaker(tcfg.get("voice_id", ""), tcfg.get("model", "eleven_flash_v2_5"),
+                                                  base_url=tcfg.get("base_url", "https://api.elevenlabs.io"), timeout=tcfg.get("timeout", 15),
+                                                  stage_settings=tcfg.get("stage_settings"), language=tcfg.get("language", "pl"))
+        o = tcfg.get("openai", {})
+        out["openai"] = Speaker(o.get("base_url", "https://api.openai.com/v1"), o.get("model", "gpt-4o-mini-tts"), o.get("voice", "sage"),
+                                o.get("instructions", ""), api_key_env=o.get("api_key_env", "OPENAI_API_KEY"), speed=o.get("speed", 1.0))
+        return out
+
+    speakers = build_speakers() if controller.persona is not None and not args.no_tts else {}
+
+    def open_stream(provider, line, stage):
+        if provider == "elevenlabs":
+            return speakers["elevenlabs"].stream(line, stage)
+        return stream_openai(speakers["openai"], line, stage)
+
+    def speak(line, stage=0):
+        print(f"  Pani [{stage}]: {line}")
+        if not speakers or muted["value"]:
             return
 
         def run():
-            try:
-                pcm = speaker.synthesize(line)
-            except TtsError as e:
-                print("  text-to-speech failed:", e)
-                return
+            order = [tcfg.get("provider", "elevenlabs")]
+            fb = tcfg.get("fallback_provider")
+            if fb and fb != order[0] and fb in speakers:
+                order.append(fb)
             gate.begin()
             try:
-                play_pcm(pcm, PCM_RATE, stop=lambda: speaking_thread["stop"])
-            except Exception as e:
-                print("  playback failed:", e)
+                for provider in order:
+                    try:
+                        stream = open_stream(provider, line, stage)
+                        play_stream(stream, PCM_RATE, stop=lambda: talk["stop"])
+                        return
+                    except TtsError as e:
+                        print(f"  text-to-speech ({provider}) failed: {e}")
+                    except Exception as e:
+                        print(f"  playback failed: {e}")
+                        return
             finally:
                 gate.end()
 
-        speaking_thread["stop"] = True          # a new line interrupts the previous one
-        previous = speaking_thread["t"]
+        talk["stop"] = True                      # a new line interrupts the previous one
+        previous = talk["t"]
         if previous is not None:
             previous.join(2.0)
-        speaking_thread["stop"] = False
+        talk["stop"] = False
         th = threading.Thread(target=run, daemon=True)
-        speaking_thread["t"] = th
+        talk["t"] = th
         th.start()
 
-    controller.speak = speak
+    controller.speak_ex = speak
+    controller.busy = lambda: muted["value"] or (talk["t"] is not None and talk["t"].is_alive()) or gate.speaking()
+
+    def barge_in():
+        """the user starts to speak while she talks (headphones): she is cut off at once"""
+        th = talk["t"]
+        if headphones and th is not None and th.is_alive():
+            talk["stop"] = True
 
     def toggle_mute():
         muted["value"] = not muted["value"]
@@ -222,7 +266,17 @@ def main():
     if always:
         print(f"Listening continuously. Say \"{', '.join(wake.get('words', []))}\" and a command. "
               f"{'DRY RUN. ' if args.dry_run else ''}Ctrl+C to quit.")
-        for pcm in listen_segments(rate, a.get("device"), muted=lambda: muted["value"] or gate.speaking(),
+        if controller.persona is not None and not args.no_nudge:
+            def nudger():
+                while True:
+                    time.sleep(1.0)
+                    try:
+                        controller.idle_nudge()
+                    except Exception:
+                        pass
+            threading.Thread(target=nudger, daemon=True).start()
+        for pcm in listen_segments(rate, a.get("device"), muted=lambda: muted["value"] or (not headphones and gate.speaking()),
+                                   on_speech_start=barge_in,
                                    threshold_db=lis.get("threshold_db"), margin_db=lis.get("margin_db", 12),
                                    end_silence=lis.get("end_silence", 0.7), pre_roll=lis.get("pre_roll", 0.3),
                                    min_seconds=lis.get("min_seconds", 0.5), max_seconds=lis.get("max_seconds", 6.0)):

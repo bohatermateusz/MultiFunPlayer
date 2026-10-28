@@ -123,6 +123,11 @@ class SegmentDetector:
         self._silence = 0.0
         self._duration = 0.0
 
+    @property
+    def in_speech(self) -> bool:
+        """True from the moment speech is detected until the utterance is cut (used for barge-in)"""
+        return self._speaking
+
     @staticmethod
     def level_of(block) -> float:
         import numpy as np
@@ -185,7 +190,7 @@ class SegmentDetector:
         return None
 
 
-def listen_segments(sample_rate=16000, device=None, stop=None, muted=None, block_seconds=0.02, **detector_options):
+def listen_segments(sample_rate=16000, device=None, stop=None, muted=None, block_seconds=0.02, on_speech_start=None, **detector_options):
     """Generator: opens the microphone and yields the PCM of every utterance. `stop()` ends it,
     `muted()` pauses the detection (the microphone stays open)."""
     import queue
@@ -208,7 +213,10 @@ def listen_segments(sample_rate=16000, device=None, stop=None, muted=None, block
             if muted and muted():
                 detector.reset()
                 continue
+            was = detector.in_speech
             pcm = detector.feed(block)
+            if on_speech_start and detector.in_speech and not was:
+                on_speech_start()
             if pcm:
                 yield pcm
 
@@ -278,3 +286,26 @@ class SpeechGate:
     def speaking(self) -> bool:
         with self._lock:
             return self._active or time.monotonic() < self._until
+
+
+def play_stream(chunks, sample_rate=24000, stop=None):
+    """Plays a stream of 16-bit mono PCM chunks as they arrive (the first sound starts after the first chunk) and returns
+    when it is over or when stop() is true. Closing the generator (stop) lets the HTTP response be dropped."""
+    import numpy as np
+    import sounddevice as sd
+
+    leftover = b""
+    with sd.OutputStream(samplerate=sample_rate, channels=1, dtype="int16") as out:
+        try:
+            for chunk in chunks:
+                if stop and stop():
+                    break
+                data = leftover + chunk
+                usable = len(data) - len(data) % 2
+                leftover = data[usable:]
+                if usable:
+                    out.write(np.frombuffer(data[:usable], dtype="int16"))
+        finally:
+            close = getattr(chunks, "close", None)
+            if close:
+                close()

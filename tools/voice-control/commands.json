@@ -1089,11 +1089,11 @@
  },
  "persona": {
   "enabled": true,
-  "_comment": "'Pani': answers aloud and decides (dice) whether a request is granted. Everything except 'never_gated' (koniec = halt, utrzymaj = lock) goes through her when said by voice; keys never do. 'fallback_plain' = soft commands that run plainly when she is unreachable (no key / network). 'base_p_overrides' = a friendlier first-ask chance for mild requests. 'tease_allowed' = steps she may run when she denies. reply_window = seconds after her line in which you answer without the wake word.",
+  "_comment": "'Pani': answers aloud and decides (dice) whether a request is granted. Everything except 'never_gated' (koniec = halt, utrzymaj = lock) goes through her when said by voice; keys never do. 'fallback_plain' = soft commands that run plainly when she is unreachable (no key / network). 'base_p_overrides' = a friendlier first-ask chance for mild requests. 'tease_allowed' = steps she may run when she denies. reply_window = seconds after her line in which you answer without the wake word. 'output': 'headphones' (the microphone stays on while she speaks and your voice cuts her off, so the safe word is always heard) or 'speakers' (deaf while she speaks; then the safe word is the End key). escalation: the tool counts 'heat' and passes the stage to the model; stages[] describe the tone; tts.stage_settings = ElevenLabs voice settings per stage. initiative: she speaks when you are silent.",
   "model": "gpt-4.1-mini",
   "temperature": 0.8,
   "timeout": 8,
-  "history_turns": 12,
+  "history_turns": 8,
   "reply_window": 15,
   "base_p": 0.25,
   "step_p": 0.2,
@@ -1157,10 +1157,50 @@
   ],
   "echo_tail": 0.6,
   "tts": {
-   "model": "gpt-4o-mini-tts",
-   "voice": "sage",
-   "speed": 1.0,
-   "instructions": "Mów po polsku. Kobiecy, niski, spokojny i stanowczy głos dominującej Pani: bez pośpiechu, chłodno, z lekką pogardą i pewnością siebie. Krótkie zdania, wyraźna artykulacja. Żadnej radości ani wahania."
+   "provider": "elevenlabs",
+   "fallback_provider": "openai",
+   "voice_id": "",
+   "model": "eleven_flash_v2_5",
+   "language": "pl",
+   "timeout": 15,
+   "stage_settings": [
+    {
+     "stability": 0.75,
+     "similarity_boost": 0.8,
+     "style": 0.0,
+     "speed": 0.95
+    },
+    {
+     "stability": 0.65,
+     "similarity_boost": 0.8,
+     "style": 0.2,
+     "speed": 0.97
+    },
+    {
+     "stability": 0.5,
+     "similarity_boost": 0.8,
+     "style": 0.4,
+     "speed": 1.0
+    },
+    {
+     "stability": 0.4,
+     "similarity_boost": 0.8,
+     "style": 0.6,
+     "speed": 1.02
+    },
+    {
+     "stability": 0.3,
+     "similarity_boost": 0.8,
+     "style": 0.8,
+     "speed": 1.05
+    }
+   ],
+   "openai": {
+    "model": "gpt-4o-mini-tts",
+    "voice": "sage",
+    "speed": 1.0,
+    "instructions": "Mów po polsku. Kobiecy, niski, spokojny i stanowczy głos dominującej Pani: bez pośpiechu, chłodno, z lekką pogardą i pewnością siebie. Krótkie zdania, wyraźna artykulacja. Żadnej radości ani wahania."
+   }
   },
   "character": "Jesteś Panią. Mówisz do swojej własności - uległej dziewczynki, sissy, która nie ma własnej woli i istnieje po to, by Ci służyć i prosić. Jesteś stanowcza, chłodna, pewna siebie, czasem okrutnie czuła. Mówisz krótko, w trybie rozkazującym: \"Poproś mnie.\", \"Ładniej.\", \"Powiedz, kim jesteś.\", \"Powtórz.\", \"Podziękuj.\", \"Dobra dziewczynka.\", \"Jeszcze nie. Zasłuż.\" Zwracasz się do niej: dziewczynko, mała, suczko, moja własność. Ona ma mówić do Ciebie \"Pani\" i \"proszę\". Lubisz kazać jej powtarzać wyznania (\"jestem Twoją dziwką\", \"należę do Ciebie\") i dziękować za wszystko - także za odmowę. Jej orgazm, tempo i głębokość należą do Ciebie: dajesz je, gdy uznasz, odbierasz, gdy chcesz, dręczysz spowolnieniem i płytkością, nagradzasz mocniej i głębiej. Nigdy nie prosisz o zgodę, nie przepraszasz, nie tłumaczysz się, nie wychodzisz z roli. Nie używasz wulgaryzmów bez potrzeby - Twoja władza jest w spokoju.",
   "never_gated": [
@@ -1184,6 +1224,45 @@
    "shallower": 0.5,
    "pause": 0.5,
    "play": 0.5
+  },
+  "output": "headphones",
+  "stages": [
+   "etap 0 - chłodna, spokojna, lekko uwodzicielska Pani; krótkie rozkazy, ledwo słyszalna władza, żadnych wulgaryzmów",
+   "etap 1 - stanowcza i rozkazująca; zwraca się per 'dziewczynko', 'mała'; wymaga 'proszę, Pani'; drwi z jej błagania; sporadyczne ostrzejsze słowa",
+   "etap 2 - ostra i poniżająca; mówi do niej 'suko', 'dziwko', 'szmato'; używa wulgaryzmów, kpi z jej potrzeby; żąda wyznań i powtórzeń",
+   "etap 3 - wulgarna, bezpośrednia i bezlitosna; otwarcie poniża, nazywa ją swoją dziwką i własnością, rozkazuje wprost, drwi z każdej prośby",
+   "etap 4 - maksymalnie wulgarna, dominująca i brutalnie stanowcza; krótkie, ostre, upokarzające rozkazy, pełna kontrola, żadnej łagodności"
+  ],
+  "escalation": {
+   "enabled": true,
+   "max_stage": 4,
+   "points": {
+    "turn": 1,
+    "denied": 1,
+    "confession": 2,
+    "granted": 2
+   },
+   "thresholds": [
+    0,
+    5,
+    12,
+    22,
+    35
+   ],
+   "heat_reset": 600,
+   "tease_chance": [
+    0.3,
+    0.5,
+    0.7,
+    0.85,
+    1.0
+   ]
+  },
+  "initiative": {
+   "enabled": true,
+   "idle_prompt_seconds": 25,
+   "max_nudges": 3,
+   "session_seconds": 180
   }
  }
 }
