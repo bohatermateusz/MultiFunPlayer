@@ -25,7 +25,7 @@
  },
  {
   "say": "kochanie stop",
-  "intent": "pause"
+  "intent": "calm"
  },
  {
   "say": "kochanie graj",

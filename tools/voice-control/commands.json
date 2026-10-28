@@ -988,7 +988,6 @@
     "trzymaj tak",
     "zostaw tak",
     "zostaw to",
-    "nie zmieniaj",
     "tak ma być",
     "tak jest dobrze",
     "zostań przy tym",
@@ -1003,7 +1002,8 @@
     "idealnie",
     "nie zmieniaj niczego",
     "tak zostaw",
-    "trzymaj"
+    "trzymaj",
+    "nie zmieniaj tego"
    ],
    "steps": [
     {

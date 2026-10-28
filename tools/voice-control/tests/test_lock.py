@@ -44,7 +44,7 @@ class HoldTests(unittest.TestCase):
 
     # ---- starting it -------------------------------------------------------------------------------
     def test_phrases_start_the_hold_for_5_minutes(self):
-        for text in ["utrzymaj to", "rób tak dalej", "tak trzymaj", "zostaw tak", "nie zmieniaj", "tak ma być", "zostań przy tym"]:
+        for text in ["utrzymaj to", "rób tak dalej", "tak trzymaj", "zostaw tak", "nie zmieniaj tego", "tak ma być", "zostań przy tym"]:
             self.setUp()
             self.assertEqual(self.say(text).intent, "lock", text)
             self.assertEqual(self.runs[-1], [{"action": "{target}::Hismith::Lock::Start", "args": [5]}])
@@ -132,7 +132,7 @@ class HoldTests(unittest.TestCase):
         self.assertEqual(sorted(CFG["lock"]["allow"]), sorted(["lube_fire", "lube_two", "lube_many", "halt", "lock"]))
 
     def test_no_phrase_is_both_a_hold_and_something_else(self):
-        self.assertEqual(match("nie zmieniaj", INTENTS)[0].intent.id, "lock")
+        self.assertEqual(match("nie zmieniaj tego", INTENTS)[0].intent.id, "lock")
         self.assertIsNone(match("odblokuj", INTENTS)[0])
 
 
