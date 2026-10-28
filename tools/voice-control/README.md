@@ -42,7 +42,7 @@ python -m unittest discover -s tests      # tests (no network, no microphone)
 ```
 
 `"listen": {"mode": "ptt"}` in `commands.json` brings back push-to-talk (hold F9, no wake word needed
-when `"wake": {"required": false}`). A short tone tells the result: high = command run, low = ignored.
+when `"wake": {"required": false}`). The tool is silent by default; the result is printed in the window. `"sounds": "all"` in `commands.json` brings back the short tones (high = command run, low = ignored, two low = error), `"errors"` keeps only the error tone.
 
 ## Commands (all start with "kochanie"; edit `commands.json`)
 

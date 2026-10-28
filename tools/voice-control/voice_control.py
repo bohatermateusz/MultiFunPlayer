@@ -117,8 +117,15 @@ def main():
         report(controller.handle(text), text)
         return
 
-    from audio import PushToTalk, beep, listen_segments, record_while_pressed
+    from audio import PushToTalk, listen_segments, record_while_pressed
+    from audio import beep as play_tone
     p, a, lis = cfg.get("ptt", {}), cfg.get("audio", {}), cfg.get("listen", {})
+    sounds = cfg.get("sounds", "off")   # "off" (silent, the default), "errors" (only problems) or "all"
+
+    def beep(kind):
+        if sounds == "all" or (sounds == "errors" and kind == "error"):
+            play_tone(kind)
+
     rate = a.get("sample_rate", 16000)
     always = lis.get("mode", "always") == "always"
     wake = cfg.get("wake", {})

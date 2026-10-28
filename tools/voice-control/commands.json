@@ -1,5 +1,5 @@
 {
- "_comment": "Edit the phrases to taste. Names with {target} are replaced by the Buttplug.io output target name. 'wake': every command has to start with the wake word. 'listen.mode': 'always' (continuous) or 'ptt' (hold the ptt key). 'keys': global shortcuts -> intent ids ('@mute' toggles listening); NumLock must be on.",
+ "_comment": "Edit the phrases to taste. Names with {target} are replaced by the Buttplug.io output target name. 'wake': every command has to start with the wake word. 'listen.mode': 'always' (continuous) or 'ptt' (hold the ptt key). 'keys': global shortcuts -> intent ids ('@mute' toggles listening); NumLock must be on. 'sounds': 'off' (silent, default), 'errors' or 'all' (short tones for ok / ignored / error).",
  "target": "Buttplug.io/0",
  "udp": {
   "host": "127.0.0.1",
@@ -687,5 +687,6 @@
   "prefilter_similarity": 0.5,
   "context": 3,
   "prefilter_min_length": 5
- }
+ },
+ "sounds": "off"
 }
