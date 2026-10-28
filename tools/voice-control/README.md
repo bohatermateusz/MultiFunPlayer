@@ -54,7 +54,7 @@ when `"wake": {"required": false}`). The tool is silent by default; the result i
 | mode A: fastest, full depth, smallest stroke | tryb a, na maksa, najszybciej, maksymalnie | Num 9 |
 | mode B: slowest, full depth, smallest stroke | tryb b, najwolniej, na minimum | Num 0 |
 | **surprise**: two separate draws. Machine: 70 % a random mode 1-8 / A / B (never the one that runs), else unchanged. Lube Launcher: nothing / one shot / three shots, 1/3 each. At least one of them always happens | zaskocz mnie, niespodzianka, wybierz za mnie, losowo, zdaj się na los | Insert |
-| **again**: draw the surprise again (only within a minute of one; shots that have not been fired yet are dropped, a fired one cannot be taken back) | nieee coś innego, zmień, inaczej, jeszcze raz, losuj ponownie, nie to | Del |
+| **again**: the NEXT draw (mode + Lube Launcher, as above) is made and put into effect **120 s after the command**; the current surprise stays until then, shots that have not been fired yet are dropped at once; saying it again restarts the 120 s; choosing a mode / Script / Calm / Stop cancels it | nieee coś innego, zmień, inaczej, jeszcze raz, losuj ponownie, nie to | Del |
 | back to the funscript and no boost | normalnie, zresetuj, bez zmian | Num . |
 | back to the funscript (keep boost) | wróć do filmu, wróć do skryptu, wyłącz tryb | (button "Script") |
 | Lube Launcher | spuść się na mnie, strzel na mnie, spuść się, dojdź na mnie | F8 |

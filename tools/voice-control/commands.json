@@ -898,7 +898,7 @@
      "args": []
     }
    ],
-   "description": "Re-roll: the user did not like the surprise that was just drawn ('nieee, coś innego', 'zmień', 'inaczej', 'losuj jeszcze raz'). Only when the last command was a surprise.",
+   "description": "Re-roll: the user did not like the surprise in force ('nieee, coś innego', 'zmień', 'inaczej', 'losuj jeszcze raz'). The new draw takes effect only after a delay (about 2 minutes). Only when the last command was a surprise or a re-roll.",
    "cooldown": 2,
    "threshold": 0.88,
    "max_extra_words": 1

@@ -341,12 +341,17 @@
                             Padding="8 0"
                             Click="{s:Action HismithSurpriseAgain}"
                             Content="Again"
-                            ToolTip="Something else: draw the surprise again (within a minute of the last one); shots that have not been fired yet are dropped"/>
+                            ToolTip="Something else: the NEXT surprise is drawn and put into effect after the number of seconds on the right; the current one stays until then. Shots that have not been fired yet are dropped at once."/>
                     <TextBlock HorizontalAlignment="Center"
                                FontSize="10"
                                Opacity="0.7"
                                Text="Del"/>
                 </StackPanel>
+                <TextBox Width="40"
+                         Margin="0 0 8 6"
+                         VerticalAlignment="Center"
+                         Text="{Binding HismithSurpriseDelaySeconds, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="Seconds from 'Again' to the next surprise (default 120)"/>
                 <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
                     <Button Style="{StaticResource MaterialDesignOutlinedButton}"
                             MinWidth="44"
