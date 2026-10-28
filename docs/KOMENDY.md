@@ -1,6 +1,6 @@
 # Ściąga: co mówić podczas sesji
 
-Każda komenda zaczyna się od **„kochanie"** (można z przecinkiem, pauzą, „kochanie, …"). Bez tego słowa
+Każda komenda zaczyna się od **„kochanie"** albo **„Pani"** (można z przecinkiem, pauzą, „kochanie, …"). Bez tego słowa
 nic się nie dzieje. Jeśli słowo wyjdzie przekręcone („trwanie", „kochana") albo komenda jest powiedziana
 po swojemu, model się domyśli, o co chodzi. Nie musisz mówić dokładnie tak, jak w tabelach – to tylko
 przykłady, które działają na pewno (bez modelu, od razu).
@@ -106,6 +106,10 @@ wulgarna i bezlitosna (etapy 0-4; liczy to narzędzie, nie model, a sufit ustawi
 Gdy milczysz ok. 25 s, **odzywa się sama** ("Czemu milczysz? Poproś mnie."). Mówi głosem ElevenLabs (wybierasz głos:
 `python voice_control.py voices`, potem `persona.tts.voice_id`). Jeśli masz słuchawki (domyślnie), **możesz jej przerwać**
 - gdy zaczniesz mówić, ona milknie od razu, więc "koniec" zawsze usłyszy.
+
+Nie musisz mówić "Pani" - możesz też "kochanie", "moja Pani" itd. (lista w `persona.address`); ona zwraca się do Ciebie różnie
+(dziewczynko, mała, suko, kochanie...). Jeśli ElevenLabs odmówi wypowiedzenia jakiejś kwestii, **ta sama kwestia zostanie
+powiedziana głosem OpenAI** (zapas), więc rozmowa się nie urwie.
 
 Przykłady tego, co możesz mówić: "proszę, Pani" · "błagam" · "jestem Twoją dziwką" · "jestem Twoja, bierz mnie" ·
 "należę do Ciebie" · "dziękuję, Pani" · "zrób ze mną co chcesz" · "chcę dojść, proszę" · "użyj mnie".

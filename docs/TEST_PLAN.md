@@ -115,6 +115,8 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.36 | Cisza 25 s w trakcie sesji | Pani odzywa się sama (max 3 razy z rzędu), Twoja odpowiedź (okno 15 s) wraca do niej; `--no-nudge` wyłącza |
 | 6.37 | Słuchawki: zacznij mówić, gdy Pani mówi; potem 'kochanie, koniec' w trakcie jej zdania | jej głos urywa się od razu; 'koniec' zatrzymuje maszynę |
 | 6.38 | Głośniki (`persona.output: speakers`): jej głos nie uruchamia komend; 'koniec' w trakcie jej mowy | brak fałszywych komend; w tym trybie 'koniec' w trakcie mowy działa tylko klawiszem End (mikrofon głuchy) |
+| 6.39 | Kwestia ostra (etap 3-4), którą ElevenLabs może odrzucić; sprawdź okno | `text-to-speech (elevenlabs) failed`, a ta sama kwestia mówiona głosem OpenAI (zapas); brak powtórzenia i brak ciszy |
+| 6.40 | Zwroty: 'Pani, szybciej', 'kochanie, szybciej'; Pani zwraca się różnie (dziewczynko, mała, suko...) i przyjmuje 'Pani'/'kochanie' | oba słowa zaczynają komendę; 'proszę pani...' w dialogu filmu nie uruchamia niczego |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |
 

@@ -175,6 +175,7 @@ def main():
     # the persona speaks (ElevenLabs, streamed; OpenAI as a fallback). With headphones the microphone stays on and
     # your voice cuts her off, so the safe word is always heard; with speakers it is deaf while she speaks.
     from audio import SpeechGate, play_stream
+    from speech import Voice
     from tts import PCM_RATE, ElevenLabsSpeaker, Speaker, TtsError, stream_openai
     pcfg = cfg.get("persona", {})
     tcfg = pcfg.get("tts", {})
@@ -195,53 +196,25 @@ def main():
 
     speakers = build_speakers() if controller.persona is not None and not args.no_tts else {}
 
-    def open_stream(provider, line, stage):
-        if provider == "elevenlabs":
-            return speakers["elevenlabs"].stream(line, stage)
-        return stream_openai(speakers["openai"], line, stage)
+    def provider(name):
+        if name == "elevenlabs":
+            return lambda line, stage: speakers["elevenlabs"].stream(line, stage)
+        return lambda line, stage: stream_openai(speakers["openai"], line, stage)
+
+    order = [tcfg.get("provider", "elevenlabs"), tcfg.get("fallback_provider", "openai")]
+    voice = Voice({n: provider(n) for n in speakers}, order, lambda stream, stop: play_stream(stream, PCM_RATE, stop=stop),
+                  gate=gate, muted=lambda: muted["value"])
 
     def speak(line, stage=0):
         print(f"  Pani [{stage}]: {line}")
-        if not speakers or muted["value"]:
-            return
-
-        def run():
-            order = [tcfg.get("provider", "elevenlabs")]
-            fb = tcfg.get("fallback_provider")
-            if fb and fb != order[0] and fb in speakers:
-                order.append(fb)
-            gate.begin()
-            try:
-                for provider in order:
-                    try:
-                        stream = open_stream(provider, line, stage)
-                        play_stream(stream, PCM_RATE, stop=lambda: talk["stop"])
-                        return
-                    except TtsError as e:
-                        print(f"  text-to-speech ({provider}) failed: {e}")
-                    except Exception as e:
-                        print(f"  playback failed: {e}")
-                        return
-            finally:
-                gate.end()
-
-        talk["stop"] = True                      # a new line interrupts the previous one
-        previous = talk["t"]
-        if previous is not None:
-            previous.join(2.0)
-        talk["stop"] = False
-        th = threading.Thread(target=run, daemon=True)
-        talk["t"] = th
-        th.start()
+        voice.say(line, stage)
 
     controller.speak_ex = speak
-    controller.busy = lambda: muted["value"] or (talk["t"] is not None and talk["t"].is_alive()) or gate.speaking()
+    controller.busy = lambda: muted["value"] or voice.speaking() or gate.speaking()
 
     def barge_in():
-        """the user starts to speak while she talks (headphones): she is cut off at once"""
-        th = talk["t"]
-        if headphones and th is not None and th.is_alive():
-            talk["stop"] = True
+        if headphones:
+            voice.interrupt()
 
     def toggle_mute():
         muted["value"] = not muted["value"]

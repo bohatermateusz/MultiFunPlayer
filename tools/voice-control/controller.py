@@ -215,7 +215,9 @@ class Controller:
             self._asks.clear()
             self._owed = None
         stage = self.stage()
-        return {"etap": stage, "ton": self._tone(stage), "prosby_bez_zgody": dict(self._asks),
+        address = self.persona_cfg.get("address", {})
+        return {"etap": stage, "ton": self._tone(stage), "zwroty_do_ciebie": list(address.get("titles", [])),
+                "zwroty_do_niej": list(address.get("names", [])), "prosby_bez_zgody": dict(self._asks),
                 "nalezy_sie_po_wykonaniu_zadania": self._owed, "blokada_5_min": self.lock_remaining() > 0,
                 "ostatnie_komendy": list(self._recent)}
 
@@ -430,7 +432,9 @@ class Controller:
             return True
         threshold = float(self.llm_cfg["prefilter_similarity"])
         min_length = int(self.llm_cfg["prefilter_min_length"])   # "nie" is 55% of "kochanie", but it is no address
-        return any(len(t) >= min_length and _sim(w, t) >= threshold for w in self.wake_words for t in tokens[:2])
+        # a short wake word ("pani") only counts as the very first word ("proszę pani" in a film is no address)
+        return any(len(t) >= min(min_length, len(w)) and _sim(w, t) >= threshold
+                   for w in self.wake_words for t in tokens[:2 if len(w) >= 5 else 1])
 
     def _handle(self, transcript: str):
         now = self.clock()

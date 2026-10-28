@@ -179,6 +179,13 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   fallback when ElevenLabs is down or refuses a text. Set `ELEVENLABS_API_KEY`, run
   `python voice_control.py voices`, put the id of a voice you like into `persona.tts.voice_id`. Model
   `eleven_flash_v2_5` (fastest; try `eleven_multilingual_v2` for quality). The voice settings follow the stage.
+* **Fallback voice**: if ElevenLabs cannot or will not speak a line (no key / voice_id, HTTP error, rate limit, a text it
+  refuses, an empty answer) the **same line is spoken by OpenAI TTS** (`persona.tts.fallback_provider`, voice `sage`,
+  with the firm-voice instructions in `persona.tts.openai`). If a stream breaks after the first sound the line is not
+  repeated; if both fail, the line is only printed and the tool goes on.
+* **Forms of address**: she does not have to be "Pani". Both **"Pani"** and **"kochanie"** start a command (`wake.words`; add
+  more, e.g. "moja Pani"). She may call you whatever `persona.address.titles` lists (Pani, kochanie, moja Pani...), and she
+  calls the user by the varied `persona.address.names` (dziewczynko, mała, suko, kochanie, słoneczko, ...). Edit both lists freely.
 * **Escalation**: the tool counts the heat of the session (+1 per turn, +1 per refusal, +2 per confession, +2 per grant;
   thresholds 0 / 5 / 12 / 22 / 35; cooling down after 10 min of silence) and gives the model the **stage 0-4** and its tone
   (`persona.stages`, Polish, edit freely): cool and gentle -> firm -> sharp and degrading -> vulgar and merciless ->

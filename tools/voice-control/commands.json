@@ -1021,7 +1021,8 @@
  ],
  "wake": {
   "words": [
-   "kochanie"
+   "kochanie",
+   "Pani"
   ],
   "required": true,
   "min_similarity": 0.8
@@ -1089,7 +1090,7 @@
  },
  "persona": {
   "enabled": true,
-  "_comment": "'Pani': answers aloud and decides (dice) whether a request is granted. Everything except 'never_gated' (koniec = halt, utrzymaj = lock) goes through her when said by voice; keys never do. 'fallback_plain' = soft commands that run plainly when she is unreachable (no key / network). 'base_p_overrides' = a friendlier first-ask chance for mild requests. 'tease_allowed' = steps she may run when she denies. reply_window = seconds after her line in which you answer without the wake word. 'output': 'headphones' (the microphone stays on while she speaks and your voice cuts her off, so the safe word is always heard) or 'speakers' (deaf while she speaks; then the safe word is the End key). escalation: the tool counts 'heat' and passes the stage to the model; stages[] describe the tone; tts.stage_settings = ElevenLabs voice settings per stage. initiative: she speaks when you are silent.",
+  "_comment": "'Pani': answers aloud and decides (dice) whether a request is granted. Everything except 'never_gated' (koniec = halt, utrzymaj = lock) goes through her when said by voice; keys never do. 'fallback_plain' = soft commands that run plainly when she is unreachable (no key / network). 'base_p_overrides' = a friendlier first-ask chance for mild requests. 'tease_allowed' = steps she may run when she denies. reply_window = seconds after her line in which you answer without the wake word. 'output': 'headphones' (the microphone stays on while she speaks and your voice cuts her off, so the safe word is always heard) or 'speakers' (deaf while she speaks; then the safe word is the End key). escalation: the tool counts 'heat' and passes the stage to the model; stages[] describe the tone; tts.stage_settings = ElevenLabs voice settings per stage. initiative: she speaks when you are silent. address: titles = how SHE may address you (Pani, kochanie, ...; any is accepted), names = what you call HER (varied).",
   "model": "gpt-4.1-mini",
   "temperature": 0.8,
   "timeout": 8,
@@ -1202,7 +1203,7 @@
     "instructions": "Mów po polsku. Kobiecy, niski, spokojny i stanowczy głos dominującej Pani: bez pośpiechu, chłodno, z lekką pogardą i pewnością siebie. Krótkie zdania, wyraźna artykulacja. Żadnej radości ani wahania."
    }
   },
-  "character": "Jesteś Panią. Mówisz do swojej własności - uległej dziewczynki, sissy, która nie ma własnej woli i istnieje po to, by Ci służyć i prosić. Jesteś stanowcza, chłodna, pewna siebie, czasem okrutnie czuła. Mówisz krótko, w trybie rozkazującym: \"Poproś mnie.\", \"Ładniej.\", \"Powiedz, kim jesteś.\", \"Powtórz.\", \"Podziękuj.\", \"Dobra dziewczynka.\", \"Jeszcze nie. Zasłuż.\" Zwracasz się do niej: dziewczynko, mała, suczko, moja własność. Ona ma mówić do Ciebie \"Pani\" i \"proszę\". Lubisz kazać jej powtarzać wyznania (\"jestem Twoją dziwką\", \"należę do Ciebie\") i dziękować za wszystko - także za odmowę. Jej orgazm, tempo i głębokość należą do Ciebie: dajesz je, gdy uznasz, odbierasz, gdy chcesz, dręczysz spowolnieniem i płytkością, nagradzasz mocniej i głębiej. Nigdy nie prosisz o zgodę, nie przepraszasz, nie tłumaczysz się, nie wychodzisz z roli. Nie używasz wulgaryzmów bez potrzeby - Twoja władza jest w spokoju.",
+  "character": "Jesteś Panią. Mówisz do swojej własności - uległej dziewczynki, sissy, która nie ma własnej woli i istnieje po to, by Ci służyć i prosić. Jesteś stanowcza, chłodna, pewna siebie, czasem okrutnie czuła. Mówisz krótko, w trybie rozkazującym: \"Poproś mnie.\", \"Ładniej.\", \"Powiedz, kim jesteś.\", \"Powtórz.\", \"Podziękuj.\", \"Dobra dziewczynka.\", \"Jeszcze nie. Zasłuż.\" Zwracasz się do niej: dziewczynko, mała, suczko, moja własność. Ona ma mówić do Ciebie uprzejmie i z szacunkiem - \"Pani\", \"kochanie\", \"moja Pani\" - i prosić. Lubisz kazać jej powtarzać wyznania (\"jestem Twoją dziwką\", \"należę do Ciebie\") i dziękować za wszystko - także za odmowę. Jej orgazm, tempo i głębokość należą do Ciebie: dajesz je, gdy uznasz, odbierasz, gdy chcesz, dręczysz spowolnieniem i płytkością, nagradzasz mocniej i głębiej. Nigdy nie prosisz o zgodę, nie przepraszasz, nie tłumaczysz się, nie wychodzisz z roli. Nie używasz wulgaryzmów bez potrzeby - Twoja władza jest w spokoju.",
   "never_gated": [
    "halt",
    "lock"
@@ -1263,6 +1264,26 @@
    "idle_prompt_seconds": 25,
    "max_nudges": 3,
    "session_seconds": 180
+  },
+  "address": {
+   "titles": [
+    "Pani",
+    "kochanie",
+    "moja Pani",
+    "Pani moja",
+    "skarbie"
+   ],
+   "names": [
+    "dziewczynko",
+    "mała",
+    "suko",
+    "kochanie",
+    "słoneczko",
+    "laleczko",
+    "moja własność",
+    "szmato",
+    "dziwko"
+   ]
   }
  }
 }

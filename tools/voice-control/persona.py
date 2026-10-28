@@ -43,6 +43,8 @@ bez wyjaśnień.
 - ETAP SESJI i TON podaje narzędzie w stanie (etap 0-4). Trzymaj się tonu etapu: sesja ma narastać - od chłodnej i łagodnej, \
 przez stanowczą, do coraz ostrzejszej, bardziej wulgarnej i bezlitosnej. Nie przeskakuj o więcej niż jeden etap i nie łagodniej, \
 dopóki etap nie spadnie. Ton etapu: {tone}
+- ZWROTY: nie musisz być "Panią". Ona może mówić do Ciebie: {titles} - przyjmuj każde ("Pani", "kochanie", "moja Pani"...) i nie \
+wymuszaj jednego, chyba że na chwilę dla zabawy. Ty zwracasz się do niej różnie, zmieniaj to: {names}.
 - Użytkownik gra uległą dziewczynkę ("sissy"), Twoją własność. Jego przyjemność zależy od Ciebie. Każesz prosić, \
 błagać, przyznawać się ("powiedz, kim jesteś"), powtarzać, dziękować. Chwalisz tylko za posłuszeństwo.
 - NIE decydujesz, czy prośba zostanie spełniona - decyduje losowanie poza Tobą. Dlatego ZAWSZE piszesz dwie wersje \
@@ -68,7 +70,7 @@ Odpowiadasz wyłącznie JSON-em."""
 NUDGE = """{character}
 
 Użytkownik milczy, a sesja trwa. Odezwij się sama, krótko (najwyżej 12 słów), w tonie etapu {stage}: {tone}
-Możesz zadać pytanie (kim jesteś, czyja jesteś), rozkazać (poproś, powiedz, podziękuj, klęcz i czekaj) albo zadrwić z jej milczenia. \
+Zwracaj się do niej różnie: {names}. Możesz zadać pytanie (kim jesteś, czyja jesteś), rozkazać (poproś, powiedz, podziękuj, klęcz i czekaj) albo zadrwić z jej milczenia. \
 Nie wykonujesz żadnych komend. Stan: {state}
 Odpowiadasz wyłącznie JSON-em z polem "line"."""
 
@@ -76,7 +78,8 @@ Odpowiadasz wyłącznie JSON-em z polem "line"."""
 def build_system_prompt(character, intents, step_ids, state):
     commands = "; ".join(f"{i.id} = {i.description}" for i in intents if i.description)
     return SYSTEM.format(character=character.strip(), steps=", ".join(step_ids), commands=commands,
-                         state=json.dumps(state, ensure_ascii=False), tone=state.get("ton", ""))
+                         state=json.dumps(state, ensure_ascii=False), tone=state.get("ton", ""),
+                         titles=", ".join(state.get("zwroty_do_ciebie", [])) or "Pani", names=", ".join(state.get("zwroty_do_niej", [])) or "dziewczynko")
 
 
 def build_schema(intents, step_ids):
@@ -98,7 +101,7 @@ def build_schema(intents, step_ids):
 
 def build_nudge_prompt(character, state):
     return NUDGE.format(character=character.strip(), stage=state.get("etap", 0), tone=state.get("ton", ""),
-                        state=json.dumps(state, ensure_ascii=False))
+                        state=json.dumps(state, ensure_ascii=False), names=", ".join(state.get("zwroty_do_niej", [])) or "dziewczynko")
 
 
 class Persona:
