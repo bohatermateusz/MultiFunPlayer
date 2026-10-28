@@ -1,0 +1,390 @@
+[
+ {
+  "say": "kochanie, tryb numer trzy",
+  "intent": "mode_3"
+ },
+ {
+  "say": "kochanie szybciej",
+  "intent": "faster"
+ },
+ {
+  "say": "kochanie spuść się",
+  "intent": "lube_fire"
+ },
+ {
+  "say": "kochanie wolniej",
+  "intent": "slower"
+ },
+ {
+  "say": "kochanie płycej",
+  "intent": "shallower"
+ },
+ {
+  "say": "kochanie głębiej",
+  "intent": "deeper"
+ },
+ {
+  "say": "kochanie stop",
+  "intent": "calm"
+ },
+ {
+  "say": "kochanie graj",
+  "intent": "play"
+ },
+ {
+  "say": "kochanie na maksa",
+  "intent": "mode_a"
+ },
+ {
+  "say": "kochanie najwolniej",
+  "intent": "mode_b"
+ },
+ {
+  "say": "kochanie wróć do filmu",
+  "intent": "script"
+ },
+ {
+  "say": "trwanie, spuścić się",
+  "intent": "lube_fire"
+ },
+ {
+  "say": "rochanie szybciej",
+  "intent": "faster"
+ },
+ {
+  "say": "kochaniee wolniej",
+  "intent": "slower"
+ },
+ {
+  "say": "kochana, tryb pięć",
+  "intent": "mode_5"
+ },
+ {
+  "say": "kochanie, spuść się na mnie",
+  "intent": "lube_fire"
+ },
+ {
+  "say": "kochamy tryb dwa",
+  "intent": "mode_2"
+ },
+ {
+  "say": "kochane głębiej",
+  "intent": "deeper"
+ },
+ {
+  "say": "kochanie, mógłbyś przyspieszyć",
+  "intent": "faster"
+ },
+ {
+  "say": "kochanie, trochę szybciej proszę",
+  "intent": "faster"
+ },
+ {
+  "say": "kochanie, zdecydowanie szybciej",
+  "intent": "faster"
+ },
+ {
+  "say": "kochanie, zwolnij trochę",
+  "intent": "slower"
+ },
+ {
+  "say": "kochanie, idź głębiej",
+  "intent": "deeper"
+ },
+ {
+  "say": "kochanie, nie tak głęboko",
+  "intent": "shallower"
+ },
+ {
+  "say": "kochanie, włącz program numer cztery",
+  "intent": "mode_4"
+ },
+ {
+  "say": "kochanie, daj mi tryb szósty",
+  "intent": "mode_6"
+ },
+ {
+  "say": "kochanie, wróć do normalnego ruchu",
+  "intent": "normal"
+ },
+ {
+  "say": "kochanie, już dość tego trybu",
+  "intent": "script"
+ },
+ {
+  "say": "kochanie, pauzuj film",
+  "intent": "pause"
+ },
+ {
+  "say": "kochanie, puść film dalej",
+  "intent": "play"
+ },
+ {
+  "say": "kochanie, powtórz ten fragment",
+  "intent": "loop_on"
+ },
+ {
+  "say": "kochanie, wyjdź z pętli",
+  "intent": "loop_off"
+ },
+ {
+  "say": "kochanie, wszystkie tryby po kolei",
+  "intent": "sequence_start"
+ },
+ {
+  "say": "kochanie, strzel cztery razy",
+  "intent": "lube_many"
+ },
+ {
+  "say": "kochanie, spuść się na mnie dwa razy",
+  "intent": "lube_two"
+ },
+ {
+  "say": "kochanie, daj z siebie wszystko",
+  "intent": "mode_a"
+ },
+ {
+  "say": "kochanie, jak najwolniej",
+  "intent": "mode_b"
+ },
+ {
+  "say": "a nie spuść się",
+  "intent": "none"
+ },
+ {
+  "say": "spuść się",
+  "intent": "none"
+ },
+ {
+  "say": "szybciej",
+  "intent": "none"
+ },
+ {
+  "say": "no dalej szybciej",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, nie spuszczaj się",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, jak ci minął dzień",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie chodź tu",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, dziękuję",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, co dziś robimy",
+  "intent": "none"
+ },
+ {
+  "say": "Dzięki za oglądanie!",
+  "intent": "none"
+ },
+ {
+  "say": "Napisy stworzone przez społeczność Amara.org",
+  "intent": "none"
+ },
+ {
+  "say": "nie, nie przestawaj",
+  "intent": "none"
+ },
+ {
+  "say": "pranie jest już suche",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, kup mleko",
+  "intent": "none"
+ },
+ {
+  "say": "oh yes baby that feels so good",
+  "intent": "none"
+ },
+ {
+  "say": "spuść wodę w toalecie",
+  "intent": "none"
+ },
+ {
+  "say": "trwanie tego filmu to godzina",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, nie szybciej",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, tryb dziewięć",
+  "intent": "none"
+ },
+ {
+  "say": "pytanie brzmi czy to działa",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, pieprz mnie",
+  "intent": "hard"
+ },
+ {
+  "say": "kochanie, rozepchaj mnie",
+  "intent": "fill"
+ },
+ {
+  "say": "kochanie, drażnij mnie",
+  "intent": "tease"
+ },
+ {
+  "say": "kochanie, użyj mnie",
+  "intent": "use_me"
+ },
+ {
+  "say": "kochanie, dość",
+  "intent": "calm"
+ },
+ {
+  "say": "kochanie, wystarczy",
+  "intent": "calm"
+ },
+ {
+  "say": "rochanie, pieprz mnie mocno",
+  "intent": "hard"
+ },
+ {
+  "say": "trwanie, wystarczy już",
+  "intent": "calm"
+ },
+ {
+  "say": "kochanie, nie mogę więcej, starczy",
+  "intent": "calm"
+ },
+ {
+  "say": "kochanie, jestem twoją małą dziwką, zrób ze mną co chcesz",
+  "intent": "improvise"
+ },
+ {
+  "say": "kochanie, chcę być twoją grzeczną dziewczynką",
+  "intent": "improvise"
+ },
+ {
+  "say": "kochanie, błagam weź mnie, jestem taka mokra",
+  "intent": "improvise"
+ },
+ {
+  "say": "kochanie, pomęcz mnie jeszcze trochę, powoli",
+  "intent": "tease"
+ },
+ {
+  "say": "kochanie, wejdź we mnie głęboko",
+  "intent": "fill"
+ },
+ {
+  "say": "kochanie, nie pieprz mi głowy",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, użyj mnie jutro do zakupów",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, dość już tego gadania o pracy",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, drażnią mnie sąsiedzi",
+  "intent": "none"
+ },
+ {
+  "say": "dość tego, wyłączam telewizor",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, koniec",
+  "intent": "halt"
+ },
+ {
+  "say": "kochanie, wyłącz maszynę",
+  "intent": "halt"
+ },
+ {
+  "say": "trwanie, koniec zabawy",
+  "intent": "halt"
+ },
+ {
+  "say": "kochanie, zaskocz mnie",
+  "intent": "surprise"
+ },
+ {
+  "say": "trwanie, niespodzianka",
+  "intent": "surprise"
+ },
+ {
+  "say": "kochanie, wybierz coś za mnie",
+  "intent": "surprise"
+ },
+ {
+  "say": "kochanie, zaskocz mnie jakimś trybem",
+  "intent": "surprise"
+ },
+ {
+  "say": "kochanie, zaskoczyła mnie dzisiaj pogoda",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, nieee, nie chcę tego, coś innego",
+  "intent": "surprise_again"
+ },
+ {
+  "say": "trwanie, zmień to",
+  "intent": "surprise_again"
+ },
+ {
+  "say": "kochanie, zmieniłem zdanie co do pracy",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, utrzymaj to",
+  "intent": "lock"
+ },
+ {
+  "say": "rochanie, rób tak dalej",
+  "intent": "lock"
+ },
+ {
+  "say": "kochanie, zostaw to tak jak jest",
+  "intent": "lock"
+ },
+ {
+  "say": "kochanie, nie zmieniaj zdania",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, jeszcze",
+  "intent": "lock"
+ },
+ {
+  "say": "kochanie, nie przestawaj teraz",
+  "intent": "lock"
+ },
+ {
+  "say": "trwanie, właśnie tak",
+  "intent": "lock"
+ },
+ {
+  "say": "kochanie, możesz już zmieniać",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, zniszcz mnie i skończ we mnie",
+  "intent": "improvise"
+ },
+ {
+  "say": "kochanie, chcę być twoją zabawką, weź mnie na maksa",
+  "intent": "improvise"
+ }
+]

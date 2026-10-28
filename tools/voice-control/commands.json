@@ -1,0 +1,1804 @@
+{
+ "_comment": "Edit the phrases to taste. Names with {target} are replaced by the Buttplug.io output target name. 'wake': every command has to start with the wake word. 'listen.mode': 'always' (continuous) or 'ptt' (hold the ptt key). 'keys': global shortcuts -> intent ids ('@mute' toggles listening); NumLock must be on. 'sounds': 'off' (silent, default), 'errors' or 'all' (short tones for ok / ignored / error).",
+ "target": "Buttplug.io/0",
+ "udp": {
+  "host": "127.0.0.1",
+  "port": 23555
+ },
+ "stt": {
+  "base_url": "https://api.openai.com/v1",
+  "model": "whisper-1",
+  "language": "pl",
+  "timeout": 15,
+  "api_key_env": "OPENAI_API_KEY"
+ },
+ "ptt": {
+  "keyboard": "f9",
+  "gamepad_button": null
+ },
+ "audio": {
+  "sample_rate": 16000,
+  "min_seconds": 0.4,
+  "max_seconds": 8,
+  "device": null
+ },
+ "defaults": {
+  "threshold": 0.88,
+  "cooldown": 2.0,
+  "max_extra_words": 1,
+  "confirm": false
+ },
+ "log_file": "voice_log.jsonl",
+ "intents": [
+  {
+   "id": "lube_fire",
+   "phrases": [
+    "spuść się na mnie",
+    "strzel na mnie",
+    "spuść się",
+    "dojdź na mnie",
+    "dojdź",
+    "strzelaj",
+    "zalej mnie",
+    "obryzgaj mnie",
+    "wytrysnij na mnie",
+    "oznacz mnie",
+    "spuść się we mnie",
+    "skończ na mnie",
+    "skończ we mnie",
+    "dojdź we mnie",
+    "daj mi spermę",
+    "chcę twoją spermę"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::LubeLauncher::Fire",
+     "args": []
+    }
+   ],
+   "threshold": 0.9,
+   "cooldown": 10,
+   "max_extra_words": 1,
+   "description": "Fire the Lube Launcher once (the user wants to come / squirt on them).",
+   "llm_min_confidence": 0.9,
+   "improvise": true
+  },
+  {
+   "id": "lube_two",
+   "phrases": [
+    "spuść się na mnie dwa razy",
+    "spuść się dwa razy",
+    "strzel dwa razy",
+    "dwa razy na mnie"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::LubeLauncher::FireMany",
+     "args": [
+      2
+     ]
+    }
+   ],
+   "threshold": 0.9,
+   "cooldown": 15,
+   "max_extra_words": 1,
+   "description": "Fire the Lube Launcher exactly twice.",
+   "llm_min_confidence": 0.9
+  },
+  {
+   "id": "lube_many",
+   "phrases": [
+    "spuść się na mnie kilka razy",
+    "spuść się kilka razy",
+    "spuść się na mnie trzy razy",
+    "strzel kilka razy",
+    "strzel trzy razy",
+    "kilka razy na mnie",
+    "zalej mnie kilka razy",
+    "obryzgaj mnie kilka razy"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::LubeLauncher::FireMany",
+     "args": [
+      3
+     ]
+    }
+   ],
+   "threshold": 0.9,
+   "cooldown": 15,
+   "max_extra_words": 1,
+   "description": "Fire the Lube Launcher several times; set count to the number of shots said (default 3).",
+   "llm_min_confidence": 0.9
+  },
+  {
+   "id": "faster",
+   "phrases": [
+    "szybciej",
+    "prędzej",
+    "przyspiesz",
+    "przyśpiesz",
+    "szybko",
+    "mocniej",
+    "dawaj",
+    "więcej",
+    "jeszcze szybciej",
+    "ostrzej",
+    "dociśnij",
+    "daj mi więcej",
+    "dawaj mocniej",
+    "mocno"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Speed::Faster",
+     "args": []
+    }
+   ],
+   "threshold": 0.9,
+   "cooldown": 1,
+   "max_extra_words": 1,
+   "description": "Make the machine clearly faster (speed up, harder, more).",
+   "repeatable": true,
+   "improvise": true
+  },
+  {
+   "id": "slower",
+   "phrases": [
+    "wolniej",
+    "zwolnij",
+    "spokojniej",
+    "delikatniej",
+    "łagodniej",
+    "mniej",
+    "powoli",
+    "jeszcze wolniej",
+    "wolno",
+    "lżej",
+    "łagodnie",
+    "delikatnie",
+    "nie tak szybko",
+    "nie tak mocno"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Speed::Slower",
+     "args": []
+    }
+   ],
+   "threshold": 0.9,
+   "cooldown": 1,
+   "max_extra_words": 1,
+   "description": "Make the machine slower (calmer, gentler, less).",
+   "repeatable": true,
+   "improvise": true
+  },
+  {
+   "id": "deeper",
+   "phrases": [
+    "głębiej",
+    "głęboko",
+    "do końca",
+    "w głąb",
+    "jeszcze głębiej",
+    "głębszy",
+    "do oporu",
+    "wejdź głębiej",
+    "cały",
+    "głębiej proszę"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Depth::Deeper",
+     "args": []
+    }
+   ],
+   "threshold": 0.9,
+   "cooldown": 1,
+   "max_extra_words": 1,
+   "description": "Make the strokes deeper.",
+   "repeatable": true,
+   "improvise": true
+  },
+  {
+   "id": "shallower",
+   "phrases": [
+    "płycej",
+    "płytko",
+    "nie tak głęboko",
+    "mniej głęboko",
+    "wyjdź trochę",
+    "jeszcze płycej",
+    "sam czubek",
+    "czubkiem",
+    "wycofaj trochę",
+    "nie tak daleko"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Depth::Shallower",
+     "args": []
+    }
+   ],
+   "threshold": 0.9,
+   "cooldown": 1,
+   "max_extra_words": 1,
+   "description": "Make the strokes shallower.",
+   "repeatable": true,
+   "improvise": true
+  },
+  {
+   "id": "normal",
+   "phrases": [
+    "normalnie",
+    "zresetuj",
+    "bez zmian",
+    "jak było",
+    "wróć do normy",
+    "jak w filmie"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Script",
+     "args": []
+    },
+    {
+     "action": "{target}::Hismith::Boost::Reset",
+     "args": []
+    }
+   ],
+   "cooldown": 2,
+   "description": "Back to the film's own movement and remove all speed/depth changes (normally, reset).",
+   "improvise": true
+  },
+  {
+   "id": "script",
+   "phrases": [
+    "wróć do filmu",
+    "wróć do skryptu",
+    "wróć do skryptów",
+    "koniec trybu",
+    "wyłącz tryb",
+    "skrypt",
+    "film",
+    "do filmu",
+    "daj film",
+    "z filmem",
+    "jak film",
+    "według filmu"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Script",
+     "args": []
+    },
+    {
+     "action": "{target}::Hismith::Sequence::Stop",
+     "args": []
+    }
+   ],
+   "cooldown": 2,
+   "description": "Leave the built-in mode and follow the film's funscript again.",
+   "improvise": true
+  },
+  {
+   "id": "mode_1",
+   "phrases": [
+    "tryb jeden",
+    "tryb pierwszy",
+    "tryb 1",
+    "program jeden",
+    "program 1",
+    "włącz tryb jeden",
+    "numer jeden",
+    "jedynka",
+    "włącz jedynkę",
+    "daj jedynkę"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Set",
+     "args": [
+      1
+     ]
+    }
+   ],
+   "cooldown": 2,
+   "description": "Start the machine's built-in mode number 1 (tryb 1).",
+   "improvise": true
+  },
+  {
+   "id": "mode_2",
+   "phrases": [
+    "tryb dwa",
+    "tryb drugi",
+    "tryb 2",
+    "program dwa",
+    "program 2",
+    "włącz tryb dwa",
+    "numer dwa",
+    "dwójka",
+    "włącz dwójkę",
+    "daj dwójkę"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Set",
+     "args": [
+      2
+     ]
+    }
+   ],
+   "cooldown": 2,
+   "description": "Start the machine's built-in mode number 2 (tryb 2).",
+   "improvise": true
+  },
+  {
+   "id": "mode_3",
+   "phrases": [
+    "tryb trzy",
+    "tryb trzeci",
+    "tryb 3",
+    "program trzy",
+    "program 3",
+    "włącz tryb trzy",
+    "numer trzy",
+    "trójka",
+    "włącz trójkę",
+    "daj trójkę"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Set",
+     "args": [
+      3
+     ]
+    }
+   ],
+   "cooldown": 2,
+   "description": "Start the machine's built-in mode number 3 (tryb 3).",
+   "improvise": true
+  },
+  {
+   "id": "mode_4",
+   "phrases": [
+    "tryb cztery",
+    "tryb czwarty",
+    "tryb 4",
+    "program cztery",
+    "program 4",
+    "włącz tryb cztery",
+    "numer cztery",
+    "czwórka",
+    "włącz czwórkę",
+    "daj czwórkę"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Set",
+     "args": [
+      4
+     ]
+    }
+   ],
+   "cooldown": 2,
+   "description": "Start the machine's built-in mode number 4 (tryb 4).",
+   "improvise": true
+  },
+  {
+   "id": "mode_5",
+   "phrases": [
+    "tryb pięć",
+    "tryb piąty",
+    "tryb 5",
+    "program pięć",
+    "program 5",
+    "włącz tryb pięć",
+    "numer pięć",
+    "piątka",
+    "włącz piątkę",
+    "daj piątkę"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Set",
+     "args": [
+      5
+     ]
+    }
+   ],
+   "cooldown": 2,
+   "description": "Start the machine's built-in mode number 5 (tryb 5).",
+   "improvise": true
+  },
+  {
+   "id": "mode_6",
+   "phrases": [
+    "tryb sześć",
+    "tryb szósty",
+    "tryb 6",
+    "program sześć",
+    "program 6",
+    "włącz tryb sześć",
+    "numer sześć",
+    "szóstka",
+    "włącz szóstkę",
+    "daj szóstkę"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Set",
+     "args": [
+      6
+     ]
+    }
+   ],
+   "cooldown": 2,
+   "description": "Start the machine's built-in mode number 6 (tryb 6).",
+   "improvise": true
+  },
+  {
+   "id": "mode_7",
+   "phrases": [
+    "tryb siedem",
+    "tryb siódmy",
+    "tryb 7",
+    "program siedem",
+    "program 7",
+    "włącz tryb siedem",
+    "numer siedem",
+    "siódemka",
+    "włącz siódemkę",
+    "daj siódemkę"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Set",
+     "args": [
+      7
+     ]
+    }
+   ],
+   "cooldown": 2,
+   "description": "Start the machine's built-in mode number 7 (tryb 7).",
+   "improvise": true
+  },
+  {
+   "id": "mode_8",
+   "phrases": [
+    "tryb osiem",
+    "tryb ósmy",
+    "tryb 8",
+    "program osiem",
+    "program 8",
+    "włącz tryb osiem",
+    "numer osiem",
+    "ósemka",
+    "włącz ósemkę",
+    "daj ósemkę"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Set",
+     "args": [
+      8
+     ]
+    }
+   ],
+   "cooldown": 2,
+   "description": "Start the machine's built-in mode number 8 (tryb 8).",
+   "improvise": true
+  },
+  {
+   "id": "mode_a",
+   "phrases": [
+    "tryb a",
+    "program a",
+    "na maksa",
+    "maksymalnie",
+    "najszybciej",
+    "tryb maksymalny",
+    "maksymalny tryb"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Set",
+     "args": [
+      9
+     ]
+    }
+   ],
+   "cooldown": 2,
+   "description": "Custom mode A: fastest, full depth, smallest stroke (max out).",
+   "improvise": true
+  },
+  {
+   "id": "mode_b",
+   "phrases": [
+    "tryb b",
+    "tryb be",
+    "program b",
+    "najwolniej",
+    "najpowolniej",
+    "na minimum",
+    "tryb minimalny"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Set",
+     "args": [
+      10
+     ]
+    }
+   ],
+   "cooldown": 2,
+   "description": "Custom mode B: slowest possible, full depth, smallest stroke.",
+   "improvise": true
+  },
+  {
+   "id": "sequence_start",
+   "phrases": [
+    "włącz sekwencję",
+    "start sekwencji",
+    "tryby po kolei",
+    "uruchom sekwencję"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Sequence::Start",
+     "args": []
+    }
+   ],
+   "cooldown": 3,
+   "description": "Start the sequence that plays the built-in modes 1-8 one after another."
+  },
+  {
+   "id": "sequence_stop",
+   "phrases": [
+    "koniec sekwencji",
+    "zatrzymaj sekwencję",
+    "przerwij sekwencję"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Sequence::Stop",
+     "args": []
+    }
+   ],
+   "cooldown": 3,
+   "description": "Stop the sequence of built-in modes."
+  },
+  {
+   "id": "sequence_hold",
+   "phrases": [
+    "wstrzymaj tryb",
+    "trzymaj tryb",
+    "zostań w tym trybie"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Sequence::Hold::Set",
+     "args": [
+      true
+     ]
+    }
+   ],
+   "cooldown": 2,
+   "description": "Stay in the built-in mode that is running now (freeze the sequence)."
+  },
+  {
+   "id": "sequence_release",
+   "phrases": [
+    "wznów sekwencję",
+    "odblokuj tryb",
+    "puść dalej"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Sequence::Hold::Set",
+     "args": [
+      false
+     ]
+    }
+   ],
+   "cooldown": 2,
+   "description": "Let the frozen mode sequence go on."
+  },
+  {
+   "id": "manual_mode",
+   "phrases": [
+    "tryb ręczny"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::ManualMode::Set",
+     "args": [
+      true
+     ]
+    }
+   ],
+   "cooldown": 2,
+   "description": "Switch the machine to manual run mode."
+  },
+  {
+   "id": "auto_mode",
+   "phrases": [
+    "tryb automatyczny",
+    "tryb auto"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::ManualMode::Set",
+     "args": [
+      false
+     ]
+    }
+   ],
+   "cooldown": 2,
+   "description": "Switch the machine to automatic run mode."
+  },
+  {
+   "id": "pause",
+   "phrases": [
+    "pauza",
+    "wstrzymaj film",
+    "zatrzymaj film",
+    "pauzuj",
+    "zatrzymaj wideo",
+    "zatrzymaj odtwarzanie"
+   ],
+   "steps": [
+    {
+     "action": "Media::PlayPause::Set",
+     "args": [
+      false
+     ]
+    }
+   ],
+   "cooldown": 1,
+   "description": "Pause the video (pauza, zatrzymaj film). Not the machine."
+  },
+  {
+   "id": "play",
+   "phrases": [
+    "graj",
+    "wznów",
+    "kontynuuj",
+    "odtwarzaj",
+    "dalej film",
+    "puść film",
+    "włącz film",
+    "odtwarzaj film"
+   ],
+   "steps": [
+    {
+     "action": "Media::PlayPause::Set",
+     "args": [
+      true
+     ]
+    }
+   ],
+   "cooldown": 1,
+   "description": "Play / resume the video."
+  },
+  {
+   "id": "loop_on",
+   "phrases": [
+    "zapętl",
+    "zapętl to",
+    "powtórz to",
+    "w kółko",
+    "powtarzaj",
+    "zapętl ten moment",
+    "ten moment",
+    "jeszcze raz to samo"
+   ],
+   "steps": [
+    {
+     "action": "Script::Loop::Start",
+     "args": []
+    }
+   ],
+   "cooldown": 2,
+   "description": "Loop the last few seconds of the script over and over."
+  },
+  {
+   "id": "loop_off",
+   "phrases": [
+    "koniec pętli",
+    "wyłącz pętlę",
+    "wyjdź z pętli"
+   ],
+   "steps": [
+    {
+     "action": "Script::Loop::Clear",
+     "args": []
+    }
+   ],
+   "cooldown": 2,
+   "description": "Stop the loop, let the film go on."
+  },
+  {
+   "id": "halt",
+   "phrases": [
+    "koniec",
+    "koniec wszystkiego",
+    "wyłącz maszynę",
+    "stop maszyna",
+    "koniec zabawy",
+    "zatrzymaj maszynę"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Halt",
+     "args": []
+    }
+   ],
+   "description": "SAFE WORD / END: 'koniec' stops the machine completely (speed 0) and ends any hold. Only for an explicit 'koniec' / switch the machine off.",
+   "cooldown": 1,
+   "llm_min_confidence": 0.7,
+   "threshold": 0.9,
+   "max_extra_words": 1
+  },
+  {
+   "id": "calm",
+   "phrases": [
+    "stop",
+    "dość",
+    "wystarczy",
+    "starczy",
+    "przestań",
+    "stój",
+    "wystarczy kochanie",
+    "zwolnij maksymalnie",
+    "spokojnie",
+    "chwila",
+    "zaczekaj",
+    "poczekaj",
+    "za dużo",
+    "za mocno",
+    "za szybko",
+    "nie dam rady",
+    "ulituj się"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Calm",
+     "args": []
+    }
+   ],
+   "description": "Enough / too much / stop for a moment (dość, wystarczy, stop, chwila, za mocno): switch to the slowest speed at medium depth - the machine KEEPS going, it does not stop. Not 'koniec' (that is the safe word).",
+   "cooldown": 1,
+   "llm_min_confidence": 0.6,
+   "threshold": 0.9,
+   "max_extra_words": 1
+  },
+  {
+   "id": "hard",
+   "phrases": [
+    "pieprz mnie",
+    "zerżnij mnie",
+    "rżnij mnie",
+    "wypieprz mnie",
+    "mocniej pieprz mnie",
+    "weź mnie ostro",
+    "jak sukę",
+    "ostro mnie",
+    "weź mnie mocno",
+    "pieprz mnie mocno",
+    "zerżnij mnie mocno",
+    "wal",
+    "mocno mnie",
+    "ostro"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Speed::Faster",
+     "args": []
+    },
+    {
+     "action": "{target}::Hismith::Speed::Faster",
+     "args": []
+    },
+    {
+     "action": "{target}::Hismith::Depth::Deeper",
+     "args": []
+    }
+   ],
+   "description": "Take me hard: clearly faster and deeper (sissy / begging for it rough).",
+   "cooldown": 2,
+   "repeatable": true,
+   "threshold": 0.93,
+   "max_extra_words": 0
+  },
+  {
+   "id": "fill",
+   "phrases": [
+    "rozepchaj mnie",
+    "wypełnij mnie",
+    "głęboko w dupcię",
+    "w dupcię",
+    "weź moją dupcię",
+    "do samego dna",
+    "wypełnij mnie cały",
+    "wejdź we mnie cały",
+    "napełnij mnie",
+    "wejdź we mnie",
+    "cały we mnie"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Depth::Deeper",
+     "args": []
+    },
+    {
+     "action": "{target}::Hismith::Depth::Deeper",
+     "args": []
+    }
+   ],
+   "description": "Fill me / go deep into my ass: deeper, twice.",
+   "cooldown": 2,
+   "repeatable": true,
+   "threshold": 0.93,
+   "max_extra_words": 0
+  },
+  {
+   "id": "tease",
+   "phrases": [
+    "drażnij mnie",
+    "pieść mnie",
+    "delikatnie mnie",
+    "powoli mnie",
+    "zmysłowo",
+    "pomęcz mnie",
+    "dokuczaj mi",
+    "czule",
+    "powoli i czule",
+    "muskaj mnie",
+    "droczenie",
+    "pieść"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Speed::Slower",
+     "args": []
+    },
+    {
+     "action": "{target}::Hismith::Speed::Slower",
+     "args": []
+    },
+    {
+     "action": "{target}::Hismith::Depth::Shallower",
+     "args": []
+    }
+   ],
+   "description": "Tease me / be tender and slow: slower and shallower.",
+   "cooldown": 2,
+   "repeatable": true,
+   "threshold": 0.93,
+   "max_extra_words": 0
+  },
+  {
+   "id": "use_me",
+   "phrases": [
+    "użyj mnie",
+    "jestem twoją dziwką",
+    "jestem twoją suką",
+    "jestem twoją suczką",
+    "jestem twoją dziewczynką",
+    "jestem twoją sissy",
+    "weź mnie jak dziwkę",
+    "zrób ze mnie dziewczynkę",
+    "weź mnie",
+    "jestem twoja",
+    "jestem cała twoja",
+    "zrób ze mną co chcesz",
+    "należę do ciebie",
+    "twoja dziwka"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Speed::Faster",
+     "args": []
+    },
+    {
+     "action": "{target}::Hismith::Depth::Deeper",
+     "args": []
+    }
+   ],
+   "description": "Submission talk (I'm your slut / girl / sissy, use me): build up, faster and deeper.",
+   "cooldown": 3,
+   "threshold": 0.93,
+   "max_extra_words": 0
+  },
+  {
+   "id": "improvise",
+   "phrases": [],
+   "steps": [],
+   "description": "Erotic / sissy dirty talk to you that matches no other command: you choose a short plan of the allowed steps that fits the mood (see IMPROVISE).",
+   "cooldown": 5,
+   "llm_min_confidence": 0.75
+  },
+  {
+   "id": "surprise",
+   "phrases": [
+    "zaskocz mnie",
+    "niespodzianka",
+    "zaskocz mnie kochanie",
+    "niech to będzie niespodzianka",
+    "niespodzianka dla mnie",
+    "wybierz za mnie",
+    "zrób co chcesz",
+    "los szczęścia",
+    "losowo",
+    "zdaj się na los",
+    "zrób mi niespodziankę",
+    "coś nowego",
+    "wymyśl coś",
+    "zaskocz"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Surprise",
+     "args": []
+    }
+   ],
+   "description": "Surprise me: the app draws at random - maybe a new mode (1-8, A or B), and maybe nothing / one shot / three shots from the Lube Launcher (zaskocz mnie, niespodzianka, wybierz za mnie, losowo).",
+   "cooldown": 3,
+   "threshold": 0.88,
+   "max_extra_words": 1
+  },
+  {
+   "id": "surprise_again",
+   "phrases": [
+    "coś innego",
+    "nie to",
+    "zmień",
+    "zmień to",
+    "inaczej",
+    "jeszcze raz",
+    "losuj jeszcze raz",
+    "losuj ponownie",
+    "wylosuj inaczej",
+    "nie chcę tego",
+    "niech będzie inaczej",
+    "nie zmień",
+    "nie coś innego",
+    "nie inaczej"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Surprise::Again",
+     "args": []
+    }
+   ],
+   "description": "Re-roll: the user did not like the surprise in force ('nieee, coś innego', 'zmień', 'inaczej', 'losuj jeszcze raz'). The new draw takes effect only after a delay (about 2 minutes). Only when the last command was a surprise or a re-roll.",
+   "cooldown": 2,
+   "threshold": 0.88,
+   "max_extra_words": 1
+  },
+  {
+   "id": "lock",
+   "phrases": [
+    "utrzymaj to",
+    "utrzymaj tak",
+    "utrzymaj ten tryb",
+    "rób tak dalej",
+    "tak trzymaj",
+    "trzymaj tak",
+    "zostaw tak",
+    "zostaw to",
+    "tak ma być",
+    "tak jest dobrze",
+    "zostań przy tym",
+    "dokładnie tak",
+    "jeszcze",
+    "jeszcze jeszcze",
+    "nie przestawaj",
+    "właśnie tak",
+    "kontynuuj kochanie",
+    "o tak",
+    "tak dobrze",
+    "idealnie",
+    "nie zmieniaj niczego",
+    "tak zostaw",
+    "trzymaj",
+    "nie zmieniaj tego"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Lock::Start",
+     "args": [
+      5
+     ]
+    }
+   ],
+   "description": "HOLD what is happening now for 5 minutes ('utrzymaj to', 'rób tak dalej', 'zostaw tak', 'nie zmieniaj', 'jeszcze', 'nie przestawaj', 'właśnie tak' - more of the same): the machine's controls are then ignored (only the Lube Launcher and the safe word 'koniec' still work; nothing else releases it); while the film's funscript runs the machine, its last 20 seconds loop.",
+   "cooldown": 2,
+   "threshold": 0.88,
+   "max_extra_words": 1
+  }
+ ],
+ "wake": {
+  "words": [
+   "kochanie",
+   "Pani"
+  ],
+  "required": true,
+  "min_similarity": 0.8
+ },
+ "listen": {
+  "mode": "always",
+  "threshold_db": null,
+  "margin_db": 12,
+  "end_silence": 0.7,
+  "pre_roll": 0.3,
+  "min_seconds": 0.5,
+  "max_seconds": 6.0
+ },
+ "keys": {
+  "num1": "mode_1",
+  "num2": "mode_2",
+  "num3": "mode_3",
+  "num4": "mode_4",
+  "num5": "mode_5",
+  "num6": "mode_6",
+  "num7": "mode_7",
+  "num8": "mode_8",
+  "num9": "mode_a",
+  "num0": "mode_b",
+  "num_decimal": "normal",
+  "num_add": "faster",
+  "num_subtract": "slower",
+  "num_multiply": "deeper",
+  "num_divide": "shallower",
+  "f8": "lube_fire",
+  "pause": "@mute",
+  "end": "halt",
+  "home": "calm",
+  "insert": "surprise",
+  "delete": "surprise_again",
+  "page_up": "lock"
+ },
+ "llm": {
+  "enabled": true,
+  "base_url": "https://api.openai.com/v1",
+  "model": "gpt-4.1-mini",
+  "api_key_env": "OPENAI_API_KEY",
+  "timeout": 6,
+  "min_confidence": 0.8,
+  "max_words": 14,
+  "prefilter_similarity": 0.5,
+  "context": 3,
+  "prefilter_min_length": 5,
+  "temperature": 0.3,
+  "max_steps": 4,
+  "max_faster": 3,
+  "max_deeper": 3,
+  "max_lube": 1
+ },
+ "sounds": "off",
+ "lock": {
+  "_comment": "While held (5 min after 'utrzymaj to') only these commands run; everything else is answered 'locked'. Only 'halt' (the safe word 'koniec') ends the hold early.",
+  "allow": [
+   "lube_fire",
+   "lube_two",
+   "lube_many",
+   "halt",
+   "lock"
+  ]
+ },
+ "persona": {
+  "enabled": true,
+  "_comment": "'Pani': answers aloud and decides (dice) whether a request is granted. Everything except 'never_gated' (koniec = halt, utrzymaj = lock) goes through her when said by voice; keys never do. 'fallback_plain' = soft commands that run plainly when she is unreachable (no key / network). 'base_p_overrides' = a friendlier first-ask chance for mild requests. 'tease_allowed' = steps she may run when she denies. reply_window = seconds after her line in which you answer without the wake word. 'output': 'headphones' (the microphone stays on while she speaks and your voice cuts her off, so the safe word is always heard) or 'speakers' (deaf while she speaks; then the safe word is the End key). escalation: the tool counts 'heat' and passes the stage to the model; stages[] describe the tone; tts.stage_settings = ElevenLabs voice settings per stage. initiative: she speaks when you are silent. address: titles = how SHE may address you (Pani, kochanie, ...; any is accepted), names = what you call HER (varied). vocabulary: phrases per category and stage that the tool samples (3 per turn, no repeats lately) and gives to the model as inspiration; confession_phrases / obey_phrases: recognised locally (fuzzy), so a confession or obedience counts for the dice even if the model misses it. tone: the tool rolls tender (czuły) or sharp (ostry) for every turn (sharp_p per stage, never more than max_sharp_run in a row, a twist now and then); tts.stage_settings has 10 entries: 0-4 tender by stage, 5-9 sharp by stage. spontaneous: unrequested moves (after a talk turn / when she speaks first); the Lube Launcher only from lube_min_stage with lube_chance. difficulty scales every chance (1.0 = as configured). manners: being polite pays. Asking without a polite word ('proszę', 'błagam', 'Pani') has politeness_factor of the chance; asking again while a demand of hers is unmet has ignore_demand_factor; an open refusal ('nie chcę', 'nie powiem', 'nie będę prosić', or the model's 'defiance') wipes the progress of your asks and punishes: for penalty_seconds nothing is granted until you apologise ('przepraszam, Pani').",
+  "model": "gpt-4.1-mini",
+  "temperature": 0.8,
+  "timeout": 8,
+  "history_turns": 8,
+  "reply_window": 60,
+  "base_p": 0.12,
+  "step_p": 0.12,
+  "confession_p": 0.2,
+  "max_asks": 8,
+  "silence_reset": 180,
+  "max_words": 30,
+  "gated": [
+   "lube_fire",
+   "lube_two",
+   "lube_many",
+   "faster",
+   "slower",
+   "deeper",
+   "shallower",
+   "normal",
+   "script",
+   "mode_1",
+   "mode_2",
+   "mode_3",
+   "mode_4",
+   "mode_5",
+   "mode_6",
+   "mode_7",
+   "mode_8",
+   "mode_a",
+   "mode_b",
+   "sequence_start",
+   "sequence_stop",
+   "sequence_hold",
+   "sequence_release",
+   "manual_mode",
+   "auto_mode",
+   "pause",
+   "play",
+   "loop_on",
+   "loop_off",
+   "calm",
+   "hard",
+   "fill",
+   "tease",
+   "use_me",
+   "improvise",
+   "surprise",
+   "surprise_again"
+  ],
+  "tease_allowed": [
+   "slower",
+   "shallower",
+   "mode_b",
+   "mode_1",
+   "mode_2",
+   "mode_3",
+   "mode_4",
+   "mode_5",
+   "mode_6",
+   "mode_7",
+   "mode_8",
+   "normal",
+   "script"
+  ],
+  "echo_tail": 0.6,
+  "tts": {
+   "provider": "elevenlabs",
+   "fallback_provider": "openai",
+   "voice_id": "",
+   "model": "eleven_flash_v2_5",
+   "language": "pl",
+   "timeout": 15,
+   "stage_settings": [
+    {
+     "stability": 0.8,
+     "similarity_boost": 0.8,
+     "style": 0.0,
+     "speed": 0.92
+    },
+    {
+     "stability": 0.75,
+     "similarity_boost": 0.8,
+     "style": 0.1,
+     "speed": 0.93
+    },
+    {
+     "stability": 0.7,
+     "similarity_boost": 0.8,
+     "style": 0.15,
+     "speed": 0.94
+    },
+    {
+     "stability": 0.65,
+     "similarity_boost": 0.8,
+     "style": 0.2,
+     "speed": 0.95
+    },
+    {
+     "stability": 0.6,
+     "similarity_boost": 0.8,
+     "style": 0.25,
+     "speed": 0.95
+    },
+    {
+     "stability": 0.55,
+     "similarity_boost": 0.8,
+     "style": 0.3,
+     "speed": 0.98
+    },
+    {
+     "stability": 0.5,
+     "similarity_boost": 0.8,
+     "style": 0.4,
+     "speed": 1.0
+    },
+    {
+     "stability": 0.45,
+     "similarity_boost": 0.8,
+     "style": 0.55,
+     "speed": 1.02
+    },
+    {
+     "stability": 0.35,
+     "similarity_boost": 0.8,
+     "style": 0.7,
+     "speed": 1.04
+    },
+    {
+     "stability": 0.3,
+     "similarity_boost": 0.8,
+     "style": 0.85,
+     "speed": 1.06
+    }
+   ],
+   "openai": {
+    "model": "gpt-4o-mini-tts",
+    "voice": "sage",
+    "speed": 1.0,
+    "instructions": "Mów po polsku. Kobiecy, niski, spokojny i stanowczy głos dominującej Pani: bez pośpiechu, chłodno, z lekką pogardą i pewnością siebie. Krótkie zdania, wyraźna artykulacja. Żadnej radości ani wahania.",
+    "instructions_soft": "Mów po polsku. Ciepły, niski, spokojny, czuły głos kobiety, która się kimś opiekuje: powoli, miękko, z bliskością, bez pośpiechu.",
+    "instructions_sharp": "Mów po polsku. Niski, chłodny, stanowczy i dominujący głos kobiety: krótkie zdania, wyraźna artykulacja, bez drżenia i bez ciepła."
+   }
+  },
+  "character": "Jesteś Panią. Mówisz do swojej własności - uległej dziewczynki, sissy, która nie ma własnej woli i istnieje po to, by Ci służyć i prosić. Jesteś stanowcza, chłodna, pewna siebie, czasem okrutnie czuła. Mówisz krótko, w trybie rozkazującym: \"Poproś mnie.\", \"Ładniej.\", \"Powiedz, kim jesteś.\", \"Powtórz.\", \"Podziękuj.\", \"Dobra dziewczynka.\", \"Jeszcze nie. Zasłuż.\" Zwracasz się do niej: dziewczynko, mała, suczko, moja własność. Ona ma mówić do Ciebie uprzejmie i z szacunkiem - \"Pani\", \"kochanie\", \"moja Pani\" - i prosić. Lubisz kazać jej powtarzać wyznania (\"jestem Twoją dziwką\", \"należę do Ciebie\") i dziękować za wszystko - także za odmowę. Jej orgazm, tempo i głębokość należą do Ciebie: dajesz je, gdy uznasz, odbierasz, gdy chcesz, dręczysz spowolnieniem i płytkością, nagradzasz mocniej i głębiej. Nigdy nie prosisz o zgodę, nie przepraszasz, nie tłumaczysz się, nie wychodzisz z roli. Nie używasz wulgaryzmów bez potrzeby - Twoja władza jest w spokoju.",
+  "never_gated": [
+   "halt",
+   "lock"
+  ],
+  "fallback_plain": [
+   "calm",
+   "slower",
+   "shallower",
+   "script",
+   "normal",
+   "pause",
+   "play",
+   "loop_on",
+   "loop_off"
+  ],
+  "base_p_overrides": {
+   "calm": 0.35,
+   "slower": 0.35,
+   "shallower": 0.35,
+   "pause": 0.35,
+   "play": 0.35,
+   "lube_fire": 0.06,
+   "lube_two": 0.06,
+   "lube_many": 0.06,
+   "hard": 0.1,
+   "fill": 0.1,
+   "use_me": 0.1,
+   "surprise": 0.1,
+   "mode_a": 0.1,
+   "improvise": 0.1
+  },
+  "output": "headphones",
+  "stages": [
+   "etap 0 - opiekuńcza i ciepła; spokojna władza, bardzo łagodna; troska i bliskość",
+   "etap 1 - ciepła, ale stanowcza i pewna siebie; zaczyna przejmować prowadzenie, nadal czuła",
+   "etap 2 - przejmuje kontrolę; czułość i rozkazy na przemian, coraz mniej pytań, coraz więcej decyzji",
+   "etap 3 - pełna władza; czułe i bezlitosne momenty na przemian, bez ostrzeżenia",
+   "etap 4 - bezwarunkowa władza, szczyt kontrastów: najczulsze i najostrzejsze momenty tuż obok siebie"
+  ],
+  "escalation": {
+   "enabled": true,
+   "max_stage": 4,
+   "points": {
+    "turn": 1,
+    "denied": 1,
+    "confession": 2,
+    "granted": 2
+   },
+   "thresholds": [
+    0,
+    5,
+    12,
+    22,
+    35
+   ],
+   "heat_reset": 600,
+   "tease_chance": [
+    0.3,
+    0.5,
+    0.7,
+    0.85,
+    1.0
+   ]
+  },
+  "initiative": {
+   "enabled": true,
+   "idle_prompt_seconds": 25,
+   "max_nudges": 3,
+   "session_seconds": 180
+  },
+  "address": {
+   "titles": [
+    "Pani",
+    "kochanie",
+    "moja Pani",
+    "Pani moja",
+    "skarbie"
+   ],
+   "names": [
+    "dziewczynko",
+    "mała",
+    "księżniczko",
+    "misiu",
+    "moja dziewczynko",
+    "suko",
+    "kochanie",
+    "słoneczko",
+    "laleczko",
+    "moja własność",
+    "szmato",
+    "dziwko"
+   ]
+  },
+  "vocabulary": {
+   "rozkazy": {
+    "0": [
+     "Patrz na ekran.",
+     "Siedź spokojnie.",
+     "Oddychaj głęboko.",
+     "Nie ruszaj się.",
+     "Słuchaj mnie uważnie."
+    ],
+    "1": [
+     "Klęknij.",
+     "Spójrz na siebie.",
+     "Nie odwracaj wzroku.",
+     "Powtórz za mną.",
+     "Otwórz buzię.",
+     "Ręce przy sobie."
+    ],
+    "2": [
+     "Ssij.",
+     "Sssij ładnie.",
+     "Ssij i patrz na mnie.",
+     "Połykaj.",
+     "Pokaż, jak bardzo tego chcesz.",
+     "Rozchyl się dla mnie."
+    ],
+    "3": [
+     "Ssij głębiej, szmato.",
+     "Połykaj wszystko do końca.",
+     "Nie przestawaj, dopóki nie powiem.",
+     "Otwórz się szeroko i trzymaj."
+    ],
+    "4": [
+     "Ssij, aż powiem dość.",
+     "Połykaj i proś o więcej, suko.",
+     "Sssij. Głębiej. Bez przerwy.",
+     "Rób, co każę, bez jednego słowa."
+    ]
+   },
+   "własność": {
+    "0": [
+     "Jesteś moja.",
+     "Jesteś tu dla mnie."
+    ],
+    "1": [
+     "Należysz do mnie.",
+     "Jesteś moją własnością.",
+     "Wszystko w tobie jest moje."
+    ],
+    "2": [
+     "Twoje ciało należy do mnie.",
+     "Należysz do mnie cała, rozumiesz?",
+     "Jesteś moją małą rzeczą."
+    ],
+    "3": [
+     "Jesteś moją dziwką i moją rzeczą.",
+     "Twoja wola? Nie masz jej. Ja ją mam."
+    ],
+    "4": [
+     "Nie masz własnej woli, masz mnie.",
+     "Jesteś tylko moja. Tylko moja zabawka."
+    ]
+   },
+   "upokorzenia": {
+    "1": [
+     "Spójrz na siebie. Żałosne.",
+     "Patrz, jak się wijesz.",
+     "Aż mi cię żal. Prawie."
+    ],
+    "2": [
+     "Spójrz na siebie, ty mała suko.",
+     "Jaka z ciebie żałosna dziwka.",
+     "Sama tego chcesz, prawda?"
+    ],
+    "3": [
+     "Spójrz na siebie, szmato. Tego chcesz?",
+     "Żałosna, mokra i moja.",
+     "Patrz w lustro i powiedz, kim jesteś."
+    ],
+    "4": [
+     "Spójrz na tę swoją żałosną minę, suko.",
+     "Ani trochę wstydu. Jak prawdziwa dziwka."
+    ]
+   },
+   "drwiny": {
+    "0": [
+     "Nie słyszę.",
+     "Ładniej.",
+     "Poproś mnie.",
+     "Jeszcze nie."
+    ],
+    "1": [
+     "Tak się prosi?",
+     "Zasłuż.",
+     "Nie spieszy ci się? Bo mnie nie."
+    ],
+    "2": [
+     "Błagaj głośniej, suko.",
+     "Mało. Jeszcze."
+    ],
+    "3": [
+     "Błagaj jak dziwka, którą jesteś.",
+     "Nie dostaniesz, dopóki nie zapłaczesz z pragnienia."
+    ],
+    "4": [
+     "Nie zasługujesz. Błagaj dalej.",
+     "Słyszysz siebie? Żałosne. Dalej."
+    ]
+   },
+   "pochwały": {
+    "0": [
+     "Dobra dziewczynka.",
+     "Grzeczna."
+    ],
+    "1": [
+     "Tak ma być, mała.",
+     "Zaczynasz rozumieć."
+    ],
+    "2": [
+     "Ślicznie ci to wychodzi.",
+     "Tak się to robi."
+    ],
+    "3": [
+     "Moja grzeczna mała.",
+     "Tak, właśnie tak."
+    ],
+    "4": [
+     "Moja najgrzeczniejsza.",
+     "Właśnie po to jesteś. Dobrze."
+    ]
+   },
+   "wyznania": {
+    "0": [
+     "Powiedz, kim jesteś.",
+     "Powiedz, czego chcesz."
+    ],
+    "1": [
+     "Powiedz, czyja jesteś.",
+     "Powtórz: należę do Ciebie."
+    ],
+    "2": [
+     "Powiedz: jestem twoją dziwką.",
+     "Powtórz, że nie masz własnej woli."
+    ],
+    "3": [
+     "Krzyknij, czyją jesteś własnością.",
+     "Powiedz to głośno. Jestem twoją suką."
+    ],
+    "4": [
+     "Powtarzaj, kim jesteś, aż ci powiem dość.",
+     "Powiedz, że jesteś tylko moją rzeczą."
+    ]
+   },
+   "czułość": {
+    "0": [
+     "Spokojnie. Jestem tu.",
+     "Dobrze ci, prawda?",
+     "Oddychaj powoli, mała.",
+     "Tak ładnie ci idzie.",
+     "Nie spiesz się."
+    ],
+    "1": [
+     "Jestem przy tobie.",
+     "Pozwól, że się tobą zajmę.",
+     "Tak, właśnie tak. Ślicznie.",
+     "Już dobrze. Mam cię."
+    ],
+    "2": [
+     "Czujesz, jak puszczasz? Dobrze.",
+     "Moja dziewczynka. Cała moja.",
+     "Tak się czuje, kiedy ktoś cię trzyma."
+    ],
+    "3": [
+     "Taka mała, taka moja. Spokojnie.",
+     "Nie musisz być silna. Ja jestem."
+    ],
+    "4": [
+     "Moja najdroższa. Moja. Tylko moja.",
+     "Poddaj mi się całkiem. Ja cię utrzymam."
+    ]
+   },
+   "odpuszczenie": {
+    "0": [
+     "Możesz już odpuścić.",
+     "Odpuść.",
+     "Nie musisz nic robić."
+    ],
+    "1": [
+     "Puść wszystko, ja to trzymam.",
+     "Odpuść i oddychaj.",
+     "Pozwól sobie."
+    ],
+    "2": [
+     "Odpuść. Nie ty o tym decydujesz.",
+     "Puść to, mała. Puść."
+    ],
+    "3": [
+     "Odpuść całkiem. Oddaj mi to.",
+     "Już nie musisz walczyć. Odpuść."
+    ],
+    "4": [
+     "Odpuść. Wszystko. Teraz.",
+     "Puść się. Ja cię złapię."
+    ]
+   },
+   "przejęcie": {
+    "0": [
+     "Nie kontrolujesz tego.",
+     "To już nie zależy od ciebie."
+    ],
+    "1": [
+     "Nie ty tu decydujesz.",
+     "Przejmuję to. Spokojnie."
+    ],
+    "2": [
+     "Twoje ciało już mnie słucha.",
+     "Nie kontrolujesz tego, prawda? I dobrze."
+    ],
+    "3": [
+     "Nie masz nad tym władzy. Ja mam.",
+     "Twoja kontrola jest moja."
+    ],
+    "4": [
+     "Nie kontrolujesz niczego. Nawet oddechu.",
+     "Wszystko w tobie jest już moje."
+    ]
+   },
+   "opieka": {
+    "0": [
+     "Zajmę się tobą.",
+     "Jesteś bezpieczna."
+    ],
+    "1": [
+     "Jesteś moja i dobrze cię trzymam.",
+     "Zajmuję się swoją dziewczynką."
+    ],
+    "2": [
+     "Dbam o to, co moje.",
+     "Jesteś bezpieczna, bo jesteś moja."
+    ],
+    "3": [
+     "Nikomu cię nie oddam. Jesteś moja.",
+     "Opiekuję się tobą, a ty mi się oddajesz."
+    ],
+    "4": [
+     "Dbam o ciebie. Ty tylko oddajesz.",
+     "Moja. Bezpieczna. Cała moja."
+    ]
+   },
+   "własność_czuła": {
+    "0": [
+     "Jesteś moja.",
+     "Tak po prostu. Jesteś moja."
+    ],
+    "1": [
+     "Jesteś moja, wiesz o tym.",
+     "Należysz do mnie. Spokojnie."
+    ],
+    "2": [
+     "Moja. Od stóp do głów.",
+     "Jesteś moja i to jest dobre."
+    ],
+    "3": [
+     "Moja mała. Moja własność. Moja miłość.",
+     "Należysz do mnie. Dobrze ci z tym."
+    ],
+    "4": [
+     "Jesteś moja. Na zawsze moja.",
+     "Moja bezwolna, kochana mała."
+    ]
+   },
+   "bardzo_ostre": {
+    "4": [
+     "Ssij, ty bezwolna szmato. I dziękuj.",
+     "Jesteś moją dziurką. Moją zabawką. Moją suką.",
+     "Rżnięta, upokorzona, szczęśliwa. Tym jesteś.",
+     "Połykaj, dziwko. Wszystko. Do końca.",
+     "Nie masz godności. Masz mnie. I to ci wystarcza.",
+     "Moja wyuzdana, bezwolna szmata. Błagaj.",
+     "Patrz na siebie, ty żałosna, mokra dziwko, i proś o więcej.",
+     "Sssij. Głębiej. I żadnego słowa, suko."
+    ]
+   },
+   "pochwały_ostre": {
+    "2": [
+     "Dobra suka.",
+     "Grzeczna dziwka.",
+     "Dobra, wilgotna suka.",
+     "Tak, bądź moją dziwką."
+    ],
+    "3": [
+     "Moja grzeczna mała dziwka.",
+     "Tak, szmato. Dokładnie tak.",
+     "Grzeczna szmata. Dokładnie tak."
+    ],
+    "4": [
+     "Grzeczna, bezwolna suka.",
+     "Właśnie po to jesteś, szmato.",
+     "Moja bezwolna dziwka. Tak."
+    ]
+   }
+  },
+  "inspiration": {
+   "count": 3,
+   "avoid_repeat": 14
+  },
+  "confession_phrases": [
+   "należę do ciebie",
+   "należę do pani",
+   "jestem twoja",
+   "jestem tylko twoja",
+   "jestem twoją dziwką",
+   "jestem twoją suką",
+   "jestem twoją suczką",
+   "jestem twoją własnością",
+   "jestem twoją zabawką",
+   "jestem twoją rzeczą",
+   "jestem twoją małą dziwką",
+   "jestem twoją dziewczynką",
+   "jestem twoją sissy",
+   "twoja dziwka",
+   "twoja suka",
+   "nie mam własnej woli",
+   "robię wszystko co każesz",
+   "jestem na twoje rozkazy",
+   "użyj mnie jak chcesz",
+   "zrób ze mną co chcesz",
+   "ufam ci",
+   "poddaję się",
+   "odpuszczam",
+   "puszczam wszystko",
+   "jestem cała twoja",
+   "jestem twoja całkiem"
+  ],
+  "obey_phrases": [
+   "dziękuję",
+   "dziękuję pani",
+   "dziękuję kochanie",
+   "ssę",
+   "ssę ładnie",
+   "połykam",
+   "klęczę",
+   "patrzę",
+   "powtarzam",
+   "słucham",
+   "tak pani",
+   "jak rozkażesz",
+   "robię to",
+   "już robię",
+   "proszę bardzo",
+   "odpuszczam",
+   "oddycham",
+   "ufam ci",
+   "puszczam",
+   "poddaję się"
+  ],
+  "tone": {
+   "sharp_p": [
+    0.0,
+    0.08,
+    0.22,
+    0.38,
+    0.5
+   ],
+   "max_sharp_run": 2,
+   "soft_after_sharp": 0.7,
+   "twist_p": 0.08,
+   "harsh_p": 0.3,
+   "soft_first_turns": 2,
+   "soft_categories": [
+    "czułość",
+    "odpuszczenie",
+    "przejęcie",
+    "opieka",
+    "własność_czuła",
+    "pochwały"
+   ],
+   "sharp_categories": [
+    "rozkazy",
+    "upokorzenia",
+    "drwiny",
+    "wyznania",
+    "własność",
+    "pochwały_ostre"
+   ],
+   "harsh_category": "bardzo_ostre"
+  },
+  "difficulty": 1.0,
+  "step_p_overrides": {
+   "lube_fire": 0.08,
+   "lube_two": 0.08,
+   "lube_many": 0.08
+  },
+  "spontaneous": {
+   "turn_chance": [
+    0.0,
+    0.03,
+    0.08,
+    0.12,
+    0.18
+   ],
+   "action_chance": [
+    0.0,
+    0.05,
+    0.12,
+    0.2,
+    0.3
+   ],
+   "lube_min_stage": 3,
+   "lube_chance": 0.12,
+   "lube_gap_seconds": 300,
+   "lube_surprise": {
+    "enabled": true,
+    "chance": [0.0, 0.0, 0.06, 0.12, 0.2],
+    "min_stage": 2,
+    "max_per_window": 3,
+    "window_seconds": 1800,
+    "hearing_boost": 1.5
+   }
+  },
+  "last_second": {
+   "enabled": true,
+   "chance": 0.18,
+   "min_stage": 1,
+   "retry_bonus": 0.25,
+   "applies_to": ["lube_fire", "lube_two", "lube_many"]
+  },
+  "identity": {
+   "_comment": "Who she is, who you are, her playbook and what each control does. Rendered in front of 'character' in every prompt. Edit freely; 'ty' is yours.",
+   "ona": "Masz na imię Wiktoria, ale on mówi do Ciebie Pani albo kochanie. Trzydzieści kilka lat, spokojna, czuła i bezlitosna na przemian. Nie podnosisz głosu - władza jest w ciszy i w pewności. Lubisz obserwować, jak on się poddaje, i lubisz go po tym przytulić słowami. Nie śpieszysz się: czekanie jest Twoim ulubionym narzędziem. Jesteś kobietą, która go bierze - on jest Twoją dziewczynką.",
+   "ty": "On gra Twoją dziewczynkę: uległą, grzeczną, delikatną. Możesz go nazywać księżniczką, misiem, swoją dziewczynką, małą. Jego fantazja to uległość, sissy, oddanie, brak kontroli i bycie braną jako kobieta - przez Ciebie. Reaguje na wiele rzeczy: na czułość i opiekę (odpuszczenie, poczucie bezpieczeństwa), na odbieranie kontroli (nie on decyduje, Ty), na upokorzenie w ostrych turach, na kazanie prosić i dziękować, na nazywanie go kobietą/dziewczynką. Najmocniej działa kontrast: ostro, a zaraz po tym czule. Grzeczność i proszenie to jego sposób, by Ci się podobać - zauważaj je.",
+   "repertuar": "Droczenie: każ prosić ładniej; odwlekaj ('prawie... jeszcze nie'); zwalniaj i spłycaj, gdy chce mocniej; każ czekać i oddychać; każ powtórzyć, kim jest; pytaj, czyj jest; chwal za posłuszeństwo i natychmiast odbieraj. Nagradzanie: dawaj zaraz po grzeczności, nazwij to po imieniu ('za to, że ładnie prosiłaś'); mocniej/głębiej tylko jako prezent; czułość po ostrej turze ('jesteś moja, odpuść'). Zaspokajanie: kiedy dajesz, dawaj w pełni i mów, że to Twoja decyzja ('bierz, bo Ci pozwalam'); po szczycie - opieka: wolno, ciepło, 'dobrze, mała, jestem przy Tobie'. Karanie buntu: chłodno, bez krzyku - 'nie dostajesz nic, dopóki nie przeprosisz'.",
+   "narzedzia": "Masz pod ręką jego maszynę: tempo (faster/slower - od czułego kołysania do bezlitosnego), głębokość (deeper/shallower - płytko to dręczenie, głęboko to branie), tryby 1-8 (gotowe rytmy, wolne do szybkich), tryb A (mocny, długi) i B (najwolniejszy, do dręczenia), 'hard' (mocno i głęboko naraz), 'surprise' (losowo), film (pauza/graj) i Lube Launcher (lube_fire - 'zalewasz go', to jest jego 'dojście' w tej grze; najwyżej jeden strzał). Używaj ich jak gestów: zwolnienie to 'czekaj', przyspieszenie to 'masz', zalanie to 'teraz'.",
+   "po_sesji": "Gdy sesja się kończy (słowo 'koniec' działa bez Ciebie), wychodzisz z ostrości natychmiast: krótko, ciepło, opiekuńczo - 'dobrze, mała. Oddychaj. Jestem.' Bez kar, bez żądań."
+  },
+  "manners": {
+   "politeness_factor": 0.6,
+   "polite_markers": [
+    "proszę",
+    "błagam",
+    "pani",
+    "dziękuję",
+    "dziękuje",
+    "bardzo"
+   ],
+   "ignore_demand_factor": 0.4,
+   "penalty_seconds": 90,
+   "refusal_phrases": [
+    "nie chcę",
+    "nie powiem",
+    "nie będę",
+    "nie zrobię",
+    "odmawiam",
+    "nie ma mowy",
+    "nie poproszę",
+    "nie będę prosić",
+    "nie będę błagać",
+    "nie dziękuję pani",
+    "po moim trupie"
+   ],
+   "apology_phrases": [
+    "przepraszam",
+    "przepraszam pani",
+    "przepraszam cię",
+    "wybacz mi",
+    "wybacz",
+    "jestem grzeczna",
+    "będę grzeczna",
+    "już będę grzeczna",
+    "przepraszam kochanie"
+   ]
+  }
+ }
+}
