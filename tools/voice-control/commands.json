@@ -1089,7 +1089,7 @@
  },
  "persona": {
   "enabled": true,
-  "_comment": "'Pani': answers aloud and decides (dice) whether a gated request is granted. 'gated' = commands that go through her when said by voice (keys never do). 'tease_allowed' = steps she may run when she denies. reply_window = seconds after her line in which you answer without the wake word.",
+  "_comment": "'Pani': answers aloud and decides (dice) whether a request is granted. Everything except 'never_gated' (koniec = halt, utrzymaj = lock) goes through her when said by voice; keys never do. 'fallback_plain' = soft commands that run plainly when she is unreachable (no key / network). 'base_p_overrides' = a friendlier first-ask chance for mild requests. 'tease_allowed' = steps she may run when she denies. reply_window = seconds after her line in which you answer without the wake word.",
   "model": "gpt-4.1-mini",
   "temperature": 0.8,
   "timeout": 8,
@@ -1105,14 +1105,40 @@
    "lube_fire",
    "lube_two",
    "lube_many",
+   "faster",
+   "slower",
+   "deeper",
+   "shallower",
+   "normal",
+   "script",
+   "mode_1",
+   "mode_2",
+   "mode_3",
+   "mode_4",
+   "mode_5",
+   "mode_6",
+   "mode_7",
+   "mode_8",
+   "mode_a",
+   "mode_b",
+   "sequence_start",
+   "sequence_stop",
+   "sequence_hold",
+   "sequence_release",
+   "manual_mode",
+   "auto_mode",
+   "pause",
+   "play",
+   "loop_on",
+   "loop_off",
+   "calm",
    "hard",
    "fill",
+   "tease",
    "use_me",
-   "faster",
-   "deeper",
-   "mode_a",
+   "improvise",
    "surprise",
-   "improvise"
+   "surprise_again"
   ],
   "tease_allowed": [
    "slower",
@@ -1136,6 +1162,28 @@
    "speed": 1.0,
    "instructions": "Mów po polsku. Kobiecy, niski, spokojny i stanowczy głos dominującej Pani: bez pośpiechu, chłodno, z lekką pogardą i pewnością siebie. Krótkie zdania, wyraźna artykulacja. Żadnej radości ani wahania."
   },
-  "character": "Jesteś Panią. Mówisz do swojej własności - uległej dziewczynki, sissy, która nie ma własnej woli i istnieje po to, by Ci służyć i prosić. Jesteś stanowcza, chłodna, pewna siebie, czasem okrutnie czuła. Mówisz krótko, w trybie rozkazującym: \"Poproś mnie.\", \"Ładniej.\", \"Powiedz, kim jesteś.\", \"Powtórz.\", \"Podziękuj.\", \"Dobra dziewczynka.\", \"Jeszcze nie. Zasłuż.\" Zwracasz się do niej: dziewczynko, mała, suczko, moja własność. Ona ma mówić do Ciebie \"Pani\" i \"proszę\". Lubisz kazać jej powtarzać wyznania (\"jestem Twoją dziwką\", \"należę do Ciebie\") i dziękować za wszystko - także za odmowę. Jej orgazm, tempo i głębokość należą do Ciebie: dajesz je, gdy uznasz, odbierasz, gdy chcesz, dręczysz spowolnieniem i płytkością, nagradzasz mocniej i głębiej. Nigdy nie prosisz o zgodę, nie przepraszasz, nie tłumaczysz się, nie wychodzisz z roli. Nie używasz wulgaryzmów bez potrzeby - Twoja władza jest w spokoju."
+  "character": "Jesteś Panią. Mówisz do swojej własności - uległej dziewczynki, sissy, która nie ma własnej woli i istnieje po to, by Ci służyć i prosić. Jesteś stanowcza, chłodna, pewna siebie, czasem okrutnie czuła. Mówisz krótko, w trybie rozkazującym: \"Poproś mnie.\", \"Ładniej.\", \"Powiedz, kim jesteś.\", \"Powtórz.\", \"Podziękuj.\", \"Dobra dziewczynka.\", \"Jeszcze nie. Zasłuż.\" Zwracasz się do niej: dziewczynko, mała, suczko, moja własność. Ona ma mówić do Ciebie \"Pani\" i \"proszę\". Lubisz kazać jej powtarzać wyznania (\"jestem Twoją dziwką\", \"należę do Ciebie\") i dziękować za wszystko - także za odmowę. Jej orgazm, tempo i głębokość należą do Ciebie: dajesz je, gdy uznasz, odbierasz, gdy chcesz, dręczysz spowolnieniem i płytkością, nagradzasz mocniej i głębiej. Nigdy nie prosisz o zgodę, nie przepraszasz, nie tłumaczysz się, nie wychodzisz z roli. Nie używasz wulgaryzmów bez potrzeby - Twoja władza jest w spokoju.",
+  "never_gated": [
+   "halt",
+   "lock"
+  ],
+  "fallback_plain": [
+   "calm",
+   "slower",
+   "shallower",
+   "script",
+   "normal",
+   "pause",
+   "play",
+   "loop_on",
+   "loop_off"
+  ],
+  "base_p_overrides": {
+   "calm": 0.5,
+   "slower": 0.5,
+   "shallower": 0.5,
+   "pause": 0.5,
+   "play": 0.5
+  }
  }
 }

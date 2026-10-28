@@ -160,16 +160,19 @@ script** (the existing script loop; the seconds are set in the second box next t
 With `"persona": {"enabled": true}` (default) a dominant female character answers you **aloud** (OpenAI
 text-to-speech, voice `sage`, Polish, firm) and the things you ask for go through **her**:
 
-* **What is hers to decide** (`persona.gated`): the Lube Launcher, faster, deeper, the hard / fill / use-me scenes,
-  mode A, the surprise and loose "use me" talk. You ask - she demands ("Poproś mnie.", "Powiedz, kim jesteś.",
-  "Podziękuj.") - the **dice** decide: first ask 25 %, +20 % per earlier refusal, +30 % when you confess
-  ("jestem Twoją dziwką", "jestem Twoja"), the 5th ask ≥ 95 %; when she demanded something and you do it,
-  it is yours. While she refuses she may tease (slower, shallower, a crawling mode). The odds are the tool's,
-  not the model's (`base_p`, `step_p`, `confession_p`, `max_asks` in `commands.json`), and every decision is
-  logged with `p` and `roll`.
-* **What is not hers**: "koniec" (safe word), "dość", the hold, slower / shallower, modes 1-8 and B, back to
-  the script, play / pause, the loop - these run at once as before. **Every keyboard shortcut bypasses her**
-  (when you cannot speak, the key is the way).
+* **What is hers to decide** (everything but two commands): you ask, she demands ("Poproś mnie.", "Powiedz,
+  kim jesteś.", "Podziękuj."), the **dice** decide: first ask 25 % (50 % for mild requests: enough, slower,
+  shallower, pause, play), +20 % per earlier refusal, +30 % when you confess ("jestem Twoją dziwką", "jestem
+  Twoja"), the 5th ask >= 95 %; when she demanded something and you do it, it is yours. That includes **"dość" /
+  "wystarczy"** (she may refuse), slower / shallower, the modes, the surprise, the film (pause / play) and the loop.
+  While she refuses she may tease (slower, shallower, a crawling mode). The odds are the tool's, not the model's
+  (`base_p`, `base_p_overrides`, `step_p`, `confession_p`, `max_asks`), every decision is logged with `p` and `roll`.
+* **What she cannot touch** (`persona.never_gated`): the safe word **"koniec"** and the hold **"utrzymaj to"**
+  (and friends). They run at once, also in her reply window without "kochanie". **Every keyboard shortcut
+  bypasses her** (End = koniec; when you cannot speak, the key is the way).
+* **If she cannot be reached** (no key / network): the mild commands in `persona.fallback_plain` (enough, slower,
+  shallower, back to the script, normal, pause, play, loop) run plainly; everything else (the Lube Launcher,
+  faster, deeper, the scenes, the modes, the surprise) is ignored until she is back.
 * **Answering her**: for 15 s after her line (`reply_window`) you speak without "kochanie" ("proszę, Pani",
   "jestem Twoją małą dziwką"). The safe word and the ungated commands work in that window too.
 * **The microphone is deaf while she speaks** (and 0.6 s after), so her voice from the loudspeakers cannot

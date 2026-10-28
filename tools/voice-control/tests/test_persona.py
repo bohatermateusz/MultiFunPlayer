@@ -152,21 +152,54 @@ class PersonaTests(unittest.TestCase):
         self.assertEqual(self.actions(), ["Hismith::Mode::Set", "Hismith::Depth::Deeper"])
 
     # ---- what is not hers to decide ------------------------------------------------------------------
-    def test_ungated_commands_run_at_once(self):
-        for text, action in [("kochanie, koniec", "Hismith::Halt"), ("kochanie, dość", "Hismith::Calm"), ("kochanie, wolniej", "Hismith::Speed::Slower"),
-                             ("kochanie, tryb trzy", "Hismith::Mode::Set"), ("kochanie, wróć do filmu", "Hismith::Mode::Script")]:
-            self.c._last.clear()
+    def test_only_the_safe_word_and_the_hold_run_without_her(self):
+        for text, action in [("kochanie, koniec", "Hismith::Halt"), ("kochanie, utrzymaj to", "Hismith::Lock::Start")]:
+            self.c._locked_until = None
             o = self.say(text)
             self.assertEqual(o.status, "executed", text)
             self.assertEqual(self.actions()[0], action, text)
         self.assertEqual(FakePani.calls, [])
+
+    def test_everything_else_goes_through_her_even_enough_and_the_film(self):
+        self.c.persona_cfg = dict(CFG["persona"], base_p=0.0, base_p_overrides={}, step_p=0.0)
+        for text in ["kochanie, dość", "kochanie, wolniej", "kochanie, tryb trzy", "kochanie, wróć do filmu", "kochanie, pauza", "kochanie, zapętl to"]:
+            self.c._last.clear()
+            before = len(FakePani.calls)
+            o = self.say(text)
+            self.assertEqual(len(FakePani.calls), before + 1, text)
+            self.assertNotEqual(o.status, "executed", text)   # her dice (p = 0) refuse
+
+    def test_she_may_refuse_enough_and_grant_it_later(self):
+        self.c.persona_cfg = dict(CFG["persona"], base_p=0.0, base_p_overrides={"calm": 0.0}, step_p=1.0)
+        o = self.say("kochanie, dość", request="calm", denied="Nie. Jeszcze nie skończyłam.", granted="Dobrze. Odpocznij.")
+        self.assertEqual(o.status, "denied")
+        self.assertEqual(self.said[-1], "Nie. Jeszcze nie skończyłam.")
+        self.assertEqual(self.runs, [])
+        o = self.say("kochanie, błagam, dość", request="calm", denied="Nie.", granted="Dobrze. Odpocznij.")
+        self.assertEqual(o.status, "executed")
+        self.assertEqual(self.actions(), ["Hismith::Calm"])
+
+    def test_mild_requests_have_friendlier_odds(self):
+        self.c.persona_cfg = dict(CFG["persona"], base_p=0.0, base_p_overrides={"calm": 0.5}, step_p=0.0)
+        self.c.rng = random.Random(0)
+        o = self.say("kochanie, dość", request="calm")
+        self.assertEqual(o.extra["p"], 0.5)
+        o = self.say("kochanie, spuść się na mnie", request="lube_fire")
+        self.assertEqual(o.extra["p"], 0.0)
+
+    def test_film_goes_through_her_too(self):
+        self.c.persona_cfg = dict(CFG["persona"], base_p=1.0)
+        o = self.say("kochanie, pauza", request="pause", granted="Dobrze. Chwila przerwy.")
+        self.assertEqual(o.status, "executed")
+        self.assertEqual(self.runs[-1], [{"action": "Media::PlayPause::Set", "args": [False]}])
 
     def test_keys_bypass_her(self):
         self.assertEqual(self.c.press("lube_fire").status, "executed")
         self.assertEqual(self.c.press("faster").status, "executed")
         self.assertEqual(FakePani.calls, [])
 
-    def test_ungated_request_recognised_by_her_runs_and_she_comments(self):
+    def test_a_mode_request_is_hers_to_grant_and_she_comments(self):
+        self.c.persona_cfg = dict(CFG["persona"], base_p=1.0)
         o = self.say("kochanie, może ten trzeci program", request="mode_3", granted="Trójka. Siedź cicho.")
         self.assertEqual(o.status, "executed")
         self.assertEqual(self.runs[-1][0]["args"], [3])
@@ -184,13 +217,16 @@ class PersonaTests(unittest.TestCase):
         self.assertEqual(o.status, "ignored")
         self.assertEqual(o.detail, "no wake word")
 
-    def test_in_the_window_the_safe_word_and_ungated_commands_need_no_wake_word(self):
+    def test_in_the_window_the_safe_word_needs_no_wake_word_but_enough_goes_to_her(self):
         self.say("kochanie, spuść się na mnie", request="lube_fire")
-        for text, action in [("dość", "Hismith::Calm"), ("koniec", "Hismith::Halt")]:
-            self.c._last.clear()
-            o = self.say(text)
-            self.assertEqual(o.status, "executed", text)
-            self.assertEqual(self.actions()[0], action)
+        calls = len(FakePani.calls)
+        self.c._last.clear()
+        o = self.say("koniec")
+        self.assertEqual(o.status, "executed")
+        self.assertEqual(self.actions()[0], "Hismith::Halt")
+        self.assertEqual(len(FakePani.calls), calls)
+        self.say("dość", request="calm")
+        self.assertEqual(len(FakePani.calls), calls + 1)
 
     def test_conversation_without_a_request_is_talk(self):
         o = self.say("kochanie, jestem Twoja", request="none", confession=True, denied="Wiem. Powtórz.")
@@ -220,14 +256,28 @@ class PersonaTests(unittest.TestCase):
         self.assertEqual(self.actions(), ["Hismith::LubeLauncher::Fire"])   # her extras are dropped in the hold
 
     # ---- failures and modes ----------------------------------------------------------------------------
-    def test_server_errors_are_ignored_and_the_tool_goes_on(self):
+    def test_server_errors_mild_commands_run_plain_the_rest_is_ignored(self):
         for mode in ("http500", "garbage"):
             FakePani.mode = mode
-            o = self.say("kochanie, spuść się na mnie")
-            self.assertEqual(o.status, "ignored", mode)
-            self.assertIn("persona unavailable", o.detail)
+            self.c._last.clear()
+            o = self.say("kochanie, dość")
+            self.assertEqual(o.status, "executed", mode)
+            self.assertIn("ran plain", o.detail)
+            self.assertEqual(self.actions(), ["Hismith::Calm"])
+            for text in ["kochanie, spuść się na mnie", "kochanie, pieprz mnie", "kochanie, tryb trzy", "kochanie, na maksa", "kochanie, szybciej"]:
+                o = self.say(text)
+                self.assertEqual(o.status, "ignored", text)
+                self.assertIn("persona unavailable", o.detail)
         FakePani.mode = "ok"
         self.assertEqual(self.say("kochanie, koniec").status, "executed")
+        self.c._last.clear()
+        FakePani.mode = "http500"
+        self.assertEqual(self.say("kochanie, utrzymaj to").status, "executed")
+
+    def test_no_key_behaves_like_an_outage(self):
+        self.c.persona = Persona("x", api_key="", api_key_env="NO_SUCH_VARIABLE_X")
+        self.assertEqual(self.say("kochanie, wolniej").status, "executed")
+        self.assertEqual(self.say("kochanie, spuść się na mnie").status, "ignored")
 
     def test_dry_run_speaks_but_sends_nothing(self):
         self.c.dry_run = True
@@ -270,13 +320,21 @@ class RequestShape(unittest.TestCase):
         with self.assertRaises(PersonaError):
             Persona("x", api_key="", api_key_env="NO_SUCH_VARIABLE_X").respond("y", INTENTS, STEP_IDS, {}, [])
 
-    def test_gated_and_tease_lists_point_at_real_intents(self):
-        ids = {i.id for i in INTENTS} | {"improvise"}
-        for x in CFG["persona"]["gated"] + CFG["persona"]["tease_allowed"]:
+    def test_gated_is_everything_except_the_safe_word_and_the_hold(self):
+        ids = {i.id for i in INTENTS}
+        gated, never = set(CFG["persona"]["gated"]), set(CFG["persona"]["never_gated"])
+        self.assertEqual(never, {"halt", "lock"})
+        self.assertFalse(gated & never)
+        self.assertEqual(gated | never, ids)
+        for x in ("calm", "slower", "shallower", "pause", "play", "script", "normal", "mode_3", "mode_b", "lube_fire", "surprise", "loop_on"):
+            self.assertIn(x, gated, x)
+        for x in CFG["persona"]["tease_allowed"] + CFG["persona"]["fallback_plain"]:
             self.assertIn(x, ids, x)
-        for never in ("halt", "calm", "lock"):
-            self.assertNotIn(never, CFG["persona"]["gated"])
-            self.assertNotIn(never, CFG["persona"]["tease_allowed"])
+        for never_tease in ("halt", "calm", "lock"):
+            self.assertNotIn(never_tease, CFG["persona"]["tease_allowed"])
+        self.assertTrue(set(CFG["persona"]["fallback_plain"]) <= gated)
+        for hard in ("lube_fire", "lube_two", "lube_many", "hard", "fill", "use_me", "faster", "deeper", "mode_a", "surprise"):
+            self.assertNotIn(hard, CFG["persona"]["fallback_plain"], hard)
 
 
 if __name__ == "__main__":

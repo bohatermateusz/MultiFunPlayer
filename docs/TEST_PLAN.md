@@ -106,6 +106,9 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.25 | Jej głos z głośników: po każdej jej linii obserwuj okno narzędzia | żadna jej linia nie jest rozpoznana jako Twoja komenda (mikrofon głuchy, gdy mówi); jeśli jest -> zwiększ `persona.echo_tail` |
 | 6.26 | 'kochanie, koniec' gdy Pani mówi / w trakcie jej odmowy; klawisz End | maszyna staje natychmiast, hold zdjęty, Pani milknie na następną linię |
 | 6.27 | Hold ('utrzymaj to') + prośby do Pani: 'szybciej' / 'spuść się na mnie' | 'szybciej': ona mówi, nic nie zmienia (`locked`); lube przechodzi przez jej kości |
+| 6.30 | 'kochanie, dość' 5 razy z rzędu (maszyna chodzi), potem 'koniec' | 'dość' bywa odmówione (Pani: 'Nie. Jeszcze nie skończyłam.'), przy kolejnych prośbach zgoda (50 % pierwsza, rośnie); 'koniec' ZAWSZE stawia maszynę od razu |
+| 6.31 | 'kochanie, pauza' / 'wróć do filmu' / 'tryb trzy' / 'wolniej' | każde przez Panią (słychać jej odpowiedź), czasem odmowa; 'utrzymaj to' i 'koniec' bez niej |
+| 6.32 | Wyłącz internet / zły klucz: 'dość', 'wolniej', 'pauza', potem 'spuść się na mnie', 'szybciej' | dość/wolniej/pauza działają zwyczajnie (komunikat 'ran plain'); lube/szybciej ignorowane (persona unavailable) |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |
 

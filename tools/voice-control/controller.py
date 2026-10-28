@@ -18,7 +18,8 @@ NO = {"nie", "anuluj", "stop", "odwolaj"}
 LLM_DEFAULTS = {"min_confidence": 0.8, "max_words": 14, "prefilter_similarity": 0.5, "prefilter_min_length": 5, "context": 3,
                 "max_steps": 4, "max_faster": 3, "max_deeper": 3, "max_lube": 1}
 PERSONA_DEFAULTS = {"enabled": True, "reply_window": 15.0, "base_p": 0.25, "step_p": 0.2, "confession_p": 0.3, "max_asks": 5,
-                    "silence_reset": 180.0, "gated": [], "tease_allowed": [], "max_words": 30}
+                    "silence_reset": 180.0, "gated": [], "tease_allowed": [], "max_words": 30,
+                    "never_gated": ["halt", "lock"], "fallback_plain": [], "base_p_overrides": {}}
 
 
 @dataclass
@@ -39,10 +40,11 @@ class _NeedLlm:
 
 
 class _NeedPersona:
-    """the utterance goes to the persona (a request she decides on, or conversation)"""
+    """the utterance goes to the persona (a request she decides on, or conversation); `plain` is the strict match, if
+    any, that may run plainly when she cannot be reached"""
 
-    def __init__(self, transcript, state, history):
-        self.transcript, self.state, self.history = transcript, state, history
+    def __init__(self, transcript, state, history, plain=None):
+        self.transcript, self.state, self.history, self.plain = transcript, state, history, plain
 
 
 class Controller:
@@ -133,15 +135,15 @@ class Controller:
         return {"prosby_bez_zgody": dict(self._asks), "nalezy_sie_po_wykonaniu_zadania": self._owed,
                 "blokada_5_min": self.lock_remaining() > 0, "ostatnie_komendy": list(self._recent)}
 
-    def _need_persona(self, transcript):
-        return _NeedPersona(transcript, self._persona_state(), list(self._history))
+    def _need_persona(self, transcript, plain=None):
+        return _NeedPersona(transcript, self._persona_state(), list(self._history), plain)
 
     def _ask_persona(self, need: _NeedPersona):
         try:
             step_ids = [i.id for i in self.intents if i.improvise]
             return self.persona.respond(need.transcript, self.intents, step_ids, need.state, need.history)
         except Exception as e:
-            return e
+            return (e, need.plain)
 
     def _decide(self, request_id, turn):
         """the honest dice: -> (granted, p, roll)"""
@@ -149,7 +151,8 @@ class Controller:
         asks = self._asks.get(request_id, 0)
         if self._owed == request_id and turn.thanked:
             return True, 1.0, 0.0
-        p = float(c["base_p"]) + float(c["step_p"]) * asks + (float(c["confession_p"]) if turn.confession else 0.0)
+        base = float(c["base_p_overrides"].get(request_id, c["base_p"]))
+        p = base + float(c["step_p"]) * asks + (float(c["confession_p"]) if turn.confession else 0.0)
         if asks + 1 >= int(c["max_asks"]):
             p = max(p, 0.95)
         p = min(p, 0.95)
@@ -170,8 +173,14 @@ class Controller:
         return steps, used
 
     def _finish_persona(self, transcript, turn) -> Outcome:
-        if isinstance(turn, Exception):
-            return Outcome("ignored", f"persona unavailable ({turn})", via="persona")
+        if isinstance(turn, tuple):
+            error, plain = turn
+            if plain is not None and plain.intent.id in self.persona_cfg["fallback_plain"]:
+                # she cannot be reached: a mild command (calm, slower, pause...) must not get stuck with her
+                o = self._run_match(plain, self.clock(), None, "persona", {})
+                o.detail = f"persona unavailable ({error}), ran plain" + (f"; {o.detail}" if o.detail else "")
+                return o
+            return Outcome("ignored", f"persona unavailable ({error})", via="persona")
         extra = {"persona_raw": turn.raw, "latency_ms": turn.latency_ms}
         if not turn.addressed:
             return Outcome("ignored", "persona: not said to her", via="persona", extra=extra)
@@ -349,7 +358,7 @@ class Controller:
                 if m is not None and not self._gated(m.intent.id):
                     return self._run_match(m, now)
                 if len(normalize(transcript).split()) <= int(self.persona_cfg["max_words"]):
-                    return self._need_persona(transcript)
+                    return self._need_persona(transcript, m if m is not None and self._gated(m.intent.id) else None)
             return self._maybe_llm(transcript, Outcome("ignored", "no wake word"))
         if not command.strip():
             return Outcome("ignored", "wake word only")
@@ -358,7 +367,7 @@ class Controller:
         if m is None:
             return self._maybe_llm(transcript, Outcome("ignored", reason))
         if self._gated(m.intent.id):
-            return self._need_persona(transcript)   # hers to decide
+            return self._need_persona(transcript, m)   # hers to decide
 
         return self._run_match(m, now)
 
