@@ -116,17 +116,19 @@ class StrictScenes(unittest.TestCase):
     def test_improvise_has_no_strict_phrases_and_atomic_steps_only(self):
         self.assertEqual(BY_ID["improvise"].phrases, [])
         allowed = {i.id for i in INTENTS if i.improvise}
-        for forbidden in ["lube_fire", "lube_many", "mode_a", "mode_b", "hard", "fill", "tease", "use_me", "halt", "calm", "pause", "play", "sequence_start"]:
+        for forbidden in ["lube_many", "lube_two", "hard", "fill", "tease", "use_me", "halt", "calm", "pause", "play", "sequence_start", "lock", "surprise"]:
             self.assertNotIn(forbidden, allowed)
-        for needed in ["faster", "slower", "deeper", "shallower", "script", "mode_3"]:
+        for needed in ["faster", "slower", "deeper", "shallower", "script", "mode_3", "lube_fire", "mode_a", "mode_b"]:
             self.assertIn(needed, allowed)
 
     def test_schema_and_prompt_for_improvising(self):
         schema = build_schema(INTENTS)["schema"]["properties"]
         self.assertIn("improvise", schema["intent"]["enum"])
         step_enum = schema["plan"]["items"]["properties"]["step"]["enum"]
-        self.assertNotIn("lube_fire", step_enum)
-        self.assertIn("faster", step_enum)
+        self.assertNotIn("halt", step_enum)
+        self.assertNotIn("lube_many", step_enum)
+        for ok in ["faster", "lube_fire", "mode_a", "mode_b"]:
+            self.assertIn(ok, step_enum)
         prompt = build_system_prompt(INTENTS, ["kochanie"], [])
         self.assertIn("IMPROVISE", prompt)
         self.assertIn("consensual", prompt)
@@ -161,14 +163,20 @@ class Improvise(unittest.TestCase):
         self.assertEqual(self.runs[-1][-1]["args"], [3])
 
     def test_the_model_cannot_use_forbidden_steps(self):
-        o = self.say("kochanie, rób ze mną co ci się podoba", [{"step": "lube_fire", "times": 1}, {"step": "mode_a", "times": 1},
-                                                  {"step": "halt", "times": 1}, {"step": "format_c", "times": 1}])
+        o = self.say("kochanie, rób ze mną co ci się podoba", [{"step": "halt", "times": 1}, {"step": "calm", "times": 1},
+                                                  {"step": "lube_many", "times": 1}, {"step": "format_c", "times": 1}])
         self.assertEqual(o.status, "ignored")
         self.assertEqual(self.runs, [])
 
-    def test_forbidden_steps_are_dropped_but_allowed_ones_stay(self):
-        self.say("kochanie, weź mnie jak chcesz", [{"step": "lube_fire", "times": 1}, {"step": "slower", "times": 1}])
-        self.assertEqual(actions(self.runs[-1]), ["Hismith::Speed::Slower"])
+    def test_lube_and_modes_a_b_may_be_part_of_a_scene(self):
+        self.say("kochanie, zniszcz mnie i skończ we mnie", [{"step": "mode_a", "times": 1}, {"step": "lube_fire", "times": 1}])
+        self.assertEqual(actions(self.runs[-1]), ["Hismith::Mode::Set", "Hismith::LubeLauncher::Fire"])
+        self.assertEqual(self.runs[-1][0]["args"], [9])
+
+    def test_at_most_one_shot_per_scene_and_forbidden_steps_are_dropped(self):
+        self.say("kochanie, weź mnie jak chcesz", [{"step": "lube_fire", "times": 2}, {"step": "halt", "times": 1},
+                                                   {"step": "lube_fire", "times": 1}, {"step": "slower", "times": 1}])
+        self.assertEqual(actions(self.runs[-1]), ["Hismith::LubeLauncher::Fire", "Hismith::Speed::Slower"])
 
     def test_total_increase_is_capped(self):
         plan = [{"step": "faster", "times": 2}] * 4 + [{"step": "deeper", "times": 2}] * 4

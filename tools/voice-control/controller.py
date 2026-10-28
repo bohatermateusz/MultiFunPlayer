@@ -15,7 +15,7 @@ YES = {"tak", "potwierdzam", "dawaj", "jasne"}
 NO = {"nie", "anuluj", "stop", "odwolaj"}
 
 LLM_DEFAULTS = {"min_confidence": 0.8, "max_words": 14, "prefilter_similarity": 0.5, "prefilter_min_length": 5, "context": 3,
-                "max_steps": 4, "max_faster": 3, "max_deeper": 3}
+                "max_steps": 4, "max_faster": 3, "max_deeper": 3, "max_lube": 1}
 
 
 @dataclass
@@ -232,10 +232,16 @@ class Controller:
         by_id = {i.id: i for i in self.intents if i.improvise}
         steps, used = [], []
         increases = {"faster": 0, "deeper": 0}
+        lube = 0
         for item in plan[:int(self.llm_cfg["max_steps"])]:
             intent = by_id.get(item.get("step"))
             if intent is None:
                 continue
+            if intent.id.startswith("lube_"):
+                # a shot is final: at most max_lube per improvised scene, whatever the model asks for
+                if lube >= int(self.llm_cfg["max_lube"]):
+                    continue
+                lube += 1
             times = max(1, min(2, int(item.get("times", 1)))) if intent.repeatable else 1
             if intent.id in increases:
                 room = int(self.llm_cfg["max_" + intent.id]) - increases[intent.id]

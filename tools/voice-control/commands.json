@@ -60,7 +60,8 @@
    "cooldown": 10,
    "max_extra_words": 1,
    "description": "Fire the Lube Launcher once (the user wants to come / squirt on them).",
-   "llm_min_confidence": 0.9
+   "llm_min_confidence": 0.9,
+   "improvise": true
   },
   {
    "id": "lube_two",
@@ -508,7 +509,8 @@
     }
    ],
    "cooldown": 2,
-   "description": "Custom mode A: fastest, full depth, smallest stroke (max out)."
+   "description": "Custom mode A: fastest, full depth, smallest stroke (max out).",
+   "improvise": true
   },
   {
    "id": "mode_b",
@@ -530,7 +532,8 @@
     }
    ],
    "cooldown": 2,
-   "description": "Custom mode B: slowest possible, full depth, smallest stroke."
+   "description": "Custom mode B: slowest possible, full depth, smallest stroke.",
+   "improvise": true
   },
   {
    "id": "sequence_start",
@@ -1070,7 +1073,8 @@
   "temperature": 0.3,
   "max_steps": 4,
   "max_faster": 3,
-  "max_deeper": 3
+  "max_deeper": 3,
+  "max_lube": 1
  },
  "sounds": "off",
  "lock": {
