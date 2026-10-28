@@ -92,7 +92,7 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(msgs, [{"action": "Buttplug.io/0::Hismith::LubeLauncher::FireMany", "args": [3]}])
 
     def test_pause_play_and_loop(self):
-        self.assertEqual(self.heard("stop", "graj", "zapętl to", "koniec pętli"), ["executed"] * 4)
+        self.assertEqual(self.heard("pauza", "graj", "zapętl to", "koniec pętli"), ["executed"] * 4)
         msgs = self.mfp.wait(4)
         self.assertEqual([m["action"] for m in msgs],
                          ["Media::PlayPause::Set", "Media::PlayPause::Set", "Script::Loop::Start", "Script::Loop::Clear"])

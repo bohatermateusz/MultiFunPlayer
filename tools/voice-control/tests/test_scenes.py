@@ -192,9 +192,9 @@ class Improvise(unittest.TestCase):
         self.assertEqual(self.c.handle("kochanie, tak rozmawiam z kolegą").status, "ignored")
 
     def test_low_confidence_and_cooldown(self):
-        o = self.say("kochanie, jestem twoja", [{"step": "faster", "times": 1}], )
+        o = self.say("kochanie, cała dla ciebie", [{"step": "faster", "times": 1}], )
         self.assertEqual(o.status, "executed")
-        o = self.say("kochanie, jestem twoja jeszcze bardziej", [{"step": "faster", "times": 1}])
+        o = self.say("kochanie, cała dla ciebie jeszcze bardziej", [{"step": "faster", "times": 1}])
         self.assertEqual(o.status, "cooldown")
         self.clock.t += 20
         FakeChat.table["kochanie, nie wiem co"] = dict(intent="improvise", confidence=0.5, addressed=True, plan=[{"step": "faster", "times": 1}])

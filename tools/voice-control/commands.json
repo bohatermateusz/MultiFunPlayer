@@ -42,7 +42,13 @@
     "zalej mnie",
     "obryzgaj mnie",
     "wytrysnij na mnie",
-    "oznacz mnie"
+    "oznacz mnie",
+    "spuść się we mnie",
+    "skończ na mnie",
+    "skończ we mnie",
+    "dojdź we mnie",
+    "daj mi spermę",
+    "chcę twoją spermę"
    ],
    "steps": [
     {
@@ -115,7 +121,12 @@
     "mocniej",
     "dawaj",
     "więcej",
-    "jeszcze szybciej"
+    "jeszcze szybciej",
+    "ostrzej",
+    "dociśnij",
+    "daj mi więcej",
+    "dawaj mocniej",
+    "mocno"
    ],
    "steps": [
     {
@@ -140,7 +151,13 @@
     "łagodniej",
     "mniej",
     "powoli",
-    "jeszcze wolniej"
+    "jeszcze wolniej",
+    "wolno",
+    "lżej",
+    "łagodnie",
+    "delikatnie",
+    "nie tak szybko",
+    "nie tak mocno"
    ],
    "steps": [
     {
@@ -163,7 +180,11 @@
     "do końca",
     "w głąb",
     "jeszcze głębiej",
-    "głębszy"
+    "głębszy",
+    "do oporu",
+    "wejdź głębiej",
+    "cały",
+    "głębiej proszę"
    ],
    "steps": [
     {
@@ -186,7 +207,11 @@
     "nie tak głęboko",
     "mniej głęboko",
     "wyjdź trochę",
-    "jeszcze płycej"
+    "jeszcze płycej",
+    "sam czubek",
+    "czubkiem",
+    "wycofaj trochę",
+    "nie tak daleko"
    ],
    "steps": [
     {
@@ -234,7 +259,12 @@
     "koniec trybu",
     "wyłącz tryb",
     "skrypt",
-    "film"
+    "film",
+    "do filmu",
+    "daj film",
+    "z filmem",
+    "jak film",
+    "według filmu"
    ],
    "steps": [
     {
@@ -260,7 +290,9 @@
     "program 1",
     "włącz tryb jeden",
     "numer jeden",
-    "jedynka"
+    "jedynka",
+    "włącz jedynkę",
+    "daj jedynkę"
    ],
    "steps": [
     {
@@ -284,7 +316,9 @@
     "program 2",
     "włącz tryb dwa",
     "numer dwa",
-    "dwójka"
+    "dwójka",
+    "włącz dwójkę",
+    "daj dwójkę"
    ],
    "steps": [
     {
@@ -308,7 +342,9 @@
     "program 3",
     "włącz tryb trzy",
     "numer trzy",
-    "trójka"
+    "trójka",
+    "włącz trójkę",
+    "daj trójkę"
    ],
    "steps": [
     {
@@ -332,7 +368,9 @@
     "program 4",
     "włącz tryb cztery",
     "numer cztery",
-    "czwórka"
+    "czwórka",
+    "włącz czwórkę",
+    "daj czwórkę"
    ],
    "steps": [
     {
@@ -356,7 +394,9 @@
     "program 5",
     "włącz tryb pięć",
     "numer pięć",
-    "piątka"
+    "piątka",
+    "włącz piątkę",
+    "daj piątkę"
    ],
    "steps": [
     {
@@ -380,7 +420,9 @@
     "program 6",
     "włącz tryb sześć",
     "numer sześć",
-    "szóstka"
+    "szóstka",
+    "włącz szóstkę",
+    "daj szóstkę"
    ],
    "steps": [
     {
@@ -404,7 +446,9 @@
     "program 7",
     "włącz tryb siedem",
     "numer siedem",
-    "siódemka"
+    "siódemka",
+    "włącz siódemkę",
+    "daj siódemkę"
    ],
    "steps": [
     {
@@ -428,7 +472,9 @@
     "program 8",
     "włącz tryb osiem",
     "numer osiem",
-    "ósemka"
+    "ósemka",
+    "włącz ósemkę",
+    "daj ósemkę"
    ],
    "steps": [
     {
@@ -591,10 +637,12 @@
   {
    "id": "pause",
    "phrases": [
-    "stop",
     "pauza",
     "wstrzymaj film",
-    "zatrzymaj film"
+    "zatrzymaj film",
+    "pauzuj",
+    "zatrzymaj wideo",
+    "zatrzymaj odtwarzanie"
    ],
    "steps": [
     {
@@ -605,7 +653,7 @@
     }
    ],
    "cooldown": 1,
-   "description": "Pause the video."
+   "description": "Pause the video (pauza, zatrzymaj film). Not the machine."
   },
   {
    "id": "play",
@@ -614,7 +662,10 @@
     "wznów",
     "kontynuuj",
     "odtwarzaj",
-    "dalej film"
+    "dalej film",
+    "puść film",
+    "włącz film",
+    "odtwarzaj film"
    ],
    "steps": [
     {
@@ -633,7 +684,11 @@
     "zapętl",
     "zapętl to",
     "powtórz to",
-    "w kółko"
+    "w kółko",
+    "powtarzaj",
+    "zapętl ten moment",
+    "ten moment",
+    "jeszcze raz to samo"
    ],
    "steps": [
     {
@@ -685,6 +740,7 @@
   {
    "id": "calm",
    "phrases": [
+    "stop",
     "dość",
     "wystarczy",
     "starczy",
@@ -692,7 +748,15 @@
     "stój",
     "wystarczy kochanie",
     "zwolnij maksymalnie",
-    "spokojnie"
+    "spokojnie",
+    "chwila",
+    "zaczekaj",
+    "poczekaj",
+    "za dużo",
+    "za mocno",
+    "za szybko",
+    "nie dam rady",
+    "ulituj się"
    ],
    "steps": [
     {
@@ -700,7 +764,7 @@
      "args": []
     }
    ],
-   "description": "Enough / too much / slow down at once (dość, wystarczy, starczy, przestań, stój): switch to the slowest speed at medium depth - the machine KEEPS going, it does not stop. Not 'koniec' (that is halt).",
+   "description": "Enough / too much / stop for a moment (dość, wystarczy, stop, chwila, za mocno): switch to the slowest speed at medium depth - the machine KEEPS going, it does not stop. Not 'koniec' (that is the safe word).",
    "cooldown": 1,
    "llm_min_confidence": 0.6,
    "threshold": 0.9,
@@ -716,7 +780,13 @@
     "mocniej pieprz mnie",
     "weź mnie ostro",
     "jak sukę",
-    "ostro mnie"
+    "ostro mnie",
+    "weź mnie mocno",
+    "pieprz mnie mocno",
+    "zerżnij mnie mocno",
+    "wal",
+    "mocno mnie",
+    "ostro"
    ],
    "steps": [
     {
@@ -746,7 +816,12 @@
     "głęboko w dupcię",
     "w dupcię",
     "weź moją dupcię",
-    "do samego dna"
+    "do samego dna",
+    "wypełnij mnie cały",
+    "wejdź we mnie cały",
+    "napełnij mnie",
+    "wejdź we mnie",
+    "cały we mnie"
    ],
    "steps": [
     {
@@ -772,7 +847,13 @@
     "delikatnie mnie",
     "powoli mnie",
     "zmysłowo",
-    "pomęcz mnie"
+    "pomęcz mnie",
+    "dokuczaj mi",
+    "czule",
+    "powoli i czule",
+    "muskaj mnie",
+    "droczenie",
+    "pieść"
    ],
    "steps": [
     {
@@ -804,7 +885,13 @@
     "jestem twoją dziewczynką",
     "jestem twoją sissy",
     "weź mnie jak dziwkę",
-    "zrób ze mnie dziewczynkę"
+    "zrób ze mnie dziewczynkę",
+    "weź mnie",
+    "jestem twoja",
+    "jestem cała twoja",
+    "zrób ze mną co chcesz",
+    "należę do ciebie",
+    "twoja dziwka"
    ],
    "steps": [
     {
@@ -841,7 +928,11 @@
     "zrób co chcesz",
     "los szczęścia",
     "losowo",
-    "zdaj się na los"
+    "zdaj się na los",
+    "zrób mi niespodziankę",
+    "coś nowego",
+    "wymyśl coś",
+    "zaskocz"
    ],
    "steps": [
     {
@@ -903,7 +994,13 @@
     "jeszcze jeszcze",
     "nie przestawaj",
     "właśnie tak",
-    "kontynuuj kochanie"
+    "kontynuuj kochanie",
+    "o tak",
+    "tak dobrze",
+    "idealnie",
+    "nie zmieniaj niczego",
+    "tak zostaw",
+    "trzymaj"
    ],
    "steps": [
     {

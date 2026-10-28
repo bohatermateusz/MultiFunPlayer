@@ -1,5 +1,7 @@
 # Polish voice control and keyboard shortcuts for MultiFunPlayer (HISMITH S2, Lube Launcher)
 
+**Ściąga po polsku, co mówić podczas sesji: [`docs/KOMENDY.md`](../../docs/KOMENDY.md).**
+
 Say the wake word **"kochanie"** and a command ("kochanie, szybciej"). The microphone listens all the
 time, but only short pieces of speech are sent to a speech-to-text service in the cloud, and a piece
 is only a command if it **starts with the wake word** and is close to a phrase in `commands.json`.
@@ -60,7 +62,7 @@ when `"wake": {"required": false}`). The tool is silent by default; the result i
 | back to the funscript (keep boost) | wróć do filmu, wróć do skryptu, wyłącz tryb | (button "Script") |
 | Lube Launcher | spuść się na mnie, strzel na mnie, spuść się, dojdź na mnie | F8 |
 | Lube Launcher several times | spuść się na mnie kilka razy / dwa razy / trzy razy | |
-| play / pause the video | graj, wznów / stop, pauza | |
+| play / pause the video | graj, wznów / pauza, zatrzymaj film ("stop" is calm, not pause) | |
 | script loop on / off | zapętl to, powtórz to / koniec pętli, wyłącz pętlę | |
 | mode sequence (2 min per mode) | włącz sekwencję, wstrzymaj tryb, wznów sekwencję, koniec sekwencji | |
 | calm (slowest, medium depth) / stop everything | dość, wystarczy, starczy / koniec | Home / End |

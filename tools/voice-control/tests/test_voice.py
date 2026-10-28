@@ -38,13 +38,13 @@ class MatchPositive(unittest.TestCase):
             self.assertEqual(best(t)[0], "lube_fire", t)
 
     def test_repeated_word_and_longer_phrase_with_a_short_one_inside(self):
-        self.assertEqual(best("stop stop")[0], "pause")
+        self.assertEqual(best("stop stop")[0], "calm")
         self.assertEqual(best("wznów sekwencję")[0], "sequence_release")   # contains the one-word command "wznów"
         self.assertEqual(best("wznów")[0], "play")
         self.assertIsNone(best("wznów proszę")[0])                          # one-word commands must be said alone
 
     def test_others(self):
-        cases = {"Stop.": "pause", "pauza": "pause", "Graj": "play", "zapętl": "loop_on", "Zapętl to!": "loop_on",
+        cases = {"Stop.": "calm", "pauza": "pause", "Graj": "play", "zapętl": "loop_on", "Zapętl to!": "loop_on",
                  "koniec pętli": "loop_off", "włącz sekwencję": "sequence_start", "wróć do skryptu": "script", "koniec sekwencji": "sequence_stop",
                  "wstrzymaj tryb": "sequence_hold", "wznów sekwencję": "sequence_release", "tryb ręczny": "manual_mode",
                  "tryb automatyczny": "auto_mode", "szybciej": "faster", "wolniej": "slower"}
