@@ -334,5 +334,17 @@
  {
   "say": "kochanie, zaskoczyła mnie dzisiaj pogoda",
   "intent": "none"
+ },
+ {
+  "say": "kochanie, nieee, nie chcę tego, coś innego",
+  "intent": "surprise_again"
+ },
+ {
+  "say": "trwanie, zmień to",
+  "intent": "surprise_again"
+ },
+ {
+  "say": "kochanie, zmieniłem zdanie co do pracy",
+  "intent": "none"
  }
 ]

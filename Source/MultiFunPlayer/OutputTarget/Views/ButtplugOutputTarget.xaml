@@ -339,6 +339,18 @@
                     <Button Style="{StaticResource MaterialDesignOutlinedButton}"
                             MinWidth="44"
                             Padding="8 0"
+                            Click="{s:Action HismithSurpriseAgain}"
+                            Content="Again"
+                            ToolTip="Something else: draw the surprise again (within a minute of the last one); shots that have not been fired yet are dropped"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text="Del"/>
+                </StackPanel>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
                             Command="{s:Action OnHismithModeButton}" CommandParameter="12"
                             Content="Calm"
                             ToolTip="Calm: the slowest speed at medium depth (the machine keeps going)"/>

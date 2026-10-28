@@ -86,6 +86,21 @@ class StrictScenes(unittest.TestCase):
             self.assertEqual(self.runs[-1], [{"action": "{target}::Hismith::Surprise", "args": []}], text)
         self.assertEqual(CFG["keys"]["insert"], "surprise")
 
+    def test_re_roll_phrases_run_the_again_action(self):
+        c = self.make()
+        for text in ["kochanie, nieee, coś innego", "kochanie, zmień", "kochanie, nie, zmień", "kochanie, jeszcze raz",
+                     "kochanie, losuj ponownie", "kochanie, inaczej", "kochanie, nie to"]:
+            c._last.clear()
+            self.assertEqual(c.handle(text).intent, "surprise_again", text)
+            self.assertEqual(self.runs[-1], [{"action": "{target}::Hismith::Surprise::Again", "args": []}], text)
+        self.assertEqual(CFG["keys"]["delete"], "surprise_again")
+
+    def test_re_roll_words_without_the_wake_word_do_nothing(self):
+        c = self.make()
+        for text in ["zmień", "coś innego", "jeszcze raz", "inaczej"]:
+            self.assertEqual(c.handle(text).status, "ignored", text)
+        self.assertEqual(self.runs, [])
+
     def test_surprise_is_not_confused_with_improvising_or_scenes(self):
         for text in ["zrób ze mną co chcesz", "zaskocz mnie jutro w pracy"]:
             m, _ = match(text, INTENTS)

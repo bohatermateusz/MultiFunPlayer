@@ -175,13 +175,30 @@ internal sealed partial class ButtplugOutputTarget
 
     public void HismithMany(int count) => _ = FireLubeLauncherManyAsync(Math.Clamp(count, 1, 5));
 
+    // A burst of shots can be cut short (by a re-roll of the surprise or by Stop): the shots that are still to come
+    // are dropped, the one that has been fired cannot be taken back.
+    private CancellationTokenSource _lubeBurstSource;
+
+    private void CancelLubeBurst()
+        => Interlocked.Exchange(ref _lubeBurstSource, null)?.Cancel();
+
     private async Task FireLubeLauncherManyAsync(int count)
     {
-        for (var i = 0; i < count; i++)
+        var source = new CancellationTokenSource();
+        Interlocked.Exchange(ref _lubeBurstSource, source)?.Cancel();
+        try
         {
-            await FireLubeLauncherAsync();
-            if (i < count - 1)
-                await Task.Delay(1000);
+            for (var i = 0; i < count && !source.IsCancellationRequested; i++)
+            {
+                await FireLubeLauncherAsync();
+                if (i < count - 1)
+                    await Task.Delay(1000, source.Token);
+            }
+        }
+        catch (OperationCanceledException) { }
+        finally
+        {
+            Interlocked.CompareExchange(ref _lubeBurstSource, null, source);
         }
     }
 
@@ -200,6 +217,23 @@ internal sealed partial class ButtplugOutputTarget
     // or only a mode).
     public void HismithSurprise() => _ = HismithSurpriseAsync();
 
+    // "No, something else": draws again, but only shortly after a surprise (so that a stray "zmień" does nothing).
+    // Shots of the previous burst that have not been fired yet are dropped; a new mode replaces the old one.
+    private DateTime _lastSurprise = DateTime.MinValue;
+    private static readonly TimeSpan SurpriseRerollWindow = TimeSpan.FromSeconds(60);
+
+    public void HismithSurpriseAgain()
+    {
+        if (DateTime.UtcNow - _lastSurprise > SurpriseRerollWindow)
+        {
+            Logger.Info("No surprise in the last {0} s, nothing to draw again", SurpriseRerollWindow.TotalSeconds);
+            return;
+        }
+
+        CancelLubeBurst();
+        HismithSurprise();
+    }
+
     private async Task HismithSurpriseAsync()
     {
         var hasMachine = GetQuickActuators(PresetModeDescription).Any();
@@ -217,6 +251,7 @@ internal sealed partial class ButtplugOutputTarget
                 shots = Random.Shared.Next(2) == 0 ? 1 : 3;
         }
 
+        _lastSurprise = DateTime.UtcNow;
         Logger.Info("Surprise: mode change {0}, Lube Launcher shots {1}", changeMode, shots);
         if (changeMode)
             HismithModeRandom();
@@ -301,6 +336,7 @@ internal sealed partial class ButtplugOutputTarget
                 // stop: the script is held back for the machine and the speed goes to 0 at once
                 _hismithMode = mode;
                 NotifyModeChanged();
+                CancelLubeBurst();
                 EventAggregator.Publish(new ScriptLoopMessage(ScriptLoopCommand.Clear));
                 await SetSpeedAbsoluteAsync(0);
                 NotifyOfPropertyChange(nameof(HismithModeStatus));
@@ -359,6 +395,7 @@ internal sealed partial class ButtplugOutputTarget
         s.RegisterAction($"{Identifier}::Hismith::Mode::Script", HismithModeScript);
         s.RegisterAction($"{Identifier}::Hismith::Mode::Random", HismithModeRandom);
         s.RegisterAction($"{Identifier}::Hismith::Surprise", HismithSurprise);
+        s.RegisterAction($"{Identifier}::Hismith::Surprise::Again", HismithSurpriseAgain);
         s.RegisterAction($"{Identifier}::Hismith::Halt", () => SetHismithMode(ModeHalt));
         s.RegisterAction($"{Identifier}::Hismith::Calm", () => SetHismithMode(ModeCalm));
         s.RegisterAction($"{Identifier}::Hismith::Speed::Faster", HismithFaster);
@@ -375,6 +412,7 @@ internal sealed partial class ButtplugOutputTarget
         s.UnregisterAction($"{Identifier}::Hismith::Mode::Script");
         s.UnregisterAction($"{Identifier}::Hismith::Mode::Random");
         s.UnregisterAction($"{Identifier}::Hismith::Surprise");
+        s.UnregisterAction($"{Identifier}::Hismith::Surprise::Again");
         s.UnregisterAction($"{Identifier}::Hismith::Halt");
         s.UnregisterAction($"{Identifier}::Hismith::Calm");
         s.UnregisterAction($"{Identifier}::Hismith::Speed::Faster");

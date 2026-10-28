@@ -873,6 +873,35 @@
    "cooldown": 3,
    "threshold": 0.88,
    "max_extra_words": 1
+  },
+  {
+   "id": "surprise_again",
+   "phrases": [
+    "coś innego",
+    "nie to",
+    "zmień",
+    "zmień to",
+    "inaczej",
+    "jeszcze raz",
+    "losuj jeszcze raz",
+    "losuj ponownie",
+    "wylosuj inaczej",
+    "nie chcę tego",
+    "niech będzie inaczej",
+    "nie zmień",
+    "nie coś innego",
+    "nie inaczej"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Surprise::Again",
+     "args": []
+    }
+   ],
+   "description": "Re-roll: the user did not like the surprise that was just drawn ('nieee, coś innego', 'zmień', 'inaczej', 'losuj jeszcze raz'). Only when the last command was a surprise.",
+   "cooldown": 2,
+   "threshold": 0.88,
+   "max_extra_words": 1
   }
  ],
  "wake": {
@@ -911,7 +940,8 @@
   "pause": "@mute",
   "end": "halt",
   "home": "calm",
-  "insert": "surprise"
+  "insert": "surprise",
+  "delete": "surprise_again"
  },
  "llm": {
   "enabled": true,
