@@ -199,7 +199,8 @@ def main():
     def provider(name):
         if name == "elevenlabs":
             return lambda line, stage: speakers["elevenlabs"].stream(line, stage)
-        return lambda line, stage: stream_openai(speakers["openai"], line, stage)
+        o = tcfg.get("openai", {})
+        return lambda line, stage: stream_openai(speakers["openai"], line, stage, o.get("instructions_soft"), o.get("instructions_sharp"))
 
     order = [tcfg.get("provider", "elevenlabs"), tcfg.get("fallback_provider", "openai")]
     voice = Voice({n: provider(n) for n in speakers}, order, lambda stream, stop: play_stream(stream, PCM_RATE, stop=stop),

@@ -119,6 +119,12 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.40 | Zwroty: 'Pani, szybciej', 'kochanie, szybciej'; Pani zwraca się różnie (dziewczynko, mała, suko...) i przyjmuje 'Pani'/'kochanie' | oba słowa zaczynają komendę; 'proszę pani...' w dialogu filmu nie uruchamia niczego |
 | 6.41 | 20 min rozmowy; zapisuj kwestie Pani | zwroty się nie powtarzają (bank ~100 + własne modelu); pojawiają się rozkazy / własność / upokorzenia / drwiny / pochwały / wyznania; na etapie 0-1 łagodnie, od 2 ostro |
 | 6.42 | Powiedz 'należę do Ciebie' / 'zrób ze mną, co chcesz' / 'dziękuję, Pani' po jej żądaniu | w logu `p` rośnie o 0.3 przy wyznaniu; wykonane żądanie ('dziękuję') daje zgodę (`decision: owed`), nawet gdy model nie oznaczył wyznania |
+| 6.43 | 20-30 min rozmowy; zapisz ton każdej kwestii (okno pokazuje `[etap]`, log `tone`/`harsh`) | czułe i ostre na przemian; na początku prawie same czułe ('Odpuść', 'Jesteś moja', 'Nie kontrolujesz tego'); ostre rośnie z etapem, ale bywa nieprzewidywalne; nigdy > 2 ostre z rzędu |
+| 6.44 | Szczyt sesji (etap 4) | czasem bardzo ostre słowa (`harsh: 3`), rzadko (ok. 30 % ostrych); zaraz potem często czułość |
+| 6.45 | Głos: kwestia czuła vs ostra | czuła: miękko, wolniej; ostra: chłodno, szybciej (różne `voice_settings`/instrukcje OpenAI) |
+| 6.46 | Trudność: policz prośby do pierwszego strzału lube w 5 sesjach | średnio ok. 5 (3-8); 'dość' / 'wolniej' zwykle w 1-3; jeśli za trudno/łatwo -> `persona.difficulty` |
+| 6.47 | Niezamówione ruchy: obserwuj log `unsolicited` | zdarzają się nagrody/dręczenie bez Twojej prośby (rzadko na niskim etapie); lube niezamówione tylko od etapu 3, rzadko, nie częściej niż co 5 min; w holdzie tylko lube |
+| 6.48 | 'koniec' / End w trakcie jej ostrej i czułej kwestii | zawsze natychmiast; nigdy 'zaskoczenie' nie zatrzymuje ani nie uspokaja maszyny |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |
 

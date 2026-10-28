@@ -98,19 +98,20 @@ class PersonaTests(unittest.TestCase):
         self.assertEqual(self.said[-1], "Dobra dziewczynka. Masz.")
         self.assertEqual(outcomes.count("denied") + 1, len(outcomes))
 
-    def test_fifth_ask_is_almost_surely_granted_and_the_counter_resets(self):
+    def test_the_last_allowed_ask_is_almost_surely_granted_and_the_counter_resets(self):
+        n = CFG["persona"]["max_asks"]
         self.c.rng = random.Random(0)
-        self.c.persona_cfg = dict(CFG["persona"], base_p=0.0, step_p=0.0, confession_p=0.0)   # only the max_asks rule
-        for i in range(4):
+        self.c.persona_cfg = dict(CFG["persona"], base_p=0.0, step_p=0.0, confession_p=0.0, base_p_overrides={}, step_p_overrides={})   # only the max_asks rule
+        for i in range(n - 1):
             self.assertEqual(self.say(f"kochanie, proszę {i}", request="lube_fire").status, "denied")
-        self.assertEqual(self.c._asks["lube_fire"], 4)
+        self.assertEqual(self.c._asks["lube_fire"], n - 1)
         o = self.say("kochanie, błagam, Pani", request="lube_fire")
         self.assertEqual(o.status, "executed")
         self.assertGreaterEqual(o.extra["p"], 0.95)
         self.assertNotIn("lube_fire", self.c._asks)
 
     def test_confession_raises_the_odds(self):
-        self.c.persona_cfg = dict(CFG["persona"], base_p=0.0, step_p=0.0, confession_p=0.3)
+        self.c.persona_cfg = dict(CFG["persona"], base_p=0.0, step_p=0.0, confession_p=0.3, base_p_overrides={}, step_p_overrides={})
         self.c.rng = random.Random(0)
         o = self.say("kochanie, spuść się", request="lube_fire")
         self.assertEqual((o.status, o.extra["p"]), ("denied", 0.0))

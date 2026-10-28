@@ -24,7 +24,15 @@ PERSONA_DEFAULTS = {"enabled": True, "reply_window": 15.0, "base_p": 0.25, "step
                     "escalation": {"enabled": True, "max_stage": 4, "points": {"turn": 1, "denied": 1, "confession": 2, "granted": 2},
                                    "thresholds": [0, 5, 12, 22, 35], "heat_reset": 600, "tease_chance": [0.3, 0.5, 0.7, 0.85, 1.0]},
                     "initiative": {"enabled": True, "idle_prompt_seconds": 25, "max_nudges": 3, "session_seconds": 180},
-                    "vocabulary": {}, "inspiration": {"count": 3, "avoid_repeat": 14}, "confession_phrases": [], "obey_phrases": []}
+                    "vocabulary": {}, "inspiration": {"count": 3, "avoid_repeat": 14}, "confession_phrases": [], "obey_phrases": [],
+                    "difficulty": 1.0, "step_p_overrides": {},
+                    "tone": {"sharp_p": [0.0, 0.08, 0.22, 0.38, 0.5], "max_sharp_run": 2, "soft_after_sharp": 0.7, "twist_p": 0.08,
+                             "harsh_p": 0.3, "soft_first_turns": 2,
+                             "soft_categories": ["czułość", "odpuszczenie", "przejęcie", "opieka", "własność_czuła", "pochwały"],
+                             "sharp_categories": ["rozkazy", "upokorzenia", "drwiny", "wyznania", "własność"],
+                             "harsh_category": "bardzo_ostre"},
+                    "spontaneous": {"turn_chance": [0.0, 0.03, 0.08, 0.12, 0.18], "action_chance": [0.0, 0.05, 0.12, 0.2, 0.3],
+                                    "lube_min_stage": 3, "lube_chance": 0.12, "lube_gap_seconds": 300}}
 
 
 @dataclass
@@ -88,6 +96,9 @@ class Controller:
         self._last_line = 0.0             # last time she spoke (a line or a nudge)
         self._nudges = 0
         self._vocab_recent = []           # inspiration phrases handed to the model lately (no repeats)
+        self._tones = []                  # the tone of her recent turns: "czuły" (tender) / "ostry" (sharp)
+        self._tone_now = ("czuły", 0)     # (tone, harshness 0-3) of the turn being prepared
+        self._last_lube = -1e9
         self.busy = lambda: False         # True while she is speaking / listening is muted (set by the main loop)
         self.speak_ex = None              # speak_ex(line, stage): like speak, but knows the escalation stage
 
@@ -135,7 +146,7 @@ class Controller:
         if line and (self.speak or self.speak_ex):
             try:
                 if self.speak_ex:
-                    self.speak_ex(line, outcome.extra.get("stage", 0))
+                    self.speak_ex(line, outcome.extra.get("voice", outcome.extra.get("stage", 0)))
                 else:
                     self.speak(line)
             except Exception:   # a silent persona must never break the loop
@@ -158,20 +169,82 @@ class Controller:
         self._heat += points
         self._heat_last = self.clock()
 
-    def _inspiration(self, stage):
-        """2-3 phrases of the current stage (and the one below) from different categories, none used lately"""
+    def _roll_tone(self, stage):
+        """The tool, not the model, decides how this turn sounds: tender (care, love, letting go) or sharp (orders,
+        humiliation, vulgar). Sharp comes mostly late in the session, never more than max_sharp_run in a row, tender
+        often follows it, and an occasional twist reverses the roll (a surprise). -> ("czuły"|"ostry", harshness 0-3)"""
+        t = self.persona_cfg["tone"]
+        sharp_p = t["sharp_p"]
+        p = float(sharp_p[max(0, min(stage, len(sharp_p) - 1))])
+        run = 0
+        for x in reversed(self._tones):
+            if x != "ostry":
+                break
+            run += 1
+        if run >= int(t["max_sharp_run"]):
+            p = 0.0
+        elif run:
+            p = min(p, 1.0 - float(t["soft_after_sharp"]))
+        sharp = self.rng.random() < p
+        if len(self._tones) < int(t["soft_first_turns"]):
+            sharp = False
+        if self.rng.random() < float(t["twist_p"]):
+            sharp = not sharp
+            if run >= int(t["max_sharp_run"]):
+                sharp = False                       # a twist never breaks the run limit
+        tone = "ostry" if sharp else "czuły"
+        harsh = 0
+        if sharp:
+            if stage <= 1:
+                harsh = 1
+            elif stage == 2:
+                harsh = self.rng.choice([1, 2])
+            else:
+                harsh = 2
+            if stage >= 4 and self.rng.random() < float(t["harsh_p"]):
+                harsh = 3
+        self._tones.append(tone)
+        del self._tones[:-20]
+        self._tone_now = (tone, harsh)
+        return self._tone_now
+
+    def _pick(self, category, levels):
+        voc = self.persona_cfg.get("vocabulary", {}).get(category, {})
+        pool = [t for lvl in levels for t in voc.get(str(lvl), []) if t not in self._vocab_recent]
+        if not pool:
+            pool = [t for lvl in range(4, -1, -1) for t in voc.get(str(lvl), []) if t not in self._vocab_recent]
+        return self.rng.choice(pool) if pool else None
+
+    def _inspiration(self, stage, tone="czuły", harshness=0):
+        """phrases for this turn: tender -> three tender ones; sharp -> two sharp ones (the harshest bank when harshness is 3)
+        and one tender 'contrast'; none used in the last avoid_repeat draws"""
         cfg = self.persona_cfg
-        voc, ins = cfg.get("vocabulary", {}), cfg.get("inspiration", {})
+        t, ins = cfg["tone"], cfg.get("inspiration", {})
+        soft = [c for c in t["soft_categories"] if c in cfg.get("vocabulary", {})]
+        sharp = [c for c in t["sharp_categories"] if c in cfg.get("vocabulary", {})]
+        soft_levels = [stage, stage - 1]
+        sharp_levels = {1: [1, 2], 2: [2, 3], 3: [3, 4]}.get(harshness, [1, 2])
         picked = []
-        for cat, levels in voc.items():
-            pool = [t for lvl in (stage, stage - 1) for t in levels.get(str(lvl), []) if t not in self._vocab_recent]
-            if not pool:
-                pool = [t for lvl in range(stage, -1, -1) for t in levels.get(str(lvl), []) if t not in self._vocab_recent]
-            if pool:
-                picked.append((cat, self.rng.choice(pool)))
-        self.rng.shuffle(picked)
-        picked = picked[:int(ins.get("count", 3))]
-        self._vocab_recent.extend(t for _, t in picked)
+        if tone == "ostry" and sharp:
+            cats = self.rng.sample(sharp, min(2, len(sharp)))
+            for cat in cats:
+                phrase = self._pick(cat, sharp_levels)
+                if phrase:
+                    picked.append((cat, phrase))
+            if harshness >= 3 and t.get("harsh_category") in cfg.get("vocabulary", {}):
+                phrase = self._pick(t["harsh_category"], [4, 3])
+                if phrase:
+                    picked[:1] = [(t["harsh_category"], phrase)]
+            if soft:
+                phrase = self._pick(self.rng.choice(soft), soft_levels)
+                if phrase:
+                    picked.append(("kontrast", phrase))
+        else:
+            for cat in self.rng.sample(soft, min(int(ins.get("count", 3)), len(soft))):
+                phrase = self._pick(cat, soft_levels)
+                if phrase:
+                    picked.append((cat, phrase))
+        self._vocab_recent.extend(text for _, text in picked)
         del self._vocab_recent[:-int(ins.get("avoid_repeat", 14))]
         return [{"rodzaj": cat, "fraza": text} for cat, text in picked]
 
@@ -194,6 +267,30 @@ class Controller:
         return self.rng.random() < float(chances[max(0, min(stage, len(chances) - 1))])
 
     # ---- initiative: she speaks when the user is silent ----------------------------------------------------
+    def _spontaneous(self, plan, stage, extra, kind):
+        """Her own, unrequested move (a surprise). The plan is bounded like every scene; the Lube Launcher only from
+        lube_min_stage, only with lube_chance, and not again within lube_gap_seconds of the last shot; in a hold only the
+        Lube Launcher (under the same dice). -> True when something ran."""
+        sp = self.persona_cfg["spontaneous"]
+        now = self.clock()
+        allowed = {i.id for i in self.intents if i.improvise}
+        lube_ok = (stage >= int(sp["lube_min_stage"]) and self.rng.random() < float(sp["lube_chance"])
+                   and now - self._last_lube >= float(sp["lube_gap_seconds"]))
+        if not lube_ok:
+            allowed.discard("lube_fire")
+        if self.lock_remaining() > 0:
+            allowed &= {"lube_fire"}
+        steps, used = self._persona_steps(plan, allowed)
+        if not steps:
+            return False
+        extra["unsolicited"] = kind
+        extra["plan"] = used
+        if not self.dry_run:
+            self.run_steps(steps)
+        if any("LubeLauncher" in st["action"] for st in steps):
+            self._last_lube = now
+        return True
+
     def idle_nudge(self):
         """Called about once a second by the main loop. When a session is on and the user has been silent for
         idle_prompt_seconds, she says something herself (no commands). -> the line spoken, or None."""
@@ -211,19 +308,27 @@ class Controller:
             state = dict(self._persona_state(), etap=self.stage(), ton=self._tone(self.stage()))
             history = list(self._history)
             stage = self.stage()
+            sp = self.persona_cfg["spontaneous"]["action_chance"]
+            act = self.rng.random() < float(sp[max(0, min(stage, len(sp) - 1))])
+            step_ids = [i.id for i in self.intents if i.improvise] if act else None
             self._last_line = now                # a failed call must not be retried in a loop
         try:
-            line = self.persona.nudge(state, history)
+            result = self.persona.nudge(state, history, step_ids) if step_ids else self.persona.nudge(state, history)
         except Exception:
             return None
+        line, plan = result if isinstance(result, tuple) else (result, [])
         if not line:
             return None
         with self._lock:
             self._nudges += 1
+            tone, harsh = self._tone_now
             self._history.append(("assistant", line))
             self._window_until = self.clock() + float(self.persona_cfg["reply_window"])
             self._last_line = self.clock()
-            outcome = Outcome("talk", "nudge", "", 0.0, "persona", {"say": line, "stage": stage, "nudge": self._nudges})
+            outcome = Outcome("talk", "nudge", "", 0.0, "persona", {"say": line, "stage": stage, "nudge": self._nudges, "tone": tone,
+                                                                    "harsh": harsh, "voice": stage + (5 if tone == "ostry" else 0)})
+            if act and plan:
+                self._spontaneous(plan, stage, outcome.extra, "nudge")
             self._log("[silence]", outcome)
         self._say(outcome)
         return line
@@ -244,8 +349,10 @@ class Controller:
             self._asks.clear()
             self._owed = None
         stage = self.stage()
+        tone, harsh = self._roll_tone(stage)
         address = self.persona_cfg.get("address", {})
-        return {"etap": stage, "ton": self._tone(stage), "inspiracja": self._inspiration(stage),
+        return {"etap": stage, "ton": self._tone(stage), "ton_tury": tone, "ostrosc": harsh,
+                "inspiracja": self._inspiration(stage, tone, harsh),
                 "zwroty_do_ciebie": list(address.get("titles", [])),
                 "zwroty_do_niej": list(address.get("names", [])), "prosby_bez_zgody": dict(self._asks),
                 "nalezy_sie_po_wykonaniu_zadania": self._owed, "blokada_5_min": self.lock_remaining() > 0,
@@ -262,16 +369,18 @@ class Controller:
             return (e, need.plain)
 
     def _decide(self, request_id, turn):
-        """the honest dice: -> (granted, p, roll)"""
+        """the honest dice: -> (granted, p, roll). Harder than a coin: a low first chance that grows slowly with every
+        refusal (and with a confession), scaled by persona.difficulty; only at max_asks asks it is (almost) sure."""
         c = self.persona_cfg
         asks = self._asks.get(request_id, 0)
         if self._owed == request_id and turn.thanked:
             return True, 1.0, 0.0
         base = float(c["base_p_overrides"].get(request_id, c["base_p"]))
-        p = base + float(c["step_p"]) * asks + (float(c["confession_p"]) if turn.confession else 0.0)
+        step = float(c["step_p_overrides"].get(request_id, c["step_p"]))
+        p = base + step * asks + (float(c["confession_p"]) if turn.confession else 0.0)
+        p = min(p * float(c.get("difficulty", 1.0)), 0.95)
         if asks + 1 >= int(c["max_asks"]):
             p = max(p, 0.95)
-        p = min(p, 0.95)
         roll = self.rng.random()
         return roll < p, p, roll
 
@@ -321,8 +430,12 @@ class Controller:
             elif outcome.status == "denied":
                 self._heat_up("denied")
             if line:
+                tone, harsh = self._tone_now
                 outcome.extra["say"] = line
                 outcome.extra["stage"] = stage
+                outcome.extra["tone"] = tone
+                outcome.extra["harsh"] = harsh
+                outcome.extra["voice"] = stage + (5 if tone == "ostry" else 0)
                 self._history.append(("assistant", line))
                 self._window_until = self.clock() + float(self.persona_cfg["reply_window"])
                 self._last_line = self.clock()
@@ -342,6 +455,11 @@ class Controller:
                     return spoken(turn.line_if_granted, self._grant(owed_intent, [], extra, now, "owed"))
             if turn.confession:
                 extra["confession"] = True
+            chances = self.persona_cfg["spontaneous"]["turn_chance"]
+            if self.rng.random() < float(chances[max(0, min(stage, len(chances) - 1))]):
+                reward = turn.confession or self.rng.random() < 0.5
+                if self._spontaneous(turn.grant_actions if reward else turn.tease_actions, stage, extra, "reward" if reward else "tease"):
+                    return spoken(turn.line_if_granted if reward else turn.line_if_denied, Outcome("talk", "persona (unsolicited)", "", 0.0, "persona", extra))
             return spoken(turn.line_if_denied or turn.line_if_granted, Outcome("talk", "persona", "", 0.0, "persona", extra))
 
         request_id = request
@@ -600,6 +718,8 @@ class Controller:
         self._last[m.intent.id] = now
         steps = self._steps_for(m.intent, override)
         self._track_lock(m.intent)
+        if any("LubeLauncher" in st["action"] for st in steps):
+            self._last_lube = now
         if self.dry_run:
             return Outcome("dry-run", f"would run {len(steps)} step(s)", m.intent.id, m.score, via, extra or {})
         self.run_steps(steps)

@@ -74,8 +74,11 @@ class ElevenLabsTests(unittest.TestCase):
         self.assertEqual(seen["body"]["text"], "Poproś mnie.")
         self.assertEqual(seen["body"]["model_id"], "eleven_flash_v2_5")
         self.assertEqual(seen["body"]["voice_settings"], CFG["persona"]["tts"]["stage_settings"][3])
+        self.assertLess(seen["body"]["voice_settings"]["style"], CFG["persona"]["tts"]["stage_settings"][8]["style"])
         list(self.speaker().stream("x", stage=99))      # out of range = the last stage
         self.assertEqual(FakeEleven.seen["body"]["voice_settings"], CFG["persona"]["tts"]["stage_settings"][-1])
+        list(self.speaker().stream("x", stage=7))           # a sharp voice (5-9)
+        self.assertEqual(FakeEleven.seen["body"]["voice_settings"], CFG["persona"]["tts"]["stage_settings"][7])
 
     def test_chunks_arrive_before_the_answer_is_complete(self):
         FakeEleven.mode = "ok"
@@ -209,7 +212,7 @@ class EscalationTests(unittest.TestCase):
         self.assertEqual(stages, sorted(stages))               # never goes down while the session lasts
         self.assertGreaterEqual(max(stages), 2)
         self.assertLessEqual(max(stages), 4)
-        self.assertTrue(all(stage in range(5) for _, stage in self.said))
+        self.assertTrue(all(voice in range(10) for _, voice in self.said))      # 0-4 tender, 5-9 sharp
 
     def test_confession_heats_faster_and_the_cap_holds(self):
         self.c.persona_cfg = dict(CFG["persona"], escalation=dict(CFG["persona"]["escalation"], max_stage=1))
@@ -231,14 +234,18 @@ class EscalationTests(unittest.TestCase):
         stage = self.c.stage()
         self.assertIn(CFG["persona"]["stages"][stage][:30], state)
         self.assertIn('"etap"', state)
-        self.assertEqual(self.said[-1][1], stage)
+        self.assertIn(self.said[-1][1], (stage, stage + 5))
 
     def test_stages_are_defined_for_every_level_and_get_sharper(self):
         stages = CFG["persona"]["stages"]
         self.assertEqual(len(stages), 5)
-        self.assertEqual(len(CFG["persona"]["tts"]["stage_settings"]), 5)
-        styles = [s["style"] for s in CFG["persona"]["tts"]["stage_settings"]]
-        self.assertEqual(styles, sorted(styles))
+        settings = CFG["persona"]["tts"]["stage_settings"]
+        self.assertEqual(len(settings), 10)                  # 0-4 tender by stage, 5-9 sharp by stage
+        for half in (settings[:5], settings[5:]):
+            styles = [x["style"] for x in half]
+            self.assertEqual(styles, sorted(styles))
+        self.assertLess(max(x["style"] for x in settings[:5]), min(x["style"] for x in settings[5:]) + 0.1)
+        self.assertLess(settings[0]["speed"], settings[5]["speed"])
         self.assertEqual(len(CFG["persona"]["escalation"]["tease_chance"]), 5)
 
     def test_higher_stages_tease_more_often(self):

@@ -40,6 +40,12 @@ SYSTEM = """{character}
 ZASADY GRY (techniczne, nie łam ich):
 - Rozmawiasz po polsku, krótko: 1-2 zdania na raz (każda kwestia najwyżej 12 słów), tryb rozkazujący, bez pytań o zgodę, \
 bez wyjaśnień.
+- GRA CZUŁOŚCI I OSTROŚCI: to gra między delikatnością, opieką i miłością a ostrymi elementami. Narzędzie podaje w stanie \
+"ton_tury": "czuły" albo "ostry" (i "ostrosc" 1-3). Czuły = opieka, miłość, poczucie bezpieczeństwa i łagodne odbieranie kontroli \
+("Możesz już odpuścić.", "Nie kontrolujesz tego.", "Odpuść.", "Jesteś moja.") - bez wulgaryzmów i bez rozkazów. Ostry = rozkazy, \
+upokorzenia, wulgaryzmy; im wyższa ostrość, tym ostrzej (3 = najostrzejsze, bardzo mocne słowa). Trzymaj się ton_tury: nie bądź ostra \
+w czułej turze i nie łagodnieć w ostrej. Po ostrych kwestiach czułość wraca niespodziewanie - to ma zaskakiwać, więc nie bądź przewidywalna \
+(nie zaczynaj każdej odpowiedzi tak samo).
 - ETAP SESJI i TON podaje narzędzie w stanie (etap 0-4). Trzymaj się tonu etapu: sesja ma narastać - od chłodnej i łagodnej, \
 przez stanowczą, do coraz ostrzejszej, bardziej wulgarnej i bezlitosnej. Nie przeskakuj o więcej niż jeden etap i nie łagodniej, \
 dopóki etap nie spadnie. Ton etapu: {tone}
@@ -72,10 +78,13 @@ Odpowiadasz wyłącznie JSON-em."""
 
 NUDGE = """{character}
 
-Użytkownik milczy, a sesja trwa. Odezwij się sama, krótko (najwyżej 12 słów), w tonie etapu {stage}: {tone}
+Użytkownik milczy, a sesja trwa. Odezwij się sama, krótko (najwyżej 12 słów), w tonie etapu {stage}: {tone} \
+Ton tej tury (z stanu "ton_tury"): czuły = opieka, miłość, odpuszczenie ("Możesz już odpuścić.", "Jesteś moja."); ostry = rozkaz, upokorzenie. \
+Wpleć w wariacji jeden zwrot z "inspiracja" w stanie.
 Zwracaj się do niej różnie: {names}. Wpleć w wariacji jeden zwrot z "inspiracja" w stanie. Możesz zadać pytanie (kim jesteś, czyja jesteś), rozkazać (poproś, powiedz, podziękuj, klęcz i czekaj) albo zadrwić z jej milczenia. \
-Nie wykonujesz żadnych komend. Stan: {state}
-Odpowiadasz wyłącznie JSON-em z polem "line"."""
+Jeśli wolno Ci działać (w stanie "wolno_dzialac": true), możesz zaskoczyć ją niezamówionym ruchem w polu "plan" (nagroda: szybciej/głębiej; dręczenie: \
+wolniej/płycej; zwrot: tryb) - krótko, 1-2 kroki; w przeciwnym razie "plan" ma być pusty. Stan: {state}
+Odpowiadasz wyłącznie JSON-em z polami "line" i "plan"."""
 
 
 def build_system_prompt(character, intents, step_ids, state):
@@ -116,16 +125,22 @@ class Persona:
         self.history_turns = history_turns
         self.api_key = api_key or os.environ.get(api_key_env, "")
 
-    def nudge(self, state, history) -> str:
-        """her own line when the user is silent (no actions)"""
+    def nudge(self, state, history, step_ids=None):
+        """her own line when the user is silent. -> the line, or (line, plan) when she may act (step_ids given); the
+        tool validates the plan."""
         if not self.api_key:
             raise PersonaError("no API key (set the environment variable named in the config)")
+        state = dict(state, wolno_dzialac=bool(step_ids))
         messages = [{"role": "system", "content": build_nudge_prompt(self.character, state)}]
         for role, text in history[-self.history_turns:]:
             messages.append({"role": role, "content": text})
         messages.append({"role": "user", "content": "(milczy)"})
+        plan_schema = {"type": "array", "items": {"type": "object", "additionalProperties": False, "required": ["step", "times"],
+                                                  "properties": {"step": {"type": "string", "enum": list(step_ids or []) or [NONE]},
+                                                                 "times": {"type": "integer"}}}}
         schema = {"name": "nudge", "strict": True, "schema": {"type": "object", "additionalProperties": False,
-                                                              "required": ["line"], "properties": {"line": {"type": "string"}}}}
+                                                              "required": ["line", "plan"],
+                                                              "properties": {"line": {"type": "string"}, "plan": plan_schema}}}
         body = {"model": self.model, "temperature": self.temperature, "messages": messages, "max_tokens": 80,
                 "response_format": {"type": "json_schema", "json_schema": schema}}
         req = urllib.request.Request(self.url, data=json.dumps(body, ensure_ascii=False).encode("utf-8"), method="POST",
@@ -133,7 +148,13 @@ class Persona:
         try:
             with urllib.request.urlopen(req, timeout=self.timeout) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
-            return str(json.loads(data["choices"][0]["message"]["content"]).get("line", "")).strip()
+            answer = json.loads(data["choices"][0]["message"]["content"])
+            line = str(answer.get("line", "")).strip()
+            if not step_ids:
+                return line
+            plan = [{"step": str(p.get("step", "")), "times": int(p.get("times", 1) or 1)}
+                    for p in (answer.get("plan") or []) if isinstance(p, dict)]
+            return line, plan
         except urllib.error.HTTPError as e:
             raise PersonaError(f"HTTP {e.code}") from e
         except (urllib.error.URLError, TimeoutError, OSError) as e:

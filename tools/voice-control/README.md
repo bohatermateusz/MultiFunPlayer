@@ -186,6 +186,20 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
 * **Forms of address**: she does not have to be "Pani". Both **"Pani"** and **"kochanie"** start a command (`wake.words`; add
   more, e.g. "moja Pani"). She may call you whatever `persona.address.titles` lists (Pani, kochanie, moja Pani...), and she
   calls the user by the varied `persona.address.names` (dziewczynko, mała, suko, kochanie, słoneczko, ...). Edit both lists freely.
+* **A game of tenderness and sharpness**: she is not just a ramp of vulgarity. Every turn the tool rolls its tone: **tender**
+  (care, love, letting go: "Możesz już odpuścić.", "Nie kontrolujesz tego.", "Odpuść.", "Jesteś moja.") or **sharp** (orders,
+  humiliation, vulgar). Sharp is rare early and grows with the stage (`persona.tone.sharp_p` 0 / 8 / 22 / 38 / 50 %), never more than
+  two sharp turns in a row, tenderness often follows it ("ulga"), the first two turns are always tender, and a **twist** (8 %)
+  can reverse the roll: now and then sharp comes out of nowhere, or tenderness at the peak, so you are never sure. At the top
+  stage a sharp turn has a 30 % chance of the **harshest bank** (`bardzo_ostre`): the really hard words come somewhere
+  late in the game and not often. The voice follows the tone (soft and slow when tender, cold and fast when sharp).
+* **Her own moves (surprises)**: besides answering she sometimes acts unasked - a reward (faster / deeper), a tease (slower /
+  shallower) or a twist (a mode), after a plain talk turn or when she speaks first (`persona.spontaneous`, more often at higher
+  stages). The Lube Launcher unasked only from stage 3, with a 12 % chance per move and not twice within 5 minutes; in a hold only
+  the Lube Launcher; never stop / calm / hold / surprise. Every unasked move is logged (`unsolicited`).
+* **Harder to get**: she makes you ask. The first chance is low (Lube Launcher 6 %, "pieprz mnie" and friends 10 %, mild requests such
+  as "dość" or "wolniej" 35 %), grows slowly with every refusal (+8 % / +12 %), +20 % for a confession, and only the 8th ask is
+  (almost) sure: about 5 asks to the Lube Launcher on average. `persona.difficulty` scales every chance (0.5 = harder, 2 = easier).
 * **Variety of words (the vocabulary bank)**: `persona.vocabulary` holds ~100 phrases in six categories (orders: "klęknij",
   "ssij", "sssij ładnie", "połykaj"...; ownership: "należysz do mnie", "jesteś moją własnością"...; humiliations: "spójrz na
   siebie"...; taunts, praise, demands for confessions), each tagged with the stage it fits (gentle at 0-1, sharp and vulgar

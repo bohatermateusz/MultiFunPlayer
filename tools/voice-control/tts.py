@@ -19,12 +19,13 @@ class Speaker:
         self.model, self.voice, self.instructions, self.timeout, self.speed = model, voice, instructions, timeout, speed
         self.api_key = api_key or os.environ.get(api_key_env, "")
 
-    def synthesize(self, text: str) -> bytes:
+    def synthesize(self, text: str, instructions=None) -> bytes:
         if not self.api_key:
             raise TtsError("no API key (set the environment variable named in the config)")
         body = {"model": self.model, "input": text, "voice": self.voice, "response_format": "pcm", "speed": self.speed}
-        if self.instructions:
-            body["instructions"] = self.instructions
+        instructions = self.instructions if instructions is None else instructions
+        if instructions:
+            body["instructions"] = instructions
         req = urllib.request.Request(self.url, data=json.dumps(body).encode("utf-8"), method="POST", headers={
             "Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"})
         try:
@@ -121,5 +122,7 @@ def pcm_chunks(pcm: bytes, size: int = 4800):
         yield pcm[i:i + size]
 
 
-def stream_openai(speaker: "Speaker", text: str, stage: int = 0):
-    return pcm_chunks(speaker.synthesize(text))
+def stream_openai(speaker: "Speaker", text: str, stage: int = 0, soft=None, sharp=None):
+    """stage is the voice index: 0-4 tender, 5-9 sharp (the instructions follow the tone when given)"""
+    instructions = (sharp if stage >= 5 else soft) if (soft or sharp) else None
+    return pcm_chunks(speaker.synthesize(text, instructions))

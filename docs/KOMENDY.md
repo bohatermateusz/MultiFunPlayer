@@ -111,6 +111,20 @@ Nie musisz mówić "Pani" - możesz też "kochanie", "moja Pani" itd. (lista w `
 (dziewczynko, mała, suko, kochanie...). Jeśli ElevenLabs odmówi wypowiedzenia jakiejś kwestii, **ta sama kwestia zostanie
 powiedziana głosem OpenAI** (zapas), więc rozmowa się nie urwie.
 
+**Gra czułości i ostrości.** To nie jest prosta drabinka wulgarności. Pani na przemian jest **czuła** ("Możesz już
+odpuścić.", "Nie kontrolujesz tego.", "Odpuść.", "Jesteś moja.", "Zajmę się tobą.") i **ostra** (rozkazy, upokorzenia, ostre
+słowa). Ostre jest rzadkie na początku i rośnie z etapem, ale nigdy nie wiesz, kiedy: po ostrej często wraca czułość, czasem
+ostre wpada znienacka wcześnie, a czułość w szczycie. Na najwyższym etapie, gdzieś w trakcie, potrafią paść bardzo ostre
+słowa. Głos podąża za tonem: miękki i wolny, gdy czuła; zimny i szybszy, gdy ostra.
+
+Pani też **sama coś robi**, bez prośby: nagroda (szybciej, głębiej), dręczenie (wolniej, płycej), zwrot (inny tryb), po Twojej
+wypowiedzi albo gdy sama zacznie mówić. Lube niezamówione zdarza się dopiero na późnym etapie, rzadko i nie częściej niż raz na 5
+minut. Wszystko ją ogranicza ta sama lista (nigdy stop, dość, utrzymaj).
+
+**Nie będzie łatwo.** Pierwsza szansa jest niska (lube 6 %, ostre sceny 10 %, łagodne prośby jak "dość" 35 %), rośnie powoli z
+każdą odmową, wyznanie dodaje 20 %, a pewne jest dopiero 8. proszenie: do lube średnio ok. 5 próśb. Pokrętło
+`persona.difficulty` w `commands.json` (0,5 = trudniej, 2 = łatwiej) skaluje wszystkie szanse.
+
 **Urozmaicenie.** Pani ma bank ok. 100 zwrotów w sześciu rodzajach (rozkazy: "klęknij", "ssij", "sssij ładnie",
 "połykaj"; własność: "należysz do mnie", "jesteś moją własnością"; upokorzenia: "spójrz na siebie"; drwiny, pochwały,
 żądania wyznań), dobranych do etapu - łagodne na początku, ostre i wulgarne od etapu 2. W każdej turze losuje 3 zwroty z różnych
