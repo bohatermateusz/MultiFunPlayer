@@ -1,5 +1,4 @@
-using Buttplug.Client;
-using Buttplug.Core.Messages;
+using Buttplug;
 using MultiFunPlayer.Common;
 using MultiFunPlayer.Shortcut;
 using Newtonsoft.Json.Linq;
@@ -18,6 +17,7 @@ internal sealed partial class ButtplugOutputTarget
     private const string DirectPositionDescription = "Position (move to depth now)";
     private const int ModeA = 9;
     private const int ModeB = 10;
+    private const int ModeHalt = 11;               // speed 0, the script is held back for the machine until another mode
     private const int SmallestStrokeWidth = 10;
 
     private volatile int _hismithMode;           // 0 = funscripts, 1-8 = built-in mode, 9 = A, 10 = B
@@ -95,6 +95,7 @@ internal sealed partial class ButtplugOutputTarget
                 0 => "funscript",
                 ModeA => "A (fastest, full depth, smallest stroke)",
                 ModeB => "B (slowest, full depth, smallest stroke)",
+                ModeHalt => "STOPPED (speed 0)",
                 _ => $"built-in mode {_hismithMode}"
             };
 
@@ -192,8 +193,14 @@ internal sealed partial class ButtplugOutputTarget
 
     public void SetHismithMode(int mode)
     {
-        mode = Math.Clamp(mode, 0, ModeB);
-        if (mode != 0 && !GetQuickActuators(PresetModeDescription).Any())
+        mode = Math.Clamp(mode, 0, ModeHalt);
+        if (mode == ModeHalt && !GetQuickActuators(SpeedDescription, ActuatorType.Oscillate).Any())
+        {
+            Logger.Info("No device with a speed actuator is connected, nothing to stop");
+            return;
+        }
+
+        if (mode is not (0 or ModeHalt) && !GetQuickActuators(PresetModeDescription).Any())
         {
             Logger.Info("No device with a \"{0}\" actuator is connected, not starting mode {1}", PresetModeDescription, mode);
             return;
@@ -248,6 +255,17 @@ internal sealed partial class ButtplugOutputTarget
                 return;
             }
 
+            if (mode == ModeHalt)
+            {
+                // stop: the script is held back for the machine and the speed goes to 0 at once
+                _hismithMode = mode;
+                NotifyModeChanged();
+                EventAggregator.Publish(new ScriptLoopMessage(ScriptLoopCommand.Clear));
+                await SetSpeedAbsoluteAsync(0);
+                NotifyOfPropertyChange(nameof(HismithModeStatus));
+                return;
+            }
+
             _hismithMode = mode;            // the script output to the machine is suppressed from here on
             NotifyModeChanged();
             EventAggregator.Publish(new ScriptLoopMessage(ScriptLoopCommand.Clear));
@@ -287,8 +305,9 @@ internal sealed partial class ButtplugOutputTarget
 
     private void RegisterHismithModeActions(IShortcutManager s)
     {
-        s.RegisterAction<int>($"{Identifier}::Hismith::Mode::Set", s => s.WithLabel("Mode (0 = funscript, 1-8 built-in, 9 = A, 10 = B)"), SetHismithMode);
+        s.RegisterAction<int>($"{Identifier}::Hismith::Mode::Set", s => s.WithLabel("Mode (0 = funscript, 1-8 built-in, 9 = A, 10 = B, 11 = stop)"), SetHismithMode);
         s.RegisterAction($"{Identifier}::Hismith::Mode::Script", HismithModeScript);
+        s.RegisterAction($"{Identifier}::Hismith::Halt", () => SetHismithMode(ModeHalt));
         s.RegisterAction($"{Identifier}::Hismith::Speed::Faster", HismithFaster);
         s.RegisterAction($"{Identifier}::Hismith::Speed::Slower", HismithSlower);
         s.RegisterAction($"{Identifier}::Hismith::Depth::Deeper", HismithDeeper);
@@ -301,6 +320,7 @@ internal sealed partial class ButtplugOutputTarget
     {
         s.UnregisterAction($"{Identifier}::Hismith::Mode::Set");
         s.UnregisterAction($"{Identifier}::Hismith::Mode::Script");
+        s.UnregisterAction($"{Identifier}::Hismith::Halt");
         s.UnregisterAction($"{Identifier}::Hismith::Speed::Faster");
         s.UnregisterAction($"{Identifier}::Hismith::Speed::Slower");
         s.UnregisterAction($"{Identifier}::Hismith::Depth::Deeper");

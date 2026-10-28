@@ -1,0 +1,183 @@
+"""Erotic scene commands, the stop command and the improvised plans (bounded by the tool)."""
+import json
+import os
+import sys
+import threading
+import unittest
+from http.server import HTTPServer
+
+sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+from controller import Controller  # noqa: E402
+from llm import IntentLlm, build_schema, build_system_prompt  # noqa: E402
+from matcher import match  # noqa: E402
+from test_llm import FakeChat  # noqa: E402
+from voice_control import load_config  # noqa: E402
+
+CONFIG = os.path.join(os.path.dirname(__file__), "..", "commands.json")
+CFG, INTENTS = load_config(CONFIG)
+BY_ID = {i.id: i for i in INTENTS}
+
+
+class Clock:
+    t = 100.0
+
+    def __call__(self):
+        return self.t
+
+
+def actions(steps):
+    return [s["action"].split("::", 1)[-1] for s in steps]
+
+
+class StrictScenes(unittest.TestCase):
+    def make(self):
+        self.runs = []
+        w = CFG["wake"]
+        return Controller(INTENTS, self.runs.append, clock=Clock(), wake_words=w["words"], wake_min_similarity=w["min_similarity"])
+
+    def test_phrases_map_to_the_scene(self):
+        cases = {"pieprz mnie": "hard", "Zerżnij mnie!": "hard", "rżnij mnie": "hard", "rozepchaj mnie": "fill",
+                 "głęboko w dupcię": "fill", "drażnij mnie": "tease", "pieść mnie": "tease", "użyj mnie": "use_me",
+                 "jestem twoją sissy": "use_me", "jestem twoją suczką": "use_me", "kochanie jeszcze": None,
+                 "nie przestawaj": "more", "zalej mnie": "lube_fire", "obryzgaj mnie kilka razy": "lube_many",
+                 "dość": "halt", "wystarczy": "halt", "stój": "halt", "przestań": "halt"}
+        for text, intent in cases.items():
+            if intent is None:
+                continue
+            m, reason = match(text, INTENTS)
+            self.assertIsNotNone(m, f"{text}: {reason}")
+            self.assertEqual(m.intent.id, intent, text)
+
+    def test_scenes_run_the_expected_steps_after_the_wake_word(self):
+        c = self.make()
+        self.assertEqual(c.handle("kochanie, pieprz mnie").status, "executed")
+        self.assertEqual(actions(self.runs[-1]), ["Hismith::Speed::Faster", "Hismith::Speed::Faster", "Hismith::Depth::Deeper"])
+        self.assertEqual(c.handle("kochanie, drażnij mnie").status, "executed")
+        self.assertEqual(actions(self.runs[-1]), ["Hismith::Speed::Slower", "Hismith::Speed::Slower", "Hismith::Depth::Shallower"])
+
+    def test_without_the_wake_word_nothing_runs(self):
+        c = self.make()
+        for t in ["pieprz mnie", "dość", "użyj mnie"]:
+            self.assertEqual(c.handle(t).status, "ignored", t)
+        self.assertEqual(self.runs, [])
+
+    def test_halt_runs_the_halt_action(self):
+        c = self.make()
+        self.assertEqual(c.handle("kochanie, dość").status, "executed")
+        self.assertEqual(self.runs[-1], [{"action": "{target}::Hismith::Halt", "args": []}])
+
+    def test_halt_key_is_configured(self):
+        self.assertEqual(CFG["keys"]["end"], "halt")
+
+    def test_dialogue_next_to_the_scene_words_is_not_a_command(self):
+        c = self.make()
+        for t in ["kochanie, nie pieprz mi głowy", "kochanie, użyj mnie jutro do zakupów", "kochanie, dość już tego gadania o pracy"]:
+            self.assertEqual(c.handle(t).status, "ignored", t)
+
+    def test_improvise_has_no_strict_phrases_and_atomic_steps_only(self):
+        self.assertEqual(BY_ID["improvise"].phrases, [])
+        allowed = {i.id for i in INTENTS if i.improvise}
+        for forbidden in ["lube_fire", "lube_many", "mode_a", "mode_b", "hard", "fill", "tease", "use_me", "halt", "pause", "play", "sequence_start"]:
+            self.assertNotIn(forbidden, allowed)
+        for needed in ["faster", "slower", "deeper", "shallower", "script", "mode_3"]:
+            self.assertIn(needed, allowed)
+
+    def test_schema_and_prompt_for_improvising(self):
+        schema = build_schema(INTENTS)["schema"]["properties"]
+        self.assertIn("improvise", schema["intent"]["enum"])
+        step_enum = schema["plan"]["items"]["properties"]["step"]["enum"]
+        self.assertNotIn("lube_fire", step_enum)
+        self.assertIn("faster", step_enum)
+        prompt = build_system_prompt(INTENTS, ["kochanie"], [])
+        self.assertIn("IMPROVISE", prompt)
+        self.assertIn("consensual", prompt)
+
+
+class Improvise(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.server = HTTPServer(("127.0.0.1", 0), FakeChat)
+        threading.Thread(target=cls.server.serve_forever, daemon=True).start()
+        cls.base = f"http://127.0.0.1:{cls.server.server_address[1]}/v1"
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.server.shutdown()
+
+    def setUp(self):
+        FakeChat.table, FakeChat.calls, FakeChat.mode = {}, [], "ok"
+        self.runs, self.clock = [], Clock()
+        w = CFG["wake"]
+        llm = IntentLlm(self.base, "m", api_key="k", timeout=2, temperature=0.3, max_steps=CFG["llm"]["max_steps"])
+        self.c = Controller(INTENTS, self.runs.append, clock=self.clock, wake_words=w["words"], llm=llm, llm_cfg=CFG["llm"])
+
+    def say(self, text, plan, **kw):
+        FakeChat.table[text] = dict(intent="improvise", confidence=0.9, addressed=True, plan=plan, **kw)
+        return self.c.handle(text)
+
+    def test_plan_becomes_steps_of_the_allowed_commands(self):
+        o = self.say("kochanie, jestem twoją małą dziwką do zabawy", [{"step": "faster", "times": 1}, {"step": "deeper", "times": 2}, {"step": "mode_3", "times": 1}])
+        self.assertEqual((o.status, o.via), ("executed", "llm"))
+        self.assertEqual(actions(self.runs[-1]), ["Hismith::Speed::Faster", "Hismith::Depth::Deeper", "Hismith::Depth::Deeper", "Hismith::Mode::Set"])
+        self.assertEqual(self.runs[-1][-1]["args"], [3])
+
+    def test_the_model_cannot_use_forbidden_steps(self):
+        o = self.say("kochanie, rób co chcesz", [{"step": "lube_fire", "times": 1}, {"step": "mode_a", "times": 1},
+                                                  {"step": "halt", "times": 1}, {"step": "format_c", "times": 1}])
+        self.assertEqual(o.status, "ignored")
+        self.assertEqual(self.runs, [])
+
+    def test_forbidden_steps_are_dropped_but_allowed_ones_stay(self):
+        self.say("kochanie, weź mnie jak chcesz", [{"step": "lube_fire", "times": 1}, {"step": "slower", "times": 1}])
+        self.assertEqual(actions(self.runs[-1]), ["Hismith::Speed::Slower"])
+
+    def test_total_increase_is_capped(self):
+        plan = [{"step": "faster", "times": 2}] * 4 + [{"step": "deeper", "times": 2}] * 4
+        self.say("kochanie, zrób ze mną co chcesz maksymalnie", plan)
+        steps = actions(self.runs[-1])
+        self.assertLessEqual(steps.count("Hismith::Speed::Faster"), CFG["llm"]["max_faster"])
+        self.assertLessEqual(steps.count("Hismith::Depth::Deeper"), CFG["llm"]["max_deeper"])
+        self.assertLessEqual(len(steps), 2 * CFG["llm"]["max_steps"])
+
+    def test_number_of_plan_steps_is_capped(self):
+        plan = [{"step": "slower", "times": 1}] * 20
+        self.say("kochanie, powoli i czule", plan)
+        self.assertLessEqual(len(self.runs[-1]), CFG["llm"]["max_steps"] * 2)
+
+    def test_not_erotic_or_not_addressed_runs_nothing(self):
+        FakeChat.table["kochanie, kup mleko"] = dict(intent="none", confidence=0.9, addressed=True, plan=[])
+        self.assertEqual(self.c.handle("kochanie, kup mleko").status, "ignored")
+        o = self.say("kochanie, tak rozmawiam z kolegą", [{"step": "faster", "times": 1}], )
+        FakeChat.table["kochanie, tak rozmawiam z kolegą"]["addressed"] = False
+        self.clock.t += 20
+        self.assertEqual(self.c.handle("kochanie, tak rozmawiam z kolegą").status, "ignored")
+
+    def test_low_confidence_and_cooldown(self):
+        o = self.say("kochanie, jestem twoja", [{"step": "faster", "times": 1}], )
+        self.assertEqual(o.status, "executed")
+        o = self.say("kochanie, jestem twoja jeszcze bardziej", [{"step": "faster", "times": 1}])
+        self.assertEqual(o.status, "cooldown")
+        self.clock.t += 20
+        FakeChat.table["kochanie, nie wiem co"] = dict(intent="improvise", confidence=0.5, addressed=True, plan=[{"step": "faster", "times": 1}])
+        self.assertEqual(self.c.handle("kochanie, nie wiem co").status, "ignored")
+
+    def test_improvised_plan_is_in_the_log_and_remembered(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            self.c.log_path = os.path.join(d, "log.jsonl")
+            self.say("kochanie, wiesz że jestem tylko twoją małą sissy", [{"step": "faster", "times": 2}, {"step": "deeper", "times": 1}])
+            rec = json.loads(open(self.c.log_path, encoding="utf-8").read())
+            self.assertEqual(rec["plan"], ["fasterx2", "deeper"])
+        self.assertIn("improvised", self.c._recent[-1])
+
+    def test_dry_run_sends_nothing(self):
+        self.c.dry_run = True
+        o = self.say("kochanie, weź mnie", [{"step": "faster", "times": 1}])
+        self.assertEqual(o.status, "dry-run")
+        self.assertEqual(self.runs, [])
+
+
+if __name__ == "__main__":
+    unittest.main()

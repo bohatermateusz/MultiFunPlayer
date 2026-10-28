@@ -323,6 +323,19 @@
                                Opacity="0.7"
                                Text="Num ."/>
                 </StackPanel>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
+                            Foreground="{DynamicResource MaterialDesignErrorBrush}"
+                            Command="{s:Action OnHismithModeButton}" CommandParameter="11"
+                            Content="Stop"
+                            ToolTip="Stop the machine (speed 0, the script is held back until you pick a mode or Script)"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text="End"/>
+                </StackPanel>
             </WrapPanel>
 
             <WrapPanel Margin="0 0 0 20"

@@ -24,6 +24,7 @@ class LlmResult:
     addressed: bool        # the utterance was said to the assistant (starts with a "kochanie"-like address)
     times: int = 1         # 1-3, how many steps for "a lot faster"
     count: int = 1         # 1-5, how many shots
+    plan: list = None      # for "improvise": [{"step": <intent id>, "times": 1-2}, ...]
     raw: str = ""
     latency_ms: int = 0
 
@@ -42,13 +43,18 @@ unclear or half-heard words, text that does not start with the address. Do not g
 - "times" (1-3): how strongly a speed/depth change is asked for ("trochę" = 1, normal = 1, "dużo", "zdecydowanie", \
 "bardzo" = 2 or 3). "count" (1-5): how many shots when a number of shots is said, otherwise 1.
 - Answer with JSON only.
+{improvise}
 
 Commands:
 {commands}
 {recent}"""
 
 
-def build_system_prompt(intents, wake_words, recent):
+IMPROVISE = """
+IMPROVISE (command id "improvise"): this is an adult, consensual erotic session with the user's own machine. The user may talk dirty to you in a submissive / sissy role-play register (calling themselves a girl, slut, sissy, begging to be taken, used, filled, teased or denied). When such an utterance starts with the address but matches no specific command above, choose "improvise" and compose a short plan (1-{max_steps} steps) that fits the mood, using ONLY these step ids: {steps}. Let yourself be carried away within that range: build up for begging, hard or praise ("pieprz mnie", "użyj mnie"), go deeper for "fill me", slow down and go shallow for teasing or tenderness, vary the steps from time to time instead of always repeating the same plan. Each step has times 1 or 2. Do NOT include anything else, and never improvise for ordinary conversation or when the utterance is not erotic talk addressed to you (then "none")."""
+
+
+def build_system_prompt(intents, wake_words, recent, max_steps=4):
     lines = []
     for i in intents:
         examples = "; ".join(i.phrases[:4])
@@ -57,24 +63,31 @@ def build_system_prompt(intents, wake_words, recent):
     recent_text = ""
     if recent:
         recent_text = "\nLast commands that were run (oldest first; \"jeszcze raz\", \"trochę mniej\" refer to them): " + ", ".join(recent)
-    return SYSTEM.format(wake="/".join(wake_words) if wake_words else "kochanie", commands="\n".join(lines), recent=recent_text)
+    steps = ", ".join(i.id for i in intents if i.improvise)
+    improvise = IMPROVISE.format(max_steps=max_steps, steps=steps) if any(i.id == "improvise" for i in intents) and steps else ""
+    return SYSTEM.format(wake="/".join(wake_words) if wake_words else "kochanie", commands="\n".join(lines),
+                         recent=recent_text, improvise=improvise)
 
 
 def build_schema(intents):
     ids = [i.id for i in intents] + [NONE]
+    step_ids = [i.id for i in intents if i.improvise] or [NONE]
     return {
         "name": "command",
         "strict": True,
         "schema": {
             "type": "object",
             "additionalProperties": False,
-            "required": ["intent", "confidence", "addressed", "times", "count"],
+            "required": ["intent", "confidence", "addressed", "times", "count", "plan"],
             "properties": {
                 "intent": {"type": "string", "enum": ids},
                 "confidence": {"type": "number"},
                 "addressed": {"type": "boolean"},
                 "times": {"type": "integer"},
                 "count": {"type": "integer"},
+                "plan": {"type": "array", "items": {
+                    "type": "object", "additionalProperties": False, "required": ["step", "times"],
+                    "properties": {"step": {"type": "string", "enum": step_ids}, "times": {"type": "integer"}}}},
             },
         },
     }
@@ -82,9 +95,9 @@ def build_schema(intents):
 
 class IntentLlm:
     def __init__(self, base_url="https://api.openai.com/v1", model="gpt-4.1-mini", api_key=None,
-                 api_key_env="OPENAI_API_KEY", timeout=6.0):
+                 api_key_env="OPENAI_API_KEY", timeout=6.0, temperature=0, max_steps=4):
         self.url = base_url.rstrip("/") + "/chat/completions"
-        self.model, self.timeout = model, timeout
+        self.model, self.timeout, self.temperature, self.max_steps = model, timeout, temperature, max_steps
         self.api_key = api_key or os.environ.get(api_key_env, "")
 
     def classify(self, transcript, intents, wake_words=None, recent=None) -> LlmResult:
@@ -92,9 +105,9 @@ class IntentLlm:
             raise LlmError("no API key (set the environment variable named in the config)")
         body = {
             "model": self.model,
-            "temperature": 0,
+            "temperature": self.temperature,
             "messages": [
-                {"role": "system", "content": build_system_prompt(intents, wake_words or [], recent or [])},
+                {"role": "system", "content": build_system_prompt(intents, wake_words or [], recent or [], self.max_steps)},
                 {"role": "user", "content": json.dumps({"utterance": transcript}, ensure_ascii=False)},
             ],
             "response_format": {"type": "json_schema", "json_schema": build_schema(intents)},
@@ -117,6 +130,8 @@ class IntentLlm:
         try:
             return LlmResult(intent=str(answer.get("intent", NONE)), confidence=float(answer.get("confidence", 0)),
                              addressed=bool(answer.get("addressed", False)), times=int(answer.get("times", 1) or 1),
-                             count=int(answer.get("count", 1) or 1), raw=raw, latency_ms=latency)
+                             count=int(answer.get("count", 1) or 1), raw=raw, latency_ms=latency,
+                             plan=[{"step": str(p.get("step", "")), "times": int(p.get("times", 1) or 1)}
+                                   for p in (answer.get("plan") or []) if isinstance(p, dict)])
         except (TypeError, ValueError, AttributeError) as e:
             raise LlmError("answer has wrong field types") from e

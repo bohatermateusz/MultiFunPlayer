@@ -14,7 +14,8 @@ from matcher import Match, _sim, match, normalize
 YES = {"tak", "potwierdzam", "dawaj", "jasne"}
 NO = {"nie", "anuluj", "stop", "odwolaj"}
 
-LLM_DEFAULTS = {"min_confidence": 0.8, "max_words": 14, "prefilter_similarity": 0.5, "prefilter_min_length": 5, "context": 3, "step_delay": 0.2}
+LLM_DEFAULTS = {"min_confidence": 0.8, "max_words": 14, "prefilter_similarity": 0.5, "prefilter_min_length": 5, "context": 3,
+                "max_steps": 4, "max_faster": 3, "max_deeper": 3}
 
 
 @dataclass
@@ -181,10 +182,39 @@ class Controller:
         if answer.confidence < needed:
             return Outcome("ignored", f"llm: confidence {answer.confidence:.2f} < {needed:.2f}", intent.id, answer.confidence, "llm", extra)
         override = {"times": max(1, min(3, answer.times)), "count": max(1, min(5, answer.count))}
+        if intent.id == "improvise":
+            steps, used = self._improvised_steps(answer.plan or [])
+            if not steps:
+                return Outcome("ignored", "llm: empty plan", intent.id, answer.confidence, "llm", extra)
+            override["steps"] = steps
+            extra = dict(extra, plan=used)
         m = Match(intent, answer.confidence, "[llm]")
         return self._run_match(m, self.clock(), override, "llm", extra)
 
+    def _improvised_steps(self, plan):
+        """the model's plan -> (steps, [used step ids]); only commands flagged "improvise" are allowed, the number of
+        steps and of speed / depth increases is capped, whatever the model asks for"""
+        by_id = {i.id: i for i in self.intents if i.improvise}
+        steps, used = [], []
+        increases = {"faster": 0, "deeper": 0}
+        for item in plan[:int(self.llm_cfg["max_steps"])]:
+            intent = by_id.get(item.get("step"))
+            if intent is None:
+                continue
+            times = max(1, min(2, int(item.get("times", 1)))) if intent.repeatable else 1
+            if intent.id in increases:
+                room = int(self.llm_cfg["max_" + intent.id]) - increases[intent.id]
+                times = min(times, room)
+                if times <= 0:
+                    continue
+                increases[intent.id] += times
+            steps += copy.deepcopy(intent.steps) * times
+            used.append(f"{intent.id}x{times}" if times > 1 else intent.id)
+        return steps, used
+
     def _steps_for(self, intent, override):
+        if override and "steps" in override:
+            return copy.deepcopy(override["steps"])
         steps = copy.deepcopy(intent.steps)
         if not override:
             return steps
@@ -201,5 +231,5 @@ class Controller:
         if self.dry_run:
             return Outcome("dry-run", f"would run {len(steps)} step(s)", m.intent.id, m.score, via, extra or {})
         self.run_steps(steps)
-        self._remember(m.intent.id)
+        self._remember(m.intent.id if m.intent.id != "improvise" else "improvised " + "+".join((extra or {}).get("plan", [])))
         return Outcome("executed", "", m.intent.id, m.score, via, extra or {})

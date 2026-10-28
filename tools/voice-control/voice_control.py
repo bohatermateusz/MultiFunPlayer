@@ -36,14 +36,14 @@ def load_config(path):
             max_extra_words=i.get("max_extra_words", d.get("max_extra_words", 2)),
             confirm=i.get("confirm", d.get("confirm", False)),
             description=i.get("description", ""), repeatable=i.get("repeatable", False),
-            llm_min_confidence=i.get("llm_min_confidence")))
+            llm_min_confidence=i.get("llm_min_confidence"), improvise=i.get("improvise", False)))
     return cfg, intents
 
 
 def stt_prompt(intents, wake_words=None):
     # the cloud model is nudged towards the vocabulary of the commands (a hint, not a guarantee)
     wake = ", ".join(w for w in wake_words) + ". " if wake_words else ""
-    return "Komendy: " + wake + ", ".join(i.phrases[0] for i in intents)[:220]
+    return "Komendy: " + wake + ", ".join(i.phrases[0] for i in intents if i.phrases)[:220]
 
 
 def build(args):
@@ -57,7 +57,8 @@ def build(args):
     llm = None
     if lc.get("enabled", False) and not args.no_llm:
         llm = IntentLlm(lc.get("base_url", "https://api.openai.com/v1"), lc.get("model", "gpt-4.1-mini"),
-                        api_key_env=lc.get("api_key_env", "OPENAI_API_KEY"), timeout=lc.get("timeout", 6))
+                        api_key_env=lc.get("api_key_env", "OPENAI_API_KEY"), timeout=lc.get("timeout", 6),
+                        temperature=lc.get("temperature", 0), max_steps=lc.get("max_steps", 4))
     controller = Controller(intents, executor.run_steps, dry_run=args.dry_run, log_path=log_path,
                             wake_words=wake_words, wake_min_similarity=wake.get("min_similarity", 0.8), llm=llm, llm_cfg=lc)
     s = cfg.get("stt", {})

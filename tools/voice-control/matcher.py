@@ -69,6 +69,7 @@ class Intent:
     description: str = ""            # one sentence for the LLM that guesses unclear commands
     repeatable: bool = False         # "much faster" may repeat the steps (LLM "times")
     llm_min_confidence: float = None # None: the global llm.min_confidence
+    improvise: bool = False          # the LLM may use this command as a step of an improvised plan
     _tokens: list = field(default_factory=list, repr=False)
 
     def __post_init__(self):
@@ -92,6 +93,8 @@ def match(transcript: str, intents: list):
 
     scored = []
     for intent in intents:
+        if not intent.phrases:           # reachable only through the LLM (e.g. "improvise")
+            continue
         best = max(((phrase_score(tokens, pt, intent.max_extra_words), p) for pt, p in zip(intent._tokens, intent.phrases)),
                    key=lambda x: x[0])
         if best[0] >= intent.threshold:

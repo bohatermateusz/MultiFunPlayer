@@ -60,6 +60,7 @@ when `"wake": {"required": false}`). The tool is silent by default; the result i
 | play / pause the video | graj, wznów / stop, pauza | |
 | script loop on / off | zapętl to, powtórz to / koniec pętli, wyłącz pętlę | |
 | mode sequence (2 min per mode) | włącz sekwencję, wstrzymaj tryb, wznów sekwencję, koniec sekwencji | |
+| stop the machine | dość, wystarczy, starczy, przestań | End |
 | listening on / off | | Pause |
 
 The keys are global and **NumLock must be on**. They are observed, not swallowed: if HereSphere
@@ -100,6 +101,37 @@ to say "none" when unsure (dialogue, questions, negations like "nie spuszczaj si
   with 0 false triggers (`eval --no-llm`).
 * Settings: `llm` in `commands.json` (`model`, `min_confidence`, `max_words`, `prefilter_similarity`,
   `timeout`); per command `description` (what the model reads) and `llm_min_confidence`.
+
+## Spicy talk: scene commands and improvising (adult use, your own machine)
+
+Short phrases (all after "kochanie", offline, no model needed) that change the pace like a scene, not
+a single step; the same words work for the model when they are said loosely:
+
+| Say | Effect |
+|---|---|
+| pieprz mnie, zerżnij mnie, rżnij mnie, wypieprz mnie, weź mnie ostro, jak sukę | **hard**: clearly faster and deeper |
+| rozepchaj mnie, wypełnij mnie, głęboko w dupcię, do samego dna | **fill**: deeper, twice |
+| drażnij mnie, pieść mnie, delikatnie mnie, powoli mnie, zmysłowo, pomęcz mnie | **tease**: slower and shallower |
+| użyj mnie, jestem twoją dziwką / suką / suczką / dziewczynką / sissy, zrób ze mnie dziewczynkę | **use me**: builds up (faster + deeper) |
+| jeszcze, nie przestawaj, właśnie tak | **more**: a bit faster |
+| zalej mnie, obryzgaj mnie, wytrysnij na mnie, oznacz mnie (+ "kilka razy") | Lube Launcher |
+| **dość, wystarczy, starczy, przestań, stój, wyłącz maszynę** (key **End**, button **Stop**) | **stop**: speed 0 at once; the script is held back until you pick a mode or Script |
+
+**Improvising.** When you say something erotic (sissy / submissive talk, begging, praise, teasing)
+that matches none of the phrases, the model composes a **short plan** from a fixed, harmless menu:
+faster, slower, deeper, shallower, built-in modes 1-8, back to the script, normal. It reads the
+mood (begging and "use me" build up, "fill me" goes deep, teasing slows down and gets shallow), sees
+your last commands and varies the plan a little (temperature 0.3).
+
+What it can **not** do, whatever it says: fire the Lube Launcher, start modes A/B (max speed), stop
+or pause anything, or run the scene commands; at most 4 steps, at most 3 "faster" and 3 "deeper"
+steps per utterance, confidence at least 0.75, a 5 s cooldown. The Output range limits you set in
+MultiFunPlayer still apply on top. Every improvised plan is printed and written to
+`voice_log.jsonl` (`plan`). Switch the model off with `--no-llm` (the scene phrases above keep working).
+
+**Stop is always strict**: "dość" / "wystarczy" work offline (no model), and the model may also pick
+it with a low bar (0.6). Keep **End** in mind for when you cannot speak. Note that plain "stop" only
+pauses the video (it never stopped the machine).
 
 ## How mistakes are kept out
 

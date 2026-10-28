@@ -226,5 +226,81 @@
  {
   "say": "pytanie brzmi czy to działa",
   "intent": "none"
+ },
+ {
+  "say": "kochanie, pieprz mnie",
+  "intent": "hard"
+ },
+ {
+  "say": "kochanie, rozepchaj mnie",
+  "intent": "fill"
+ },
+ {
+  "say": "kochanie, drażnij mnie",
+  "intent": "tease"
+ },
+ {
+  "say": "kochanie, użyj mnie",
+  "intent": "use_me"
+ },
+ {
+  "say": "kochanie, dość",
+  "intent": "halt"
+ },
+ {
+  "say": "kochanie, wystarczy",
+  "intent": "halt"
+ },
+ {
+  "say": "rochanie, pieprz mnie mocno",
+  "intent": "hard"
+ },
+ {
+  "say": "trwanie, wystarczy już",
+  "intent": "halt"
+ },
+ {
+  "say": "kochanie, nie mogę więcej, starczy",
+  "intent": "halt"
+ },
+ {
+  "say": "kochanie, jestem twoją małą dziwką, zrób ze mną co chcesz",
+  "intent": "improvise"
+ },
+ {
+  "say": "kochanie, chcę być twoją grzeczną dziewczynką",
+  "intent": "improvise"
+ },
+ {
+  "say": "kochanie, błagam weź mnie, jestem taka mokra",
+  "intent": "improvise"
+ },
+ {
+  "say": "kochanie, pomęcz mnie jeszcze trochę, powoli",
+  "intent": "tease"
+ },
+ {
+  "say": "kochanie, wejdź we mnie głęboko",
+  "intent": "fill"
+ },
+ {
+  "say": "kochanie, nie pieprz mi głowy",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, użyj mnie jutro do zakupów",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, dość już tego gadania o pracy",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, drażnią mnie sąsiedzi",
+  "intent": "none"
+ },
+ {
+  "say": "dość tego, wyłączam telewizor",
+  "intent": "none"
  }
 ]

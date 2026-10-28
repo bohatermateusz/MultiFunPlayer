@@ -33,7 +33,7 @@ def key_name(k):
 
 def cheat_sheet(keys: dict, intents) -> str:
     """text lines 'Num 1  -> mode 1 ...' for the start-up banner and the README"""
-    label = {i.id: i.phrases[0] for i in intents}
+    label = {i.id: i.phrases[0] for i in intents if i.phrases}
     lines = []
     for key, target in keys.items():
         what = "listening on/off" if target == "@mute" else label.get(target, target)

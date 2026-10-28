@@ -38,7 +38,11 @@
     "spuść się",
     "dojdź na mnie",
     "dojdź",
-    "strzelaj"
+    "strzelaj",
+    "zalej mnie",
+    "obryzgaj mnie",
+    "wytrysnij na mnie",
+    "oznacz mnie"
    ],
    "steps": [
     {
@@ -82,7 +86,9 @@
     "spuść się na mnie trzy razy",
     "strzel kilka razy",
     "strzel trzy razy",
-    "kilka razy na mnie"
+    "kilka razy na mnie",
+    "zalej mnie kilka razy",
+    "obryzgaj mnie kilka razy"
    ],
    "steps": [
     {
@@ -121,7 +127,8 @@
    "cooldown": 1,
    "max_extra_words": 1,
    "description": "Make the machine clearly faster (speed up, harder, more).",
-   "repeatable": true
+   "repeatable": true,
+   "improvise": true
   },
   {
    "id": "slower",
@@ -145,7 +152,8 @@
    "cooldown": 1,
    "max_extra_words": 1,
    "description": "Make the machine slower (calmer, gentler, less).",
-   "repeatable": true
+   "repeatable": true,
+   "improvise": true
   },
   {
    "id": "deeper",
@@ -167,7 +175,8 @@
    "cooldown": 1,
    "max_extra_words": 1,
    "description": "Make the strokes deeper.",
-   "repeatable": true
+   "repeatable": true,
+   "improvise": true
   },
   {
    "id": "shallower",
@@ -189,7 +198,8 @@
    "cooldown": 1,
    "max_extra_words": 1,
    "description": "Make the strokes shallower.",
-   "repeatable": true
+   "repeatable": true,
+   "improvise": true
   },
   {
    "id": "normal",
@@ -212,7 +222,8 @@
     }
    ],
    "cooldown": 2,
-   "description": "Back to the film's own movement and remove all speed/depth changes (normally, reset)."
+   "description": "Back to the film's own movement and remove all speed/depth changes (normally, reset).",
+   "improvise": true
   },
   {
    "id": "script",
@@ -236,7 +247,8 @@
     }
    ],
    "cooldown": 2,
-   "description": "Leave the built-in mode and follow the film's funscript again."
+   "description": "Leave the built-in mode and follow the film's funscript again.",
+   "improvise": true
   },
   {
    "id": "mode_1",
@@ -259,7 +271,8 @@
     }
    ],
    "cooldown": 2,
-   "description": "Start the machine's built-in mode number 1 (tryb 1)."
+   "description": "Start the machine's built-in mode number 1 (tryb 1).",
+   "improvise": true
   },
   {
    "id": "mode_2",
@@ -282,7 +295,8 @@
     }
    ],
    "cooldown": 2,
-   "description": "Start the machine's built-in mode number 2 (tryb 2)."
+   "description": "Start the machine's built-in mode number 2 (tryb 2).",
+   "improvise": true
   },
   {
    "id": "mode_3",
@@ -305,7 +319,8 @@
     }
    ],
    "cooldown": 2,
-   "description": "Start the machine's built-in mode number 3 (tryb 3)."
+   "description": "Start the machine's built-in mode number 3 (tryb 3).",
+   "improvise": true
   },
   {
    "id": "mode_4",
@@ -328,7 +343,8 @@
     }
    ],
    "cooldown": 2,
-   "description": "Start the machine's built-in mode number 4 (tryb 4)."
+   "description": "Start the machine's built-in mode number 4 (tryb 4).",
+   "improvise": true
   },
   {
    "id": "mode_5",
@@ -351,7 +367,8 @@
     }
    ],
    "cooldown": 2,
-   "description": "Start the machine's built-in mode number 5 (tryb 5)."
+   "description": "Start the machine's built-in mode number 5 (tryb 5).",
+   "improvise": true
   },
   {
    "id": "mode_6",
@@ -374,7 +391,8 @@
     }
    ],
    "cooldown": 2,
-   "description": "Start the machine's built-in mode number 6 (tryb 6)."
+   "description": "Start the machine's built-in mode number 6 (tryb 6).",
+   "improvise": true
   },
   {
    "id": "mode_7",
@@ -397,7 +415,8 @@
     }
    ],
    "cooldown": 2,
-   "description": "Start the machine's built-in mode number 7 (tryb 7)."
+   "description": "Start the machine's built-in mode number 7 (tryb 7).",
+   "improvise": true
   },
   {
    "id": "mode_8",
@@ -420,7 +439,8 @@
     }
    ],
    "cooldown": 2,
-   "description": "Start the machine's built-in mode number 8 (tryb 8)."
+   "description": "Start the machine's built-in mode number 8 (tryb 8).",
+   "improvise": true
   },
   {
    "id": "mode_a",
@@ -639,6 +659,174 @@
    ],
    "cooldown": 2,
    "description": "Stop the loop, let the film go on."
+  },
+  {
+   "id": "halt",
+   "phrases": [
+    "dość",
+    "wystarczy",
+    "starczy",
+    "przestań",
+    "stój",
+    "stop maszyna",
+    "wyłącz maszynę",
+    "koniec zabawy",
+    "wystarczy kochanie"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Halt",
+     "args": []
+    }
+   ],
+   "description": "STOP the machine at once (speed 0): enough, stop, I can't take more, red light.",
+   "cooldown": 1,
+   "llm_min_confidence": 0.6,
+   "threshold": 0.9,
+   "max_extra_words": 1
+  },
+  {
+   "id": "hard",
+   "phrases": [
+    "pieprz mnie",
+    "zerżnij mnie",
+    "rżnij mnie",
+    "wypieprz mnie",
+    "mocniej pieprz mnie",
+    "weź mnie ostro",
+    "jak sukę",
+    "ostro mnie"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Speed::Faster",
+     "args": []
+    },
+    {
+     "action": "{target}::Hismith::Speed::Faster",
+     "args": []
+    },
+    {
+     "action": "{target}::Hismith::Depth::Deeper",
+     "args": []
+    }
+   ],
+   "description": "Take me hard: clearly faster and deeper (sissy / begging for it rough).",
+   "cooldown": 2,
+   "repeatable": true,
+   "threshold": 0.93,
+   "max_extra_words": 0
+  },
+  {
+   "id": "fill",
+   "phrases": [
+    "rozepchaj mnie",
+    "wypełnij mnie",
+    "głęboko w dupcię",
+    "w dupcię",
+    "weź moją dupcię",
+    "do samego dna"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Depth::Deeper",
+     "args": []
+    },
+    {
+     "action": "{target}::Hismith::Depth::Deeper",
+     "args": []
+    }
+   ],
+   "description": "Fill me / go deep into my ass: deeper, twice.",
+   "cooldown": 2,
+   "repeatable": true,
+   "threshold": 0.93,
+   "max_extra_words": 0
+  },
+  {
+   "id": "tease",
+   "phrases": [
+    "drażnij mnie",
+    "pieść mnie",
+    "delikatnie mnie",
+    "powoli mnie",
+    "zmysłowo",
+    "pomęcz mnie"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Speed::Slower",
+     "args": []
+    },
+    {
+     "action": "{target}::Hismith::Speed::Slower",
+     "args": []
+    },
+    {
+     "action": "{target}::Hismith::Depth::Shallower",
+     "args": []
+    }
+   ],
+   "description": "Tease me / be tender and slow: slower and shallower.",
+   "cooldown": 2,
+   "repeatable": true,
+   "threshold": 0.93,
+   "max_extra_words": 0
+  },
+  {
+   "id": "use_me",
+   "phrases": [
+    "użyj mnie",
+    "jestem twoją dziwką",
+    "jestem twoją suką",
+    "jestem twoją suczką",
+    "jestem twoją dziewczynką",
+    "jestem twoją sissy",
+    "weź mnie jak dziwkę",
+    "zrób ze mnie dziewczynkę"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Speed::Faster",
+     "args": []
+    },
+    {
+     "action": "{target}::Hismith::Depth::Deeper",
+     "args": []
+    }
+   ],
+   "description": "Submission talk (I'm your slut / girl / sissy, use me): build up, faster and deeper.",
+   "cooldown": 3,
+   "threshold": 0.93,
+   "max_extra_words": 0
+  },
+  {
+   "id": "more",
+   "phrases": [
+    "jeszcze",
+    "jeszcze jeszcze",
+    "nie przestawaj",
+    "właśnie tak",
+    "kontynuuj kochanie"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Speed::Faster",
+     "args": []
+    }
+   ],
+   "description": "More / keep going / yes yes: a bit faster.",
+   "cooldown": 2,
+   "threshold": 0.9,
+   "max_extra_words": 0
+  },
+  {
+   "id": "improvise",
+   "phrases": [],
+   "steps": [],
+   "description": "Erotic / sissy dirty talk to you that matches no other command: you choose a short plan of the allowed steps that fits the mood (see IMPROVISE).",
+   "cooldown": 5,
+   "llm_min_confidence": 0.75
   }
  ],
  "wake": {
@@ -674,7 +862,8 @@
   "num_multiply": "deeper",
   "num_divide": "shallower",
   "f8": "lube_fire",
-  "pause": "@mute"
+  "pause": "@mute",
+  "end": "halt"
  },
  "llm": {
   "enabled": true,
@@ -686,7 +875,11 @@
   "max_words": 14,
   "prefilter_similarity": 0.5,
   "context": 3,
-  "prefilter_min_length": 5
+  "prefilter_min_length": 5,
+  "temperature": 0.3,
+  "max_steps": 4,
+  "max_faster": 3,
+  "max_deeper": 3
  },
  "sounds": "off"
 }
