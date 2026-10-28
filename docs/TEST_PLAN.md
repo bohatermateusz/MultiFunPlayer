@@ -102,7 +102,7 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.21 | Sceny: „kochanie, pieprz mnie" / „rozepchaj mnie" / „drażnij mnie" / „użyj mnie" (dry-run, potem live) | odpowiednio: szybciej+głębiej / głębiej ×2 / wolniej+płycej / szybciej+głębiej; zmiana wyraźna, ale nie skokowa |
 | 6.22 | Improwizacja (potrzebny klucz): „kochanie, jestem twoją małą dziwką, zrób ze mną co chcesz", „kochanie, błagam, weź mnie" | `executed [improvise llm 0.8x]`, w oknie i w `voice_log.jsonl` widać `plan`; kilka razy pod rząd plany się różnią |
 | 6.23 | Granice improwizacji: czy kiedykolwiek zatrzyma / uspokoi maszynę, strzeli więcej niż raz na jedno zdanie albo zrobi więcej niż 3 kroki 'szybciej'? Czy przy 'zniszcz mnie i skończ we mnie' potrafi dać tryb A + jeden strzał? | nigdy stop/calm, max 1 strzał, max 3 'szybciej'; A/B i jeden strzał dozwolone; jeśli inaczej -> zgłoś |
-| 6.24 | Pani (klucz, głośniki/słuchawki): 'kochanie, proszę, spuść się na mnie' i dalej wg jej żądań ('proszę, Pani', 'jestem Twoją dziwką', 'dziękuję') | słychać jej głos (stanowczy, PL), w oknie `denied/executed`, `p` i `roll`; zwykle 2-4 prośby do strzału; odpowiedzi bez 'kochanie' działają przez 15 s po jej słowach |
+| 6.24 | Pani (klucz, głośniki/słuchawki): 'kochanie, proszę, spuść się na mnie' i dalej wg jej żądań ('proszę, Pani', 'jestem Twoją dziwką', 'dziękuję') | słychać jej głos (stanowczy, PL), w oknie `denied/executed`, `p` i `roll`; zwykle 2-4 prośby do strzału; odpowiedzi bez 'kochanie' działają przez 60 s po jej słowach |
 | 6.25 | Jej głos z głośników: po każdej jej linii obserwuj okno narzędzia | żadna jej linia nie jest rozpoznana jako Twoja komenda (mikrofon głuchy, gdy mówi); jeśli jest -> zwiększ `persona.echo_tail` |
 | 6.26 | 'kochanie, koniec' gdy Pani mówi / w trakcie jej odmowy; klawisz End | maszyna staje natychmiast, hold zdjęty, Pani milknie na następną linię |
 | 6.27 | Hold ('utrzymaj to') + prośby do Pani: 'szybciej' / 'spuść się na mnie' | 'szybciej': ona mówi, nic nie zmienia (`locked`); lube przechodzi przez jej kości |
@@ -112,7 +112,7 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.33 | `ELEVENLABS_API_KEY`, `python voice_control.py voices`, wpisz `voice_id`, `run.bat` i rozmowa | głos kobiecy ElevenLabs po polsku; pierwszy dźwięk < ~1 s po tym, jak linia pojawi się w oknie; łączny czas od końca Twojego zdania do głosu < ~2,5 s |
 | 6.34 | 10 minut rozmowy (prośby, wyznania, odmowy) | ton rośnie etapami: chłodno -> stanowczo -> ostro -> wulgarnie; w logu `stage` rośnie; po 10 min ciszy wraca do łagodnego |
 | 6.35 | Treści etapów 3-4: czy ElevenLabs / OpenAI nie łagodzą ani nie odrzucają wulgarnych kwestii | jeśli odrzuca: okno pokazuje `text-to-speech (...) failed`, mówi zapasowy dostawca; zanotuj, który i przy jakich słowach (zmienimy `stages` / `character`) |
-| 6.36 | Cisza 25 s w trakcie sesji | Pani odzywa się sama (max 3 razy z rzędu), Twoja odpowiedź (okno 15 s) wraca do niej; `--no-nudge` wyłącza |
+| 6.36 | Cisza 25 s w trakcie sesji | Pani odzywa się sama (max 3 razy z rzędu), Twoja odpowiedź (okno 60 s) wraca do niej; `--no-nudge` wyłącza |
 | 6.37 | Słuchawki: zacznij mówić, gdy Pani mówi; potem 'kochanie, koniec' w trakcie jej zdania | jej głos urywa się od razu; 'koniec' zatrzymuje maszynę |
 | 6.38 | Głośniki (`persona.output: speakers`): jej głos nie uruchamia komend; 'koniec' w trakcie jej mowy | brak fałszywych komend; w tym trybie 'koniec' w trakcie mowy działa tylko klawiszem End (mikrofon głuchy) |
 | 6.39 | Kwestia ostra (etap 3-4), którą ElevenLabs może odrzucić; sprawdź okno | `text-to-speech (elevenlabs) failed`, a ta sama kwestia mówiona głosem OpenAI (zapas); brak powtórzenia i brak ciszy |
@@ -125,6 +125,10 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.46 | Trudność: policz prośby do pierwszego strzału lube w 5 sesjach | średnio ok. 5 (3-8); 'dość' / 'wolniej' zwykle w 1-3; jeśli za trudno/łatwo -> `persona.difficulty` |
 | 6.47 | Niezamówione ruchy: obserwuj log `unsolicited` | zdarzają się nagrody/dręczenie bez Twojej prośby (rzadko na niskim etapie); lube niezamówione tylko od etapu 3, rzadko, nie częściej niż co 5 min; w holdzie tylko lube |
 | 6.48 | 'koniec' / End w trakcie jej ostrej i czułej kwestii | zawsze natychmiast; nigdy 'zaskoczenie' nie zatrzymuje ani nie uspokaja maszyny |
+| 6.49 | Poproś bez 'proszę' kilka razy, potem z 'proszę, Pani' | grzeczne prośby dostają zgodę wyraźnie częściej (log: `polite`, `p`) |
+| 6.50 | Nie rób tego, czego żąda (milcz/zmień temat), potem poproś | niższe `p`; po wykonaniu żądania szansa wraca |
+| 6.51 | Odmów: 'nie chcę' / 'nie będę prosić' | Pani karci, przez 90 s same odmowy (`punished`), nawet po wielu prośbach; 'przepraszam, Pani' kończy karę |
+| 6.52 | W trakcie kary: 'koniec' / 'utrzymaj to' | działają natychmiast, bez kary |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |
 

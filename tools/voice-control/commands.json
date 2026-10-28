@@ -1090,12 +1090,12 @@
  },
  "persona": {
   "enabled": true,
-  "_comment": "'Pani': answers aloud and decides (dice) whether a request is granted. Everything except 'never_gated' (koniec = halt, utrzymaj = lock) goes through her when said by voice; keys never do. 'fallback_plain' = soft commands that run plainly when she is unreachable (no key / network). 'base_p_overrides' = a friendlier first-ask chance for mild requests. 'tease_allowed' = steps she may run when she denies. reply_window = seconds after her line in which you answer without the wake word. 'output': 'headphones' (the microphone stays on while she speaks and your voice cuts her off, so the safe word is always heard) or 'speakers' (deaf while she speaks; then the safe word is the End key). escalation: the tool counts 'heat' and passes the stage to the model; stages[] describe the tone; tts.stage_settings = ElevenLabs voice settings per stage. initiative: she speaks when you are silent. address: titles = how SHE may address you (Pani, kochanie, ...; any is accepted), names = what you call HER (varied). vocabulary: phrases per category and stage that the tool samples (3 per turn, no repeats lately) and gives to the model as inspiration; confession_phrases / obey_phrases: recognised locally (fuzzy), so a confession or obedience counts for the dice even if the model misses it. tone: the tool rolls tender (czuły) or sharp (ostry) for every turn (sharp_p per stage, never more than max_sharp_run in a row, a twist now and then); tts.stage_settings has 10 entries: 0-4 tender by stage, 5-9 sharp by stage. spontaneous: unrequested moves (after a talk turn / when she speaks first); the Lube Launcher only from lube_min_stage with lube_chance. difficulty scales every chance (1.0 = as configured).",
+  "_comment": "'Pani': answers aloud and decides (dice) whether a request is granted. Everything except 'never_gated' (koniec = halt, utrzymaj = lock) goes through her when said by voice; keys never do. 'fallback_plain' = soft commands that run plainly when she is unreachable (no key / network). 'base_p_overrides' = a friendlier first-ask chance for mild requests. 'tease_allowed' = steps she may run when she denies. reply_window = seconds after her line in which you answer without the wake word. 'output': 'headphones' (the microphone stays on while she speaks and your voice cuts her off, so the safe word is always heard) or 'speakers' (deaf while she speaks; then the safe word is the End key). escalation: the tool counts 'heat' and passes the stage to the model; stages[] describe the tone; tts.stage_settings = ElevenLabs voice settings per stage. initiative: she speaks when you are silent. address: titles = how SHE may address you (Pani, kochanie, ...; any is accepted), names = what you call HER (varied). vocabulary: phrases per category and stage that the tool samples (3 per turn, no repeats lately) and gives to the model as inspiration; confession_phrases / obey_phrases: recognised locally (fuzzy), so a confession or obedience counts for the dice even if the model misses it. tone: the tool rolls tender (czuły) or sharp (ostry) for every turn (sharp_p per stage, never more than max_sharp_run in a row, a twist now and then); tts.stage_settings has 10 entries: 0-4 tender by stage, 5-9 sharp by stage. spontaneous: unrequested moves (after a talk turn / when she speaks first); the Lube Launcher only from lube_min_stage with lube_chance. difficulty scales every chance (1.0 = as configured). manners: being polite pays. Asking without a polite word ('proszę', 'błagam', 'Pani') has politeness_factor of the chance; asking again while a demand of hers is unmet has ignore_demand_factor; an open refusal ('nie chcę', 'nie powiem', 'nie będę prosić', or the model's 'defiance') wipes the progress of your asks and punishes: for penalty_seconds nothing is granted until you apologise ('przepraszam, Pani').",
   "model": "gpt-4.1-mini",
   "temperature": 0.8,
   "timeout": 8,
   "history_turns": 8,
-  "reply_window": 15,
+  "reply_window": 60,
   "base_p": 0.12,
   "step_p": 0.12,
   "confession_p": 0.2,
@@ -1736,6 +1736,43 @@
    "lube_min_stage": 3,
    "lube_chance": 0.12,
    "lube_gap_seconds": 300
+  },
+  "manners": {
+   "politeness_factor": 0.6,
+   "polite_markers": [
+    "proszę",
+    "błagam",
+    "pani",
+    "dziękuję",
+    "dziękuje",
+    "bardzo"
+   ],
+   "ignore_demand_factor": 0.4,
+   "penalty_seconds": 90,
+   "refusal_phrases": [
+    "nie chcę",
+    "nie powiem",
+    "nie będę",
+    "nie zrobię",
+    "odmawiam",
+    "nie ma mowy",
+    "nie poproszę",
+    "nie będę prosić",
+    "nie będę błagać",
+    "nie dziękuję pani",
+    "po moim trupie"
+   ],
+   "apology_phrases": [
+    "przepraszam",
+    "przepraszam pani",
+    "przepraszam cię",
+    "wybacz mi",
+    "wybacz",
+    "jestem grzeczna",
+    "będę grzeczna",
+    "już będę grzeczna",
+    "przepraszam kochanie"
+   ]
   }
  }
 }

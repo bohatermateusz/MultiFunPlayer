@@ -173,8 +173,12 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
 * **If she cannot be reached** (no key / network): the mild commands in `persona.fallback_plain` (enough, slower,
   shallower, back to the script, normal, pause, play, loop) run plainly; everything else (the Lube Launcher,
   faster, deeper, the scenes, the modes, the surprise) is ignored until she is back.
-* **Answering her**: for 15 s after her line (`reply_window`) you speak without "kochanie" ("proszę, Pani",
+* **Answering her**: for 60 s after her line (`reply_window`) you speak without "kochanie" ("proszę, Pani",
   "jestem Twoją małą dziwką"). The safe word and the ungated commands work in that window too.
+* **Manners** (`persona.manners`): asking without "proszę"/"błagam"/"Pani" cuts the odds (x0.6); ignoring her demand
+  (not doing what she asked) cuts them further (x0.4). An open refusal ("nie chcę", "nie powiem", "nie będę prosić", or
+  the model flags defiance) wipes your asks and nothing is granted for 90 s, or until you apologise ("przepraszam,
+  Pani"). Not even the 8th ask beats an active punishment. "koniec"/End and "utrzymaj to" are never punished.
 * **Her voice: ElevenLabs, streamed** (the first sound after ~0.5 s, not after the whole sentence), with OpenAI TTS as a
   fallback when ElevenLabs is down or refuses a text. Set `ELEVENLABS_API_KEY`, run
   `python voice_control.py voices`, put the id of a voice you like into `persona.tts.voice_id`. Model

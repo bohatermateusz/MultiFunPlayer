@@ -90,10 +90,12 @@ to prośby: ona może się zgodzić albo odmówić ("Nie. Jeszcze nie skończył
 pauza) dostają zgodę częściej (50 % za pierwszym razem). Klawisze działają zawsze od razu, bez Pani.
 
 Jak to wygląda: prosisz ("kochanie, proszę, spuść się na mnie") - ona każe prosić ładniej, przyznać się, powtórzyć,
-podziękować - odpowiadasz **bez** "kochanie" przez 15 s po jej słowach ("proszę, Pani", "jestem Twoją małą
+podziękować - odpowiadasz **bez** "kochanie" przez 60 s po jej słowach ("proszę, Pani", "jestem Twoją małą
 dziwką", "dziękuję, Pani") - i albo dostajesz, albo prosisz dalej. Szanse rosną z każdą prośbą i z każdym
 wyznaniem; zwykle 2-4 prośby, czasem od razu, czasem dłużej. Gdy zażądała czegoś konkretnego i to zrobisz -
-dostajesz na pewno. Przy odmowie potrafi dręczyć: zwolnić, spłycić, włączyć najwolniejszy tryb.
+dostajesz na pewno. Grzeczność się liczy: prośba bez "proszę"/"Pani" ma gorsze szanse, a zignorowanie jej żądania jeszcze gorsze. Otwarta odmowa
+("nie chcę", "nie powiem", "nie będę prosić") kasuje Twoje prośby i przez 90 s nic nie dostajesz - do czasu "przepraszam, Pani".
+"Koniec" i "utrzymaj to" działają zawsze, bez kary. Przy odmowie potrafi dręczyć: zwolnić, spłycić, włączyć najwolniejszy tryb.
 
 Co jej wolno: mówić, dawać i odbierać tempo, głębokość, tryby, jeden strzał z lube na raz. Czego nie wolno nigdy:
 zatrzymać maszyny samej z siebie ("koniec" to Twoje słowo), włączyć blokady, zaskoczyć sama z siebie. **"Kochanie, koniec" i klawisz End

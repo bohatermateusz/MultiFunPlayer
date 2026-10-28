@@ -33,6 +33,7 @@ class PersonaTurn:
     tease_actions: list = field(default_factory=list)
     raw: str = ""
     latency_ms: int = 0
+    defiance: bool = False       # the user openly refuses / is rude ("nie chcę", "nie powiem", "nie będę prosić")
 
 
 SYSTEM = """{character}
@@ -58,6 +59,10 @@ wszystkich naraz i nie powtarzaj kwestii, które już padły w rozmowie. Możesz
 błagać, przyznawać się ("powiedz, kim jesteś"), powtarzać, dziękować. Chwalisz tylko za posłuszeństwo.
 - NIE decydujesz, czy prośba zostanie spełniona - decyduje losowanie poza Tobą. Dlatego ZAWSZE piszesz dwie wersje \
 odpowiedzi: line_if_granted (zgoda: "Dobra dziewczynka. Masz.") i line_if_denied (odmowa: "Jeszcze nie. Poproś ładniej.").
+- defiance = true, gdy użytkownik otwarcie odmawia albo jest nieuprzejmy ("nie chcę", "nie powiem", "nie będę prosić", \
+"nie dziękuję", wyzywa Cię). Wtedy line_if_denied ma KARAĆ: odmawiasz wszystkiego i żądasz przeprosin ("Nie? To nie dostajesz nic. \
+Przeproś."). Nagradzasz tylko grzeczność - kto prosi, błaga i dziękuje, ten zyskuje; kto ignoruje Twoje żądanie, traci. Stan "kara_sekundy" > 0 \
+= trwa kara: odmawiaj i czekaj na przeprosiny.
 - request: id komendy, o którą użytkownik prosi (np. lube_fire gdy chce dojść / żeby się na niego spuścić, faster, deeper, \
 hard, mode_a, surprise...). "improvise" gdy chce być użyty / więcej, ale nie konkretnie. "none" gdy nie prosi \
 o nic (rozmowa, wyznanie bez prośby, odpowiedź na Twoje pytanie).
@@ -102,11 +107,11 @@ def build_schema(intents, step_ids):
                                                          "times": {"type": "integer"}}}}
     return {"name": "persona_turn", "strict": True, "schema": {
         "type": "object", "additionalProperties": False,
-        "required": ["addressed", "request", "confession", "thanked", "line_if_granted", "line_if_denied", "demand",
+        "required": ["addressed", "request", "confession", "thanked", "defiance", "line_if_granted", "line_if_denied", "demand",
                      "grant_actions", "tease_actions"],
         "properties": {
             "addressed": {"type": "boolean"}, "request": {"type": "string", "enum": ids},
-            "confession": {"type": "boolean"}, "thanked": {"type": "boolean"},
+            "confession": {"type": "boolean"}, "thanked": {"type": "boolean"}, "defiance": {"type": "boolean"},
             "line_if_granted": {"type": "string"}, "line_if_denied": {"type": "string"},
             "demand": {"type": "string", "enum": DEMANDS}, "grant_actions": actions, "tease_actions": actions}}}
 
@@ -184,6 +189,7 @@ class Persona:
                                    for p in (a.get(key) or []) if isinstance(p, dict)]
             return PersonaTurn(addressed=bool(a.get("addressed", False)), request=str(a.get("request", NONE)),
                                confession=bool(a.get("confession", False)), thanked=bool(a.get("thanked", False)),
+                               defiance=bool(a.get("defiance", False)),
                                line_if_granted=str(a.get("line_if_granted", "")).strip(),
                                line_if_denied=str(a.get("line_if_denied", "")).strip(),
                                demand=str(a.get("demand", "none")), grant_actions=actions("grant_actions"),

@@ -15,6 +15,7 @@ from test_persona import Clock, FakePani, turn  # noqa: E402
 from voice_control import load_config  # noqa: E402
 
 CFG, INTENTS = load_config(os.path.join(os.path.dirname(__file__), "..", "commands.json"))
+NOMANNERS = dict(CFG["persona"]["manners"], politeness_factor=1.0, ignore_demand_factor=1.0)
 VOC = CFG["persona"]["vocabulary"]
 
 
@@ -129,12 +130,12 @@ class FullTurn(unittest.TestCase):
         return self.c.handle(text)
 
     def test_a_confession_the_model_missed_still_raises_the_odds(self):
-        self.c.persona_cfg = dict(CFG["persona"], base_p=0.0, base_p_overrides={}, step_p=0.0, confession_p=0.3)
+        self.c.persona_cfg = dict(CFG["persona"], manners=NOMANNERS, base_p=0.0, base_p_overrides={}, step_p=0.0, confession_p=0.3)
         o = self.say("kochanie, należę do ciebie, spuść się na mnie", request="lube_fire", confession=False)
         self.assertEqual(o.extra["p"], 0.3)
 
     def test_obedience_the_model_missed_pays_what_she_owed(self):
-        self.c.persona_cfg = dict(CFG["persona"], base_p=0.0, base_p_overrides={}, step_p=0.0)
+        self.c.persona_cfg = dict(CFG["persona"], manners=NOMANNERS, base_p=0.0, base_p_overrides={}, step_p=0.0)
         self.say("kochanie, spuść się na mnie", request="lube_fire", demand="thank")
         o = self.say("dziękuję, Pani", request="none", thanked=False, granted="Dobra dziewczynka. Masz.")
         self.assertEqual(o.status, "executed")

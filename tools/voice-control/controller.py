@@ -26,6 +26,8 @@ PERSONA_DEFAULTS = {"enabled": True, "reply_window": 15.0, "base_p": 0.25, "step
                     "initiative": {"enabled": True, "idle_prompt_seconds": 25, "max_nudges": 3, "session_seconds": 180},
                     "vocabulary": {}, "inspiration": {"count": 3, "avoid_repeat": 14}, "confession_phrases": [], "obey_phrases": [],
                     "difficulty": 1.0, "step_p_overrides": {},
+                    "manners": {"politeness_factor": 0.6, "polite_markers": ["proszę", "błagam", "pani", "dziękuję"], "ignore_demand_factor": 0.4,
+                                "penalty_seconds": 90, "refusal_phrases": [], "apology_phrases": []},
                     "tone": {"sharp_p": [0.0, 0.08, 0.22, 0.38, 0.5], "max_sharp_run": 2, "soft_after_sharp": 0.7, "twist_p": 0.08,
                              "harsh_p": 0.3, "soft_first_turns": 2,
                              "soft_categories": ["czułość", "odpuszczenie", "przejęcie", "opieka", "własność_czuła", "pochwały"],
@@ -99,6 +101,7 @@ class Controller:
         self._tones = []                  # the tone of her recent turns: "czuły" (tender) / "ostry" (sharp)
         self._tone_now = ("czuły", 0)     # (tone, harshness 0-3) of the turn being prepared
         self._last_lube = -1e9
+        self._penalty_until = 0.0         # an open refusal costs: nothing is granted until you apologise or the time is up
         self.busy = lambda: False         # True while she is speaking / listening is muted (set by the main loop)
         self.speak_ex = None              # speak_ex(line, stage): like speak, but knows the escalation stage
 
@@ -254,8 +257,8 @@ class Controller:
             return False
         for phrase in phrases:
             pt = normalize(phrase).split()
-            if pt and phrase_score(tokens, pt, 6) >= threshold:
-                return True
+            if pt and any(phrase_score(tokens[i:], pt, 6) >= threshold for i in (0, 1)):
+                return True        # i=1: the wake word in front must not hide a one-word phrase
         return False
 
     def _tone(self, stage):
@@ -355,7 +358,8 @@ class Controller:
                 "inspiracja": self._inspiration(stage, tone, harsh),
                 "zwroty_do_ciebie": list(address.get("titles", [])),
                 "zwroty_do_niej": list(address.get("names", [])), "prosby_bez_zgody": dict(self._asks),
-                "nalezy_sie_po_wykonaniu_zadania": self._owed, "blokada_5_min": self.lock_remaining() > 0,
+                "nalezy_sie_po_wykonaniu_zadania": self._owed, "kara_sekundy": round(self.penalty_remaining()),
+                "blokada_5_min": self.lock_remaining() > 0,
                 "ostatnie_komendy": list(self._recent)}
 
     def _need_persona(self, transcript, plain=None):
@@ -368,7 +372,7 @@ class Controller:
         except Exception as e:
             return (e, need.plain)
 
-    def _decide(self, request_id, turn):
+    def _decide(self, request_id, turn, polite=True):
         """the honest dice: -> (granted, p, roll). Harder than a coin: a low first chance that grows slowly with every
         refusal (and with a confession), scaled by persona.difficulty; only at max_asks asks it is (almost) sure."""
         c = self.persona_cfg
@@ -377,10 +381,17 @@ class Controller:
             return True, 1.0, 0.0
         base = float(c["base_p_overrides"].get(request_id, c["base_p"]))
         step = float(c["step_p_overrides"].get(request_id, c["step_p"]))
+        m = c["manners"]
         p = base + step * asks + (float(c["confession_p"]) if turn.confession else 0.0)
         p = min(p * float(c.get("difficulty", 1.0)), 0.95)
-        if asks + 1 >= int(c["max_asks"]):
+        if not polite:
+            p *= float(m["politeness_factor"])              # being polite pays
+        if self._owed is not None and not turn.thanked:
+            p *= float(m["ignore_demand_factor"])           # ignoring what she demanded costs
+        elif asks + 1 >= int(c["max_asks"]):
             p = max(p, 0.95)
+        if self.penalty_remaining() > 0:
+            p = 0.0                                          # punished: nothing until you apologise
         roll = self.rng.random()
         return roll < p, p, roll
 
@@ -416,6 +427,15 @@ class Controller:
             turn.confession = True
         if self._says_any(transcript, self.persona_cfg["obey_phrases"], 0.88):
             turn.thanked = True
+        m = self.persona_cfg["manners"]
+        defiant = turn.defiance or self._says_any(transcript, m["refusal_phrases"], 0.92)
+        if not defiant and self.penalty_remaining() > 0 and self._says_any(transcript, m["apology_phrases"], 0.8):
+            self._penalty_until = 0.0                        # an apology ends the punishment
+            self._heat_up("turn")
+        if defiant:
+            self._penalty_until = now + float(m["penalty_seconds"])
+            self._asks.clear()                               # an open refusal wipes the progress of the asks
+            self._owed = None
         self._history.append(("user", transcript))
         del self._history[:-24]
         self._last_user, self._nudges = now, 0
@@ -472,8 +492,11 @@ class Controller:
             o = Outcome("locked", "held: she only talks (and the Lube Launcher works)", request_id, 0.0, "persona", extra)
             return spoken(turn.line_if_denied, o)
 
-        granted, p, roll = self._decide(request_id, turn)
-        extra.update(p=round(p, 2), roll=round(roll, 2), asks=self._asks.get(request_id, 0), demand=turn.demand)
+        granted, p, roll = self._decide(request_id, turn, self._is_polite(transcript))
+        extra.update(p=round(p, 2), roll=round(roll, 2), asks=self._asks.get(request_id, 0), demand=turn.demand,
+                     polite=self._is_polite(transcript))
+        if self.penalty_remaining() > 0:
+            extra["punished"] = round(self.penalty_remaining())
         self._last_ask = now
         if granted:
             self._asks.pop(request_id, None)
@@ -545,6 +568,13 @@ class Controller:
         if not any(_sim(w, tokens[0]) >= self.wake_min_similarity for w in self.wake_words):
             return None
         return " ".join(tokens[1:])
+
+    def penalty_remaining(self) -> float:
+        return max(0.0, self._penalty_until - self.clock())
+
+    def _is_polite(self, transcript) -> bool:
+        markers = {normalize(m) for m in self.persona_cfg["manners"]["polite_markers"]}
+        return bool(markers & set(normalize(transcript).split()))
 
     def lock_remaining(self) -> float:
         if self._locked_until is None:
