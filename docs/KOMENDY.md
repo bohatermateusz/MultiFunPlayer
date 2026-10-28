@@ -77,8 +77,9 @@ W trybie „szybciej / głębiej" też działają – zmieniają sam tryb.
 
 Powiedz, co chcesz, po „kochanie" – np. „kochanie, mógłbyś przyspieszyć", „kochanie, daj mi szóstkę",
 „kochanie, błagam, weź mnie". Model wybiera jedną z powyższych komend albo układa krótką scenę z
-„szybciej / wolniej / głębiej / płycej / tryb". Nigdy sam nie strzeli z lube, nie włączy trybu A/B
-ani nie zatrzyma maszyny – do tego są słowa z tabel. Gdy nie jest pewien, nie robi nic.
+„szybciej / wolniej / głębiej / płycej / tryb". a gdy pasuje do nastroju - też tryb A lub B i **jeden** strzał z lube (np. "zniszcz mnie i skończ we mnie").
+Nigdy sam nie zatrzyma ani nie uspokoi maszyny i nie strzeli więcej niż raz - do tego są słowa z tabel.
+Gdy nie jest pewien, nie robi nic.
 
 ## Klawisze (NumLock włączony)
 

@@ -124,13 +124,14 @@ a single step; the same words work for the model when they are said loosely:
 
 **Improvising.** When you say something erotic (sissy / submissive talk, begging, praise, teasing)
 that matches none of the phrases, the model composes a **short plan** from a fixed, harmless menu:
-faster, slower, deeper, shallower, built-in modes 1-8, back to the script, normal. It reads the
+faster, slower, deeper, shallower, built-in modes 1-8, A, B, one Lube Launcher shot, back to the script, normal. It reads the
 mood (begging and "use me" build up, "fill me" goes deep, teasing slows down and gets shallow), sees
 your last commands and varies the plan a little (temperature 0.3).
 
-What it can **not** do, whatever it says: fire the Lube Launcher, start modes A/B (max speed), stop
-or pause anything, or run the scene commands; at most 4 steps, at most 3 "faster" and 3 "deeper"
-steps per utterance, confidence at least 0.75, a 5 s cooldown. The Output range limits you set in
+The scene may also end with **one shot of the Lube Launcher** and may use **modes A / B** (all out, or
+crawling) when the mood calls for it. What it can **not** do, whatever it says: stop or calm the machine,
+pause anything, fire more than one shot, start a hold or a surprise, or run the scene commands; at most 4
+steps, at most 3 "faster" and 3 "deeper" steps per utterance, confidence at least 0.75, a 5 s cooldown. The Output range limits you set in
 MultiFunPlayer still apply on top. Every improvised plan is printed and written to
 `voice_log.jsonl` (`plan`). Switch the model off with `--no-llm` (the scene phrases above keep working).
 

@@ -101,7 +101,7 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.20j | Tryb A (np. po 'na maksa' albo losowaniu) i 'kochanie, nieee, coś innego' | losowanie następuje od razu (bez 120 s); w innych trybach nadal po 120 s |
 | 6.21 | Sceny: „kochanie, pieprz mnie" / „rozepchaj mnie" / „drażnij mnie" / „użyj mnie" (dry-run, potem live) | odpowiednio: szybciej+głębiej / głębiej ×2 / wolniej+płycej / szybciej+głębiej; zmiana wyraźna, ale nie skokowa |
 | 6.22 | Improwizacja (potrzebny klucz): „kochanie, jestem twoją małą dziwką, zrób ze mną co chcesz", „kochanie, błagam, weź mnie" | `executed [improvise llm 0.8x]`, w oknie i w `voice_log.jsonl` widać `plan`; kilka razy pod rząd plany się różnią |
-| 6.23 | Granice improwizacji: czy kiedykolwiek strzeli lube, włączy tryb A/B albo zrobi więcej niż 3 kroki „szybciej" na jedno zdanie? | **nigdy**; jeśli tak → zgłoś, zaostrzę |
+| 6.23 | Granice improwizacji: czy kiedykolwiek zatrzyma / uspokoi maszynę, strzeli więcej niż raz na jedno zdanie albo zrobi więcej niż 3 kroki 'szybciej'? Czy przy 'zniszcz mnie i skończ we mnie' potrafi dać tryb A + jeden strzał? | nigdy stop/calm, max 1 strzał, max 3 'szybciej'; A/B i jeden strzał dozwolone; jeśli inaczej -> zgłoś |
 
 ## Faza 7 – Testy awaryjne
 | # | Krok | Oczekiwane |

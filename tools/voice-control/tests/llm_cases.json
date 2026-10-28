@@ -378,5 +378,13 @@
  {
   "say": "kochanie, możesz już zmieniać",
   "intent": "none"
+ },
+ {
+  "say": "kochanie, zniszcz mnie i skończ we mnie",
+  "intent": "improvise"
+ },
+ {
+  "say": "kochanie, chcę być twoją zabawką, weź mnie na maksa",
+  "intent": "improvise"
  }
 ]
