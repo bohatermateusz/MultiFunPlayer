@@ -5,6 +5,7 @@ when that finds nothing, an optional LLM that guesses which configured command w
 The LLM only picks one of the configured commands; the tool validates the pick and runs its steps."""
 import copy
 import json
+import random
 import threading
 import time
 from dataclasses import dataclass, field
@@ -16,6 +17,8 @@ NO = {"nie", "anuluj", "stop", "odwolaj"}
 
 LLM_DEFAULTS = {"min_confidence": 0.8, "max_words": 14, "prefilter_similarity": 0.5, "prefilter_min_length": 5, "context": 3,
                 "max_steps": 4, "max_faster": 3, "max_deeper": 3, "max_lube": 1}
+PERSONA_DEFAULTS = {"enabled": True, "reply_window": 15.0, "base_p": 0.25, "step_p": 0.2, "confession_p": 0.3, "max_asks": 5,
+                    "silence_reset": 180.0, "gated": [], "tease_allowed": [], "max_words": 30}
 
 
 @dataclass
@@ -35,9 +38,17 @@ class _NeedLlm:
         self.transcript, self.recent = transcript, recent
 
 
+class _NeedPersona:
+    """the utterance goes to the persona (a request she decides on, or conversation)"""
+
+    def __init__(self, transcript, state, history):
+        self.transcript, self.state, self.history = transcript, state, history
+
+
 class Controller:
     def __init__(self, intents, run_steps, dry_run=False, log_path=None, clock=time.monotonic, confirm_timeout=6.0,
-                 wake_words=None, wake_min_similarity=0.8, llm=None, llm_cfg=None, lock_cfg=None):
+                 wake_words=None, wake_min_similarity=0.8, llm=None, llm_cfg=None, lock_cfg=None,
+                 persona=None, persona_cfg=None, speak=None, rng=None):
         self.intents = intents
         self.wake_words = [normalize(w) for w in (wake_words or []) if normalize(w)]
         self.wake_min_similarity = wake_min_similarity
@@ -54,6 +65,16 @@ class Controller:
         self._recent = []                 # ids of the last executed commands
         self.lock_cfg = dict({"allow": []}, **(lock_cfg or {}))
         self._locked_until = None         # "hold": until then only the allowed commands run
+        # the persona ("Pani"): see persona.py. speak(text) is called after a turn, outside the lock.
+        self.persona = persona
+        self.persona_cfg = dict(PERSONA_DEFAULTS, **(persona_cfg or {}))
+        self.speak = speak
+        self.rng = rng or random.Random()
+        self._window_until = 0.0          # until then an utterance without the wake word is an answer to her
+        self._asks = {}                   # request id -> how many times it was denied so far
+        self._last_ask = 0.0
+        self._owed = None                 # request id she will grant once the user does what she demanded
+        self._history = []                # [(role, text)] of the conversation with her
 
     def _log(self, transcript, outcome):
         if not self.log_path:
@@ -69,15 +90,170 @@ class Controller:
     def handle(self, transcript: str) -> Outcome:
         with self._lock:
             result = self._handle(transcript)
-            if not isinstance(result, _NeedLlm):
+            if isinstance(result, Outcome):
                 self._log(transcript, result)
-                return result
+                return self._say(result)
         # the (slow) model call runs without the lock: the keyboard shortcuts must not wait for it
+        if isinstance(result, _NeedPersona):
+            answer = self._ask_persona(result)
+            with self._lock:
+                outcome = self._finish_persona(transcript, answer)
+                self._log(transcript, outcome)
+            return self._say(outcome)
         answer = self._ask_llm(result)
         with self._lock:
             outcome = self._finish_llm(transcript, answer)
             self._log(transcript, outcome)
+            return self._say(outcome)
+
+    def _say(self, outcome):
+        line = outcome.extra.get("say")
+        if line and self.speak:
+            try:
+                self.speak(line)
+            except Exception:   # a silent persona must never break the loop
+                pass
+        return outcome
+
+    # ---- the persona ----------------------------------------------------------------------------
+    def persona_active(self) -> bool:
+        return self.persona is not None and bool(self.persona_cfg.get("enabled", True))
+
+    def in_reply_window(self) -> bool:
+        return self.clock() < self._window_until
+
+    def _gated(self, intent_id: str) -> bool:
+        return self.persona_active() and intent_id in self.persona_cfg["gated"]
+
+    def _persona_state(self):
+        now = self.clock()
+        if now - self._last_ask > float(self.persona_cfg["silence_reset"]):
+            self._asks.clear()
+            self._owed = None
+        return {"prosby_bez_zgody": dict(self._asks), "nalezy_sie_po_wykonaniu_zadania": self._owed,
+                "blokada_5_min": self.lock_remaining() > 0, "ostatnie_komendy": list(self._recent)}
+
+    def _need_persona(self, transcript):
+        return _NeedPersona(transcript, self._persona_state(), list(self._history))
+
+    def _ask_persona(self, need: _NeedPersona):
+        try:
+            step_ids = [i.id for i in self.intents if i.improvise]
+            return self.persona.respond(need.transcript, self.intents, step_ids, need.state, need.history)
+        except Exception as e:
+            return e
+
+    def _decide(self, request_id, turn):
+        """the honest dice: -> (granted, p, roll)"""
+        c = self.persona_cfg
+        asks = self._asks.get(request_id, 0)
+        if self._owed == request_id and turn.thanked:
+            return True, 1.0, 0.0
+        p = float(c["base_p"]) + float(c["step_p"]) * asks + (float(c["confession_p"]) if turn.confession else 0.0)
+        if asks + 1 >= int(c["max_asks"]):
+            p = max(p, 0.95)
+        p = min(p, 0.95)
+        roll = self.rng.random()
+        return roll < p, p, roll
+
+    def _persona_steps(self, actions, allowed_ids=None):
+        steps, used = self._improvised_steps(actions)
+        if allowed_ids is not None:
+            keep = [u for u in used if u.split("x")[0] in allowed_ids]
+            if len(keep) != len(used):
+                by_id = {i.id: i for i in self.intents}
+                steps = []
+                for u in keep:
+                    base, _, times = u.partition("x")
+                    steps += copy.deepcopy(by_id[base].steps) * (int(times) if times else 1)
+                used = keep
+        return steps, used
+
+    def _finish_persona(self, transcript, turn) -> Outcome:
+        if isinstance(turn, Exception):
+            return Outcome("ignored", f"persona unavailable ({turn})", via="persona")
+        extra = {"persona_raw": turn.raw, "latency_ms": turn.latency_ms}
+        if not turn.addressed:
+            return Outcome("ignored", "persona: not said to her", via="persona", extra=extra)
+
+        now = self.clock()
+        self._history.append(("user", transcript))
+        del self._history[:-24]
+
+        def spoken(line, outcome):
+            if line:
+                outcome.extra["say"] = line
+                self._history.append(("assistant", line))
+                self._window_until = self.clock() + float(self.persona_cfg["reply_window"])
             return outcome
+
+        request = turn.request
+        intent = next((i for i in self.intents if i.id == request), None)
+        locked = self.lock_remaining() > 0
+
+        # not a request: conversation (a confession, an answer to her question, thanks)
+        if intent is None and request != "improvise":
+            if self._owed and turn.thanked:
+                owed = self._owed
+                self._owed = None
+                owed_intent = next((i for i in self.intents if i.id == owed), None)
+                if owed_intent is not None:
+                    return spoken(turn.line_if_granted, self._grant(owed_intent, [], extra, now, "owed"))
+            if turn.confession:
+                extra["confession"] = True
+            return spoken(turn.line_if_denied or turn.line_if_granted, Outcome("talk", "persona", "", 0.0, "persona", extra))
+
+        request_id = request
+        if intent is not None and not self._gated(request_id):
+            # not hers to decide (e.g. a mode or "slower"): runs at once, she may still comment
+            o = self._run_match(Match(intent, 1.0, "[persona]"), now, None, "persona", dict(extra))
+            return spoken(turn.line_if_granted, o)
+
+        if locked and not request_id.startswith("lube_"):
+            o = Outcome("locked", "held: she only talks (and the Lube Launcher works)", request_id, 0.0, "persona", extra)
+            return spoken(turn.line_if_denied, o)
+
+        granted, p, roll = self._decide(request_id, turn)
+        extra.update(p=round(p, 2), roll=round(roll, 2), asks=self._asks.get(request_id, 0), demand=turn.demand)
+        self._last_ask = now
+        if granted:
+            self._asks.pop(request_id, None)
+            self._owed = None
+            if intent is None:   # "improvise": whatever she planned, bounded like a scene
+                steps, used = self._persona_steps(turn.grant_actions)
+                if locked:
+                    steps, used = self._persona_steps(turn.grant_actions, {"lube_fire"})
+                if not steps:
+                    return spoken(turn.line_if_denied or turn.line_if_granted, Outcome("talk", "persona: nothing to grant", "improvise", 0.0, "persona", extra))
+                extra["plan"] = used
+                improvise = next((i for i in self.intents if i.id == "improvise"), None)
+                m = Match(improvise, 1.0, "[persona]")
+                return spoken(turn.line_if_granted, self._run_match(m, now, {"steps": steps, "times": 1, "count": 1}, "persona", extra))
+            return spoken(turn.line_if_granted, self._grant(intent, turn.grant_actions, extra, now, "granted"))
+
+        self._asks[request_id] = self._asks.get(request_id, 0) + 1
+        if turn.demand in ("thank", "repeat", "confess"):
+            self._owed = request_id
+        o = Outcome("denied", f"persona: {turn.demand}", request_id, 0.0, "persona", extra)
+        if not locked:
+            steps, used = self._persona_steps(turn.tease_actions, set(self.persona_cfg["tease_allowed"]))
+            if steps:
+                extra["tease"] = used
+                if not self.dry_run:
+                    self.run_steps(steps)
+        return spoken(turn.line_if_denied, o)
+
+    def _grant(self, intent, actions, extra, now, how):
+        """run the request itself (its own steps), plus what she added, bounded like a scene"""
+        steps = copy.deepcopy(intent.steps)
+        added, used = self._persona_steps([a for a in actions if a.get("step") != intent.id])
+        if self.lock_remaining() > 0:
+            added, used = [], []
+        if used:
+            extra["plan"] = used
+        extra["decision"] = how
+        m = Match(intent, 1.0, "[persona]")
+        return self._run_match(m, now, {"steps": steps + added, "times": 1, "count": 1}, "persona", dict(extra))
 
     def press(self, intent_id: str) -> Outcome:
         """A keyboard shortcut: the intent runs at once (no wake word, no cool-down, no confirmation)."""
@@ -141,7 +317,7 @@ class Controller:
     def _llm_candidate(self, transcript: str) -> bool:
         """cheap local filter: only short utterances that start with something like the wake word are
         worth a model call (film dialogue and talk never leave the computer as text)"""
-        if self.llm is None or not self.llm_cfg.get("enabled", True):
+        if not self.persona_active() and (self.llm is None or not self.llm_cfg.get("enabled", True)):
             return False
         tokens = normalize(transcript).split()
         if not tokens or len(tokens) > int(self.llm_cfg["max_words"]):
@@ -167,6 +343,13 @@ class Controller:
 
         command = self.strip_wake_word(transcript)
         if command is None:
+            if self.persona_active() and self.in_reply_window():
+                # an answer to her: strict commands that are not hers to decide still work without the wake word
+                m, _ = match(transcript, self.intents)
+                if m is not None and not self._gated(m.intent.id):
+                    return self._run_match(m, now)
+                if len(normalize(transcript).split()) <= int(self.persona_cfg["max_words"]):
+                    return self._need_persona(transcript)
             return self._maybe_llm(transcript, Outcome("ignored", "no wake word"))
         if not command.strip():
             return Outcome("ignored", "wake word only")
@@ -174,11 +357,15 @@ class Controller:
         m, reason = match(command, self.intents)
         if m is None:
             return self._maybe_llm(transcript, Outcome("ignored", reason))
+        if self._gated(m.intent.id):
+            return self._need_persona(transcript)   # hers to decide
 
         return self._run_match(m, now)
 
     def _maybe_llm(self, transcript, fallback):
         if self._llm_candidate(transcript):
+            if self.persona_active():
+                return self._need_persona(transcript)   # she understands loose talk and decides
             return _NeedLlm(transcript, list(self._recent))
         return fallback
 

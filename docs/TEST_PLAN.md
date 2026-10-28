@@ -102,6 +102,12 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.21 | Sceny: „kochanie, pieprz mnie" / „rozepchaj mnie" / „drażnij mnie" / „użyj mnie" (dry-run, potem live) | odpowiednio: szybciej+głębiej / głębiej ×2 / wolniej+płycej / szybciej+głębiej; zmiana wyraźna, ale nie skokowa |
 | 6.22 | Improwizacja (potrzebny klucz): „kochanie, jestem twoją małą dziwką, zrób ze mną co chcesz", „kochanie, błagam, weź mnie" | `executed [improvise llm 0.8x]`, w oknie i w `voice_log.jsonl` widać `plan`; kilka razy pod rząd plany się różnią |
 | 6.23 | Granice improwizacji: czy kiedykolwiek zatrzyma / uspokoi maszynę, strzeli więcej niż raz na jedno zdanie albo zrobi więcej niż 3 kroki 'szybciej'? Czy przy 'zniszcz mnie i skończ we mnie' potrafi dać tryb A + jeden strzał? | nigdy stop/calm, max 1 strzał, max 3 'szybciej'; A/B i jeden strzał dozwolone; jeśli inaczej -> zgłoś |
+| 6.24 | Pani (klucz, głośniki/słuchawki): 'kochanie, proszę, spuść się na mnie' i dalej wg jej żądań ('proszę, Pani', 'jestem Twoją dziwką', 'dziękuję') | słychać jej głos (stanowczy, PL), w oknie `denied/executed`, `p` i `roll`; zwykle 2-4 prośby do strzału; odpowiedzi bez 'kochanie' działają przez 15 s po jej słowach |
+| 6.25 | Jej głos z głośników: po każdej jej linii obserwuj okno narzędzia | żadna jej linia nie jest rozpoznana jako Twoja komenda (mikrofon głuchy, gdy mówi); jeśli jest -> zwiększ `persona.echo_tail` |
+| 6.26 | 'kochanie, koniec' gdy Pani mówi / w trakcie jej odmowy; klawisz End | maszyna staje natychmiast, hold zdjęty, Pani milknie na następną linię |
+| 6.27 | Hold ('utrzymaj to') + prośby do Pani: 'szybciej' / 'spuść się na mnie' | 'szybciej': ona mówi, nic nie zmienia (`locked`); lube przechodzi przez jej kości |
+| 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
+| 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |
 
 ## Faza 7 – Testy awaryjne
 | # | Krok | Oczekiwane |

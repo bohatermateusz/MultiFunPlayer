@@ -12,6 +12,7 @@ import argparse
 import json
 import os
 import sys
+import threading
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -20,6 +21,7 @@ from controller import Controller  # noqa: E402
 from executor import Executor  # noqa: E402
 from matcher import Intent  # noqa: E402
 from llm import IntentLlm  # noqa: E402
+from persona import Persona  # noqa: E402
 from stt import CloudStt, SttError, pcm_to_wav  # noqa: E402
 
 
@@ -59,9 +61,16 @@ def build(args):
         llm = IntentLlm(lc.get("base_url", "https://api.openai.com/v1"), lc.get("model", "gpt-4.1-mini"),
                         api_key_env=lc.get("api_key_env", "OPENAI_API_KEY"), timeout=lc.get("timeout", 6),
                         temperature=lc.get("temperature", 0), max_steps=lc.get("max_steps", 4))
+    pc = cfg.get("persona", {})
+    persona = None
+    if pc.get("enabled", False) and not args.no_persona and not args.no_llm:
+        persona = Persona(pc.get("character", ""), pc.get("base_url", lc.get("base_url", "https://api.openai.com/v1")),
+                          pc.get("model", lc.get("model", "gpt-4.1-mini")), api_key_env=pc.get("api_key_env", lc.get("api_key_env", "OPENAI_API_KEY")),
+                          timeout=pc.get("timeout", 8), temperature=pc.get("temperature", 0.8), history_turns=pc.get("history_turns", 12))
     controller = Controller(intents, executor.run_steps, dry_run=args.dry_run, log_path=log_path,
                             wake_words=wake_words, wake_min_similarity=wake.get("min_similarity", 0.8), llm=llm, llm_cfg=lc,
-                            lock_cfg=cfg.get("lock"))
+                            lock_cfg=cfg.get("lock"), persona=persona, persona_cfg=pc)
+    controller.speak = lambda line: print(f"  Pani: {line}")
     s = cfg.get("stt", {})
     stt = CloudStt(s.get("base_url", "https://api.openai.com/v1"), s.get("model", "whisper-1"), s.get("language", "pl"),
                    api_key_env=s.get("api_key_env", "OPENAI_API_KEY"), timeout=s.get("timeout", 15), prompt=stt_prompt(intents, wake_words))
@@ -69,7 +78,7 @@ def build(args):
 
 
 def report(outcome, transcript):
-    via = f" {outcome.via}" if outcome.via == "llm" else ""
+    via = f" {outcome.via}" if outcome.via in ("llm", "persona") else ""
     print(f'  "{transcript}" -> {outcome.status}' + (f" [{outcome.intent}{via} {outcome.score:.2f}]" if outcome.intent else "")
           + (f" ({outcome.detail})" if outcome.detail else ""))
 
@@ -82,6 +91,8 @@ def main():
         parser.add_argument("--dry-run", action="store_true", help="match and log, but send nothing", **d)
         parser.add_argument("--no-log", action="store_true", help="do not write voice_log.jsonl", **d)
         parser.add_argument("--no-llm", action="store_true", help="strict matching only (offline, no guessing)", **d)
+        parser.add_argument("--no-persona", action="store_true", help="no talking persona (plain commands)", **d)
+        parser.add_argument("--no-tts", action="store_true", help="print the persona's lines instead of speaking them", **d)
 
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     add_options(ap, suppress=False)
@@ -147,6 +158,47 @@ def main():
 
     muted = {"value": False}
 
+    # the persona speaks through the loudspeakers; the microphone is deaf while she talks (and 0.6 s after)
+    from audio import SpeechGate, play_pcm
+    gate = SpeechGate(tail=cfg.get("persona", {}).get("echo_tail", 0.6))
+    speaker, speaking_thread = None, {"t": None, "stop": False}
+    if controller.persona is not None and not args.no_tts:
+        from tts import PCM_RATE, Speaker, TtsError
+        t = cfg.get("persona", {}).get("tts", {})
+        speaker = Speaker(t.get("base_url", cfg.get("llm", {}).get("base_url", "https://api.openai.com/v1")), t.get("model", "gpt-4o-mini-tts"),
+                          t.get("voice", "sage"), t.get("instructions", ""), api_key_env=t.get("api_key_env", "OPENAI_API_KEY"),
+                          timeout=t.get("timeout", 15), speed=t.get("speed", 1.0))
+
+    def speak(line):
+        print(f"  Pani: {line}")
+        if speaker is None or muted["value"]:
+            return
+
+        def run():
+            try:
+                pcm = speaker.synthesize(line)
+            except TtsError as e:
+                print("  text-to-speech failed:", e)
+                return
+            gate.begin()
+            try:
+                play_pcm(pcm, PCM_RATE, stop=lambda: speaking_thread["stop"])
+            except Exception as e:
+                print("  playback failed:", e)
+            finally:
+                gate.end()
+
+        speaking_thread["stop"] = True          # a new line interrupts the previous one
+        previous = speaking_thread["t"]
+        if previous is not None:
+            previous.join(2.0)
+        speaking_thread["stop"] = False
+        th = threading.Thread(target=run, daemon=True)
+        speaking_thread["t"] = th
+        th.start()
+
+    controller.speak = speak
+
     def toggle_mute():
         muted["value"] = not muted["value"]
         print("  listening", "OFF (muted)" if muted["value"] else "ON")
@@ -170,7 +222,7 @@ def main():
     if always:
         print(f"Listening continuously. Say \"{', '.join(wake.get('words', []))}\" and a command. "
               f"{'DRY RUN. ' if args.dry_run else ''}Ctrl+C to quit.")
-        for pcm in listen_segments(rate, a.get("device"), muted=lambda: muted["value"],
+        for pcm in listen_segments(rate, a.get("device"), muted=lambda: muted["value"] or gate.speaking(),
                                    threshold_db=lis.get("threshold_db"), margin_db=lis.get("margin_db", 12),
                                    end_silence=lis.get("end_silence", 0.7), pre_roll=lis.get("pre_roll", 0.3),
                                    min_seconds=lis.get("min_seconds", 0.5), max_seconds=lis.get("max_seconds", 6.0)):

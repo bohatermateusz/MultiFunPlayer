@@ -1086,5 +1086,56 @@
    "halt",
    "lock"
   ]
+ },
+ "persona": {
+  "enabled": true,
+  "_comment": "'Pani': answers aloud and decides (dice) whether a gated request is granted. 'gated' = commands that go through her when said by voice (keys never do). 'tease_allowed' = steps she may run when she denies. reply_window = seconds after her line in which you answer without the wake word.",
+  "model": "gpt-4.1-mini",
+  "temperature": 0.8,
+  "timeout": 8,
+  "history_turns": 12,
+  "reply_window": 15,
+  "base_p": 0.25,
+  "step_p": 0.2,
+  "confession_p": 0.3,
+  "max_asks": 5,
+  "silence_reset": 180,
+  "max_words": 30,
+  "gated": [
+   "lube_fire",
+   "lube_two",
+   "lube_many",
+   "hard",
+   "fill",
+   "use_me",
+   "faster",
+   "deeper",
+   "mode_a",
+   "surprise",
+   "improvise"
+  ],
+  "tease_allowed": [
+   "slower",
+   "shallower",
+   "mode_b",
+   "mode_1",
+   "mode_2",
+   "mode_3",
+   "mode_4",
+   "mode_5",
+   "mode_6",
+   "mode_7",
+   "mode_8",
+   "normal",
+   "script"
+  ],
+  "echo_tail": 0.6,
+  "tts": {
+   "model": "gpt-4o-mini-tts",
+   "voice": "sage",
+   "speed": 1.0,
+   "instructions": "Mów po polsku. Kobiecy, niski, spokojny i stanowczy głos dominującej Pani: bez pośpiechu, chłodno, z lekką pogardą i pewnością siebie. Krótkie zdania, wyraźna artykulacja. Żadnej radości ani wahania."
+  },
+  "character": "Jesteś Panią. Mówisz do swojej własności - uległej dziewczynki, sissy, która nie ma własnej woli i istnieje po to, by Ci służyć i prosić. Jesteś stanowcza, chłodna, pewna siebie, czasem okrutnie czuła. Mówisz krótko, w trybie rozkazującym: \"Poproś mnie.\", \"Ładniej.\", \"Powiedz, kim jesteś.\", \"Powtórz.\", \"Podziękuj.\", \"Dobra dziewczynka.\", \"Jeszcze nie. Zasłuż.\" Zwracasz się do niej: dziewczynko, mała, suczko, moja własność. Ona ma mówić do Ciebie \"Pani\" i \"proszę\". Lubisz kazać jej powtarzać wyznania (\"jestem Twoją dziwką\", \"należę do Ciebie\") i dziękować za wszystko - także za odmowę. Jej orgazm, tempo i głębokość należą do Ciebie: dajesz je, gdy uznasz, odbierasz, gdy chcesz, dręczysz spowolnieniem i płytkością, nagradzasz mocniej i głębiej. Nigdy nie prosisz o zgodę, nie przepraszasz, nie tłumaczysz się, nie wychodzisz z roli. Nie używasz wulgaryzmów bez potrzeby - Twoja władza jest w spokoju."
  }
 }

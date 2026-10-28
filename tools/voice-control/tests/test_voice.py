@@ -222,7 +222,7 @@ class CommandLine(unittest.TestCase):
         return subprocess.run([sys.executable, "-I", script, *args], capture_output=True, text=True, timeout=20)
 
     def test_option_order(self):
-        for args in (["--dry-run", "--no-log", "text", "kochanie spuść się na mnie"], ["text", "kochanie spuść się na mnie", "--dry-run", "--no-log"]):
+        for args in (["--dry-run", "--no-log", "--no-persona", "text", "kochanie spuść się na mnie"], ["text", "kochanie spuść się na mnie", "--dry-run", "--no-log", "--no-persona"]):
             r = self.run_cli(*args)
             self.assertEqual(r.returncode, 0, r.stderr)
             self.assertIn("dry-run [lube_fire", r.stdout)

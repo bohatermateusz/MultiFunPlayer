@@ -14,6 +14,7 @@ def run_eval(controller, path=None, out=sys.stdout):
         cases = json.load(f)
     controller.dry_run = True
     controller.log_path = None
+    controller.persona = None          # eval measures the command classifier, not the conversation
     right, wrong, false_triggers, latencies, llm_calls = 0, [], [], [], 0
     for case in cases:
         controller._last.clear()

@@ -238,3 +238,43 @@ def meter(sample_rate=16000, device=None, seconds=15.0, **detector_options):
             if pcm:
                 print(f"\n  speech detected: {len(pcm) / 2 / sample_rate:.1f}s")
     print()
+
+
+def play_pcm(pcm: bytes, sample_rate: int = 24000, stop=None):
+    """Plays 16-bit mono PCM through the default output and returns when it is over (or when stop() is true)."""
+    import numpy as np
+    import sounddevice as sd
+
+    samples = np.frombuffer(pcm, dtype="int16")
+    if samples.size == 0:
+        return
+    sd.play(samples, samplerate=sample_rate)
+    while sd.get_stream().active:
+        if stop and stop():
+            sd.stop()
+            break
+        time.sleep(0.02)
+
+
+class SpeechGate:
+    """Knows when the tool itself is talking, so that the microphone ignores the loudspeakers: speaking()
+    is true from the start of a line until `tail` seconds after its end (room echo)."""
+
+    def __init__(self, tail=0.6):
+        self.tail = tail
+        self._until = 0.0
+        self._active = False
+        self._lock = threading.Lock()
+
+    def begin(self):
+        with self._lock:
+            self._active = True
+
+    def end(self):
+        with self._lock:
+            self._active = False
+            self._until = time.monotonic() + self.tail
+
+    def speaking(self) -> bool:
+        with self._lock:
+            return self._active or time.monotonic() < self._until

@@ -81,6 +81,26 @@ Powiedz, co chcesz, po „kochanie" – np. „kochanie, mógłbyś przyspieszy�
 Nigdy sam nie zatrzyma ani nie uspokoi maszyny i nie strzeli więcej niż raz - do tego są słowa z tabel.
 Gdy nie jest pewien, nie robi nic.
 
+## Rozmowa z Panią
+
+Pani odpowiada Ci na głos i to **ona** decyduje, czy dostaniesz to, o co prosisz. Przez nią przechodzi:
+dojście / lube, szybciej, głębiej, "pieprz mnie", "rozepchaj mnie", "użyj mnie", "na maksa", "zaskocz mnie" i
+luźne prośby. Reszta (koniec, dość, utrzymaj, wolniej, płycej, tryby 1-8, wróć do filmu, film) działa od razu,
+tak samo wszystkie klawisze.
+
+Jak to wygląda: prosisz ("kochanie, proszę, spuść się na mnie") - ona każe prosić ładniej, przyznać się, powtórzyć,
+podziękować - odpowiadasz **bez** "kochanie" przez 15 s po jej słowach ("proszę, Pani", "jestem Twoją małą
+dziwką", "dziękuję, Pani") - i albo dostajesz, albo prosisz dalej. Szanse rosną z każdą prośbą i z każdym
+wyznaniem; zwykle 2-4 prośby, czasem od razu, czasem dłużej. Gdy zażądała czegoś konkretnego i to zrobisz -
+dostajesz na pewno. Przy odmowie potrafi dręczyć: zwolnić, spłycić, włączyć najwolniejszy tryb.
+
+Co jej wolno: mówić, dawać i odbierać tempo, głębokość, tryby, jeden strzał z lube na raz. Czego nie wolno nigdy:
+zatrzymać ani uspokoić maszyny, włączyć blokady, zaskoczyć sama z siebie. **"Kochanie, koniec" i klawisz End
+działają zawsze, także gdy mówi.** W blokadzie 5 minut tylko mówi (i lube dalej przez nią przechodzi).
+
+Przykłady tego, co możesz mówić: "proszę, Pani" · "błagam" · "jestem Twoją dziwką" · "jestem Twoja, bierz mnie" ·
+"należę do Ciebie" · "dziękuję, Pani" · "zrób ze mną co chcesz" · "chcę dojść, proszę" · "użyj mnie".
+
 ## Klawisze (NumLock włączony)
 
 Num 1–8 tryby · Num 9 = A · Num 0 = B · Num . = normalnie · Num + / − szybciej / wolniej ·

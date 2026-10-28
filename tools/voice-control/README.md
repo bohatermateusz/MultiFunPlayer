@@ -155,6 +155,32 @@ script** (the existing script loop; the seconds are set in the second box next t
 (1-8, A, B, Calm) the hold only freezes the mode. "Jeszcze" used to mean "a bit faster"; it is now a hold (use
 "szybciej" for faster).
 
+## "Pani": she talks back and decides
+
+With `"persona": {"enabled": true}` (default) a dominant female character answers you **aloud** (OpenAI
+text-to-speech, voice `sage`, Polish, firm) and the things you ask for go through **her**:
+
+* **What is hers to decide** (`persona.gated`): the Lube Launcher, faster, deeper, the hard / fill / use-me scenes,
+  mode A, the surprise and loose "use me" talk. You ask - she demands ("Poproś mnie.", "Powiedz, kim jesteś.",
+  "Podziękuj.") - the **dice** decide: first ask 25 %, +20 % per earlier refusal, +30 % when you confess
+  ("jestem Twoją dziwką", "jestem Twoja"), the 5th ask ≥ 95 %; when she demanded something and you do it,
+  it is yours. While she refuses she may tease (slower, shallower, a crawling mode). The odds are the tool's,
+  not the model's (`base_p`, `step_p`, `confession_p`, `max_asks` in `commands.json`), and every decision is
+  logged with `p` and `roll`.
+* **What is not hers**: "koniec" (safe word), "dość", the hold, slower / shallower, modes 1-8 and B, back to
+  the script, play / pause, the loop - these run at once as before. **Every keyboard shortcut bypasses her**
+  (when you cannot speak, the key is the way).
+* **Answering her**: for 15 s after her line (`reply_window`) you speak without "kochanie" ("proszę, Pani",
+  "jestem Twoją małą dziwką"). The safe word and the ungated commands work in that window too.
+* **The microphone is deaf while she speaks** (and 0.6 s after), so her voice from the loudspeakers cannot
+  trigger anything. Mute (`Pause`) also silences her.
+* **Bounds**: her steps are validated like an improvised scene (allowed ids, ≤ 3 faster / 3 deeper, ≤ 1 shot);
+  she can never stop or calm the machine, start a hold or a surprise. In a hold she only talks (and the Lube
+  Launcher still goes through her dice).
+* `--no-tts` prints her lines instead of speaking; `--no-persona` (or `enabled: false`) brings back plain
+  commands; `text` mode prints her line. Her character sheet is `persona.character` (Polish, edit freely); the
+  voice and its instructions are under `persona.tts`.
+
 ## How mistakes are kept out
 
 * **Wake word first**: speech without "kochanie" at the start is thrown away, so film dialogue and
