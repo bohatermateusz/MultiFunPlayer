@@ -83,7 +83,7 @@ class StrictScenes(unittest.TestCase):
         for text in ["kochanie, zaskocz mnie", "kochanie, niespodzianka", "kochanie, wybierz za mnie", "kochanie, losowo", "kochanie, zdaj się na los"]:
             c._last.clear()
             self.assertEqual(c.handle(text).intent, "surprise", text)
-            self.assertEqual(self.runs[-1], [{"action": "{target}::Hismith::Mode::Random", "args": []}], text)
+            self.assertEqual(self.runs[-1], [{"action": "{target}::Hismith::Surprise", "args": []}], text)
         self.assertEqual(CFG["keys"]["insert"], "surprise")
 
     def test_surprise_is_not_confused_with_improvising_or_scenes(self):

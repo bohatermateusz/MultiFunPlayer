@@ -20,6 +20,7 @@ internal sealed partial class ButtplugOutputTarget
     private const int ModeCalm = 12;               // slowest speed, medium depth: "enough" without stopping
     private const int ModeHalt = 11;               // speed 0, the script is held back for the machine until another mode
     private const int SmallestStrokeWidth = 10;
+    private const double SurpriseModeChance = 0.7;   // chance that the surprise also changes the machine's mode
 
     private volatile int _hismithMode;           // 0 = funscripts, 1-8 = built-in mode, 9 = A, 10 = B
     private int _hismithSpeedBoost;
@@ -193,7 +194,37 @@ internal sealed partial class ButtplugOutputTarget
 
     public void HismithModeScript() => SetHismithMode(0);
 
-    // Surprise: one of the built-in modes 1-8 or the custom A / B, never the one that runs now.
+    // Surprise: two independent draws. Machine: with SurpriseModeChance one of the built-in modes 1-8 or the
+    // custom A / B (never the one that runs now), otherwise unchanged. Lube Launcher: nothing, one shot or three
+    // shots, each with the same chance. At least one of them always happens (the surprise may be only a shot,
+    // or only a mode).
+    public void HismithSurprise() => _ = HismithSurpriseAsync();
+
+    private async Task HismithSurpriseAsync()
+    {
+        var hasMachine = GetQuickActuators(PresetModeDescription).Any();
+        var hasLube = GetQuickActuators(SprayDescription).Any();
+        if (!hasMachine && !hasLube)
+            return;
+
+        var shots = hasLube ? new[] { 0, 1, 3 }[Random.Shared.Next(3)] : 0;
+        var changeMode = hasMachine && Random.Shared.NextDouble() < SurpriseModeChance;
+        if (!changeMode && shots == 0)
+        {
+            if (hasMachine)
+                changeMode = true;
+            else
+                shots = Random.Shared.Next(2) == 0 ? 1 : 3;
+        }
+
+        Logger.Info("Surprise: mode change {0}, Lube Launcher shots {1}", changeMode, shots);
+        if (changeMode)
+            HismithModeRandom();
+        if (shots > 0)
+            await FireLubeLauncherManyAsync(shots);
+    }
+
+    // Random mode only: one of the built-in modes 1-8 or the custom A / B, never the one that runs now.
     public void HismithModeRandom()
     {
         var current = _hismithMode;
@@ -327,6 +358,7 @@ internal sealed partial class ButtplugOutputTarget
         s.RegisterAction<int>($"{Identifier}::Hismith::Mode::Set", s => s.WithLabel("Mode (0 = funscript, 1-8 built-in, 9 = A, 10 = B, 11 = stop, 12 = calm)"), SetHismithMode);
         s.RegisterAction($"{Identifier}::Hismith::Mode::Script", HismithModeScript);
         s.RegisterAction($"{Identifier}::Hismith::Mode::Random", HismithModeRandom);
+        s.RegisterAction($"{Identifier}::Hismith::Surprise", HismithSurprise);
         s.RegisterAction($"{Identifier}::Hismith::Halt", () => SetHismithMode(ModeHalt));
         s.RegisterAction($"{Identifier}::Hismith::Calm", () => SetHismithMode(ModeCalm));
         s.RegisterAction($"{Identifier}::Hismith::Speed::Faster", HismithFaster);
@@ -342,6 +374,7 @@ internal sealed partial class ButtplugOutputTarget
         s.UnregisterAction($"{Identifier}::Hismith::Mode::Set");
         s.UnregisterAction($"{Identifier}::Hismith::Mode::Script");
         s.UnregisterAction($"{Identifier}::Hismith::Mode::Random");
+        s.UnregisterAction($"{Identifier}::Hismith::Surprise");
         s.UnregisterAction($"{Identifier}::Hismith::Halt");
         s.UnregisterAction($"{Identifier}::Hismith::Calm");
         s.UnregisterAction($"{Identifier}::Hismith::Speed::Faster");

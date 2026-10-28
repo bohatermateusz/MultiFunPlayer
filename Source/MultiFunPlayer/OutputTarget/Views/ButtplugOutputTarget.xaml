@@ -327,9 +327,9 @@
                     <Button Style="{StaticResource MaterialDesignOutlinedButton}"
                             MinWidth="44"
                             Padding="8 0"
-                            Click="{s:Action HismithModeRandom}"
+                            Click="{s:Action HismithSurprise}"
                             Content="Surprise"
-                            ToolTip="A random built-in mode 1-8 or A / B (never the one that runs now)"/>
+                            ToolTip="Surprise: maybe a random mode (1-8, A, B), and nothing / one shot / three shots from the Lube Launcher - at least one of them happens"/>
                     <TextBlock HorizontalAlignment="Center"
                                FontSize="10"
                                Opacity="0.7"

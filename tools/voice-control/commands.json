@@ -865,11 +865,11 @@
    ],
    "steps": [
     {
-     "action": "{target}::Hismith::Mode::Random",
+     "action": "{target}::Hismith::Surprise",
      "args": []
     }
    ],
-   "description": "Surprise me: pick a random built-in mode (1-8, A or B) - zaskocz mnie, niespodzianka, wybierz za mnie, losowo.",
+   "description": "Surprise me: the app draws at random - maybe a new mode (1-8, A or B), and maybe nothing / one shot / three shots from the Lube Launcher (zaskocz mnie, niespodzianka, wybierz za mnie, losowo).",
    "cooldown": 3,
    "threshold": 0.88,
    "max_extra_words": 1
