@@ -175,6 +175,10 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   faster, deeper, the scenes, the modes, the surprise) is ignored until she is back.
 * **Answering her**: for 60 s after her line (`reply_window`) you speak without "kochanie" ("proszę, Pani",
   "jestem Twoją małą dziwką"). The safe word and the ungated commands work in that window too.
+* **Her identity** (`persona.identity`): five texts rendered in front of every prompt - `ona` (who she is: Wiktoria,
+  calm, tender and merciless by turns), `ty` (who you are: his girl, princess, teddy bear; what he reacts to), `repertuar`
+  (how she teases, rewards, satisfies, punishes), `narzedzia` (what each control means as a gesture) and `po_sesji`
+  (warm aftercare once "koniec" ends it). Edit `ty` to taste; `character` stays as the short core.
 * **Last-second refusal** (`persona.last_second`): sometimes (18 %, from stage 1) a Lube Launcher request that the dice
   granted is held back at the last second ("prawie... jeszcze nie"): no shot, no punishment, one ask is given back, the
   next ask is likelier (+0.25). Never twice in a row, never on the sure ask.

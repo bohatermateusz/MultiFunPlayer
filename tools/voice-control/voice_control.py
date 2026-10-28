@@ -22,7 +22,7 @@ from controller import Controller  # noqa: E402
 from executor import Executor  # noqa: E402
 from matcher import Intent  # noqa: E402
 from llm import IntentLlm  # noqa: E402
-from persona import Persona  # noqa: E402
+from persona import Persona, render_character  # noqa: E402
 from stt import CloudStt, SttError, pcm_to_wav  # noqa: E402
 
 
@@ -65,7 +65,7 @@ def build(args):
     pc = cfg.get("persona", {})
     persona = None
     if pc.get("enabled", False) and not args.no_persona and not args.no_llm:
-        persona = Persona(pc.get("character", ""), pc.get("base_url", lc.get("base_url", "https://api.openai.com/v1")),
+        persona = Persona(render_character(pc), pc.get("base_url", lc.get("base_url", "https://api.openai.com/v1")),
                           pc.get("model", lc.get("model", "gpt-4.1-mini")), api_key_env=pc.get("api_key_env", lc.get("api_key_env", "OPENAI_API_KEY")),
                           timeout=pc.get("timeout", 8), temperature=pc.get("temperature", 0.8), history_turns=pc.get("history_turns", 12))
     controller = Controller(intents, executor.run_steps, dry_run=args.dry_run, log_path=log_path,

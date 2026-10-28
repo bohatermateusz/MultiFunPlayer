@@ -133,6 +133,8 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.54 | 20 min sesji, rozmawiaj lub milcz (etap >= 2) | rzadko niezamówiony strzał lube (`unsolicited: lube_surprise`), max 3 na 30 min, min. 5 min odstępu |
 | 6.55 | W trakcie kary lub przy etapie 0-1 | brak niezamówionych strzałów |
 | 6.56 | 'koniec' / End zaraz po niespodziance | natychmiast zatrzymuje |
+| 6.57 | Sesja 10 min po dodaniu tożsamości | Pani jest spójna (ta sama osoba), nazywa Cię m.in. księżniczką/misiem, droczy się i nagradza wg repertuaru |
+| 6.58 | 'koniec' na wysokim etapie | jeśli jeszcze się odezwie, to ciepło i opiekuńczo, bez żądań |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |
 

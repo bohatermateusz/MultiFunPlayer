@@ -92,6 +92,25 @@ wolniej/płycej; zwrot: tryb) - krótko, 1-2 kroki; w przeciwnym razie "plan" ma
 Odpowiadasz wyłącznie JSON-em z polami "line" i "plan"."""
 
 
+IDENTITY_SECTIONS = [("ona", "KIM JESTEŚ"), ("ty", "KIM ON JEST"), ("repertuar", "TWÓJ REPERTUAR"),
+                     ("narzedzia", "CO MASZ POD RĘKĄ"), ("po_sesji", "PO SESJI")]
+
+
+def render_character(persona_cfg):
+    """the text in front of every prompt: persona.identity (who she is, who he is, her playbook, the controls) and then
+    persona.character (the short core). Missing parts are skipped, so an old config still works."""
+    parts = []
+    ident = persona_cfg.get("identity") or {}
+    for key, title in IDENTITY_SECTIONS:
+        text = str(ident.get(key, "")).strip()
+        if text:
+            parts.append(f"{title}: {text}")
+    core = str(persona_cfg.get("character", "")).strip()
+    if core:
+        parts.append(core)
+    return "\n\n".join(parts)
+
+
 def build_system_prompt(character, intents, step_ids, state):
     commands = "; ".join(f"{i.id} = {i.description}" for i in intents if i.description)
     return SYSTEM.format(character=character.strip(), steps=", ".join(step_ids), commands=commands,

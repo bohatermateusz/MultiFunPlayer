@@ -93,7 +93,11 @@ Jak to wygląda: prosisz ("kochanie, proszę, spuść się na mnie") - ona każe
 podziękować - odpowiadasz **bez** "kochanie" przez 60 s po jej słowach ("proszę, Pani", "jestem Twoją małą
 dziwką", "dziękuję, Pani") - i albo dostajesz, albo prosisz dalej. Szanse rosną z każdą prośbą i z każdym
 wyznaniem; zwykle 2-4 prośby, czasem od razu, czasem dłużej. Gdy zażądała czegoś konkretnego i to zrobisz -
-dostajesz na pewno. Losowo (ok. 1 na 5-6 razy) potrafi też zatrzymać strzał w ostatniej chwili ("prawie... jeszcze nie") - bez kary, kolejna prośba ma
+dostajesz na pewno. Pani ma swoją tożsamość (`persona.identity` w `commands.json`): kim jest (Wiktoria), kim Ty jesteś dla niej (jej dziewczynka,
+księżniczka, miś), jak się droczy, nagradza i zaspokaja, co robi każde pokrętło i jak kończy sesję (ciepło, po "koniec").
+Wpis `ty` jest Twój - dopisz tam, co lubisz i czego nie chcesz.
+
+Losowo (ok. 1 na 5-6 razy) potrafi też zatrzymać strzał w ostatniej chwili ("prawie... jeszcze nie") - bez kary, kolejna prośba ma
 większą szansę. A czasem, bez pytania, sama Cię zleje lubem (od drugiego etapu, rzadko, max 3 na pół godziny).
 
 Grzeczność się liczy: prośba bez "proszę"/"Pani" ma gorsze szanse, a zignorowanie jej żądania jeszcze gorsze. Otwarta odmowa
