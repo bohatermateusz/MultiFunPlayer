@@ -78,6 +78,19 @@ class StrictScenes(unittest.TestCase):
             self.assertEqual(c.handle(text).intent, "halt", text)
             self.assertEqual(self.runs[-1], [{"action": "{target}::Hismith::Halt", "args": []}], text)
 
+    def test_surprise_picks_a_random_mode_in_the_app(self):
+        c = self.make()
+        for text in ["kochanie, zaskocz mnie", "kochanie, niespodzianka", "kochanie, wybierz za mnie", "kochanie, losowo", "kochanie, zdaj się na los"]:
+            c._last.clear()
+            self.assertEqual(c.handle(text).intent, "surprise", text)
+            self.assertEqual(self.runs[-1], [{"action": "{target}::Hismith::Mode::Random", "args": []}], text)
+        self.assertEqual(CFG["keys"]["insert"], "surprise")
+
+    def test_surprise_is_not_confused_with_improvising_or_scenes(self):
+        for text in ["zrób ze mną co chcesz", "zaskocz mnie jutro w pracy"]:
+            m, _ = match(text, INTENTS)
+            self.assertTrue(m is None or m.intent.id != "surprise", text)
+
     def test_keys_for_calm_and_halt(self):
         self.assertEqual(CFG["keys"]["home"], "calm")
         self.assertEqual(CFG["keys"]["end"], "halt")
@@ -135,7 +148,7 @@ class Improvise(unittest.TestCase):
         self.assertEqual(self.runs[-1][-1]["args"], [3])
 
     def test_the_model_cannot_use_forbidden_steps(self):
-        o = self.say("kochanie, rób co chcesz", [{"step": "lube_fire", "times": 1}, {"step": "mode_a", "times": 1},
+        o = self.say("kochanie, rób ze mną co ci się podoba", [{"step": "lube_fire", "times": 1}, {"step": "mode_a", "times": 1},
                                                   {"step": "halt", "times": 1}, {"step": "format_c", "times": 1}])
         self.assertEqual(o.status, "ignored")
         self.assertEqual(self.runs, [])

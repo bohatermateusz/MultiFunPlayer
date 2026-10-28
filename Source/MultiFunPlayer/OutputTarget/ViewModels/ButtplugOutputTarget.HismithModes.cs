@@ -193,6 +193,14 @@ internal sealed partial class ButtplugOutputTarget
 
     public void HismithModeScript() => SetHismithMode(0);
 
+    // Surprise: one of the built-in modes 1-8 or the custom A / B, never the one that runs now.
+    public void HismithModeRandom()
+    {
+        var current = _hismithMode;
+        var choices = Enumerable.Range(1, ModeB).Where(m => m != current).ToList();
+        SetHismithMode(choices[Random.Shared.Next(choices.Count)]);
+    }
+
     public void SetHismithMode(int mode)
     {
         mode = Math.Clamp(mode, 0, ModeCalm);
@@ -318,6 +326,7 @@ internal sealed partial class ButtplugOutputTarget
     {
         s.RegisterAction<int>($"{Identifier}::Hismith::Mode::Set", s => s.WithLabel("Mode (0 = funscript, 1-8 built-in, 9 = A, 10 = B, 11 = stop, 12 = calm)"), SetHismithMode);
         s.RegisterAction($"{Identifier}::Hismith::Mode::Script", HismithModeScript);
+        s.RegisterAction($"{Identifier}::Hismith::Mode::Random", HismithModeRandom);
         s.RegisterAction($"{Identifier}::Hismith::Halt", () => SetHismithMode(ModeHalt));
         s.RegisterAction($"{Identifier}::Hismith::Calm", () => SetHismithMode(ModeCalm));
         s.RegisterAction($"{Identifier}::Hismith::Speed::Faster", HismithFaster);
@@ -332,6 +341,7 @@ internal sealed partial class ButtplugOutputTarget
     {
         s.UnregisterAction($"{Identifier}::Hismith::Mode::Set");
         s.UnregisterAction($"{Identifier}::Hismith::Mode::Script");
+        s.UnregisterAction($"{Identifier}::Hismith::Mode::Random");
         s.UnregisterAction($"{Identifier}::Hismith::Halt");
         s.UnregisterAction($"{Identifier}::Hismith::Calm");
         s.UnregisterAction($"{Identifier}::Hismith::Speed::Faster");

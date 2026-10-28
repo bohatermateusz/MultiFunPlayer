@@ -314,5 +314,25 @@
  {
   "say": "trwanie, koniec zabawy",
   "intent": "halt"
+ },
+ {
+  "say": "kochanie, zaskocz mnie",
+  "intent": "surprise"
+ },
+ {
+  "say": "trwanie, niespodzianka",
+  "intent": "surprise"
+ },
+ {
+  "say": "kochanie, wybierz coś za mnie",
+  "intent": "surprise"
+ },
+ {
+  "say": "kochanie, zaskocz mnie jakimś trybem",
+  "intent": "surprise"
+ },
+ {
+  "say": "kochanie, zaskoczyła mnie dzisiaj pogoda",
+  "intent": "none"
  }
 ]

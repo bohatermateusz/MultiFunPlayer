@@ -53,6 +53,7 @@ when `"wake": {"required": false}`). The tool is silent by default; the result i
 | built-in modes 1-8 | tryb jeden ... tryb osiem (also "tryb pierwszy", "tryb 3", "program trzy", "trójka") | Num 1 ... Num 8 |
 | mode A: fastest, full depth, smallest stroke | tryb a, na maksa, najszybciej, maksymalnie | Num 9 |
 | mode B: slowest, full depth, smallest stroke | tryb b, najwolniej, na minimum | Num 0 |
+| **surprise**: a random built-in mode 1-8, A or B (never the one that runs) | zaskocz mnie, niespodzianka, wybierz za mnie, losowo, zdaj się na los | Insert |
 | back to the funscript and no boost | normalnie, zresetuj, bez zmian | Num . |
 | back to the funscript (keep boost) | wróć do filmu, wróć do skryptu, wyłącz tryb | (button "Script") |
 | Lube Launcher | spuść się na mnie, strzel na mnie, spuść się, dojdź na mnie | F8 |

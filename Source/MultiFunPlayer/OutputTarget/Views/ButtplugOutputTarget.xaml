@@ -327,6 +327,18 @@
                     <Button Style="{StaticResource MaterialDesignOutlinedButton}"
                             MinWidth="44"
                             Padding="8 0"
+                            Click="{s:Action HismithModeRandom}"
+                            Content="Surprise"
+                            ToolTip="A random built-in mode 1-8 or A / B (never the one that runs now)"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text="Insert"/>
+                </StackPanel>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
                             Command="{s:Action OnHismithModeButton}" CommandParameter="12"
                             Content="Calm"
                             ToolTip="Calm: the slowest speed at medium depth (the machine keeps going)"/>

@@ -848,6 +848,31 @@
    "description": "Erotic / sissy dirty talk to you that matches no other command: you choose a short plan of the allowed steps that fits the mood (see IMPROVISE).",
    "cooldown": 5,
    "llm_min_confidence": 0.75
+  },
+  {
+   "id": "surprise",
+   "phrases": [
+    "zaskocz mnie",
+    "niespodzianka",
+    "zaskocz mnie kochanie",
+    "niech to będzie niespodzianka",
+    "niespodzianka dla mnie",
+    "wybierz za mnie",
+    "zrób co chcesz",
+    "los szczęścia",
+    "losowo",
+    "zdaj się na los"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Random",
+     "args": []
+    }
+   ],
+   "description": "Surprise me: pick a random built-in mode (1-8, A or B) - zaskocz mnie, niespodzianka, wybierz za mnie, losowo.",
+   "cooldown": 3,
+   "threshold": 0.88,
+   "max_extra_words": 1
   }
  ],
  "wake": {
@@ -885,7 +910,8 @@
   "f8": "lube_fire",
   "pause": "@mute",
   "end": "halt",
-  "home": "calm"
+  "home": "calm",
+  "insert": "surprise"
  },
  "llm": {
   "enabled": true,
