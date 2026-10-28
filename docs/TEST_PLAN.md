@@ -83,6 +83,12 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.11 | Lube Launcher (jeśli podłączony): „kochanie spuść się na mnie" → strzał; „… kilka razy" → 3 strzały co ~1 s; powtórzenie < 10 s → `cooldown` | zgodnie z opisem |
 | 6.12 | Z maszyną chodzącą: czy hałas maszyny psuje rozpoznawanie? Powiedz 10 komend | zlicz trafione/nietrafione; > 2 pomyłek → bliżej ust mikrofon, zmień `margin_db` |
 | 6.13 | Koszt/ruch: po 30 min zobacz zużycie na platform.openai.com | rozsądny; jeśli za duży → częściej Pause |
+| 6.14 | `python voice_control.py eval` (z kluczem OpenAI) | **FALSE TRIGGERS = 0**, trafność ≥ 90 %; zapisz listę pomyłek. `eval --no-llm` daje bazę (ok. 70 %) |
+| 6.15 | Przekręcone słowo: „trwanie, spuścić się", „rochanie, szybciej" (live, dry-run) | `dry-run [... llm 0.9x]` z właściwą komendą |
+| 6.16 | Niejasne: „kochanie, mógłbyś przyspieszyć", „kochanie, idź głębiej", „kochanie, daj mi tryb szósty" | trafia w faster / deeper / mode_6; „zdecydowanie szybciej" = 2–3 kroki |
+| 6.17 | Przeczenia i dialog: „kochanie, nie spuszczaj się", „a nie spuść się", „kochanie, kup mleko" | `ignored`, nic nie jest wysłane |
+| 6.18 | Odłącz internet i powiedz „trwanie, spuścić się"; potem „kochanie szybciej" | pierwsze: `ignored (llm unavailable)`; drugie dalej działa (ścisła ścieżka offline) |
+| 6.19 | Film z dialogami w głośnikach 5 min, `voice_log.jsonl` | w logu brak wpisów `via: llm` wykonanych jako komenda; nieliczne wywołania modelu kończą się `ignored` |
 
 ## Faza 7 – Testy awaryjne
 | # | Krok | Oczekiwane |

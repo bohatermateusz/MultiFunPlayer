@@ -48,7 +48,9 @@
    ],
    "threshold": 0.9,
    "cooldown": 10,
-   "max_extra_words": 1
+   "max_extra_words": 1,
+   "description": "Fire the Lube Launcher once (the user wants to come / squirt on them).",
+   "llm_min_confidence": 0.9
   },
   {
    "id": "lube_two",
@@ -68,7 +70,9 @@
    ],
    "threshold": 0.9,
    "cooldown": 15,
-   "max_extra_words": 1
+   "max_extra_words": 1,
+   "description": "Fire the Lube Launcher exactly twice.",
+   "llm_min_confidence": 0.9
   },
   {
    "id": "lube_many",
@@ -90,7 +94,9 @@
    ],
    "threshold": 0.9,
    "cooldown": 15,
-   "max_extra_words": 1
+   "max_extra_words": 1,
+   "description": "Fire the Lube Launcher several times; set count to the number of shots said (default 3).",
+   "llm_min_confidence": 0.9
   },
   {
    "id": "faster",
@@ -113,7 +119,9 @@
    ],
    "threshold": 0.9,
    "cooldown": 1,
-   "max_extra_words": 1
+   "max_extra_words": 1,
+   "description": "Make the machine clearly faster (speed up, harder, more).",
+   "repeatable": true
   },
   {
    "id": "slower",
@@ -135,7 +143,9 @@
    ],
    "threshold": 0.9,
    "cooldown": 1,
-   "max_extra_words": 1
+   "max_extra_words": 1,
+   "description": "Make the machine slower (calmer, gentler, less).",
+   "repeatable": true
   },
   {
    "id": "deeper",
@@ -155,7 +165,9 @@
    ],
    "threshold": 0.9,
    "cooldown": 1,
-   "max_extra_words": 1
+   "max_extra_words": 1,
+   "description": "Make the strokes deeper.",
+   "repeatable": true
   },
   {
    "id": "shallower",
@@ -175,7 +187,9 @@
    ],
    "threshold": 0.9,
    "cooldown": 1,
-   "max_extra_words": 1
+   "max_extra_words": 1,
+   "description": "Make the strokes shallower.",
+   "repeatable": true
   },
   {
    "id": "normal",
@@ -197,7 +211,8 @@
      "args": []
     }
    ],
-   "cooldown": 2
+   "cooldown": 2,
+   "description": "Back to the film's own movement and remove all speed/depth changes (normally, reset)."
   },
   {
    "id": "script",
@@ -220,7 +235,8 @@
      "args": []
     }
    ],
-   "cooldown": 2
+   "cooldown": 2,
+   "description": "Leave the built-in mode and follow the film's funscript again."
   },
   {
    "id": "mode_1",
@@ -242,7 +258,8 @@
      ]
     }
    ],
-   "cooldown": 2
+   "cooldown": 2,
+   "description": "Start the machine's built-in mode number 1 (tryb 1)."
   },
   {
    "id": "mode_2",
@@ -264,7 +281,8 @@
      ]
     }
    ],
-   "cooldown": 2
+   "cooldown": 2,
+   "description": "Start the machine's built-in mode number 2 (tryb 2)."
   },
   {
    "id": "mode_3",
@@ -286,7 +304,8 @@
      ]
     }
    ],
-   "cooldown": 2
+   "cooldown": 2,
+   "description": "Start the machine's built-in mode number 3 (tryb 3)."
   },
   {
    "id": "mode_4",
@@ -308,7 +327,8 @@
      ]
     }
    ],
-   "cooldown": 2
+   "cooldown": 2,
+   "description": "Start the machine's built-in mode number 4 (tryb 4)."
   },
   {
    "id": "mode_5",
@@ -330,7 +350,8 @@
      ]
     }
    ],
-   "cooldown": 2
+   "cooldown": 2,
+   "description": "Start the machine's built-in mode number 5 (tryb 5)."
   },
   {
    "id": "mode_6",
@@ -352,7 +373,8 @@
      ]
     }
    ],
-   "cooldown": 2
+   "cooldown": 2,
+   "description": "Start the machine's built-in mode number 6 (tryb 6)."
   },
   {
    "id": "mode_7",
@@ -374,7 +396,8 @@
      ]
     }
    ],
-   "cooldown": 2
+   "cooldown": 2,
+   "description": "Start the machine's built-in mode number 7 (tryb 7)."
   },
   {
    "id": "mode_8",
@@ -396,7 +419,8 @@
      ]
     }
    ],
-   "cooldown": 2
+   "cooldown": 2,
+   "description": "Start the machine's built-in mode number 8 (tryb 8)."
   },
   {
    "id": "mode_a",
@@ -417,7 +441,8 @@
      ]
     }
    ],
-   "cooldown": 2
+   "cooldown": 2,
+   "description": "Custom mode A: fastest, full depth, smallest stroke (max out)."
   },
   {
    "id": "mode_b",
@@ -438,7 +463,8 @@
      ]
     }
    ],
-   "cooldown": 2
+   "cooldown": 2,
+   "description": "Custom mode B: slowest possible, full depth, smallest stroke."
   },
   {
    "id": "sequence_start",
@@ -454,7 +480,8 @@
      "args": []
     }
    ],
-   "cooldown": 3
+   "cooldown": 3,
+   "description": "Start the sequence that plays the built-in modes 1-8 one after another."
   },
   {
    "id": "sequence_stop",
@@ -469,7 +496,8 @@
      "args": []
     }
    ],
-   "cooldown": 3
+   "cooldown": 3,
+   "description": "Stop the sequence of built-in modes."
   },
   {
    "id": "sequence_hold",
@@ -486,7 +514,8 @@
      ]
     }
    ],
-   "cooldown": 2
+   "cooldown": 2,
+   "description": "Stay in the built-in mode that is running now (freeze the sequence)."
   },
   {
    "id": "sequence_release",
@@ -503,7 +532,8 @@
      ]
     }
    ],
-   "cooldown": 2
+   "cooldown": 2,
+   "description": "Let the frozen mode sequence go on."
   },
   {
    "id": "manual_mode",
@@ -518,7 +548,8 @@
      ]
     }
    ],
-   "cooldown": 2
+   "cooldown": 2,
+   "description": "Switch the machine to manual run mode."
   },
   {
    "id": "auto_mode",
@@ -534,7 +565,8 @@
      ]
     }
    ],
-   "cooldown": 2
+   "cooldown": 2,
+   "description": "Switch the machine to automatic run mode."
   },
   {
    "id": "pause",
@@ -552,7 +584,8 @@
      ]
     }
    ],
-   "cooldown": 1
+   "cooldown": 1,
+   "description": "Pause the video."
   },
   {
    "id": "play",
@@ -571,7 +604,8 @@
      ]
     }
    ],
-   "cooldown": 1
+   "cooldown": 1,
+   "description": "Play / resume the video."
   },
   {
    "id": "loop_on",
@@ -587,7 +621,8 @@
      "args": []
     }
    ],
-   "cooldown": 2
+   "cooldown": 2,
+   "description": "Loop the last few seconds of the script over and over."
   },
   {
    "id": "loop_off",
@@ -602,7 +637,8 @@
      "args": []
     }
    ],
-   "cooldown": 2
+   "cooldown": 2,
+   "description": "Stop the loop, let the film go on."
   }
  ],
  "wake": {
@@ -639,5 +675,17 @@
   "num_divide": "shallower",
   "f8": "lube_fire",
   "pause": "@mute"
+ },
+ "llm": {
+  "enabled": true,
+  "base_url": "https://api.openai.com/v1",
+  "model": "gpt-4.1-mini",
+  "api_key_env": "OPENAI_API_KEY",
+  "timeout": 6,
+  "min_confidence": 0.8,
+  "max_words": 14,
+  "prefilter_similarity": 0.5,
+  "context": 3,
+  "prefilter_min_length": 5
  }
 }

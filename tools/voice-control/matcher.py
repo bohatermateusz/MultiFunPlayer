@@ -66,6 +66,9 @@ class Intent:
     cooldown: float = 2.0
     max_extra_words: int = 2
     confirm: bool = False
+    description: str = ""            # one sentence for the LLM that guesses unclear commands
+    repeatable: bool = False         # "much faster" may repeat the steps (LLM "times")
+    llm_min_confidence: float = None # None: the global llm.min_confidence
     _tokens: list = field(default_factory=list, repr=False)
 
     def __post_init__(self):

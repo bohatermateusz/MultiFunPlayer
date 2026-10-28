@@ -19,6 +19,7 @@ sys.path.insert(0, HERE)
 from controller import Controller  # noqa: E402
 from executor import Executor  # noqa: E402
 from matcher import Intent  # noqa: E402
+from llm import IntentLlm  # noqa: E402
 from stt import CloudStt, SttError, pcm_to_wav  # noqa: E402
 
 
@@ -33,7 +34,9 @@ def load_config(path):
             threshold=i.get("threshold", d.get("threshold", 0.88)),
             cooldown=i.get("cooldown", d.get("cooldown", 2.0)),
             max_extra_words=i.get("max_extra_words", d.get("max_extra_words", 2)),
-            confirm=i.get("confirm", d.get("confirm", False))))
+            confirm=i.get("confirm", d.get("confirm", False)),
+            description=i.get("description", ""), repeatable=i.get("repeatable", False),
+            llm_min_confidence=i.get("llm_min_confidence")))
     return cfg, intents
 
 
@@ -50,8 +53,13 @@ def build(args):
     log_path = None if args.no_log else os.path.join(os.path.dirname(os.path.abspath(args.config)), cfg.get("log_file", "voice_log.jsonl"))
     wake = cfg.get("wake", {})
     wake_words = wake.get("words", []) if wake.get("required", True) else []
+    lc = cfg.get("llm", {})
+    llm = None
+    if lc.get("enabled", False) and not args.no_llm:
+        llm = IntentLlm(lc.get("base_url", "https://api.openai.com/v1"), lc.get("model", "gpt-4.1-mini"),
+                        api_key_env=lc.get("api_key_env", "OPENAI_API_KEY"), timeout=lc.get("timeout", 6))
     controller = Controller(intents, executor.run_steps, dry_run=args.dry_run, log_path=log_path,
-                            wake_words=wake_words, wake_min_similarity=wake.get("min_similarity", 0.8))
+                            wake_words=wake_words, wake_min_similarity=wake.get("min_similarity", 0.8), llm=llm, llm_cfg=lc)
     s = cfg.get("stt", {})
     stt = CloudStt(s.get("base_url", "https://api.openai.com/v1"), s.get("model", "whisper-1"), s.get("language", "pl"),
                    api_key_env=s.get("api_key_env", "OPENAI_API_KEY"), timeout=s.get("timeout", 15), prompt=stt_prompt(intents, wake_words))
@@ -59,7 +67,8 @@ def build(args):
 
 
 def report(outcome, transcript):
-    print(f'  "{transcript}" -> {outcome.status}' + (f" [{outcome.intent} {outcome.score:.2f}]" if outcome.intent else "")
+    via = f" {outcome.via}" if outcome.via == "llm" else ""
+    print(f'  "{transcript}" -> {outcome.status}' + (f" [{outcome.intent}{via} {outcome.score:.2f}]" if outcome.intent else "")
           + (f" ({outcome.detail})" if outcome.detail else ""))
 
 
@@ -70,6 +79,7 @@ def main():
         parser.add_argument("--config", **({"default": argparse.SUPPRESS} if suppress else {"default": os.path.join(HERE, "commands.json")}))
         parser.add_argument("--dry-run", action="store_true", help="match and log, but send nothing", **d)
         parser.add_argument("--no-log", action="store_true", help="do not write voice_log.jsonl", **d)
+        parser.add_argument("--no-llm", action="store_true", help="strict matching only (offline, no guessing)", **d)
 
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     add_options(ap, suppress=False)
@@ -77,12 +87,16 @@ def main():
     add_options(sub.add_parser("run"), suppress=True)
     t = sub.add_parser("text"); t.add_argument("transcript"); add_options(t, suppress=True)
     w = sub.add_parser("wav"); w.add_argument("file"); add_options(w, suppress=True)
+    e = sub.add_parser("eval"); e.add_argument("file", nargs="?"); add_options(e, suppress=True)
     add_options(sub.add_parser("keys"), suppress=True)
     add_options(sub.add_parser("mic"), suppress=True)
     args = ap.parse_args()
 
     cfg, controller, stt = build(args)
 
+    if args.cmd == "eval":
+        from llm_eval import run_eval
+        sys.exit(run_eval(controller, args.file))
     if args.cmd == "keys":
         from hotkeys import cheat_sheet
         print("Keyboard shortcuts (global, NumLock on):")

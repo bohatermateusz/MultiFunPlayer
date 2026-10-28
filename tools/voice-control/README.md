@@ -72,6 +72,35 @@ the boost. A built-in mode (1-8, A, B) **replaces the script for the machine** (
 not affected); in a mode the same commands set absolute speed / depth. Back to the script with
 "wróć do filmu" or "normalnie".
 
+## Guessing unclear commands (LLM)
+
+When the strict list finds nothing, a small language model (default `gpt-4.1-mini`, the same
+`OPENAI_API_KEY` as the speech service) may guess which of **your configured commands** was meant:
+
+* "trwanie, spuścić się" (the speech service distorted "kochanie") -> Lube Launcher
+* "kochanie, mógłbyś przyspieszyć" / "zdecydowanie szybciej" -> faster (a strong word = 2-3 steps)
+* "kochanie, daj mi tryb szósty", "kochanie, strzel cztery razy" -> mode 6, four shots
+
+The model is only a **classifier**: it sees the command ids and short descriptions and answers with one
+id (or "none") and a confidence; it never produces an action. The tool checks the answer (known id,
+"said to me", confidence at least 0.8, Lube Launcher 0.9), applies the usual cool-downs and runs the
+configured steps itself. A wrong command is treated as much worse than a missed one, so the model is told
+to say "none" when unsure (dialogue, questions, negations like "nie spuszczaj się").
+
+* **When it is called**: only when the strict matcher failed **and** the utterance is at most 14 words
+  **and** one of its first two words looks like the wake word (so film dialogue never leaves the computer
+  as text). Normal commands never touch the model: they stay offline, free and instant.
+* **Cost / privacy**: a few tokens of text per call (fractions of a cent). Only the recognised *text*
+  is sent, not audio.
+* **No network or key**: the utterance is ignored, nothing else breaks. `--no-llm` (or
+  `"llm": {"enabled": false}`) turns it off.
+* **Measure it on your voice**: `python voice_control.py eval` runs ~60 utterances
+  (`tests/llm_cases.json`, add your own) in dry-run and prints the hit rate and, separately, the
+  **false triggers** (the number that must be 0). The strict matcher alone scores 70 % on that list
+  with 0 false triggers (`eval --no-llm`).
+* Settings: `llm` in `commands.json` (`model`, `min_confidence`, `max_words`, `prefilter_similarity`,
+  `timeout`); per command `description` (what the model reads) and `llm_min_confidence`.
+
 ## How mistakes are kept out
 
 * **Wake word first**: speech without "kochanie" at the start is thrown away, so film dialogue and

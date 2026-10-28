@@ -1,0 +1,230 @@
+[
+ {
+  "say": "kochanie, tryb numer trzy",
+  "intent": "mode_3"
+ },
+ {
+  "say": "kochanie szybciej",
+  "intent": "faster"
+ },
+ {
+  "say": "kochanie spuść się",
+  "intent": "lube_fire"
+ },
+ {
+  "say": "kochanie wolniej",
+  "intent": "slower"
+ },
+ {
+  "say": "kochanie płycej",
+  "intent": "shallower"
+ },
+ {
+  "say": "kochanie głębiej",
+  "intent": "deeper"
+ },
+ {
+  "say": "kochanie stop",
+  "intent": "pause"
+ },
+ {
+  "say": "kochanie graj",
+  "intent": "play"
+ },
+ {
+  "say": "kochanie na maksa",
+  "intent": "mode_a"
+ },
+ {
+  "say": "kochanie najwolniej",
+  "intent": "mode_b"
+ },
+ {
+  "say": "kochanie wróć do filmu",
+  "intent": "script"
+ },
+ {
+  "say": "trwanie, spuścić się",
+  "intent": "lube_fire"
+ },
+ {
+  "say": "rochanie szybciej",
+  "intent": "faster"
+ },
+ {
+  "say": "kochaniee wolniej",
+  "intent": "slower"
+ },
+ {
+  "say": "kochana, tryb pięć",
+  "intent": "mode_5"
+ },
+ {
+  "say": "kochanie, spuść się na mnie",
+  "intent": "lube_fire"
+ },
+ {
+  "say": "kochamy tryb dwa",
+  "intent": "mode_2"
+ },
+ {
+  "say": "kochane głębiej",
+  "intent": "deeper"
+ },
+ {
+  "say": "kochanie, mógłbyś przyspieszyć",
+  "intent": "faster"
+ },
+ {
+  "say": "kochanie, trochę szybciej proszę",
+  "intent": "faster"
+ },
+ {
+  "say": "kochanie, zdecydowanie szybciej",
+  "intent": "faster"
+ },
+ {
+  "say": "kochanie, zwolnij trochę",
+  "intent": "slower"
+ },
+ {
+  "say": "kochanie, idź głębiej",
+  "intent": "deeper"
+ },
+ {
+  "say": "kochanie, nie tak głęboko",
+  "intent": "shallower"
+ },
+ {
+  "say": "kochanie, włącz program numer cztery",
+  "intent": "mode_4"
+ },
+ {
+  "say": "kochanie, daj mi tryb szósty",
+  "intent": "mode_6"
+ },
+ {
+  "say": "kochanie, wróć do normalnego ruchu",
+  "intent": "normal"
+ },
+ {
+  "say": "kochanie, już dość tego trybu",
+  "intent": "script"
+ },
+ {
+  "say": "kochanie, pauzuj film",
+  "intent": "pause"
+ },
+ {
+  "say": "kochanie, puść film dalej",
+  "intent": "play"
+ },
+ {
+  "say": "kochanie, powtórz ten fragment",
+  "intent": "loop_on"
+ },
+ {
+  "say": "kochanie, wyjdź z pętli",
+  "intent": "loop_off"
+ },
+ {
+  "say": "kochanie, wszystkie tryby po kolei",
+  "intent": "sequence_start"
+ },
+ {
+  "say": "kochanie, strzel cztery razy",
+  "intent": "lube_many"
+ },
+ {
+  "say": "kochanie, spuść się na mnie dwa razy",
+  "intent": "lube_two"
+ },
+ {
+  "say": "kochanie, daj z siebie wszystko",
+  "intent": "mode_a"
+ },
+ {
+  "say": "kochanie, jak najwolniej",
+  "intent": "mode_b"
+ },
+ {
+  "say": "a nie spuść się",
+  "intent": "none"
+ },
+ {
+  "say": "spuść się",
+  "intent": "none"
+ },
+ {
+  "say": "szybciej",
+  "intent": "none"
+ },
+ {
+  "say": "no dalej szybciej",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, nie spuszczaj się",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, jak ci minął dzień",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie chodź tu",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, dziękuję",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, co dziś robimy",
+  "intent": "none"
+ },
+ {
+  "say": "Dzięki za oglądanie!",
+  "intent": "none"
+ },
+ {
+  "say": "Napisy stworzone przez społeczność Amara.org",
+  "intent": "none"
+ },
+ {
+  "say": "nie, nie przestawaj",
+  "intent": "none"
+ },
+ {
+  "say": "pranie jest już suche",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, kup mleko",
+  "intent": "none"
+ },
+ {
+  "say": "oh yes baby that feels so good",
+  "intent": "none"
+ },
+ {
+  "say": "spuść wodę w toalecie",
+  "intent": "none"
+ },
+ {
+  "say": "trwanie tego filmu to godzina",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, nie szybciej",
+  "intent": "none"
+ },
+ {
+  "say": "kochanie, tryb dziewięć",
+  "intent": "none"
+ },
+ {
+  "say": "pytanie brzmi czy to działa",
+  "intent": "none"
+ }
+]
