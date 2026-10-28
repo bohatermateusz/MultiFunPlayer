@@ -111,6 +111,16 @@ Nie musisz mówić "Pani" - możesz też "kochanie", "moja Pani" itd. (lista w `
 (dziewczynko, mała, suko, kochanie...). Jeśli ElevenLabs odmówi wypowiedzenia jakiejś kwestii, **ta sama kwestia zostanie
 powiedziana głosem OpenAI** (zapas), więc rozmowa się nie urwie.
 
+**Urozmaicenie.** Pani ma bank ok. 100 zwrotów w sześciu rodzajach (rozkazy: "klęknij", "ssij", "sssij ładnie",
+"połykaj"; własność: "należysz do mnie", "jesteś moją własnością"; upokorzenia: "spójrz na siebie"; drwiny, pochwały,
+żądania wyznań), dobranych do etapu - łagodne na początku, ostre i wulgarne od etapu 2. W każdej turze losuje 3 zwroty z różnych
+rodzajów (bez powtórek z ostatnich 14) i wplata je po swojemu, także przeciągając ("sssij"). Własne zwroty dopiszesz w
+`commands.json` -> `persona.vocabulary`.
+
+Po Twojej stronie to zwykła rozmowa. Wyznania ("należę do Ciebie", "jestem Twoją dziwką", "nie mam własnej woli", "zrób ze
+mną co chcesz") i posłuszeństwo ("dziękuję, Pani", "ssę", "połykam", "klęczę", "tak Pani") są też rozpoznawane lokalnie, więc
+liczą się do kości (wyznanie +30 %, wykonane żądanie = nagroda), nawet gdy model tego nie wychwyci.
+
 Przykłady tego, co możesz mówić: "proszę, Pani" · "błagam" · "jestem Twoją dziwką" · "jestem Twoja, bierz mnie" ·
 "należę do Ciebie" · "dziękuję, Pani" · "zrób ze mną co chcesz" · "chcę dojść, proszę" · "użyj mnie".
 

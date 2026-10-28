@@ -117,6 +117,8 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.38 | Głośniki (`persona.output: speakers`): jej głos nie uruchamia komend; 'koniec' w trakcie jej mowy | brak fałszywych komend; w tym trybie 'koniec' w trakcie mowy działa tylko klawiszem End (mikrofon głuchy) |
 | 6.39 | Kwestia ostra (etap 3-4), którą ElevenLabs może odrzucić; sprawdź okno | `text-to-speech (elevenlabs) failed`, a ta sama kwestia mówiona głosem OpenAI (zapas); brak powtórzenia i brak ciszy |
 | 6.40 | Zwroty: 'Pani, szybciej', 'kochanie, szybciej'; Pani zwraca się różnie (dziewczynko, mała, suko...) i przyjmuje 'Pani'/'kochanie' | oba słowa zaczynają komendę; 'proszę pani...' w dialogu filmu nie uruchamia niczego |
+| 6.41 | 20 min rozmowy; zapisuj kwestie Pani | zwroty się nie powtarzają (bank ~100 + własne modelu); pojawiają się rozkazy / własność / upokorzenia / drwiny / pochwały / wyznania; na etapie 0-1 łagodnie, od 2 ostro |
+| 6.42 | Powiedz 'należę do Ciebie' / 'zrób ze mną, co chcesz' / 'dziękuję, Pani' po jej żądaniu | w logu `p` rośnie o 0.3 przy wyznaniu; wykonane żądanie ('dziękuję') daje zgodę (`decision: owed`), nawet gdy model nie oznaczył wyznania |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |
 

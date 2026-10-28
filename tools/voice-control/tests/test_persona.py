@@ -138,7 +138,7 @@ class PersonaTests(unittest.TestCase):
         self.assertEqual(o.extra["tease"], ["slowerx2"])
 
     def test_grant_runs_the_request_plus_her_extras_bounded(self):
-        self.c.persona_cfg = dict(CFG["persona"], base_p=1.0)
+        self.c.persona_cfg = dict(CFG["persona"], base_p=1.0, base_p_overrides={})
         o = self.say("kochanie, pieprz mnie", request="hard", grant_actions=[{"step": "deeper", "times": 2}, {"step": "halt", "times": 1}, {"step": "lube_fire", "times": 1}])
         self.assertEqual(o.status, "executed")
         a = self.actions()
@@ -147,7 +147,7 @@ class PersonaTests(unittest.TestCase):
         self.assertEqual(a.count("Hismith::LubeLauncher::Fire"), 1)
 
     def test_improvise_request_runs_her_plan(self):
-        self.c.persona_cfg = dict(CFG["persona"], base_p=1.0)
+        self.c.persona_cfg = dict(CFG["persona"], base_p=1.0, base_p_overrides={})
         o = self.say("kochanie, użyj mnie jak chcesz", request="improvise", grant_actions=[{"step": "mode_a", "times": 1}, {"step": "deeper", "times": 1}])
         self.assertEqual(o.status, "executed")
         self.assertEqual(self.actions(), ["Hismith::Mode::Set", "Hismith::Depth::Deeper"])
@@ -189,7 +189,7 @@ class PersonaTests(unittest.TestCase):
         self.assertEqual(o.extra["p"], 0.0)
 
     def test_film_goes_through_her_too(self):
-        self.c.persona_cfg = dict(CFG["persona"], base_p=1.0)
+        self.c.persona_cfg = dict(CFG["persona"], base_p=1.0, base_p_overrides={})
         o = self.say("kochanie, pauza", request="pause", granted="Dobrze. Chwila przerwy.")
         self.assertEqual(o.status, "executed")
         self.assertEqual(self.runs[-1], [{"action": "Media::PlayPause::Set", "args": [False]}])
@@ -200,7 +200,7 @@ class PersonaTests(unittest.TestCase):
         self.assertEqual(FakePani.calls, [])
 
     def test_a_mode_request_is_hers_to_grant_and_she_comments(self):
-        self.c.persona_cfg = dict(CFG["persona"], base_p=1.0)
+        self.c.persona_cfg = dict(CFG["persona"], base_p=1.0, base_p_overrides={})
         o = self.say("kochanie, może ten trzeci program", request="mode_3", granted="Trójka. Siedź cicho.")
         self.assertEqual(o.status, "executed")
         self.assertEqual(self.runs[-1][0]["args"], [3])
@@ -251,7 +251,7 @@ class PersonaTests(unittest.TestCase):
         o = self.say("kochanie, szybciej", request="faster", denied="Nie. Trzymasz.")
         self.assertEqual(o.status, "locked")
         self.assertEqual(self.said[-1], "Nie. Trzymasz.")
-        self.c.persona_cfg = dict(CFG["persona"], base_p=1.0)
+        self.c.persona_cfg = dict(CFG["persona"], base_p=1.0, base_p_overrides={})
         o = self.say("kochanie, spuść się na mnie", request="lube_fire", grant_actions=[{"step": "faster", "times": 1}])
         self.assertEqual(o.status, "executed")
         self.assertEqual(self.actions(), ["Hismith::LubeLauncher::Fire"])   # her extras are dropped in the hold
@@ -282,7 +282,7 @@ class PersonaTests(unittest.TestCase):
 
     def test_dry_run_speaks_but_sends_nothing(self):
         self.c.dry_run = True
-        self.c.persona_cfg = dict(CFG["persona"], base_p=1.0)
+        self.c.persona_cfg = dict(CFG["persona"], base_p=1.0, base_p_overrides={})
         o = self.say("kochanie, spuść się na mnie", request="lube_fire")
         self.assertEqual(o.status, "dry-run")
         self.assertEqual(self.runs, [])

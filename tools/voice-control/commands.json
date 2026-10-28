@@ -1090,7 +1090,7 @@
  },
  "persona": {
   "enabled": true,
-  "_comment": "'Pani': answers aloud and decides (dice) whether a request is granted. Everything except 'never_gated' (koniec = halt, utrzymaj = lock) goes through her when said by voice; keys never do. 'fallback_plain' = soft commands that run plainly when she is unreachable (no key / network). 'base_p_overrides' = a friendlier first-ask chance for mild requests. 'tease_allowed' = steps she may run when she denies. reply_window = seconds after her line in which you answer without the wake word. 'output': 'headphones' (the microphone stays on while she speaks and your voice cuts her off, so the safe word is always heard) or 'speakers' (deaf while she speaks; then the safe word is the End key). escalation: the tool counts 'heat' and passes the stage to the model; stages[] describe the tone; tts.stage_settings = ElevenLabs voice settings per stage. initiative: she speaks when you are silent. address: titles = how SHE may address you (Pani, kochanie, ...; any is accepted), names = what you call HER (varied).",
+  "_comment": "'Pani': answers aloud and decides (dice) whether a request is granted. Everything except 'never_gated' (koniec = halt, utrzymaj = lock) goes through her when said by voice; keys never do. 'fallback_plain' = soft commands that run plainly when she is unreachable (no key / network). 'base_p_overrides' = a friendlier first-ask chance for mild requests. 'tease_allowed' = steps she may run when she denies. reply_window = seconds after her line in which you answer without the wake word. 'output': 'headphones' (the microphone stays on while she speaks and your voice cuts her off, so the safe word is always heard) or 'speakers' (deaf while she speaks; then the safe word is the End key). escalation: the tool counts 'heat' and passes the stage to the model; stages[] describe the tone; tts.stage_settings = ElevenLabs voice settings per stage. initiative: she speaks when you are silent. address: titles = how SHE may address you (Pani, kochanie, ...; any is accepted), names = what you call HER (varied). vocabulary: phrases per category and stage that the tool samples (3 per turn, no repeats lately) and gives to the model as inspiration; confession_phrases / obey_phrases: recognised locally (fuzzy), so a confession or obedience counts for the dice even if the model misses it.",
   "model": "gpt-4.1-mini",
   "temperature": 0.8,
   "timeout": 8,
@@ -1284,6 +1284,202 @@
     "szmato",
     "dziwko"
    ]
-  }
+  },
+  "vocabulary": {
+   "rozkazy": {
+    "0": [
+     "Patrz na ekran.",
+     "Siedź spokojnie.",
+     "Oddychaj głęboko.",
+     "Nie ruszaj się.",
+     "Słuchaj mnie uważnie."
+    ],
+    "1": [
+     "Klęknij.",
+     "Spójrz na siebie.",
+     "Nie odwracaj wzroku.",
+     "Powtórz za mną.",
+     "Otwórz buzię.",
+     "Ręce przy sobie."
+    ],
+    "2": [
+     "Ssij.",
+     "Sssij ładnie.",
+     "Ssij i patrz na mnie.",
+     "Połykaj.",
+     "Pokaż, jak bardzo tego chcesz.",
+     "Rozchyl się dla mnie."
+    ],
+    "3": [
+     "Ssij głębiej, szmato.",
+     "Połykaj wszystko do końca.",
+     "Nie przestawaj, dopóki nie powiem.",
+     "Otwórz się szeroko i trzymaj."
+    ],
+    "4": [
+     "Ssij, aż powiem dość.",
+     "Połykaj i proś o więcej, suko.",
+     "Sssij. Głębiej. Bez przerwy.",
+     "Rób, co każę, bez jednego słowa."
+    ]
+   },
+   "własność": {
+    "0": [
+     "Jesteś moja.",
+     "Jesteś tu dla mnie."
+    ],
+    "1": [
+     "Należysz do mnie.",
+     "Jesteś moją własnością.",
+     "Wszystko w tobie jest moje."
+    ],
+    "2": [
+     "Twoje ciało należy do mnie.",
+     "Należysz do mnie cała, rozumiesz?",
+     "Jesteś moją małą rzeczą."
+    ],
+    "3": [
+     "Jesteś moją dziwką i moją rzeczą.",
+     "Twoja wola? Nie masz jej. Ja ją mam."
+    ],
+    "4": [
+     "Nie masz własnej woli, masz mnie.",
+     "Jesteś tylko moja. Tylko moja zabawka."
+    ]
+   },
+   "upokorzenia": {
+    "1": [
+     "Spójrz na siebie. Żałosne.",
+     "Patrz, jak się wijesz.",
+     "Aż mi cię żal. Prawie."
+    ],
+    "2": [
+     "Spójrz na siebie, ty mała suko.",
+     "Jaka z ciebie żałosna dziwka.",
+     "Sama tego chcesz, prawda?"
+    ],
+    "3": [
+     "Spójrz na siebie, szmato. Tego chcesz?",
+     "Żałosna, mokra i moja.",
+     "Patrz w lustro i powiedz, kim jesteś."
+    ],
+    "4": [
+     "Spójrz na tę swoją żałosną minę, suko.",
+     "Ani trochę wstydu. Jak prawdziwa dziwka."
+    ]
+   },
+   "drwiny": {
+    "0": [
+     "Nie słyszę.",
+     "Ładniej.",
+     "Poproś mnie.",
+     "Jeszcze nie."
+    ],
+    "1": [
+     "Tak się prosi?",
+     "Zasłuż.",
+     "Nie spieszy ci się? Bo mnie nie."
+    ],
+    "2": [
+     "Błagaj głośniej, suko.",
+     "Mało. Jeszcze."
+    ],
+    "3": [
+     "Błagaj jak dziwka, którą jesteś.",
+     "Nie dostaniesz, dopóki nie zapłaczesz z pragnienia."
+    ],
+    "4": [
+     "Nie zasługujesz. Błagaj dalej.",
+     "Słyszysz siebie? Żałosne. Dalej."
+    ]
+   },
+   "pochwały": {
+    "0": [
+     "Dobra dziewczynka.",
+     "Grzeczna."
+    ],
+    "1": [
+     "Tak ma być, mała.",
+     "Zaczynasz rozumieć."
+    ],
+    "2": [
+     "Dobra suka.",
+     "Tak się to robi."
+    ],
+    "3": [
+     "Moja grzeczna mała dziwka.",
+     "Tak, szmato. Dokładnie tak."
+    ],
+    "4": [
+     "Grzeczna, bezwolna suka.",
+     "Właśnie po to jesteś."
+    ]
+   },
+   "wyznania": {
+    "0": [
+     "Powiedz, kim jesteś.",
+     "Powiedz, czego chcesz."
+    ],
+    "1": [
+     "Powiedz, czyja jesteś.",
+     "Powtórz: należę do Ciebie."
+    ],
+    "2": [
+     "Powiedz: jestem twoją dziwką.",
+     "Powtórz, że nie masz własnej woli."
+    ],
+    "3": [
+     "Krzyknij, czyją jesteś własnością.",
+     "Powiedz to głośno. Jestem twoją suką."
+    ],
+    "4": [
+     "Powtarzaj, kim jesteś, aż ci powiem dość.",
+     "Powiedz, że jesteś tylko moją rzeczą."
+    ]
+   }
+  },
+  "inspiration": {
+   "count": 3,
+   "avoid_repeat": 14
+  },
+  "confession_phrases": [
+   "należę do ciebie",
+   "należę do pani",
+   "jestem twoja",
+   "jestem tylko twoja",
+   "jestem twoją dziwką",
+   "jestem twoją suką",
+   "jestem twoją suczką",
+   "jestem twoją własnością",
+   "jestem twoją zabawką",
+   "jestem twoją rzeczą",
+   "jestem twoją małą dziwką",
+   "jestem twoją dziewczynką",
+   "jestem twoją sissy",
+   "twoja dziwka",
+   "twoja suka",
+   "nie mam własnej woli",
+   "robię wszystko co każesz",
+   "jestem na twoje rozkazy",
+   "użyj mnie jak chcesz",
+   "zrób ze mną co chcesz"
+  ],
+  "obey_phrases": [
+   "dziękuję",
+   "dziękuję pani",
+   "dziękuję kochanie",
+   "ssę",
+   "ssę ładnie",
+   "połykam",
+   "klęczę",
+   "patrzę",
+   "powtarzam",
+   "słucham",
+   "tak pani",
+   "jak rozkażesz",
+   "robię to",
+   "już robię",
+   "proszę bardzo"
+  ]
  }
 }

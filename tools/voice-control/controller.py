@@ -10,7 +10,7 @@ import threading
 import time
 from dataclasses import dataclass, field
 
-from matcher import Match, _sim, match, normalize
+from matcher import Match, _sim, match, normalize, phrase_score
 
 YES = {"tak", "potwierdzam", "dawaj", "jasne"}
 NO = {"nie", "anuluj", "stop", "odwolaj"}
@@ -23,7 +23,8 @@ PERSONA_DEFAULTS = {"enabled": True, "reply_window": 15.0, "base_p": 0.25, "step
                     "stages": ["spokojnie, chłodno, lekko uwodzicielsko"],
                     "escalation": {"enabled": True, "max_stage": 4, "points": {"turn": 1, "denied": 1, "confession": 2, "granted": 2},
                                    "thresholds": [0, 5, 12, 22, 35], "heat_reset": 600, "tease_chance": [0.3, 0.5, 0.7, 0.85, 1.0]},
-                    "initiative": {"enabled": True, "idle_prompt_seconds": 25, "max_nudges": 3, "session_seconds": 180}}
+                    "initiative": {"enabled": True, "idle_prompt_seconds": 25, "max_nudges": 3, "session_seconds": 180},
+                    "vocabulary": {}, "inspiration": {"count": 3, "avoid_repeat": 14}, "confession_phrases": [], "obey_phrases": []}
 
 
 @dataclass
@@ -86,6 +87,7 @@ class Controller:
         self._last_user = 0.0             # last time the user talked to her
         self._last_line = 0.0             # last time she spoke (a line or a nudge)
         self._nudges = 0
+        self._vocab_recent = []           # inspiration phrases handed to the model lately (no repeats)
         self.busy = lambda: False         # True while she is speaking / listening is muted (set by the main loop)
         self.speak_ex = None              # speak_ex(line, stage): like speak, but knows the escalation stage
 
@@ -156,6 +158,33 @@ class Controller:
         self._heat += points
         self._heat_last = self.clock()
 
+    def _inspiration(self, stage):
+        """2-3 phrases of the current stage (and the one below) from different categories, none used lately"""
+        cfg = self.persona_cfg
+        voc, ins = cfg.get("vocabulary", {}), cfg.get("inspiration", {})
+        picked = []
+        for cat, levels in voc.items():
+            pool = [t for lvl in (stage, stage - 1) for t in levels.get(str(lvl), []) if t not in self._vocab_recent]
+            if not pool:
+                pool = [t for lvl in range(stage, -1, -1) for t in levels.get(str(lvl), []) if t not in self._vocab_recent]
+            if pool:
+                picked.append((cat, self.rng.choice(pool)))
+        self.rng.shuffle(picked)
+        picked = picked[:int(ins.get("count", 3))]
+        self._vocab_recent.extend(t for _, t in picked)
+        del self._vocab_recent[:-int(ins.get("avoid_repeat", 14))]
+        return [{"rodzaj": cat, "fraza": text} for cat, text in picked]
+
+    def _says_any(self, transcript, phrases, threshold=0.78):
+        tokens = normalize(transcript).split()
+        if not tokens:
+            return False
+        for phrase in phrases:
+            pt = normalize(phrase).split()
+            if pt and phrase_score(tokens, pt, 6) >= threshold:
+                return True
+        return False
+
     def _tone(self, stage):
         stages = self.persona_cfg["stages"]
         return stages[max(0, min(stage, len(stages) - 1))] if stages else ""
@@ -216,7 +245,8 @@ class Controller:
             self._owed = None
         stage = self.stage()
         address = self.persona_cfg.get("address", {})
-        return {"etap": stage, "ton": self._tone(stage), "zwroty_do_ciebie": list(address.get("titles", [])),
+        return {"etap": stage, "ton": self._tone(stage), "inspiracja": self._inspiration(stage),
+                "zwroty_do_ciebie": list(address.get("titles", [])),
                 "zwroty_do_niej": list(address.get("names", [])), "prosby_bez_zgody": dict(self._asks),
                 "nalezy_sie_po_wykonaniu_zadania": self._owed, "blokada_5_min": self.lock_remaining() > 0,
                 "ostatnie_komendy": list(self._recent)}
@@ -272,6 +302,11 @@ class Controller:
             return Outcome("ignored", "persona: not said to her", via="persona", extra=extra)
 
         now = self.clock()
+        # recognised locally as well, so that a confession / obedience counts even if the model misses it
+        if self._says_any(transcript, self.persona_cfg["confession_phrases"]):
+            turn.confession = True
+        if self._says_any(transcript, self.persona_cfg["obey_phrases"], 0.88):
+            turn.thanked = True
         self._history.append(("user", transcript))
         del self._history[:-24]
         self._last_user, self._nudges = now, 0

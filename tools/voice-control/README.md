@@ -186,6 +186,16 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
 * **Forms of address**: she does not have to be "Pani". Both **"Pani"** and **"kochanie"** start a command (`wake.words`; add
   more, e.g. "moja Pani"). She may call you whatever `persona.address.titles` lists (Pani, kochanie, moja Pani...), and she
   calls the user by the varied `persona.address.names` (dziewczynko, mała, suko, kochanie, słoneczko, ...). Edit both lists freely.
+* **Variety of words (the vocabulary bank)**: `persona.vocabulary` holds ~100 phrases in six categories (orders: "klęknij",
+  "ssij", "sssij ładnie", "połykaj"...; ownership: "należysz do mnie", "jesteś moją własnością"...; humiliations: "spójrz na
+  siebie"...; taunts, praise, demands for confessions), each tagged with the stage it fits (gentle at 0-1, sharp and vulgar
+  from 2). Every turn the tool draws **3 phrases from different categories for the current stage, none used in the last 14**,
+  and hands them to the model as inspiration: it weaves one or two in, literally or varied (stretched like "sssij"),
+  and invents its own in the same style. Add your own phrases to the lists: one string per entry, under the stage digit.
+* **Your side**: say what you like, it is conversation. Confessions ("należę do Ciebie", "jestem Twoją dziwką", "nie mam
+  własnej woli", "zrób ze mną co chcesz"...) and obedience ("dziękuję, Pani", "ssę", "połykam", "klęczę", "tak Pani") are
+  also **recognised locally** (`confession_phrases`, `obey_phrases`), so they count for the dice (+30 % for a confession; a
+  demanded thanks / task pays what she owed) even if the model does not notice them.
 * **Escalation**: the tool counts the heat of the session (+1 per turn, +1 per refusal, +2 per confession, +2 per grant;
   thresholds 0 / 5 / 12 / 22 / 35; cooling down after 10 min of silence) and gives the model the **stage 0-4** and its tone
   (`persona.stages`, Polish, edit freely): cool and gentle -> firm -> sharp and degrading -> vulgar and merciless ->
