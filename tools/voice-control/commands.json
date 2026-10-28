@@ -822,26 +822,6 @@
    "max_extra_words": 0
   },
   {
-   "id": "more",
-   "phrases": [
-    "jeszcze",
-    "jeszcze jeszcze",
-    "nie przestawaj",
-    "właśnie tak",
-    "kontynuuj kochanie"
-   ],
-   "steps": [
-    {
-     "action": "{target}::Hismith::Speed::Faster",
-     "args": []
-    }
-   ],
-   "description": "More / keep going / yes yes: a bit faster.",
-   "cooldown": 2,
-   "threshold": 0.9,
-   "max_extra_words": 0
-  },
-  {
    "id": "improvise",
    "phrases": [],
    "steps": [],
@@ -918,7 +898,12 @@
     "tak ma być",
     "tak jest dobrze",
     "zostań przy tym",
-    "dokładnie tak"
+    "dokładnie tak",
+    "jeszcze",
+    "jeszcze jeszcze",
+    "nie przestawaj",
+    "właśnie tak",
+    "kontynuuj kochanie"
    ],
    "steps": [
     {
@@ -928,7 +913,7 @@
      ]
     }
    ],
-   "description": "HOLD what is happening now for 5 minutes ('utrzymaj to', 'rób tak dalej', 'zostaw tak', 'nie zmieniaj'): the machine's controls are then ignored (only the Lube Launcher, stop and release still work).",
+   "description": "HOLD what is happening now for 5 minutes ('utrzymaj to', 'rób tak dalej', 'zostaw tak', 'nie zmieniaj', 'jeszcze', 'nie przestawaj', 'właśnie tak' - more of the same): the machine's controls are then ignored (only the Lube Launcher, stop and release still work); while the film's funscript runs the machine, its last 20 seconds loop.",
    "cooldown": 2,
    "threshold": 0.88,
    "max_extra_words": 1

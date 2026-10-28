@@ -29,8 +29,8 @@ public sealed record ChangeScriptMessage(IReadOnlyDictionary<DeviceAxis, IScript
     public ChangeScriptMessage(IEnumerable<DeviceAxis> axes, IScriptResource scriptResource) : this(axes.ToDictionary(a => a, _ => scriptResource).AsReadOnly()) { }
 }
 
-public enum ScriptLoopCommand { Toggle, Clear }
-public sealed record ScriptLoopMessage(ScriptLoopCommand Command);
+public enum ScriptLoopCommand { Toggle, Clear, Start }
+public sealed record ScriptLoopMessage(ScriptLoopCommand Command, double? Duration = null);
 
 public interface IMediaSourceControlMessage;
 public sealed record MediaSeekMessage(TimeSpan Position) : IMediaSourceControlMessage;

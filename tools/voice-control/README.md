@@ -54,8 +54,8 @@ when `"wake": {"required": false}`). The tool is silent by default; the result i
 | mode A: fastest, full depth, smallest stroke | tryb a, na maksa, najszybciej, maksymalnie | Num 9 |
 | mode B: slowest, full depth, smallest stroke | tryb b, najwolniej, na minimum | Num 0 |
 | **surprise**: two separate draws. Machine: 70 % a random mode 1-8 / A / B (never the one that runs), else unchanged. Lube Launcher: nothing / one shot / three shots, 1/3 each. At least one of them always happens | zaskocz mnie, niespodzianka, wybierz za mnie, losowo, zdaj się na los | Insert |
-| **again**: the NEXT draw (mode + Lube Launcher, as above) is made and put into effect **120 s after the command**; the current surprise stays until then, shots that have not been fired yet are dropped at once; saying it again restarts the 120 s; choosing a mode / Script / Calm / Stop cancels it | nieee coś innego, zmień, inaczej, jeszcze raz, losuj ponownie, nie to | Del |
-| **hold**: the machine keeps exactly what it does now for **5 minutes**; everything else (modes, boosts, surprise, scenes, calm, sequence, keys) is ignored. Only the **Lube Launcher**, **stop ("koniec" / End)** and release still work | utrzymaj to, rób tak dalej, tak trzymaj, zostaw tak, nie zmieniaj, tak ma być | PgUp |
+| **again**: the NEXT draw (mode + Lube Launcher, as above) is made and put into effect **120 s after the command**; the current surprise stays until then, shots that have not been fired yet are dropped at once; saying it again restarts the 120 s; choosing a mode / Script / Calm / Stop cancels it; **while mode A runs there is no waiting: the next draw is made at once** | nieee coś innego, zmień, inaczej, jeszcze raz, losuj ponownie, nie to | Del |
+| **hold**: the machine keeps exactly what it does now for **5 minutes**; everything else (modes, boosts, surprise, scenes, calm, sequence, keys) is ignored. Only the **Lube Launcher**, **stop ("koniec" / End)** and release still work | utrzymaj to, rób tak dalej, tak trzymaj, zostaw tak, nie zmieniaj, tak ma być, **jeszcze, nie przestawaj, właśnie tak** | PgUp |
 | release the hold early | odblokuj, koniec blokady, możesz zmieniać, zdejmij blokadę | PgDn |
 | back to the funscript and no boost | normalnie, zresetuj, bez zmian | Num . |
 | back to the funscript (keep boost) | wróć do filmu, wróć do skryptu, wyłącz tryb | (button "Script") |
@@ -117,7 +117,6 @@ a single step; the same words work for the model when they are said loosely:
 | rozepchaj mnie, wypełnij mnie, głęboko w dupcię, do samego dna | **fill**: deeper, twice |
 | drażnij mnie, pieść mnie, delikatnie mnie, powoli mnie, zmysłowo, pomęcz mnie | **tease**: slower and shallower |
 | użyj mnie, jestem twoją dziwką / suką / suczką / dziewczynką / sissy, zrób ze mnie dziewczynkę | **use me**: builds up (faster + deeper) |
-| jeszcze, nie przestawaj, właśnie tak | **more**: a bit faster |
 | zalej mnie, obryzgaj mnie, wytrysnij na mnie, oznacz mnie (+ "kilka razy") | Lube Launcher |
 | **dość, wystarczy, starczy, przestań, stój, spokojnie** (key **Home**, button **Calm**) | **calm**: the machine **keeps going** at the slowest speed, medium depth (not a stop) |
 | **koniec, koniec wszystkiego, wyłącz maszynę, koniec zabawy** (key **End**, button **Stop**) | **stop everything**: speed 0 at once; the script is held back until you pick a mode or Script |
@@ -147,6 +146,12 @@ everything. Both work offline (no model); the model may also pick them with a lo
 (that is what you asked for); if you want it to, add `calm` to `lock.allow`. Film play / pause and the script
 loop are not machine controls: pause / play still work. A pending surprise draw is dropped when the hold starts, the
 mode sequence freezes while it lasts, and saying it again restarts the 5 minutes.
+
+While the **film's funscript runs the machine** (no built-in mode), the hold also **loops the last 20 seconds of the
+script** (the existing script loop; the seconds are set in the second box next to Hold in MultiFunPlayer), so that
+"jeszcze" / "utrzymaj to" keeps the movement that was just playing; the loop ends with the hold. In a built-in mode
+(1-8, A, B, Calm) the hold only freezes the mode. "Jeszcze" used to mean "a bit faster"; it is now a hold (use
+"szybciej" for faster).
 
 ## How mistakes are kept out
 

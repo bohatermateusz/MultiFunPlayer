@@ -366,5 +366,17 @@
  {
   "say": "kochanie, nie zmieniaj zdania",
   "intent": "none"
+ },
+ {
+  "say": "kochanie, jeszcze",
+  "intent": "lock"
+ },
+ {
+  "say": "kochanie, nie przestawaj teraz",
+  "intent": "lock"
+ },
+ {
+  "say": "trwanie, właśnie tak",
+  "intent": "lock"
  }
 ]

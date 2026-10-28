@@ -231,7 +231,8 @@ internal sealed partial class ButtplugOutputTarget
     }
 
     // "No, something else": the NEXT draw is made and put into effect only after HismithSurpriseDelaySeconds
-    // (default 120 s), counted from the command; until then the current surprise stays. Shots of the previous
+    // (default 120 s), counted from the command; until then the current surprise stays. Exception: while mode A
+    // runs the next draw is made at once. Shots of the previous
     // burst that have not been fired yet are dropped at once. Saying it again restarts the countdown. It only
     // works while a surprise is in force: choosing a mode, Script, Calm or Stop ends the surprise and cancels
     // a pending draw.
@@ -250,9 +251,29 @@ internal sealed partial class ButtplugOutputTarget
     // control of the machine (modes, surprise, boost, speed / depth, sequence, keys) is ignored, except Stop,
     // which always works and releases the hold. The Lube Launcher is never affected. Saying it again restarts
     // the time; HismithLockClear releases it early. A pending surprise draw is dropped when the hold starts.
+    // While the funscript drives the machine (no built-in mode), the hold also loops the last
+    // HismithHoldLoopSeconds (default 20) of the script, so that "keep this" keeps the movement that was just
+    // playing; the loop is cleared when the hold ends.
     private CancellationTokenSource _lockSource;
     private volatile int _lockMinutes = 5;
     private double _lockRemaining;
+    private bool _holdLoopActive;
+    private int _holdLoopSeconds = 20;
+
+    public int HismithHoldLoopSeconds
+    {
+        get => _holdLoopSeconds;
+        set => SetAndNotify(ref _holdLoopSeconds, Math.Clamp(value, 1, 600));
+    }
+
+    private void EndHoldLoop()
+    {
+        if (!_holdLoopActive)
+            return;
+
+        _holdLoopActive = false;
+        EventAggregator.Publish(new ScriptLoopMessage(ScriptLoopCommand.Clear));
+    }
 
     public int HismithLockMinutes
     {
@@ -270,6 +291,12 @@ internal sealed partial class ButtplugOutputTarget
         EndSurprise();
         var source = new CancellationTokenSource();
         Interlocked.Exchange(ref _lockSource, source)?.Cancel();
+        if (_hismithMode == 0)
+        {
+            _holdLoopActive = true;   // the funscript is running the machine: keep the last seconds of it going round
+            EventAggregator.Publish(new ScriptLoopMessage(ScriptLoopCommand.Start, _holdLoopSeconds));
+        }
+
         _ = RunLockAsync(source, seconds);
     }
 
@@ -279,6 +306,7 @@ internal sealed partial class ButtplugOutputTarget
         if (_lockRemaining > 0)
             Logger.Info("Hold released");
         _lockRemaining = 0;
+        EndHoldLoop();
         NotifyOfPropertyChange(nameof(HismithLocked));
         NotifyOfPropertyChange(nameof(HismithModeStatus));
     }
@@ -299,6 +327,7 @@ internal sealed partial class ButtplugOutputTarget
 
             _lockRemaining = 0;
             Interlocked.CompareExchange(ref _lockSource, null, source);
+            EndHoldLoop();
             Logger.Info("Hold ended");
             NotifyOfPropertyChange(nameof(HismithLocked));
             NotifyOfPropertyChange(nameof(HismithModeStatus));
@@ -335,6 +364,16 @@ internal sealed partial class ButtplugOutputTarget
         }
 
         CancelLubeBurst();
+        if (_hismithMode == ModeA)
+        {
+            // mode A is the "all out" mode: no waiting, the next draw is made at once
+            Interlocked.Exchange(ref _surpriseTimerSource, null)?.Cancel();
+            _surpriseRemaining = 0;
+            NotifyOfPropertyChange(nameof(HismithModeStatus));
+            HismithSurprise();
+            return;
+        }
+
         var source = new CancellationTokenSource();
         Interlocked.Exchange(ref _surpriseTimerSource, source)?.Cancel();
         _ = RunSurpriseTimerAsync(source);
@@ -571,6 +610,7 @@ internal sealed partial class ButtplugOutputTarget
         settings[nameof(HismithSlowestSpeed)] = HismithSlowestSpeed;
         settings[nameof(HismithSurpriseDelaySeconds)] = HismithSurpriseDelaySeconds;
         settings[nameof(HismithLockMinutes)] = HismithLockMinutes;
+        settings[nameof(HismithHoldLoopSeconds)] = HismithHoldLoopSeconds;
     }
 
     private void LoadHismithModeSettings(JObject settings)
@@ -585,6 +625,8 @@ internal sealed partial class ButtplugOutputTarget
             HismithSurpriseDelaySeconds = surpriseDelay;
         if (settings.TryGetValue<int>(nameof(HismithLockMinutes), out var lockMinutes))
             HismithLockMinutes = lockMinutes;
+        if (settings.TryGetValue<int>(nameof(HismithHoldLoopSeconds), out var holdLoop))
+            HismithHoldLoopSeconds = holdLoop;
     }
 
     public int HismithSlowestSpeed

@@ -666,6 +666,8 @@ internal sealed class ScriptViewModel : Screen, IDeviceAxisValueProvider, IDispo
     {
         if (message.Command == ScriptLoopCommand.Toggle)
             ToggleScriptLoop();
+        else if (message.Command == ScriptLoopCommand.Start)
+            StartScriptLoop(message.Duration ?? ScriptLoopDuration);
         else
             ClearScriptLoop();
     }
@@ -789,13 +791,16 @@ internal sealed class ScriptViewModel : Screen, IDeviceAxisValueProvider, IDispo
         return position - GlobalOffset - settings.Offset;
     }
 
-    public void SetScriptLoopFromMediaPosition()
+    public void SetScriptLoopFromMediaPosition() => StartScriptLoop(ScriptLoopDuration);
+
+    // The last `duration` seconds before now (a new loop replaces a running one).
+    public void StartScriptLoop(double duration)
     {
         var end = MediaPosition;
         if (!double.IsFinite(end))
             return;
 
-        var length = Math.Min(Math.Max(ScriptLoopDuration, 0.5), end);
+        var length = Math.Min(Math.Max(duration, 0.5), end);
         if (length < 0.5)
             return;
 

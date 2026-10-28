@@ -60,7 +60,7 @@ class HoldTests(unittest.TestCase):
         sent = len(self.runs)
         for text in ["szybciej", "wolniej", "głębiej", "płycej", "tryb trzy", "na maksa", "najwolniej", "pieprz mnie",
                      "drażnij mnie", "użyj mnie", "dość", "zaskocz mnie", "coś innego", "wróć do filmu", "normalnie",
-                     "tryb ręczny", "włącz sekwencję", "zapętl to", "jeszcze"]:
+                     "tryb ręczny", "włącz sekwencję", "zapętl to"]:
             o = self.say(text)
             self.assertEqual(o.status, "locked", text)
             self.assertIn("odblokuj", o.detail)
