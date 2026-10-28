@@ -1735,7 +1735,22 @@
    ],
    "lube_min_stage": 3,
    "lube_chance": 0.12,
-   "lube_gap_seconds": 300
+   "lube_gap_seconds": 300,
+   "lube_surprise": {
+    "enabled": true,
+    "chance": [0.0, 0.0, 0.06, 0.12, 0.2],
+    "min_stage": 2,
+    "max_per_window": 3,
+    "window_seconds": 1800,
+    "hearing_boost": 1.5
+   }
+  },
+  "last_second": {
+   "enabled": true,
+   "chance": 0.18,
+   "min_stage": 1,
+   "retry_bonus": 0.25,
+   "applies_to": ["lube_fire", "lube_two", "lube_many"]
   },
   "manners": {
    "politeness_factor": 0.6,

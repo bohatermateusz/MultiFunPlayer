@@ -34,7 +34,11 @@ PERSONA_DEFAULTS = {"enabled": True, "reply_window": 15.0, "base_p": 0.25, "step
                              "sharp_categories": ["rozkazy", "upokorzenia", "drwiny", "wyznania", "własność"],
                              "harsh_category": "bardzo_ostre"},
                     "spontaneous": {"turn_chance": [0.0, 0.03, 0.08, 0.12, 0.18], "action_chance": [0.0, 0.05, 0.12, 0.2, 0.3],
-                                    "lube_min_stage": 3, "lube_chance": 0.12, "lube_gap_seconds": 300}}
+                                    "lube_min_stage": 3, "lube_chance": 0.12, "lube_gap_seconds": 300,
+                                    "lube_surprise": {"enabled": False, "chance": [0.0, 0.0, 0.06, 0.12, 0.2], "min_stage": 2,
+                                                      "max_per_window": 3, "window_seconds": 1800, "hearing_boost": 1.5}},
+                    "last_second": {"enabled": False, "chance": 0.18, "min_stage": 1, "retry_bonus": 0.25,
+                                    "applies_to": ["lube_fire", "lube_two", "lube_many"]}}
 
 
 @dataclass
@@ -101,6 +105,9 @@ class Controller:
         self._tones = []                  # the tone of her recent turns: "czuły" (tender) / "ostry" (sharp)
         self._tone_now = ("czuły", 0)     # (tone, harshness 0-3) of the turn being prepared
         self._last_lube = -1e9
+        self._surprises = []              # when she surprised the user with the Lube Launcher unasked
+        self._teased_last = False         # the last grant was a last-second refusal (never twice in a row)
+        self._retry = set()               # requests that were refused at the last second: the next ask is likelier
         self._penalty_until = 0.0         # an open refusal costs: nothing is granted until you apologise or the time is up
         self.busy = lambda: False         # True while she is speaking / listening is muted (set by the main loop)
         self.speak_ex = None              # speak_ex(line, stage): like speak, but knows the escalation stage
@@ -294,6 +301,33 @@ class Controller:
             self._last_lube = now
         return True
 
+    def _lube_surprise_roll(self, stage, boost=1.0):
+        """her unasked Lube Launcher shot: own dice, own limits (stage, gap since the last shot, a few per window, not while
+        punished). -> True when she does it now."""
+        cfg = self.persona_cfg["spontaneous"]["lube_surprise"]
+        if not cfg.get("enabled") or stage < int(cfg["min_stage"]) or self.penalty_remaining() > 0:
+            return False
+        now = self.clock()
+        self._surprises = [t for t in self._surprises if now - t < float(cfg["window_seconds"])]
+        if len(self._surprises) >= int(cfg["max_per_window"]) or now - self._last_lube < float(self.persona_cfg["spontaneous"]["lube_gap_seconds"]):
+            return False
+        chances = cfg["chance"]
+        p = min(float(chances[max(0, min(stage, len(chances) - 1))]) * boost, 0.95)
+        return self.rng.random() < p
+
+    def _fire_lube_surprise(self, extra):
+        intent = next((i for i in self.intents if i.id == "lube_fire"), None)
+        if intent is None:
+            return False
+        now = self.clock()
+        extra["unsolicited"] = "lube_surprise"
+        extra["plan"] = ["lube_fire"]
+        if not self.dry_run:
+            self.run_steps(copy.deepcopy(intent.steps))
+        self._last_lube = now
+        self._surprises.append(now)
+        return True
+
     def idle_nudge(self):
         """Called about once a second by the main loop. When a session is on and the user has been silent for
         idle_prompt_seconds, she says something herself (no commands). -> the line spoken, or None."""
@@ -314,6 +348,9 @@ class Controller:
             sp = self.persona_cfg["spontaneous"]["action_chance"]
             act = self.rng.random() < float(sp[max(0, min(stage, len(sp) - 1))])
             step_ids = [i.id for i in self.intents if i.improvise] if act else None
+            surprise = self._lube_surprise_roll(stage, float(self.persona_cfg["spontaneous"]["lube_surprise"]["hearing_boost"]))
+            if surprise:
+                state["niespodzianka"] = "lube"      # she is about to shoot unasked: the line should fit
             self._last_line = now                # a failed call must not be retried in a loop
         try:
             result = self.persona.nudge(state, history, step_ids) if step_ids else self.persona.nudge(state, history)
@@ -330,7 +367,9 @@ class Controller:
             self._last_line = self.clock()
             outcome = Outcome("talk", "nudge", "", 0.0, "persona", {"say": line, "stage": stage, "nudge": self._nudges, "tone": tone,
                                                                     "harsh": harsh, "voice": stage + (5 if tone == "ostry" else 0)})
-            if act and plan:
+            if surprise:
+                self._fire_lube_surprise(outcome.extra)
+            elif act and plan:
                 self._spontaneous(plan, stage, outcome.extra, "nudge")
             self._log("[silence]", outcome)
         self._say(outcome)
@@ -390,6 +429,8 @@ class Controller:
             p *= float(m["ignore_demand_factor"])           # ignoring what she demanded costs
         elif asks + 1 >= int(c["max_asks"]):
             p = max(p, 0.95)
+        if request_id in self._retry:
+            p = min(p + float(c["last_second"]["retry_bonus"]), 0.95)   # she held it back at the last second: now more likely
         if self.penalty_remaining() > 0:
             p = 0.0                                          # punished: nothing until you apologise
         roll = self.rng.random()
@@ -475,6 +516,10 @@ class Controller:
                     return spoken(turn.line_if_granted, self._grant(owed_intent, [], extra, now, "owed"))
             if turn.confession:
                 extra["confession"] = True
+            boost = float(self.persona_cfg["spontaneous"]["lube_surprise"]["hearing_boost"]) if (turn.confession or turn.thanked) else 1.0
+            if self._lube_surprise_roll(stage, boost):
+                self._fire_lube_surprise(extra)
+                return spoken(turn.line_if_granted, Outcome("talk", "persona (unsolicited)", "", 0.0, "persona", extra))
             chances = self.persona_cfg["spontaneous"]["turn_chance"]
             if self.rng.random() < float(chances[max(0, min(stage, len(chances) - 1))]):
                 reward = turn.confession or self.rng.random() < 0.5
@@ -498,6 +543,7 @@ class Controller:
         if self.penalty_remaining() > 0:
             extra["punished"] = round(self.penalty_remaining())
         self._last_ask = now
+        asks_before = self._asks.get(request_id, 0)
         if granted:
             self._asks.pop(request_id, None)
             self._owed = None
@@ -511,6 +557,17 @@ class Controller:
                 improvise = next((i for i in self.intents if i.id == "improvise"), None)
                 m = Match(improvise, 1.0, "[persona]")
                 return spoken(turn.line_if_granted, self._run_match(m, now, {"steps": steps, "times": 1, "count": 1}, "persona", extra))
+            ls = self.persona_cfg["last_second"]
+            if (ls.get("enabled") and request_id in ls["applies_to"] and not locked and stage >= int(ls["min_stage"])
+                    and not self._teased_last and asks_before + 1 < int(self.persona_cfg["max_asks"]) and self.rng.random() < float(ls["chance"])):
+                # held back at the last second: nothing is shot, no punishment, the next ask is likelier
+                self._asks[request_id] = max(0, asks_before - 1)
+                self._retry.add(request_id)
+                self._teased_last = True
+                extra["last_second"] = True
+                return spoken(turn.line_if_denied or turn.line_if_granted, Outcome("denied", "persona: last second", request_id, 0.0, "persona", extra))
+            self._teased_last = False
+            self._retry.discard(request_id)
             return spoken(turn.line_if_granted, self._grant(intent, turn.grant_actions, extra, now, "granted"))
 
         self._asks[request_id] = self._asks.get(request_id, 0) + 1

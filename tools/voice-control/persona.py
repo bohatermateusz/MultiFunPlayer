@@ -88,7 +88,7 @@ Ton tej tury (z stanu "ton_tury"): czuły = opieka, miłość, odpuszczenie ("Mo
 Wpleć w wariacji jeden zwrot z "inspiracja" w stanie.
 Zwracaj się do niej różnie: {names}. Wpleć w wariacji jeden zwrot z "inspiracja" w stanie. Możesz zadać pytanie (kim jesteś, czyja jesteś), rozkazać (poproś, powiedz, podziękuj, klęcz i czekaj) albo zadrwić z jej milczenia. \
 Jeśli wolno Ci działać (w stanie "wolno_dzialac": true), możesz zaskoczyć ją niezamówionym ruchem w polu "plan" (nagroda: szybciej/głębiej; dręczenie: \
-wolniej/płycej; zwrot: tryb) - krótko, 1-2 kroki; w przeciwnym razie "plan" ma być pusty. Stan: {state}
+wolniej/płycej; zwrot: tryb) - krótko, 1-2 kroki; w przeciwnym razie "plan" ma być pusty. Jeśli w stanie jest "niespodzianka": "lube", właśnie niezamówionie zalewasz go - powiedz to krótko, jakbyś robiła to dla przyjemności. Stan: {state}
 Odpowiadasz wyłącznie JSON-em z polami "line" i "plan"."""
 
 

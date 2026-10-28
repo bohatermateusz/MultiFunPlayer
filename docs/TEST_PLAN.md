@@ -129,6 +129,10 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.50 | Nie rób tego, czego żąda (milcz/zmień temat), potem poproś | niższe `p`; po wykonaniu żądania szansa wraca |
 | 6.51 | Odmów: 'nie chcę' / 'nie będę prosić' | Pani karci, przez 90 s same odmowy (`punished`), nawet po wielu prośbach; 'przepraszam, Pani' kończy karę |
 | 6.52 | W trakcie kary: 'koniec' / 'utrzymaj to' | działają natychmiast, bez kary |
+| 6.53 | Proś o lube kilka razy w sesji (etap >= 1) | czasem zgoda zamienia się w 'prawie... jeszcze nie' (`last_second` w logu), bez kary; następna prośba działa częściej |
+| 6.54 | 20 min sesji, rozmawiaj lub milcz (etap >= 2) | rzadko niezamówiony strzał lube (`unsolicited: lube_surprise`), max 3 na 30 min, min. 5 min odstępu |
+| 6.55 | W trakcie kary lub przy etapie 0-1 | brak niezamówionych strzałów |
+| 6.56 | 'koniec' / End zaraz po niespodziance | natychmiast zatrzymuje |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |
 

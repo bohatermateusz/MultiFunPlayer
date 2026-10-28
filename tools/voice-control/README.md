@@ -175,6 +175,12 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   faster, deeper, the scenes, the modes, the surprise) is ignored until she is back.
 * **Answering her**: for 60 s after her line (`reply_window`) you speak without "kochanie" ("proszę, Pani",
   "jestem Twoją małą dziwką"). The safe word and the ungated commands work in that window too.
+* **Last-second refusal** (`persona.last_second`): sometimes (18 %, from stage 1) a Lube Launcher request that the dice
+  granted is held back at the last second ("prawie... jeszcze nie"): no shot, no punishment, one ask is given back, the
+  next ask is likelier (+0.25). Never twice in a row, never on the sure ask.
+* **Unasked shot** (`spontaneous.lube_surprise`): on her own (a silence nudge, or after a confession / thanks, 1.5x) she may
+  shoot the Lube Launcher once, from stage 2 (6/12/20 % by stage 2/3/4), at most 3 per 30 min and 300 s apart, never while
+  you are punished. Works in a hold as well.
 * **Manners** (`persona.manners`): asking without "proszę"/"błagam"/"Pani" cuts the odds (x0.6); ignoring her demand
   (not doing what she asked) cuts them further (x0.4). An open refusal ("nie chcę", "nie powiem", "nie będę prosić", or
   the model flags defiance) wipes your asks and nothing is granted for 90 s, or until you apologise ("przepraszam,

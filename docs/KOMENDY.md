@@ -93,7 +93,10 @@ Jak to wygląda: prosisz ("kochanie, proszę, spuść się na mnie") - ona każe
 podziękować - odpowiadasz **bez** "kochanie" przez 60 s po jej słowach ("proszę, Pani", "jestem Twoją małą
 dziwką", "dziękuję, Pani") - i albo dostajesz, albo prosisz dalej. Szanse rosną z każdą prośbą i z każdym
 wyznaniem; zwykle 2-4 prośby, czasem od razu, czasem dłużej. Gdy zażądała czegoś konkretnego i to zrobisz -
-dostajesz na pewno. Grzeczność się liczy: prośba bez "proszę"/"Pani" ma gorsze szanse, a zignorowanie jej żądania jeszcze gorsze. Otwarta odmowa
+dostajesz na pewno. Losowo (ok. 1 na 5-6 razy) potrafi też zatrzymać strzał w ostatniej chwili ("prawie... jeszcze nie") - bez kary, kolejna prośba ma
+większą szansę. A czasem, bez pytania, sama Cię zleje lubem (od drugiego etapu, rzadko, max 3 na pół godziny).
+
+Grzeczność się liczy: prośba bez "proszę"/"Pani" ma gorsze szanse, a zignorowanie jej żądania jeszcze gorsze. Otwarta odmowa
 ("nie chcę", "nie powiem", "nie będę prosić") kasuje Twoje prośby i przez 90 s nic nie dostajesz - do czasu "przepraszam, Pani".
 "Koniec" i "utrzymaj to" działają zawsze, bez kary. Przy odmowie potrafi dręczyć: zwolnić, spłycić, włączyć najwolniejszy tryb.
 
