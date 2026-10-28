@@ -63,7 +63,7 @@ class HoldTests(unittest.TestCase):
                      "tryb ręczny", "włącz sekwencję", "zapętl to"]:
             o = self.say(text)
             self.assertEqual(o.status, "locked", text)
-            self.assertIn("odblokuj", o.detail)
+            self.assertIn("koniec", o.detail)
         self.assertEqual(len(self.runs), sent)
 
     def test_lube_launcher_still_works(self):
@@ -79,14 +79,14 @@ class HoldTests(unittest.TestCase):
         self.assertEqual(self.c.lock_remaining(), 0)
         self.assertEqual(self.say("szybciej").status, "executed")
 
-    def test_release_phrases(self):
-        for text in ["odblokuj", "koniec blokady", "możesz zmieniać", "zdejmij blokadę"]:
-            self.setUp()
-            self.hold()
-            self.assertEqual(self.say(text).intent, "unlock", text)
-            self.assertEqual(self.runs[-1], [{"action": "{target}::Hismith::Lock::Clear", "args": []}])
-            self.assertEqual(self.c.lock_remaining(), 0)
-            self.assertEqual(self.say("szybciej").status, "executed")
+    def test_nothing_but_the_safe_word_releases_the_hold(self):
+        self.hold()
+        for text in ["odblokuj", "koniec blokady", "możesz zmieniać", "zdejmij blokadę", "dość", "wystarczy", "wróć do filmu", "normalnie"]:
+            o = self.say(text)
+            self.assertNotEqual(o.status, "executed", text)
+            self.assertGreater(self.c.lock_remaining(), 0, text)
+        self.assertEqual(self.say("koniec").status, "executed")
+        self.assertEqual(self.c.lock_remaining(), 0)
 
     # ---- time -------------------------------------------------------------------------------------
     def test_the_hold_ends_by_itself_after_5_minutes(self):
@@ -114,12 +114,12 @@ class HoldTests(unittest.TestCase):
         self.assertEqual(self.c.press("halt").status, "executed")
         self.assertEqual(self.c.press("faster").status, "executed")
 
-    def test_keys_can_start_and_release_the_hold(self):
+    def test_keys_can_start_the_hold_and_only_end_releases_it(self):
         self.assertEqual(CFG["keys"]["page_up"], "lock")
-        self.assertEqual(CFG["keys"]["page_down"], "unlock")
+        self.assertNotIn("page_down", CFG["keys"])
         self.assertEqual(self.c.press("lock").status, "executed")
         self.assertEqual(self.c.press("faster").status, "locked")
-        self.assertEqual(self.c.press("unlock").status, "executed")
+        self.assertEqual(self.c.press("halt").status, "executed")
         self.assertEqual(self.c.press("faster").status, "executed")
 
     def test_dry_run_tracks_the_hold_without_sending(self):
@@ -129,14 +129,11 @@ class HoldTests(unittest.TestCase):
         self.assertEqual(self.runs, [])
 
     def test_allow_list_is_the_lube_stop_and_release_commands(self):
-        self.assertEqual(sorted(CFG["lock"]["allow"]), sorted(["lube_fire", "lube_two", "lube_many", "halt", "unlock", "lock"]))
+        self.assertEqual(sorted(CFG["lock"]["allow"]), sorted(["lube_fire", "lube_two", "lube_many", "halt", "lock"]))
 
     def test_no_phrase_is_both_a_hold_and_something_else(self):
-        for text in ["utrzymaj to", "odblokuj", "zmieniaj", "nie zmieniaj"]:
-            m, _ = match(text, INTENTS)
-            self.assertIsNotNone(m, text)
-        self.assertEqual(match("zmieniaj", INTENTS)[0].intent.id, "unlock")
         self.assertEqual(match("nie zmieniaj", INTENTS)[0].intent.id, "lock")
+        self.assertIsNone(match("odblokuj", INTENTS)[0])
 
 
 class HoldAndModel(unittest.TestCase):

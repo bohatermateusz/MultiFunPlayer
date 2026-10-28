@@ -55,8 +55,7 @@ when `"wake": {"required": false}`). The tool is silent by default; the result i
 | mode B: slowest, full depth, smallest stroke | tryb b, najwolniej, na minimum | Num 0 |
 | **surprise**: two separate draws. Machine: 70 % a random mode 1-8 / A / B (never the one that runs), else unchanged. Lube Launcher: nothing / one shot / three shots, 1/3 each. At least one of them always happens | zaskocz mnie, niespodzianka, wybierz za mnie, losowo, zdaj się na los | Insert |
 | **again**: the NEXT draw (mode + Lube Launcher, as above) is made and put into effect **120 s after the command**; the current surprise stays until then, shots that have not been fired yet are dropped at once; saying it again restarts the 120 s; choosing a mode / Script / Calm / Stop cancels it; **while mode A runs there is no waiting: the next draw is made at once** | nieee coś innego, zmień, inaczej, jeszcze raz, losuj ponownie, nie to | Del |
-| **hold**: the machine keeps exactly what it does now for **5 minutes**; everything else (modes, boosts, surprise, scenes, calm, sequence, keys) is ignored. Only the **Lube Launcher**, **stop ("koniec" / End)** and release still work | utrzymaj to, rób tak dalej, tak trzymaj, zostaw tak, nie zmieniaj, tak ma być, **jeszcze, nie przestawaj, właśnie tak** | PgUp |
-| release the hold early | odblokuj, koniec blokady, możesz zmieniać, zdejmij blokadę | PgDn |
+| **hold**: the machine keeps exactly what it does now for **5 minutes**; everything else (modes, boosts, surprise, scenes, calm, sequence, keys) is ignored. Only the **Lube Launcher** and the safe word **"koniec" (End)** still work; nothing else ends it early | utrzymaj to, rób tak dalej, tak trzymaj, zostaw tak, nie zmieniaj, tak ma być, **jeszcze, nie przestawaj, właśnie tak** | PgUp |
 | back to the funscript and no boost | normalnie, zresetuj, bez zmian | Num . |
 | back to the funscript (keep boost) | wróć do filmu, wróć do skryptu, wyłącz tryb | (button "Script") |
 | Lube Launcher | spuść się na mnie, strzel na mnie, spuść się, dojdź na mnie | F8 |
@@ -141,8 +140,8 @@ everything. Both work offline (no model); the model may also pick them with a lo
 **Hold ("utrzymaj to").** Starts a 5-minute hold (the minutes are the argument of the `lock` command in
 `commands.json`, and the field next to the **Hold** button in MultiFunPlayer). While it lasts the tool answers
 `locked` to every machine command without sending it, and MultiFunPlayer itself ignores its machine controls
-(buttons, keys, remote commands), so the hold also covers the keyboard. Always allowed: the Lube Launcher,
-**"koniec" / End (stop, which also releases the hold)** and "odblokuj". "Dość" does **not** get through the hold
+(buttons, keys, remote commands), so the hold also covers the keyboard. Always allowed: the Lube Launcher and
+the safe word **"koniec" / End** (stop, the only thing that ends the hold early). "Dość" does **not** get through the hold
 (that is what you asked for); if you want it to, add `calm` to `lock.allow`. Film play / pause and the script
 loop are not machine controls: pause / play still work. A pending surprise draw is dropped when the hold starts, the
 mode sequence freezes while it lasts, and saying it again restarts the 5 minutes.

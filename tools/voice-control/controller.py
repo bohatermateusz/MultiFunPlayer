@@ -124,14 +124,14 @@ class Controller:
         """the hold ("utrzymaj to") ignores everything except the configured commands (Lube Launcher, stop, release)"""
         left = self.lock_remaining()
         if left > 0 and intent.id not in self.lock_cfg["allow"]:
-            return Outcome("locked", f"held for another {left:.0f}s (say 'odblokuj' or 'koniec')", intent.id)
+            return Outcome("locked", f"held for another {left:.0f}s (only the safe word 'koniec' ends it)", intent.id)
         return None
 
     def _track_lock(self, intent):
         if intent.id == "lock":
             minutes = next((a for step in intent.steps for a in step.get("args", []) if isinstance(a, int)), 5)
             self._locked_until = self.clock() + max(1, minutes) * 60
-        elif intent.id in ("unlock", "halt"):
+        elif intent.id == "halt":
             self._locked_until = None
 
     def _remember(self, intent_id):

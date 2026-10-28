@@ -358,7 +358,7 @@
                             Padding="8 0"
                             Click="{s:Action HismithLockDefault}"
                             Content="Hold"
-                            ToolTip="Keep the machine exactly as it is for the minutes on the right: all its controls are ignored (Lube Launcher and Stop still work). While the funscript runs the machine, the last seconds of it (second box) loop."/>
+                            ToolTip="Keep the machine exactly as it is for the minutes on the right: all its controls are ignored; only Stop (End) ends it early. Lube Launcher still works. While the funscript runs the machine, the last seconds of it (second box) loop."/>
                     <TextBlock HorizontalAlignment="Center"
                                FontSize="10"
                                Opacity="0.7"
@@ -374,18 +374,6 @@
                          VerticalAlignment="Center"
                          Text="{Binding HismithHoldLoopSeconds, UpdateSourceTrigger=LostFocus}"
                          ToolTip="Seconds of the script that go round during a hold while the funscript runs the machine (default 20)"/>
-                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
-                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
-                            MinWidth="44"
-                            Padding="8 0"
-                            Click="{s:Action HismithLockClear}"
-                            Content="Release"
-                            ToolTip="End the hold now"/>
-                    <TextBlock HorizontalAlignment="Center"
-                               FontSize="10"
-                               Opacity="0.7"
-                               Text="PgDn"/>
-                </StackPanel>
                 <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
                     <Button Style="{StaticResource MaterialDesignOutlinedButton}"
                             MinWidth="44"

@@ -248,9 +248,10 @@ internal sealed partial class ButtplugOutputTarget
     }
 
     // Hold ("utrzymaj to"): for HismithLockMinutes (default 5) the machine keeps whatever it does now. Every
-    // control of the machine (modes, surprise, boost, speed / depth, sequence, keys) is ignored, except Stop,
-    // which always works and releases the hold. The Lube Launcher is never affected. Saying it again restarts
-    // the time; HismithLockClear releases it early. A pending surprise draw is dropped when the hold starts.
+    // control of the machine (modes, surprise, boost, speed / depth, sequence, keys) is ignored, except Stop
+    // ("koniec", the safe word), which always works and is the only thing that releases the hold early. The Lube
+    // Launcher is never affected. Saying it again restarts the time. A pending surprise draw is dropped when the
+    // hold starts.
     // While the funscript drives the machine (no built-in mode), the hold also loops the last
     // HismithHoldLoopSeconds (default 20) of the script, so that "keep this" keeps the movement that was just
     // playing; the loop is cleared when the hold ends.
@@ -300,7 +301,7 @@ internal sealed partial class ButtplugOutputTarget
         _ = RunLockAsync(source, seconds);
     }
 
-    public void HismithLockClear()
+    private void HismithLockClear()
     {
         Interlocked.Exchange(ref _lockSource, null)?.Cancel();
         if (_lockRemaining > 0)
@@ -571,8 +572,7 @@ internal sealed partial class ButtplugOutputTarget
         s.RegisterAction($"{Identifier}::Hismith::Mode::Script", HismithModeScript);
         s.RegisterAction($"{Identifier}::Hismith::Mode::Random", HismithModeRandom);
         s.RegisterAction($"{Identifier}::Hismith::Surprise", HismithSurprise);
-        s.RegisterAction<int>($"{Identifier}::Hismith::Lock::Start", s => s.WithLabel("Hold the machine as it is (minutes, 0 = default)"), HismithLockStart);
-        s.RegisterAction($"{Identifier}::Hismith::Lock::Clear", HismithLockClear);
+        s.RegisterAction<int>($"{Identifier}::Hismith::Lock::Start", s => s.WithLabel("Hold the machine as it is (minutes, 0 = default); only Stop releases it"), HismithLockStart);
         s.RegisterAction($"{Identifier}::Hismith::Surprise::Again", HismithSurpriseAgain);
         s.RegisterAction($"{Identifier}::Hismith::Halt", () => SetHismithMode(ModeHalt));
         s.RegisterAction($"{Identifier}::Hismith::Calm", () => SetHismithMode(ModeCalm));
@@ -591,7 +591,6 @@ internal sealed partial class ButtplugOutputTarget
         s.UnregisterAction($"{Identifier}::Hismith::Mode::Random");
         s.UnregisterAction($"{Identifier}::Hismith::Surprise");
         s.UnregisterAction($"{Identifier}::Hismith::Lock::Start");
-        s.UnregisterAction($"{Identifier}::Hismith::Lock::Clear");
         s.UnregisterAction($"{Identifier}::Hismith::Surprise::Again");
         s.UnregisterAction($"{Identifier}::Hismith::Halt");
         s.UnregisterAction($"{Identifier}::Hismith::Calm");

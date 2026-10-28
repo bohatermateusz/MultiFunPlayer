@@ -360,10 +360,6 @@
   "intent": "lock"
  },
  {
-  "say": "kochanie, możesz już zmieniać",
-  "intent": "unlock"
- },
- {
   "say": "kochanie, nie zmieniaj zdania",
   "intent": "none"
  },
@@ -378,5 +374,9 @@
  {
   "say": "trwanie, właśnie tak",
   "intent": "lock"
+ },
+ {
+  "say": "kochanie, możesz już zmieniać",
+  "intent": "none"
  }
 ]
