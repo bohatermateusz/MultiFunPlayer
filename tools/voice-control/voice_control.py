@@ -240,12 +240,14 @@ def main():
     if always:
         print(f"Listening continuously. Say \"{', '.join(wake.get('words', []))}\" and a command. "
               f"{'DRY RUN. ' if args.dry_run else ''}Ctrl+C to quit.")
-        if controller.persona is not None and not args.no_nudge:
+        if controller.persona is not None:
             def nudger():
                 while True:
                     time.sleep(1.0)
                     try:
-                        controller.idle_nudge()
+                        controller.tick()            # her program (e.g. a new mode every 3 minutes)
+                        if not args.no_nudge:
+                            controller.idle_nudge()
                     except Exception:
                         pass
             threading.Thread(target=nudger, daemon=True).start()

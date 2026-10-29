@@ -175,6 +175,13 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   faster, deeper, the scenes, the modes, the surprise) is ignored until she is back.
 * **Answering her**: for 60 s after her line (`reply_window`) you speak without "kochanie" ("proszę, Pani",
   "jestem Twoją małą dziwką"). The safe word and the ungated commands work in that window too.
+* **Wishes, not phrases** (`shots`, `program` in her answer): she understands quantity ("zalej mnie" = 3-4 shots, "całą" = 5;
+  `persona.lube.max_shots`, one roll for all of them, run through `LubeLauncher::FireMany`) and timing: "zmieniaj tryby co
+  3 minuty" (a random mode every 180 s, `Hismith::Mode::Random`), "za pięć minut zwolnij", "na minutę szybciej" (and back),
+  "zalewaj mnie co pięć minut" (one shot per firing, `program.lube_every_min` apart). A granted wish with timing becomes her
+  program, run by `Controller.tick()` from the 1 s thread (no model calls); bounds in `persona.program` (every 30-900 s,
+  start <= 900 s, duration <= 3600 s); one program at a time, a new one replaces it; "przestań zmieniać" cancels it without
+  dice; a hold makes it wait; "koniec"/End ends it. Her own unasked moves keep the one-shot limit.
 * **Her identity** (`persona.identity`): five texts rendered in front of every prompt - `ona` (who she is: Wiktoria,
   calm, tender and merciless by turns), `ty` (who you are: his girl, princess, teddy bear; what he reacts to), `repertuar`
   (how she teases, rewards, satisfies, punishes), `narzedzia` (what each control means as a gesture) and `po_sesji`

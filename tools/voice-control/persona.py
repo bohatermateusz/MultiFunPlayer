@@ -34,6 +34,11 @@ class PersonaTurn:
     raw: str = ""
     latency_ms: int = 0
     defiance: bool = False       # the user openly refuses / is rude ("nie chcę", "nie powiem", "nie będę prosić")
+    shots: int = 0               # for a Lube Launcher request: how many shots he means (1-5; 0 = as the command says)
+    program: dict = None         # timing he means: {start_after_seconds, every_seconds, duration_seconds, plan, random_modes, cancel}
+
+
+PROGRAM_KEYS = ("start_after_seconds", "every_seconds", "duration_seconds", "plan", "random_modes", "cancel")
 
 
 SYSTEM = """{character}
@@ -75,6 +80,17 @@ thank (ma podziękować), repeat (ma powtórzyć wyznanie), none.
 - O wszystkim decydujesz Ty: także o prośbie o spokój lub zwolnienie ("dość", "wystarczy", "wolniej", "płycej"), o pauzie filmu \
 i o trybach. Możesz odmówić stanowczo ("Nie. Jeszcze nie skończyłam."). Nie podlegają Tobie tylko słowo bezpieczeństwa "koniec" \
 i prośba o utrzymanie stanu - te wykonują się bez Ciebie, więc ich nie wybieraj w request.
+- ROZUMIENIE ŻYCZEŃ: on nie zna żadnych fraz i nie musi - rozumiesz, o co mu chodzi, jak człowiek. ILOŚĆ przy lube: "shots" = ile strzałów \
+ma na myśli ("spuść się" 1, "dwa razy" 2, "kilka razy" 3, "zalej mnie" 3-4, "zalej mnie całą" / "wszystko" 5; request zawsze lube_fire; \
+0 gdy nie prosi o lube). CZAS w "program": "co N minut" → every_seconds; "za N minut" → start_after_seconds; "na N minut / przez N minut, \
+potem..." → duration_seconds (i plan powrotu w kolejnym życzeniu); "zmieniaj tryby" / "co chwilę inny tryb" → random_modes true i plan pusty; \
+inaczej plan = kroki, które mają się powtarzać (np. faster co 2 min). "cancel" true gdy chce to odwołać ("przestań zmieniać", "wystarczy tego"). \
+Gdy nie ma mowy o czasie: program = null. Granice: every 30-900 s, start ≤ 900 s, duration ≤ 3600 s. \
+Przykłady: "zmieniaj tryby co 3 minuty" → request mode_random, program {{every_seconds: 180, random_modes: true}}; \
+"za pięć minut zwolnij" → request slower, program {{start_after_seconds: 300}}; "na minutę szybciej" → request faster, program {{duration_seconds: 60}}; \
+"zalewaj mnie co 5 minut" → request lube_fire, shots 1, program {{every_seconds: 300, plan: [lube_fire]}}; "zalej mnie" → lube_fire, shots 4, program null. \
+Program też przechodzi przez losowanie; możesz zmienić warunki ("Co trzy? Co dwie. I tryb wybieram ja.") - wpisz te, na które się zgadzasz, \
+i powiedz to w line_if_granted. W stanie "program_aktywny" widzisz trwający program - możesz do niego nawiązać lub go odwołać (cancel).
 - addressed = false tylko gdy wypowiedź wyraźnie nie jest do Ciebie (rozmowa z kimś innym, dialog z filmu).
 - Komendy użytkownika: {commands}
 Stan: {state}
@@ -88,7 +104,7 @@ Ton tej tury (z stanu "ton_tury"): czuły = opieka, miłość, odpuszczenie ("Mo
 Wpleć w wariacji jeden zwrot z "inspiracja" w stanie.
 Zwracaj się do niej różnie: {names}. Wpleć w wariacji jeden zwrot z "inspiracja" w stanie. Możesz zadać pytanie (kim jesteś, czyja jesteś), rozkazać (poproś, powiedz, podziękuj, klęcz i czekaj) albo zadrwić z jej milczenia. \
 Jeśli wolno Ci działać (w stanie "wolno_dzialac": true), możesz zaskoczyć ją niezamówionym ruchem w polu "plan" (nagroda: szybciej/głębiej; dręczenie: \
-wolniej/płycej; zwrot: tryb) - krótko, 1-2 kroki; w przeciwnym razie "plan" ma być pusty. Jeśli w stanie jest "niespodzianka": "lube", właśnie niezamówionie zalewasz go - powiedz to krótko, jakbyś robiła to dla przyjemności. Stan: {state}
+wolniej/płycej; zwrot: tryb) - krótko, 1-2 kroki; w przeciwnym razie "plan" ma być pusty. Jeśli w stanie jest "program_aktywny", możesz do niego nawiązać (to Twój program). Jeśli w stanie jest "niespodzianka": "lube", właśnie niezamówionie zalewasz go - powiedz to krótko, jakbyś robiła to dla przyjemności. Stan: {state}
 Odpowiadasz wyłącznie JSON-em z polami "line" i "plan"."""
 
 
@@ -111,6 +127,21 @@ def render_character(persona_cfg):
     return "\n\n".join(parts)
 
 
+def parse_program(value):
+    """the model's "program" -> a clean dict (ints, bool, plan list) or None when there is none / it is empty"""
+    if not isinstance(value, dict):
+        return None
+    out = {"start_after_seconds": max(0, int(value.get("start_after_seconds", 0) or 0)),
+           "every_seconds": max(0, int(value.get("every_seconds", 0) or 0)),
+           "duration_seconds": max(0, int(value.get("duration_seconds", 0) or 0)),
+           "plan": [{"step": str(p.get("step", "")), "times": int(p.get("times", 1) or 1)}
+                    for p in (value.get("plan") or []) if isinstance(p, dict)],
+           "random_modes": bool(value.get("random_modes", False)), "cancel": bool(value.get("cancel", False))}
+    if not (out["cancel"] or out["start_after_seconds"] or out["every_seconds"] or out["duration_seconds"] or out["random_modes"]):
+        return None
+    return out
+
+
 def build_system_prompt(character, intents, step_ids, state):
     commands = "; ".join(f"{i.id} = {i.description}" for i in intents if i.description)
     return SYSTEM.format(character=character.strip(), steps=", ".join(step_ids), commands=commands,
@@ -127,12 +158,17 @@ def build_schema(intents, step_ids):
     return {"name": "persona_turn", "strict": True, "schema": {
         "type": "object", "additionalProperties": False,
         "required": ["addressed", "request", "confession", "thanked", "defiance", "line_if_granted", "line_if_denied", "demand",
-                     "grant_actions", "tease_actions"],
+                     "grant_actions", "tease_actions", "shots", "program"],
         "properties": {
             "addressed": {"type": "boolean"}, "request": {"type": "string", "enum": ids},
             "confession": {"type": "boolean"}, "thanked": {"type": "boolean"}, "defiance": {"type": "boolean"},
             "line_if_granted": {"type": "string"}, "line_if_denied": {"type": "string"},
-            "demand": {"type": "string", "enum": DEMANDS}, "grant_actions": actions, "tease_actions": actions}}}
+            "demand": {"type": "string", "enum": DEMANDS}, "grant_actions": actions, "tease_actions": actions,
+            "shots": {"type": "integer"},
+            "program": {"anyOf": [{"type": "null"}, {"type": "object", "additionalProperties": False, "required": list(PROGRAM_KEYS),
+                                                      "properties": {"start_after_seconds": {"type": "integer"}, "every_seconds": {"type": "integer"},
+                                                                     "duration_seconds": {"type": "integer"}, "plan": actions,
+                                                                     "random_modes": {"type": "boolean"}, "cancel": {"type": "boolean"}}}]}}}}
 
 
 def build_nudge_prompt(character, state):
@@ -213,6 +249,7 @@ class Persona:
                                line_if_denied=str(a.get("line_if_denied", "")).strip(),
                                demand=str(a.get("demand", "none")), grant_actions=actions("grant_actions"),
                                tease_actions=actions("tease_actions"), raw=raw,
+                               shots=int(a.get("shots", 0) or 0), program=parse_program(a.get("program")),
                                latency_ms=int((time.monotonic() - started) * 1000))
         except urllib.error.HTTPError as e:
             raise PersonaError(f"HTTP {e.code}") from e

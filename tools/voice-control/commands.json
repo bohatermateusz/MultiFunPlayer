@@ -39,8 +39,6 @@
     "dojdź na mnie",
     "dojdź",
     "strzelaj",
-    "zalej mnie",
-    "obryzgaj mnie",
     "wytrysnij na mnie",
     "oznacz mnie",
     "spuść się we mnie",
@@ -94,6 +92,8 @@
     "strzel kilka razy",
     "strzel trzy razy",
     "kilka razy na mnie",
+    "zalej mnie",
+    "obryzgaj mnie",
     "zalej mnie kilka razy",
     "obryzgaj mnie kilka razy"
    ],
@@ -533,6 +533,24 @@
    ],
    "cooldown": 2,
    "description": "Custom mode B: slowest possible, full depth, smallest stroke.",
+   "improvise": true
+  },
+  {
+   "id": "mode_random",
+   "phrases": [
+    "losowy tryb",
+    "jakiś tryb",
+    "zmień tryb",
+    "inny tryb"
+   ],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Mode::Random",
+     "args": []
+    }
+   ],
+   "cooldown": 2,
+   "description": "A random built-in mode 1-8 (different from the one running). Used by a program with random_modes.",
    "improvise": true
   },
   {
@@ -1120,6 +1138,7 @@
    "mode_6",
    "mode_7",
    "mode_8",
+   "mode_random",
    "mode_a",
    "mode_b",
    "sequence_start",
@@ -1747,6 +1766,16 @@
     "window_seconds": 1800,
     "hearing_boost": 1.5
    }
+  },
+  "lube": {
+   "max_shots": 5
+  },
+  "program": {
+   "min_every": 30,
+   "max_every": 900,
+   "max_start_after": 900,
+   "max_duration": 3600,
+   "lube_every_min": 60
   },
   "last_second": {
    "enabled": true,

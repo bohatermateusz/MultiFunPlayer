@@ -60,9 +60,9 @@ W trybie „szybciej / głębiej" też działają – zmieniają sam tryb.
 
 | Powiedz | Co się stanie |
 |---|---|
-| **spuść się na mnie** · spuść się · spuść się we mnie · dojdź · skończ na mnie · zalej mnie · obryzgaj mnie · daj mi spermę | jeden strzał (potem 10 s przerwy). Klawisz **F8**. |
+| **spuść się na mnie** · spuść się · spuść się we mnie · dojdź · skończ na mnie · daj mi spermę | jeden strzał (potem 10 s przerwy). Klawisz **F8**. |
 | spuść się na mnie dwa razy | dwa strzały |
-| spuść się na mnie **kilka razy** / trzy razy · strzel kilka razy · zalej mnie kilka razy | trzy strzały co sekundę |
+| spuść się na mnie **kilka razy** / trzy razy · strzel kilka razy · **zalej mnie** · obryzgaj mnie | trzy strzały co sekundę (przez Panią: tyle, ile ma na myśli, 1-5) |
 
 ## Film
 
@@ -80,6 +80,24 @@ Powiedz, co chcesz, po „kochanie" – np. „kochanie, mógłbyś przyspieszy�
 „szybciej / wolniej / głębiej / płycej / tryb", a gdy pasuje do nastroju - też tryb A lub B i **jeden** strzał z lube (np. "zniszcz mnie i skończ we mnie").
 Nigdy sam nie zatrzyma ani nie uspokoi maszyny i nie strzeli więcej niż raz - do tego są słowa z tabel.
 Gdy nie jest pewien, nie robi nic.
+
+## Mów naturalnie (ilość i czas)
+
+Nie musisz pamiętać żadnych fraz z tej listy - Pani rozumie, o co Ci chodzi, jak człowiek. Lista wyżej to tylko to, co działa
+**bez niej** (brak klucza / sieci) i to, co ona sama ma pod ręką. Ona dodatkowo rozumie:
+
+| mówisz | ona rozumie (i decyduje kością jak zawsze) |
+|---|---|
+| **zalej mnie** · zalej mnie całą · dwa razy · kilka razy | ile strzałów masz na myśli: 1-5 na jedną prośbę (jedna kość na całość) |
+| **zmieniaj tryby co 3 minuty** · co chwilę inny tryb | po zgodzie: losowy tryb 1-8 co 3 minuty, aż powiesz "przestań zmieniać" / "koniec" |
+| **za pięć minut zwolnij** | po zgodzie: zwolni po 5 minutach |
+| **na minutę szybciej** · przez dwie minuty głębiej | po zgodzie: teraz szybciej, po minucie z powrotem |
+| **zalewaj mnie co pięć minut** | po zgodzie: jeden strzał co 5 minut (nie częściej niż co minutę) |
+| przestań zmieniać · wystarczy tego | odwołuje jej program - bez kości |
+
+Granice: co 30 s - 15 min, start do 15 min, czas trwania do godziny, w programie najwyżej jeden strzał na raz. Pani może odmówić
+albo zmienić warunki ("Co trzy? Co dwie. I tryb wybieram ja."). "Utrzymaj to" wstrzymuje program na czas blokady, "koniec" go kasuje.
+Program nie woła modelu - nic nie kosztuje.
 
 ## Rozmowa z Panią
 

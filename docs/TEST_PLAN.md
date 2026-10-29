@@ -135,6 +135,12 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.56 | 'koniec' / End zaraz po niespodziance | natychmiast zatrzymuje |
 | 6.57 | Sesja 10 min po dodaniu tożsamości | Pani jest spójna (ta sama osoba), nazywa Cię m.in. księżniczką/misiem, droczy się i nagradza wg repertuaru |
 | 6.58 | 'koniec' na wysokim etapie | jeśli jeszcze się odezwie, to ciepło i opiekuńczo, bez żądań |
+| 6.59 | 'kochanie, zalej mnie' (po zgodzie) | kilka strzałów (3-4) co sekundę; `shots` w logu; 'zalej mnie całą' → 5 |
+| 6.60 | 'kochanie, zmieniaj tryby co 3 minuty' | Pani odpowiada (może zmienić warunki); po zgodzie tryb zmienia się od razu i co 3 min (`[program]` w logu), bez wołania modelu |
+| 6.61 | 'kochanie, za pięć minut zwolnij' / 'na minutę szybciej' | zwalnia po 5 min / szybciej i po minucie z powrotem |
+| 6.62 | W trakcie programu: 'utrzymaj to', potem 'koniec' | w blokadzie program czeka; 'koniec' kasuje program (log: brak dalszych `[program]`) |
+| 6.63 | 'kochanie, przestań zmieniać' | program odwołany bez kości; Pani to komentuje |
+| 6.64 | 'kochanie, zalewaj mnie co 5 minut' | po zgodzie jeden strzał od razu i co 5 min; nigdy częściej niż co minutę |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |
 

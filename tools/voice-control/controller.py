@@ -37,6 +37,8 @@ PERSONA_DEFAULTS = {"enabled": True, "reply_window": 15.0, "base_p": 0.25, "step
                                     "lube_min_stage": 3, "lube_chance": 0.12, "lube_gap_seconds": 300,
                                     "lube_surprise": {"enabled": False, "chance": [0.0, 0.0, 0.06, 0.12, 0.2], "min_stage": 2,
                                                       "max_per_window": 3, "window_seconds": 1800, "hearing_boost": 1.5}},
+                    "lube": {"max_shots": 5},
+                    "program": {"min_every": 30, "max_every": 900, "max_start_after": 900, "max_duration": 3600, "lube_every_min": 60},
                     "last_second": {"enabled": False, "chance": 0.18, "min_stage": 1, "retry_bonus": 0.25,
                                     "applies_to": ["lube_fire", "lube_two", "lube_many"]}}
 
@@ -108,6 +110,7 @@ class Controller:
         self._surprises = []              # when she surprised the user with the Lube Launcher unasked
         self._teased_last = False         # the last grant was a last-second refusal (never twice in a row)
         self._retry = set()               # requests that were refused at the last second: the next ask is likelier
+        self._program = None              # her running program (e.g. a random mode every 3 minutes), see tick()
         self._penalty_until = 0.0         # an open refusal costs: nothing is granted until you apologise or the time is up
         self.busy = lambda: False         # True while she is speaking / listening is muted (set by the main loop)
         self.speak_ex = None              # speak_ex(line, stage): like speak, but knows the escalation stage
@@ -399,7 +402,7 @@ class Controller:
                 "zwroty_do_niej": list(address.get("names", [])), "prosby_bez_zgody": dict(self._asks),
                 "nalezy_sie_po_wykonaniu_zadania": self._owed, "kara_sekundy": round(self.penalty_remaining()),
                 "blokada_5_min": self.lock_remaining() > 0,
-                "ostatnie_komendy": list(self._recent)}
+                "ostatnie_komendy": list(self._recent), "program_aktywny": self.program_summary()}
 
     def _need_persona(self, transcript, plain=None):
         return _NeedPersona(transcript, self._persona_state(), list(self._history), plain)
@@ -506,6 +509,12 @@ class Controller:
         intent = next((i for i in self.intents if i.id == request), None)
         locked = self.lock_remaining() > 0
 
+        if turn.program and turn.program.get("cancel"):
+            # "przestań zmieniać": calling her program off is his to say, no dice
+            extra["program"] = "cancelled" if self._program else "none"
+            self._program = None
+            return spoken(turn.line_if_granted or turn.line_if_denied, Outcome("talk", "persona: program off", "", 0.0, "persona", extra))
+
         # not a request: conversation (a confession, an answer to her question, thanks)
         if intent is None and request != "improvise":
             if self._owed and turn.thanked:
@@ -568,7 +577,14 @@ class Controller:
                 return spoken(turn.line_if_denied or turn.line_if_granted, Outcome("denied", "persona: last second", request_id, 0.0, "persona", extra))
             self._teased_last = False
             self._retry.discard(request_id)
-            return spoken(turn.line_if_granted, self._grant(intent, turn.grant_actions, extra, now, "granted"))
+            if turn.program and not locked:
+                # a wish with timing ("co 3 minuty", "za 5 minut"): her program, run by tick(); the first step now when due
+                self._install_program(intent, turn, extra)
+                if self._program and self._program["next_at"] <= now:
+                    self._run_program_step(now, extra)
+                return spoken(turn.line_if_granted, Outcome("executed", "persona: program", request_id, 0.0, "persona", extra))
+            intent, override = self._lube_count(intent, turn.shots, extra)
+            return spoken(turn.line_if_granted, self._grant(intent, turn.grant_actions, extra, now, "granted", override))
 
         self._asks[request_id] = self._asks.get(request_id, 0) + 1
         if turn.demand in ("thank", "repeat", "confess"):
@@ -582,9 +598,128 @@ class Controller:
                     self.run_steps(steps)
         return spoken(turn.line_if_denied, o)
 
-    def _grant(self, intent, actions, extra, now, how):
+    def _lube_count(self, intent, shots, extra):
+        """"zalej mnie" means several shots: the model says how many (shots), capped by persona.lube.max_shots; two or
+        more go through lube_many's FireMany with that count. -> (intent, override steps or None)"""
+        if not intent.id.startswith("lube_") or not shots:
+            return intent, None
+        n = max(1, min(int(shots), int(self.persona_cfg["lube"]["max_shots"])))
+        extra["shots"] = n
+        if n == 1:
+            one = next((i for i in self.intents if i.id == "lube_fire"), intent)
+            return one, None
+        many = next((i for i in self.intents if i.id == "lube_many"), None)
+        if many is None:
+            return intent, None
+        return many, {"count": n, "times": 1}
+
+    # ---- her program: a wish with timing, run by tick() ----------------------------------------------
+    def _program_allowed(self):
+        return {i.id for i in self.intents if i.improvise or i.id.startswith("mode_")} - {"halt", "calm", "lock"}
+
+    def _install_program(self, intent, turn, extra):
+        """the model's program (clamped to persona.program) becomes her running program; a new one replaces the old"""
+        cfg = self.persona_cfg["program"]
+        pr = turn.program
+        now = self.clock()
+        every = int(pr.get("every_seconds", 0) or 0)
+        if every:
+            every = max(int(cfg["min_every"]), min(every, int(cfg["max_every"])))
+        start_after = max(0, min(int(pr.get("start_after_seconds", 0) or 0), int(cfg["max_start_after"])))
+        duration = max(0, min(int(pr.get("duration_seconds", 0) or 0), int(cfg["max_duration"])))
+        random_modes = bool(pr.get("random_modes"))
+        plan = list(pr.get("plan") or [])
+        if not plan and not random_modes and intent is not None:
+            plan = [{"step": intent.id, "times": 1}]
+        steps, used = self._persona_steps(plan, self._program_allowed()) if plan else ([], [])
+        if random_modes:
+            rnd = next((i for i in self.intents if i.id == "mode_random"), None)
+            if rnd is not None:
+                steps, used = copy.deepcopy(rnd.steps) + steps, ["mode_random"] + used
+        if not steps:
+            self._program = None
+            extra["program"] = "empty"
+            return
+        if duration and not every and not start_after:
+            # "na minutę szybciej": the step now, and the opposite (slower) when the time is up
+            back = {"faster": "slower", "slower": "faster", "deeper": "shallower", "shallower": "deeper"}
+            undo = [{"step": back[u.split("x")[0]], "times": int(u.split("x")[1]) if "x" in u else 1} for u in used if u.split("x")[0] in back]
+            undo_steps, undo_used = self._persona_steps(undo, self._program_allowed()) if undo else ([], [])
+            self._program = {"next_at": now, "every": 0, "until": 0, "steps": steps, "used": used, "random_modes": False,
+                             "then": {"at": now + duration, "steps": undo_steps, "used": undo_used}, "source": intent.id if intent else "program"}
+        else:
+            self._program = {"next_at": now + start_after, "every": every, "until": (now + start_after + duration) if duration else 0,
+                             "steps": steps, "used": used, "random_modes": random_modes, "then": None,
+                             "source": intent.id if intent else "program"}
+        extra["program"] = self.program_summary()
+
+    def program_summary(self):
+        pr = self._program
+        if not pr:
+            return None
+        now = self.clock()
+        what = "losowy tryb" if pr["random_modes"] else "+".join(pr["used"])
+        if pr["every"]:
+            text = f"{what} co {pr['every']} s"
+        elif pr.get("then") and pr["then"]["steps"]:
+            text = f"{what}, potem {'+'.join(pr['then']['used'])} za {max(0, round(pr['then']['at'] - now))} s"
+        else:
+            text = f"{what} za {max(0, round(pr['next_at'] - now))} s"
+        if pr["until"]:
+            text += f", jeszcze {max(0, round((pr['until'] - now) / 60))} min"
+        return text
+
+    def _run_program_step(self, now, extra=None):
+        """one firing of her program (under the lock): the steps, with the Lube Launcher at most once and not more often
+        than lube_every_min; then the next time, or the end"""
+        pr = self._program
+        if pr is None:
+            return False
+        steps = copy.deepcopy(pr["steps"])
+        lube_gap = float(self.persona_cfg["program"]["lube_every_min"])
+        kept, lube = [], 0
+        for st in steps:
+            if "LubeLauncher" in st["action"]:
+                if lube or now - self._last_lube < lube_gap:
+                    continue
+                lube += 1
+                if st["action"].endswith("FireMany"):
+                    st["args"] = [1]
+            kept.append(st)
+        if kept and not self.dry_run:
+            self.run_steps(kept)
+        if lube:
+            self._last_lube = now
+        if extra is not None:
+            extra["program_step"] = list(pr["used"])
+        if pr["every"]:
+            pr["next_at"] = now + pr["every"]
+            if pr["until"] and pr["next_at"] > pr["until"]:
+                self._program = None
+        elif pr.get("then") and pr["then"]["steps"]:
+            pr["steps"], pr["used"], pr["next_at"], pr["then"] = pr["then"]["steps"], pr["then"]["used"], pr["then"]["at"], None
+        else:
+            self._program = None
+        return bool(kept)
+
+    def tick(self):
+        """Called about once a second by the main loop: runs her program when its time has come. A hold ("utrzymaj to")
+        makes it wait, the safe word ends it. -> True when a step ran."""
+        with self._lock:
+            pr = self._program
+            if pr is None:
+                return False
+            now = self.clock()
+            if now < pr["next_at"] or self.lock_remaining() > 0:
+                return False
+            extra = {"program": self.program_summary()}
+            ran = self._run_program_step(now, extra)
+            self._log("[program]", Outcome("executed" if ran else "talk", "program step", pr["source"], 0.0, "program", extra))
+            return ran
+
+    def _grant(self, intent, actions, extra, now, how, override=None):
         """run the request itself (its own steps), plus what she added, bounded like a scene"""
-        steps = copy.deepcopy(intent.steps)
+        steps = self._steps_for(intent, override) if override else copy.deepcopy(intent.steps)
         added, used = self._persona_steps([a for a in actions if a.get("step") != intent.id])
         if self.lock_remaining() > 0:
             added, used = [], []
@@ -655,6 +790,7 @@ class Controller:
             self._locked_until = self.clock() + max(1, minutes) * 60
         elif intent.id == "halt":
             self._locked_until = None
+            self._program = None
 
     def _remember(self, intent_id):
         self._recent.append(intent_id)

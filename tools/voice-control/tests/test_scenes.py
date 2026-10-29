@@ -41,7 +41,7 @@ class StrictScenes(unittest.TestCase):
         cases = {"pieprz mnie": "hard", "Zerżnij mnie!": "hard", "rżnij mnie": "hard", "rozepchaj mnie": "fill",
                  "głęboko w dupcię": "fill", "drażnij mnie": "tease", "pieść mnie": "tease", "użyj mnie": "use_me",
                  "jestem twoją sissy": "use_me", "jestem twoją suczką": "use_me", "jeszcze": "lock", "właśnie tak": "lock",
-                 "nie przestawaj": "lock", "zalej mnie": "lube_fire", "obryzgaj mnie kilka razy": "lube_many",
+                 "nie przestawaj": "lock", "zalej mnie": "lube_many", "obryzgaj mnie kilka razy": "lube_many",
                  "dość": "calm", "wystarczy": "calm", "stój": "calm", "przestań": "calm", "koniec": "halt",
                  "wyłącz maszynę": "halt", "koniec pętli": "loop_off", "koniec sekwencji": "sequence_stop"}
         for text, intent in cases.items():
