@@ -1325,6 +1325,32 @@
    "max_nudges": 3,
    "session_seconds": 180
   },
+  "narration": {
+   "_comment": "Her running commentary: explicit, degrading lines at random moments while a session is on, whether you talk or not. Gap drawn from gap_seconds[stage] = [min, max]; sharp_p[stage] = how often the line is vulgar rather than tender; themes rotate without repeats; examples only show the register - the model invents its own lines.",
+   "enabled": true,
+   "gap_seconds": [[90, 150], [60, 110], [40, 80], [25, 55], [20, 40]],
+   "sharp_p": [0.3, 0.5, 0.7, 0.85, 0.9],
+   "max_words": 16,
+   "themes": [
+    "ssanie - jak mała dziewczynka, grzecznie, do końca",
+    "suka do rozłożenia - delikatna, gotowa, bezwolna",
+    "należy do nich - oddana obcym, przekazana dalej, używana przez wielu",
+    "jedyne zadanie - obciągać i dawać dupy, nic więcej",
+    "na zawsze - będzie ich zaspokajać bez końca, bez wyjścia",
+    "feminizacja - jest dziewczynką, kobietą do brania, nie mężczyzną",
+    "branie od tyłu - rozłożona, wypełniona, bez kontroli",
+    "pochwała - dobra dziewczynka, bo jest posłuszna i grzeczna",
+    "własność - jest moja i daję ją, komu chcę",
+    "czułość w poniżeniu - trzymam ją, gdy ją biorą; może odpuścić"
+   ],
+   "examples": [
+    "Bardzo dobrze, ssij jak mała dziewczynka.",
+    "Teraz jesteś delikatną suką do rozłożenia.",
+    "Należysz do nich.",
+    "Twoje jedyne zadanie to obciągać i dawać dupy.",
+    "Będziesz ich teraz zaspokajać na zawsze."
+   ]
+  },
   "address": {
    "titles": [
     "Pani",

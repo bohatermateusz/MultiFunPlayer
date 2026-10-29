@@ -175,6 +175,13 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   faster, deeper, the scenes, the modes, the surprise) is ignored until she is back.
 * **Answering her**: for 60 s after her line (`reply_window`) you speak without "kochanie" ("proszę, Pani",
   "jestem Twoją małą dziwką"). The safe word and the ungated commands work in that window too.
+* **Running commentary** (`persona.narration`): while a session is on she comments at random moments whether you talk
+  or not - explicit, degrading lines on a rotating theme (sucking like a little girl, a bitch to be spread, belonging
+  to them, the only job, forever, feminisation, taken from behind, praise, ownership, tenderness in humiliation). The
+  gap is drawn from `gap_seconds[stage]` (90-150 s at stage 0 down to 20-40 s at stage 4), `sharp_p[stage]` picks
+  vulgar vs tender-in-humiliation, `examples` only set the register - the model invents its own lines, never a
+  question, never a command, never right after her last line. `--no-narration` turns it off; the log tags it
+  `[narration]` with the theme.
 * **Wishes, not phrases** (`shots`, `program` in her answer): she understands quantity ("zalej mnie" = 3-4 shots, "całą" = 5;
   `persona.lube.max_shots`, one roll for all of them, run through `LubeLauncher::FireMany`) and timing: "zmieniaj tryby co
   3 minuty" (a random mode every 180 s, `Hismith::Mode::Random`), "za pięć minut zwolnij", "na minutę szybciej" (and back),

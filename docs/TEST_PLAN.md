@@ -141,6 +141,9 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.62 | W trakcie programu: 'utrzymaj to', potem 'koniec' | w blokadzie program czeka; 'koniec' kasuje program (log: brak dalszych `[program]`) |
 | 6.63 | 'kochanie, przestań zmieniać' | program odwołany bez kości; Pani to komentuje |
 | 6.64 | 'kochanie, zalewaj mnie co 5 minut' | po zgodzie jeden strzał od razu i co 5 min; nigdy częściej niż co minutę |
+| 6.65 | Sesja 10 min, mów mało | Pani komentuje sama w losowych odstępach (na początku co 1,5-2,5 min), dosadnie, różne tematy, bez pytań; `[narration]` w logu z `theme` |
+| 6.66 | Rozgrzej do etapu 3-4 | komentarze co 20-55 s, prawie zawsze ostre; nigdy tuż po jej poprzedniej kwestii; nie nakładają się na jej odpowiedzi |
+| 6.67 | `--no-narration` | brak komentarzy; nudge (cisza) i odpowiedzi działają jak dotąd |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |
 

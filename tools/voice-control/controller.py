@@ -24,6 +24,7 @@ PERSONA_DEFAULTS = {"enabled": True, "reply_window": 15.0, "base_p": 0.25, "step
                     "escalation": {"enabled": True, "max_stage": 4, "points": {"turn": 1, "denied": 1, "confession": 2, "granted": 2},
                                    "thresholds": [0, 5, 12, 22, 35], "heat_reset": 600, "tease_chance": [0.3, 0.5, 0.7, 0.85, 1.0]},
                     "initiative": {"enabled": True, "idle_prompt_seconds": 25, "max_nudges": 3, "session_seconds": 180},
+                    "narration": {"enabled": False, "gap_seconds": [[90, 150]], "sharp_p": [0.7], "max_words": 16, "themes": [], "examples": []},
                     "vocabulary": {}, "inspiration": {"count": 3, "avoid_repeat": 14}, "confession_phrases": [], "obey_phrases": [],
                     "difficulty": 1.0, "step_p_overrides": {},
                     "manners": {"politeness_factor": 0.6, "polite_markers": ["proszę", "błagam", "pani", "dziękuję"], "ignore_demand_factor": 0.4,
@@ -111,6 +112,8 @@ class Controller:
         self._teased_last = False         # the last grant was a last-second refusal (never twice in a row)
         self._retry = set()               # requests that were refused at the last second: the next ask is likelier
         self._program = None              # her running program (e.g. a random mode every 3 minutes), see tick()
+        self._narration_due = 0.0         # when her next unprompted line is due (0 = not drawn yet)
+        self._themes_recent = []          # narration themes used lately (no repeats)
         self._penalty_until = 0.0         # an open refusal costs: nothing is granted until you apologise or the time is up
         self.busy = lambda: False         # True while she is speaking / listening is muted (set by the main loop)
         self.speak_ex = None              # speak_ex(line, stage): like speak, but knows the escalation stage
@@ -330,6 +333,64 @@ class Controller:
         self._last_lube = now
         self._surprises.append(now)
         return True
+
+    def _session_on(self, now):
+        ini = self.persona_cfg["initiative"]
+        return bool(self._last_user) and now - self._last_user <= float(ini["session_seconds"]) + float(ini["idle_prompt_seconds"]) * (int(ini["max_nudges"]) + 1)
+
+    def _draw_narration_gap(self, stage):
+        gaps = self.persona_cfg["narration"]["gap_seconds"]
+        lo, hi = gaps[max(0, min(stage, len(gaps) - 1))]
+        return self.rng.uniform(float(lo), float(hi))
+
+    def idle_narration(self):
+        """Called about once a second by the main loop. While a session is on she comments at random moments, whether
+        the user talks or not: explicit, degrading, on a rotating theme; the gap is drawn from narration.gap_seconds
+        by stage. Never while she is already speaking. -> the line, or None."""
+        cfg = self.persona_cfg["narration"]
+        if not self.persona_active() or not cfg.get("enabled") or self.busy() or not cfg.get("themes"):
+            return None
+        now = self.clock()
+        with self._lock:
+            if not self._session_on(now):
+                self._narration_due = 0.0
+                return None
+            stage = self.stage()
+            if not self._narration_due:
+                self._narration_due = now + self._draw_narration_gap(stage)
+                return None
+            if now < self._narration_due or now - self._last_line < 8.0:
+                return None
+            sharp = self.persona_cfg["narration"]["sharp_p"]
+            tone = "ostry" if self.rng.random() < float(sharp[max(0, min(stage, len(sharp) - 1))]) else "czuły"
+            harsh = (3 if stage >= 4 and self.rng.random() < 0.4 else 2) if tone == "ostry" else 0
+            self._tone_now = (tone, harsh)
+            self._tones.append(tone)
+            del self._tones[:-12]
+            themes = [t for t in cfg["themes"] if t not in self._themes_recent[-max(1, len(cfg["themes"]) - 2):]] or list(cfg["themes"])
+            theme = self.rng.choice(themes)
+            self._themes_recent.append(theme)
+            del self._themes_recent[:-len(cfg["themes"])]
+            state = dict(self._persona_state(), etap=stage, ton=self._tone(stage), ton_tury=tone, ostrosc=harsh)
+            history = list(self._history)
+            self._last_line = now                 # a failed call must not be retried in a loop
+            self._narration_due = now + self._draw_narration_gap(stage)
+        try:
+            line = self.persona.narrate(state, history, theme, list(cfg.get("examples", [])), int(cfg.get("max_words", 16)))
+        except Exception:
+            return None
+        if not line:
+            return None
+        with self._lock:
+            self._history.append(("assistant", line))
+            del self._history[:-24]
+            self._window_until = self.clock() + float(self.persona_cfg["reply_window"])
+            self._last_line = self.clock()
+            outcome = Outcome("talk", "narration", "", 0.0, "persona", {"say": line, "stage": stage, "tone": tone, "harsh": harsh,
+                                                                        "theme": theme, "voice": stage + (5 if tone == "ostry" else 0)})
+            self._log("[narration]", outcome)
+        self._say(outcome)
+        return line
 
     def idle_nudge(self):
         """Called about once a second by the main loop. When a session is on and the user has been silent for

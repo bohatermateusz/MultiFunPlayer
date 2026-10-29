@@ -95,6 +95,7 @@ def main():
         parser.add_argument("--no-persona", action="store_true", help="no talking persona (plain commands)", **d)
         parser.add_argument("--no-tts", action="store_true", help="print the persona's lines instead of speaking them", **d)
         parser.add_argument("--no-nudge", action="store_true", help="the persona never speaks first", **d)
+        parser.add_argument("--no-narration", action="store_true", help="no running commentary at random moments", **d)
 
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     add_options(ap, suppress=False)
@@ -246,6 +247,8 @@ def main():
                     time.sleep(1.0)
                     try:
                         controller.tick()            # her program (e.g. a new mode every 3 minutes)
+                        if not args.no_narration:
+                            controller.idle_narration()
                         if not args.no_nudge:
                             controller.idle_nudge()
                     except Exception:

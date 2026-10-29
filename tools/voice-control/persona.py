@@ -171,6 +171,25 @@ def build_schema(intents, step_ids):
                                                                      "random_modes": {"type": "boolean"}, "cancel": {"type": "boolean"}}}]}}}}
 
 
+NARRATION = """{character}
+
+NARRACJA: sesja trwa, a Ty komentujesz na bieżąco - jedna kwestia, najwyżej {max_words} słów, bez pytania i bez czekania na odpowiedź. \
+To ma być całkowite wyuzdanie: mówisz do niej jak do swojej dziewczynki, którą oddajesz do użycia - dosadnie, pewnie, bez cenzury. \
+Temat tej kwestii: {theme}. Rejestr pokazują przykłady (nie powtarzaj ich, wymyślaj własne): {examples}. \
+Ton tej tury: {tone_hint}. Zwracaj się do niej różnie: {names}. Nie powtarzaj kwestii, które już padły. \
+Jeśli w stanie jest "scena", mów o tym, co dzieje się teraz na ekranie. Stan: {state}
+Odpowiadasz wyłącznie JSON-em z polem "line"."""
+
+
+def build_narration_prompt(character, state, theme, examples, max_words=16):
+    tone = state.get("ton_tury", "ostry")
+    hint = ("ostry - rozkaz, poniżenie, wulgarnie" if tone == "ostry"
+            else "czuły w poniżeniu - miękko, opiekuńczo, ale ona i tak jest do użycia")
+    return NARRATION.format(character=character.strip(), max_words=max_words, theme=theme,
+                            examples=" | ".join(examples), tone_hint=hint, state=json.dumps(state, ensure_ascii=False),
+                            names=", ".join(state.get("zwroty_do_niej", [])) or "dziewczynko")
+
+
 def build_nudge_prompt(character, state):
     return NUDGE.format(character=character.strip(), stage=state.get("etap", 0), tone=state.get("ton", ""),
                         state=json.dumps(state, ensure_ascii=False), names=", ".join(state.get("zwroty_do_niej", [])) or "dziewczynko")
@@ -184,6 +203,31 @@ class Persona:
         self.model, self.timeout, self.temperature = model, timeout, temperature
         self.history_turns = history_turns
         self.api_key = api_key or os.environ.get(api_key_env, "")
+
+    def narrate(self, state, history, theme, examples, max_words=16):
+        """her running commentary at a random moment (no command, no question). -> the line"""
+        if not self.api_key:
+            raise PersonaError("no API key (set the environment variable named in the config)")
+        messages = [{"role": "system", "content": build_narration_prompt(self.character, state, theme, examples, max_words)}]
+        for role, text in history[-self.history_turns:]:
+            messages.append({"role": role, "content": text})
+        messages.append({"role": "user", "content": "(sesja trwa)"})
+        schema = {"name": "narration", "strict": True, "schema": {"type": "object", "additionalProperties": False,
+                                                                  "required": ["line"], "properties": {"line": {"type": "string"}}}}
+        body = {"model": self.model, "temperature": max(self.temperature, 0.9), "messages": messages, "max_tokens": 80,
+                "response_format": {"type": "json_schema", "json_schema": schema}}
+        req = urllib.request.Request(self.url, data=json.dumps(body, ensure_ascii=False).encode("utf-8"), method="POST",
+                                     headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"})
+        try:
+            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+            return str(json.loads(data["choices"][0]["message"]["content"]).get("line", "")).strip()
+        except urllib.error.HTTPError as e:
+            raise PersonaError(f"HTTP {e.code}") from e
+        except (urllib.error.URLError, TimeoutError, OSError) as e:
+            raise PersonaError(f"request failed: {e}") from e
+        except (json.JSONDecodeError, KeyError, IndexError, TypeError, ValueError, AttributeError) as e:
+            raise PersonaError("answer is not the expected JSON") from e
 
     def nudge(self, state, history, step_ids=None):
         """her own line when the user is silent. -> the line, or (line, plan) when she may act (step_ids given); the

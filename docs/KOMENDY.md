@@ -81,6 +81,16 @@ Powiedz, co chcesz, po „kochanie" – np. „kochanie, mógłbyś przyspieszy�
 Nigdy sam nie zatrzyma ani nie uspokoi maszyny i nie strzeli więcej niż raz - do tego są słowa z tabel.
 Gdy nie jest pewien, nie robi nic.
 
+## Narracja (ona mówi sama, kiedy chce)
+
+Gdy sesja trwa, Pani komentuje w losowych momentach - niezależnie od tego, czy coś mówisz. To pełne wyuzdanie: krótkie,
+dosadne kwestie w stylu "Bardzo dobrze, ssij jak mała dziewczynka.", "Jesteś delikatną suką do rozłożenia.", "Należysz
+do nich.", "Twoje jedyne zadanie to obciągać i dawać dupy." - temat się zmienia (ssanie, suka do rozłożenia, oddana
+obcym, jedyne zadanie, na zawsze, feminizacja, od tyłu, pochwała, własność, czułość w poniżeniu), a słowa wymyśla
+model na bieżąco. Na początku rzadko (co 1,5-2,5 min), na wysokich etapach co 20-40 s i prawie zawsze ostro. Nie zadaje
+pytań i niczego nie każe - to tło. Po jej kwestii masz 60 s okna, żeby odpowiedzieć bez "kochanie". Wyłączenie:
+`--no-narration` albo `persona.narration.enabled: false`.
+
 ## Mów naturalnie (ilość i czas)
 
 Nie musisz pamiętać żadnych fraz z tej listy - Pani rozumie, o co Ci chodzi, jak człowiek. Lista wyżej to tylko to, co działa
