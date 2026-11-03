@@ -167,6 +167,18 @@ class Narration(Server):
         self.assertTrue(lines[0][1].startswith("Z puli"))
         self.assertEqual(self.calls, [])
 
+    def test_a_live_line_naming_the_gear_is_dropped(self):
+        self.c.persona.narrate = lambda *a, **k: "Maszyna jedzie na tobie."
+        self.assertEqual(self.run_for(400), [])
+
+    def test_no_seed_or_task_names_the_gear(self):
+        import re
+        n = P["narration"]
+        for lines in list(n["pool"]["seed"].values()) + list(n["tasks"]["by_stage"].values()) + [n["tasks"]["care"], n["examples"]]:
+            for l in lines:
+                self.assertFalse(re.search(r"maszyn|silnik|dildo|urządzen|launcher|skrypt", l, re.I), l)
+        self.assertIn("maszyn", n["pool"]["banned_words"])
+
     def test_a_failed_call_is_not_retried_in_a_loop(self):
         def boom(*a, **k):
             self.calls.append(a)

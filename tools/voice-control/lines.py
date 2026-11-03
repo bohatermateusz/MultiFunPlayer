@@ -22,12 +22,13 @@ def similar(a, b):
 
 class LinePool:
     def __init__(self, generate, pool_path=None, said_path=None, min_pool=8, batch=20, max_said=2000, similarity=0.8,
-                 max_words=16, avoid_recent=40, clock=time.time, background=True, seed=None):
+                 max_words=16, avoid_recent=40, clock=time.time, background=True, seed=None, banned_words=None):
         self.generate = generate              # generate(theme, avoid: [str], count) -> [str]
         self.pool_path, self.said_path = pool_path, said_path
         self.min_pool, self.batch, self.max_said = int(min_pool), int(batch), int(max_said)
         self.similarity, self.max_words, self.avoid_recent = float(similarity), int(max_words), int(avoid_recent)
         self.clock, self.background = clock, background
+        self.banned_words = [str(w).lower() for w in (banned_words or [])]
         self._lock = threading.Lock()
         self._filling = set()
         self.pool = {}                        # theme -> [lines]
@@ -73,7 +74,7 @@ class LinePool:
     # ---- filtering -------------------------------------------------------------------------------
     def _acceptable(self, line, seen):
         line = " ".join(line.split())
-        if not line or "?" in line or len(line.split()) > self.max_words:
+        if not line or "?" in line or len(line.split()) > self.max_words or self.banned(line):
             return None
         if any(similar(line, s) >= self.similarity for s in seen):
             return None
@@ -126,6 +127,11 @@ class LinePool:
                     f.write(json.dumps({"time": time.strftime("%Y-%m-%d %H:%M:%S"), "line": line}, ensure_ascii=False) + "\n")
             except OSError:
                 pass
+
+    def banned(self, line):
+        """True when the line names the hardware (the men take her; the gear is never mentioned)"""
+        low = " " + line.lower() + " "
+        return any(w in low for w in self.banned_words)
 
     def is_repeat(self, line, window=400):
         """True when the line (or a close paraphrase) was said before"""

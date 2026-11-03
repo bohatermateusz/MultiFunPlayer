@@ -226,6 +226,10 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   "złam mnie", "bez granic", "puść się", "prostata", "klub"...), 36 themes, 30 fresh lines per refill, 5000 lines of
   history. `narration.style` asks for whisper-like delivery (ellipses as breaths, "powtórz za mną" affirmations).
   Skipped on purpose from those repos: the substance timeline, and the blackmail / prison / trafficking scripts.
+* **The world is VR, the gear is never named**: in her words the machines are the men who take her ("on", "oni", "ten,
+  który cię bierze", "jego rytm", "jego sperma"), never "maszyna", "dildo", "silnik", "launcher", "tryb", "skrypt". The
+  prompts say so, `pool.banned_words` keeps such lines out of the pool, a live line naming the gear is retried once and
+  dropped, and an answer that slips through is tagged `names_gear: true` in the log.
 * **Her voice: ElevenLabs, streamed** (the first sound after ~0.5 s, not after the whole sentence), with OpenAI TTS as a
   fallback when ElevenLabs is down or refuses a text. Set `ELEVENLABS_API_KEY`, run
   `python voice_control.py voices`, put the id of a voice you like into `persona.tts.voice_id`. Model

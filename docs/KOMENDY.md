@@ -97,7 +97,8 @@ Teksty narracji się nie powtarzają: pula świeżych kwestii dogenerowuje się 
 Nowe wątki: "przyjemność była przynętą, chodziło o zniewolenie", "za późno na zmianę", "sama weszła w pułapkę", "ciało nauczyło się słuchać",
 a z Twoich skryptów ASMR m.in. "sama się zgłosiłaś", "wymazana", "zaprogramowana", "oba końce", "jedyny orgazm", "zbrukana i dumna",
 "rajstopy", "złam mnie", "bez granic", "puść się", "prostata", "klub" (część dosłownie, część przerobiona, resztę dogenerowuje model).
-Do tego **polecenia**: co jakiś czas zamiast komentarza pada rozkaz fizyczny (ściskaj, oddychaj, klipsy, dildo do ust, "powtórz: jestem
+Świat jest w VR: Pani nigdy nie mówi o maszynie, dildo czy launcherze - mówi "on", "oni", "ten, który cię bierze", "jego rytm",
+"jego sperma"; sprzęt to ich ciała. Do tego **polecenia**: co jakiś czas zamiast komentarza pada rozkaz fizyczny (ściskaj, oddychaj, klipsy, dildo do ust, "powtórz: jestem
 posłuszną sissi"), łagodniejszy na początku, ostrzejszy później, nigdy ten sam dwa razy w sesji.
 
 ## Mów naturalnie (ilość i czas)

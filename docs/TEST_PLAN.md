@@ -150,6 +150,7 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.71 | Sesja 20 min, etap >= 2 | wśród komentarzy padają polecenia (`source: task`), żadne dwa razy; po wyczerpaniu listy teksty opiekuńcze |
 | 6.72 | `lines_pool.json` po pierwszym starcie | zawiera linie z `pool.seed` (tematy z ASMR); po kilku minutach dochodzą świeże z modelu |
 | 6.73 | Dwie sesje dzień po dniu | `said.jsonl` bez duplikatów między sesjami; w logu `repeat: true` tylko sporadycznie (odpowiedzi modelu) |
+| 6.74 | Sesja 20 min | Pani nigdy nie mówi 'maszyna' / 'dildo' / 'launcher' - zawsze 'on', 'oni', 'jego rytm'; w logu `names_gear` nie pojawia się (albo bardzo rzadko) |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |
 

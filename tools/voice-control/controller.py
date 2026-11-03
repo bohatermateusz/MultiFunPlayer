@@ -162,6 +162,12 @@ class Controller:
             self._log(transcript, outcome)
             return self._say(outcome)
 
+    def is_banned(self, line):
+        """she never names the hardware: the men in VR take her (narration.pool.banned_words)"""
+        words = [str(w).lower() for w in self.persona_cfg["narration"].get("pool", {}).get("banned_words", [])]
+        low = " " + line.lower() + " "
+        return any(w in low for w in words)
+
     def is_repeat(self, line):
         """True when she already said this (or a close paraphrase) - the pool's whole history, else the recent lines"""
         if self.pool is not None:
@@ -196,6 +202,8 @@ class Controller:
         if line and outcome.extra.get("source") != "pool":
             if outcome.extra.get("source") != "task" and self.is_repeat(line):
                 outcome.extra["repeat"] = True     # the model ignored "nie_powtarzaj"; logged, she still speaks
+            if self.is_banned(line):
+                outcome.extra["names_gear"] = True # the model named the hardware; logged, so the prompt can be tightened
             self._remember_said(line)      # pool lines are recorded by the pool itself
         if line and (self.speak or self.speak_ex):
             try:
@@ -433,9 +441,9 @@ class Controller:
                                                 str(cfg.get("style", "")))
                 except Exception:
                     return None
-                if line and not self.is_repeat(line):
+                if line and not self.is_repeat(line) and not self.is_banned(line):
                     break
-                line = None                        # a repeat: one more try with the model, then silence
+                line = None                        # a repeat / names the gear: one more try, then silence
         if not line:
             return None
         with self._lock:

@@ -96,6 +96,13 @@ class Pool(unittest.TestCase):
         self.assertTrue(p2.is_repeat("Jedna."))
         self.assertFalse(p2.is_repeat("Coś zupełnie innego."))
 
+    def test_banned_words_never_enter_the_pool(self):
+        p = LinePool(lambda t, a, c: ["Maszyna cię bierze.", "On cię bierze.", "Włącz silnik.", "Oni czekają."],
+                     self.pool_path, self.said_path, background=False, banned_words=["maszyn", "silnik"])
+        p.refill("A")
+        self.assertEqual(p.pool["A"], ["On cię bierze.", "Oni czekają."])
+        self.assertTrue(p.banned("Twoja MASZYNA"))
+
     def test_background_fill(self):
         p = self.make(background=True)
         p.refill("A")
