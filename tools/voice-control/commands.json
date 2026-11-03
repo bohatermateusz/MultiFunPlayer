@@ -1332,7 +1332,9 @@
     "ten, który ją bierze - jego rytm, głębokość i tempo nie są jej; ja mu pozwalam",
     "zalanie - oznaczona, pokryta, wypełniona; to moje dojście, nie jej",
     "dwóch naraz - jeden w ustach, drugi z tyłu; nie ma strony, która jest jej",
-    "po sesji - opieka: wraca do siebie, ale już nie taka sama"
+    "po sesji - opieka: wraca do siebie, ale już nie taka sama",
+    "przerobiona - zabrali jej to, co robiło z niej faceta, i zrobili z niej dziewczynkę do ich zabawy",
+    "dla ich zabawy - istnieje po to, żeby ich bawić i ulegle służyć; jej przyjemność jest dodatkiem"
    ],
    "style": "Mów jak do ucha, szeptem z pewnością: krótkie frazy, wielokropki jako oddechy ('Odpuść… ja to trzymam… dobra dziewczynka.'), czasem 'powtórz za mną' i zdanie w pierwszej osobie, czasem jedno dosadne słowo. Nigdy pytania, nigdy wyjaśnienia.",
    "examples": [
@@ -1454,7 +1456,8 @@
       "Powtórz za mną: zostałam zrobiona… i nie chcę wracać.",
       "Tamta osoba nie wróci. Jest tylko ta, która klęczy.",
       "Za późno na »kim byłem«. Jest tylko »czyja jestem«.",
-      "Odwrót był wczoraj. Dziś jest tylko głębiej."
+      "Odwrót był wczoraj. Dziś jest tylko głębiej.",
+      "Nie da się tego przyszyć z powrotem. Ani odwagi, ani tamtego życia."
      ],
      "ssanie - jak mała dziewczynka, grzecznie, do końca": [
       "Ssij jak mała dziewczynka… powoli, grzecznie, do samego końca.",
@@ -1553,7 +1556,8 @@
       "Podziękuj za każdą rzecz, której ci nie wolno.",
       "Powiedz: dziękuję, Pani, że mnie zrobiłaś. Na kolanach.",
       "Wdzięczność to twoja jedyna waluta. Płać nią hojnie.",
-      "Powtórz za mną: dziękuję za to, kim nie wolno mi już być."
+      "Powtórz za mną: dziękuję za to, kim nie wolno mi już być.",
+      "Podziękuj im za to, co ci zabrali. Z uśmiechem. Na kolanach."
      ],
      "afirmacja - każe powtórzyć za sobą jedno zdanie w pierwszej osobie ('Powtórz za mną: jestem kobietą, która przyjmuje.')": [
       "Powtórz za mną: jestem kobietą, która przyjmuje.",
@@ -1592,6 +1596,26 @@
       "Woda, koc, moja ręka. Reszta zaczeka do jutra.",
       "Byłaś moja cała. Teraz możesz być sobą… na chwilę.",
       "Nic nie musisz. Już wszystko zrobiłaś."
+     ],
+     "przerobiona - zabrali jej to, co robiło z niej faceta, i zrobili z niej dziewczynkę do ich zabawy": [
+      "Zabrali ci to, co robiło z ciebie faceta. Nie na chwilę. Na zawsze.",
+      "Przerobili cię na dziewczynkę dla własnej zabawy… a ty jeszcze dziękujesz.",
+      "Tam, gdzie był mężczyzna, zostawili pustkę. I wypełniają ją, kiedy chcą.",
+      "Nie pytali, czy chcesz. Zrobili. Teraz służysz ulegle, bo nic innego ci nie zostało.",
+      "Twój kutas to wspomnienie. Twoja dziurka to teraźniejszość.",
+      "Odcięli ci wyjście razem z tym, co między nogami. Została dziewczynka i jej posłuszeństwo.",
+      "Zrobili cię dla zabawy. Trzymają cię dla wygody. Używają cię, bo mogą.",
+      "Powtórz za mną: zabrali mi to i zrobili ze mnie dziewczynkę… żebym im służyła.",
+      "Nie jesteś już nikim, kim byłaś. Jesteś tym, co z ciebie wycięli i co zostało.",
+      "Patrz, jak lekko ci bez tego. Tak lekko mają służące."
+     ],
+     "dla ich zabawy - istnieje po to, żeby ich bawić i ulegle służyć; jej przyjemność jest dodatkiem": [
+      "Jesteś ich zabawką. Zabawki nie mają zdania, mają zastosowanie.",
+      "Służysz ulegle, bo tak cię ustawili. I bo w głębi tego chciałaś.",
+      "Twoja przyjemność to dodatek. Ich zabawa to cel.",
+      "Powtórz za mną: istnieję, żeby ich bawić… i żeby im służyć.",
+      "Kiedy się śmieją, klękasz niżej. Tak działa dobra zabawka.",
+      "Nikt cię nie pyta o zdanie. Pytają tylko, która dziurka."
      ]
     }
    },
@@ -1952,7 +1976,9 @@
      "Zniewoliłam cię twoją własną przyjemnością. I ty jeszcze dziękujesz.",
      "Byłaś czyjaś, zanim zrozumiałaś, że pytam dla zabawy.",
      "Wszyscy już wiedzą, kim jesteś. Tego się nie odkręca.",
-     "Twoje 'nie' zostało w tamtym życiu. Tu znaczy tylko 'jeszcze'."
+     "Twoje 'nie' zostało w tamtym życiu. Tu znaczy tylko 'jeszcze'.",
+     "Zabrali ci to, co robiło z ciebie faceta. Zostało to, co służy.",
+     "Przerobili cię dla zabawy. Służysz, bo nic innego ci nie zostało."
     ]
    },
    "bardzo_ostre": {
