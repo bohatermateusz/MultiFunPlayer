@@ -22,7 +22,7 @@ def similar(a, b):
 
 class LinePool:
     def __init__(self, generate, pool_path=None, said_path=None, min_pool=8, batch=20, max_said=2000, similarity=0.8,
-                 max_words=16, avoid_recent=40, clock=time.time, background=True):
+                 max_words=16, avoid_recent=40, clock=time.time, background=True, seed=None):
         self.generate = generate              # generate(theme, avoid: [str], count) -> [str]
         self.pool_path, self.said_path = pool_path, said_path
         self.min_pool, self.batch, self.max_said = int(min_pool), int(batch), int(max_said)
@@ -34,6 +34,12 @@ class LinePool:
         self.said = []                        # every line ever spoken, oldest first
         self.last_error = None
         self._load()
+        if not self.pool and seed:
+            # the first run: start from the hand-written lines (nothing said before them is possible)
+            with self._lock:
+                for theme, lines in seed.items():
+                    self.pool[theme] = self._fresh(theme, [str(x) for x in lines])
+                self._save_pool()
 
     # ---- persistence -----------------------------------------------------------------------------
     def _load(self):
@@ -120,6 +126,11 @@ class LinePool:
                     f.write(json.dumps({"time": time.strftime("%Y-%m-%d %H:%M:%S"), "line": line}, ensure_ascii=False) + "\n")
             except OSError:
                 pass
+
+    def is_repeat(self, line, window=400):
+        """True when the line (or a close paraphrase) was said before"""
+        with self._lock:
+            return any(similar(line, s) >= self.similarity for s in self.said[-window:])
 
     def recent(self, n=20):
         with self._lock:

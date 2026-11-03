@@ -204,19 +204,28 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   the model flags defiance) wipes your asks and nothing is granted for 90 s, or until you apologise ("przepraszam,
   Pani"). Not even the 8th ask beats an active punishment. "koniec"/End and "utrzymaj to" are never punished.
 * **Her voice is picked for you**: with `persona.tts.voice_id` empty, the first run looks for a girlish female voice on your
-  ElevenLabs account (`voice_prefer.names` Jessica / Lily / Sarah / Alice / Matilda, then any female young/middle-aged by
+  ElevenLabs account (`voice_prefer.names` - Hanna, Jagna, Asia, Jola, Arleta from the ASMR app first, then Jessica / Lily /
+  Sarah / Alice / Matilda - then `voice_prefer.ids` (your own picks by id, added from the library when missing), then any female young/middle-aged by
   labels, then any female, then - `allow_library` - a young female Polish voice from the shared library, added to the
   account) and writes the id back into `commands.json`. `python voice_control.py voices --female --young` lists candidates
   with `preview_url` (listen in a browser), `voices --library` searches the shared library, `voices --use <id|name>` saves
   one, `voices --test "Jesteś moja."` plays a sample. Model `eleven_multilingual_v2` (the most natural in Polish; flash is
   cheaper and flatter), lively `stage_settings` (style 0.35-0.65, stability 0.55-0.35, speaker boost). The OpenAI fallback
   uses `coral` with "young, girlish, natural" instructions. Too mature? `voices --use` another one; too flat? raise `style`.
+* **Her orders** (`persona.narration.tasks`): physical instructions mixed into the narration (`share[stage]` 15-40 %),
+  adapted from the session-controller list - gentle early (squeeze, breathe, hands on thighs), harder late (clamps, the
+  oral dildo, "deeper, almost gag", "repeat: jestem posłuszną sissi"), never the same order twice in a session, `care`
+  lines (breathe, water, take the clamps off) when the list is spent. Logged as `source: task`.
 * **Nothing repeats** (`persona.narration.pool`): a pool of pre-generated lines per theme (`lines_pool.json`) is refilled in
   the background by the persona model when a theme runs low (20 at a time, with the last 40 spoken lines as "do not repeat"),
   filtered against everything ever said (`said.jsonl`, exact and near duplicates, no questions, `max_words`). Narration takes
-  from the pool first (instant, `source: pool` in the log), the live model only when it is empty; every spoken line (answers,
-  nudges, narration) is remembered and handed to the model as `nie_powtarzaj`. New themes: the sham (pleasure was the
-  bait, it was always about owning her), too late, the trap, reprogramming, everyone knows, gratitude for being made.
+  from the pool first (instant, `source: pool` in the log), the live model only when it is empty - and a live line that
+  still repeats something said before is retried once, then dropped; answers and nudges that repeat are spoken but
+  tagged `repeat: true` in the log. The pool starts from `pool.seed` (lines taken or adapted from the ASMR scripts:
+  "sama się zgłosiłaś", "wymazana", "zaprogramowana", "oba końce", "jedyny orgazm", "zbrukana i dumna", "rajstopy",
+  "złam mnie", "bez granic", "puść się", "prostata", "klub"...), 36 themes, 30 fresh lines per refill, 5000 lines of
+  history. `narration.style` asks for whisper-like delivery (ellipses as breaths, "powtórz za mną" affirmations).
+  Skipped on purpose from those repos: the substance timeline, and the blackmail / prison / trafficking scripts.
 * **Her voice: ElevenLabs, streamed** (the first sound after ~0.5 s, not after the whole sentence), with OpenAI TTS as a
   fallback when ElevenLabs is down or refuses a text. Set `ELEVENLABS_API_KEY`, run
   `python voice_control.py voices`, put the id of a voice you like into `persona.tts.voice_id`. Model

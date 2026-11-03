@@ -175,17 +175,17 @@ NARRATION = """{character}
 
 NARRACJA: sesja trwa, a Ty komentujesz na bieżąco - jedna kwestia, najwyżej {max_words} słów, bez pytania i bez czekania na odpowiedź. \
 To ma być całkowite wyuzdanie: mówisz do niej jak do swojej dziewczynki, którą oddajesz do użycia - dosadnie, pewnie, bez cenzury. \
-Temat tej kwestii: {theme}. Rejestr pokazują przykłady (nie powtarzaj ich, wymyślaj własne): {examples}. \
+Temat tej kwestii: {theme}. Rejestr pokazują przykłady (nie powtarzaj ich, wymyślaj własne): {examples}. Styl: {style} \
 Ton tej tury: {tone_hint}. Zwracaj się do niej różnie: {names}. Nie powtarzaj kwestii, które już padły. \
 Jeśli w stanie jest "scena", mów o tym, co dzieje się teraz na ekranie. Nie powtarzaj i nie parafrazuj kwestii z "nie_powtarzaj" w stanie. Stan: {state}
 Odpowiadasz wyłącznie JSON-em z polem "line"."""
 
 
-def build_narration_prompt(character, state, theme, examples, max_words=16):
+def build_narration_prompt(character, state, theme, examples, max_words=16, style=""):
     tone = state.get("ton_tury", "ostry")
     hint = ("ostry - rozkaz, poniżenie, wulgarnie" if tone == "ostry"
             else "czuły w poniżeniu - miękko, opiekuńczo, ale ona i tak jest do użycia")
-    return NARRATION.format(character=character.strip(), max_words=max_words, theme=theme,
+    return NARRATION.format(character=character.strip(), max_words=max_words, theme=theme, style=style or "krótko, dosadnie.",
                             examples=" | ".join(examples), tone_hint=hint, state=json.dumps(state, ensure_ascii=False),
                             names=", ".join(state.get("zwroty_do_niej", [])) or "dziewczynko")
 
@@ -204,7 +204,7 @@ class Persona:
         self.history_turns = history_turns
         self.api_key = api_key or os.environ.get(api_key_env, "")
 
-    def fresh_lines(self, theme, examples, avoid, count=20, max_words=16, state=None):
+    def fresh_lines(self, theme, examples, avoid, count=20, max_words=16, state=None, style=""):
         """a batch of new narration lines for a theme, for the pool (one call, no history). -> [str]"""
         if not self.api_key:
             raise PersonaError("no API key (set the environment variable named in the config)")
@@ -212,6 +212,7 @@ class Persona:
                   + " słów, bez pytań, bez numeracji), które mówisz do niej w trakcie sesji. Temat: " + theme
                   + ". Rejestr pokazują przykłady (nie kopiuj ich): " + " | ".join(examples)
                   + ". To ma być całkowite wyuzdanie: dosadnie, pewnie, bez cenzury, po polsku, każda kwestia inna w budowie i słowach. "
+                  + ("Styl: " + style + " " if style else "")
                   + "NIE powtarzaj ani nie parafrazuj tych, które już padły: " + " | ".join(avoid[-60:])
                   + (". Stan: " + json.dumps(state, ensure_ascii=False) if state else "")
                   + "\nOdpowiadasz wyłącznie JSON-em z polem \"lines\" (lista napisów).")
@@ -234,11 +235,11 @@ class Persona:
         except (json.JSONDecodeError, KeyError, IndexError, TypeError, ValueError, AttributeError) as e:
             raise PersonaError("answer is not the expected JSON") from e
 
-    def narrate(self, state, history, theme, examples, max_words=16):
+    def narrate(self, state, history, theme, examples, max_words=16, style=""):
         """her running commentary at a random moment (no command, no question). -> the line"""
         if not self.api_key:
             raise PersonaError("no API key (set the environment variable named in the config)")
-        messages = [{"role": "system", "content": build_narration_prompt(self.character, state, theme, examples, max_words)}]
+        messages = [{"role": "system", "content": build_narration_prompt(self.character, state, theme, examples, max_words, style)}]
         for role, text in history[-self.history_turns:]:
             messages.append({"role": role, "content": text})
         messages.append({"role": "user", "content": "(sesja trwa)"})

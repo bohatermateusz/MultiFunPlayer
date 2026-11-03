@@ -147,6 +147,9 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.68 | `voice_id` puste, start z kluczem ElevenLabs | w konsoli `voice: <nazwa> (<id>)`, id zapisane w `commands.json`; głos kobiecy, młody, naturalny (ocena subiektywna); `voices --use <inna>` zmienia |
 | 6.69 | `voices --female --young` / `--library` / `--test "Jesteś moja."` | lista z `preview_url`; próbka gra wybranym głosem |
 | 6.70 | Sesja 15 min z narracją | w `voice_log.jsonl` `[narration]` ma `source: pool` (po rozgrzaniu puli), `said.jsonl` bez dwóch identycznych kwestii, `lines_pool.json` rośnie w tle; tematy 'ściema'/'za późno' pojawiają się |
+| 6.71 | Sesja 20 min, etap >= 2 | wśród komentarzy padają polecenia (`source: task`), żadne dwa razy; po wyczerpaniu listy teksty opiekuńcze |
+| 6.72 | `lines_pool.json` po pierwszym starcie | zawiera linie z `pool.seed` (tematy z ASMR); po kilku minutach dochodzą świeże z modelu |
+| 6.73 | Dwie sesje dzień po dniu | `said.jsonl` bez duplikatów między sesjami; w logu `repeat: true` tylko sporadycznie (odpowiedzi modelu) |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |
 

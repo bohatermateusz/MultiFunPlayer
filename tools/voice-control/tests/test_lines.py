@@ -87,6 +87,15 @@ class Pool(unittest.TestCase):
         p.refill("A")
         self.assertFalse(any(x.startswith("Klęcz i ssij, mała 100") for x in p.pool["A"]))
 
+    def test_seed_fills_an_empty_pool_once(self):
+        p = LinePool(self.generate, self.pool_path, self.said_path, background=False, seed={"A": ["Jedna.", "Dwa razy.", "Jedna."]})
+        self.assertEqual(p.pool["A"], ["Jedna.", "Dwa razy."])
+        p.take("A")
+        p2 = LinePool(self.generate, self.pool_path, self.said_path, background=False, seed={"A": ["Jedna.", "Dwa razy."]})
+        self.assertEqual(p2.pool["A"][0], "Dwa razy.")                # the saved pool wins over the seed (then refilled)
+        self.assertTrue(p2.is_repeat("Jedna."))
+        self.assertFalse(p2.is_repeat("Coś zupełnie innego."))
+
     def test_background_fill(self):
         p = self.make(background=True)
         p.refill("A")

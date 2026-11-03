@@ -18,11 +18,16 @@ class Narration(Server):
     def setUp(self):
         super().setUp()
         self.c.persona_cfg = copy.deepcopy(P)
+        self.c.persona_cfg["narration"]["tasks"]["enabled"] = False     # the physical orders have their own tests
         self.calls = []
 
-        def narrate(state, history, theme, examples, max_words=16):
+        words = ["klęcz", "ssij", "odpuść", "należysz", "dziękuj", "oddychaj", "patrz", "powtórz", "zostań", "puść",
+                 "milcz", "czekaj", "otwórz", "głębiej", "wolniej", "moja", "grzecznie", "teraz", "dalej", "cicho"]
+
+        def narrate(state, history, theme, examples, max_words=16, style=""):
             self.calls.append((state, theme, examples, max_words))
-            return f"Linia o: {theme[:10]}"
+            n = len(self.calls)
+            return f"{words[n % 20].capitalize()} {words[(n * 7) % 19]} {words[(n * 13) % 17]} {n}."
         self.c.persona.narrate = narrate
         self.say("kochanie, jestem twoja", request="none")      # a session is on
         self.said.clear()
@@ -107,6 +112,60 @@ class Narration(Server):
         self.assertIn("Należysz do nich.", N["examples"])
         self.assertEqual(len(N["gap_seconds"]), 5)
         self.assertTrue(all(lo < hi for lo, hi in N["gap_seconds"]))
+
+    def test_a_repeated_live_line_is_retried_then_dropped(self):
+        self.c.persona.narrate = lambda *a, **k: "Jesteś moja."
+        self.c._remember_said("Jesteś moja.")
+        lines = self.run_for(400)
+        self.assertEqual(lines, [])
+        self.assertIn("Jesteś moja.", self.c._persona_state()["nie_powtarzaj"])
+
+    def test_tasks_are_mixed_in_and_never_repeat(self):
+        self.c.persona_cfg["narration"]["tasks"]["enabled"] = True
+        self.c.persona_cfg["narration"]["tasks"]["share"] = [1.0] * 5
+        self.c.persona_cfg["initiative"]["session_seconds"] = 100_000
+        self.c.persona_cfg["escalation"]["heat_reset"] = 10 ** 9
+        self.c._heat, self.c._heat_last = 100.0, self.clock.t          # stage 4: everything up to stage 4 is allowed
+        lines = [l for _, l in self.run_for(3000)]
+        self.assertGreater(len(lines), 10)
+        self.assertEqual(self.calls, [])                               # orders come from the list, not the model
+        by = P["narration"]["tasks"]["by_stage"]
+        orders = {x for v in by.values() for x in v}
+        care = set(P["narration"]["tasks"]["care"])
+        self.assertTrue(set(lines) <= orders | care)
+        given = [l for l in lines if l in orders]
+        self.assertEqual(len(given), len(set(given)))                  # an order is never given twice
+        self.assertEqual(set(given), orders)                           # ... and all of them come before care repeats
+
+    def test_tasks_fit_the_stage(self):
+        self.c.persona_cfg["narration"]["tasks"]["share"] = [1.0] * 5
+        self.c.persona_cfg["narration"]["tasks"]["enabled"] = True
+        by = P["narration"]["tasks"]["by_stage"]
+        for _ in range(4):
+            t = self.c._draw_task(0)
+            self.assertIn(t, by["0"])
+        self.c._tasks_used.clear()
+        self.assertIn(self.c._draw_task(2), by["2"] + by["1"] + by["0"])
+
+    def test_pool_lines_come_first(self):
+        class FakePool:
+            said = []
+
+            def take(self, theme):
+                return "Z puli: " + theme[:8]
+
+            def left(self, theme):
+                return 7
+
+            def remember(self, line):
+                self.said.append(line)
+
+            def is_repeat(self, line):
+                return False
+        self.c.pool = FakePool()
+        lines = self.run_for(200)
+        self.assertTrue(lines[0][1].startswith("Z puli"))
+        self.assertEqual(self.calls, [])
 
     def test_a_failed_call_is_not_retried_in_a_loop(self):
         def boom(*a, **k):

@@ -94,7 +94,11 @@ pytań i niczego nie każe - to tło. Po jej kwestii masz 60 s okna, żeby odpow
 Głos: jeśli `voice_id` jest puste, narzędzie samo wybiera dziewczęcy, kobiecy głos z Twojego konta ElevenLabs (albo z biblioteki)
 i zapisuje go w `commands.json`; inny wybierzesz przez `python voice_control.py voices --female --young` i `voices --use <nazwa>`.
 Teksty narracji się nie powtarzają: pula świeżych kwestii dogenerowuje się w tle (OpenAI), a wszystko, co padło, jest pamiętane w `said.jsonl`.
-Nowe wątki: "przyjemność była przynętą, chodziło o zniewolenie", "za późno na zmianę", "sama weszła w pułapkę", "ciało nauczyło się słuchać".
+Nowe wątki: "przyjemność była przynętą, chodziło o zniewolenie", "za późno na zmianę", "sama weszła w pułapkę", "ciało nauczyło się słuchać",
+a z Twoich skryptów ASMR m.in. "sama się zgłosiłaś", "wymazana", "zaprogramowana", "oba końce", "jedyny orgazm", "zbrukana i dumna",
+"rajstopy", "złam mnie", "bez granic", "puść się", "prostata", "klub" (część dosłownie, część przerobiona, resztę dogenerowuje model).
+Do tego **polecenia**: co jakiś czas zamiast komentarza pada rozkaz fizyczny (ściskaj, oddychaj, klipsy, dildo do ust, "powtórz: jestem
+posłuszną sissi"), łagodniejszy na początku, ostrzejszy później, nigdy ten sam dwa razy w sesji.
 
 ## Mów naturalnie (ilość i czas)
 

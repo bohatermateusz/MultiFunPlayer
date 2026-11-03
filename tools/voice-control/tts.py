@@ -164,10 +164,24 @@ class ElevenLabsSpeaker:
         ages = set(prefer.get("ages", ["young", "middle_aged", "middle aged"]))
         mine = self.voices()
         by_name = {name.lower(): (vid, name) for vid, name, _ in mine}
+        by_id = {vid: name for vid, name, _ in mine}
         for n in names:
             if n in by_name:
                 self.voice_id = by_name[n][0]
                 return by_name[n]
+        # the user's own picks by id (e.g. from another app): on the account already, or added from the library
+        for want in prefer.get("ids", []):
+            vid = str(want.get("id", ""))
+            if vid in by_id:
+                self.voice_id = vid
+                return vid, by_id[vid]
+            if want.get("public_owner_id") and prefer.get("allow_library", True):
+                try:
+                    new_id = self.add_library_voice(want["public_owner_id"], vid, str(want.get("name", vid)))
+                except TtsError:
+                    continue
+                self.voice_id = new_id
+                return new_id, str(want.get("name", vid))
         female = [(vid, name, lab) for vid, name, lab in mine if str(lab.get("gender", "")).lower() == "female"]
         young = [(vid, name) for vid, name, lab in female if str(lab.get("age", "")).lower() in ages]
         if young:

@@ -66,6 +66,14 @@ class Pick(unittest.TestCase):
         FakeEleven.mine = FakeEleven.mine[:2]
         self.assertEqual(self.sp.pick_voice(self.prefer), ("o1", "Olga"))
 
+    def test_the_users_own_ids_come_before_labels(self):
+        FakeEleven.mine = [{"voice_id": "y1", "name": "Zosia", "labels": {"gender": "female", "age": "young"}}]
+        prefer = {"names": ["Jessica"], "ids": [{"id": "NacdHGUYR1k3M0FAbAia", "name": "Hanna - Polish soft"},
+                                                {"id": "m2VPSbnJZWpLA9r0WX9q", "name": "Jagna", "public_owner_id": "own2"}]}
+        self.assertEqual(self.sp.pick_voice(prefer), ("new-m2VPSbnJZWpLA9r0WX9q", "Jagna"))   # Hanna not on the account, Jagna added
+        FakeEleven.mine.append({"voice_id": "NacdHGUYR1k3M0FAbAia", "name": "Hanna", "labels": {}})
+        self.assertEqual(self.sp.pick_voice(prefer), ("NacdHGUYR1k3M0FAbAia", "Hanna"))
+
     def test_library_when_the_account_has_no_female_voice(self):
         FakeEleven.mine = [{"voice_id": "m1", "name": "Mike", "labels": {"gender": "male"}}]
         FakeEleven.library = [{"voice_id": "lib1", "name": "Kasia", "gender": "female", "age": "young", "public_owner_id": "own1",
@@ -123,7 +131,13 @@ class Pick(unittest.TestCase):
         self.assertIn("dziewczęcy", t["openai"]["instructions"])
         self.assertEqual(len(t["stage_settings"]), 10)
         self.assertTrue(all(s["style"] >= 0.35 and s["use_speaker_boost"] for s in t["stage_settings"]))
-        self.assertIn("Jessica", t["voice_prefer"]["names"])
+        self.assertIn("Hanna", t["voice_prefer"]["names"])
+        self.assertEqual(t["voice_prefer"]["ids"][0]["id"], "NacdHGUYR1k3M0FAbAia")
+        n = cfg["persona"]["narration"]
+        self.assertGreaterEqual(len(n["themes"]), 30)
+        self.assertGreaterEqual(len(n["pool"]["seed"]), 15)
+        self.assertTrue(all(th in n["themes"] for th in n["pool"]["seed"]))
+        self.assertTrue(all(len(x.split()) <= n["max_words"] + 2 and "?" not in x for v in n["pool"]["seed"].values() for x in v))
 
 
 if __name__ == "__main__":

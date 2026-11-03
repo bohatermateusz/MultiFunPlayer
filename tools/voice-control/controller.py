@@ -10,6 +10,7 @@ import threading
 import time
 from dataclasses import dataclass, field
 
+from lines import similar
 from matcher import Match, _sim, match, normalize, phrase_score
 
 YES = {"tak", "potwierdzam", "dawaj", "jasne"}
@@ -24,7 +25,8 @@ PERSONA_DEFAULTS = {"enabled": True, "reply_window": 15.0, "base_p": 0.25, "step
                     "escalation": {"enabled": True, "max_stage": 4, "points": {"turn": 1, "denied": 1, "confession": 2, "granted": 2},
                                    "thresholds": [0, 5, 12, 22, 35], "heat_reset": 600, "tease_chance": [0.3, 0.5, 0.7, 0.85, 1.0]},
                     "initiative": {"enabled": True, "idle_prompt_seconds": 25, "max_nudges": 3, "session_seconds": 180},
-                    "narration": {"enabled": False, "gap_seconds": [[90, 150]], "sharp_p": [0.7], "max_words": 16, "themes": [], "examples": []},
+                    "narration": {"enabled": False, "gap_seconds": [[90, 150]], "sharp_p": [0.7], "max_words": 16, "themes": [], "examples": [],
+                                  "style": "", "tasks": {"enabled": False, "share": [0.0], "by_stage": {}, "care": []}},
                     "vocabulary": {}, "inspiration": {"count": 3, "avoid_repeat": 14}, "confession_phrases": [], "obey_phrases": [],
                     "difficulty": 1.0, "step_p_overrides": {},
                     "manners": {"politeness_factor": 0.6, "polite_markers": ["proszę", "błagam", "pani", "dziękuję"], "ignore_demand_factor": 0.4,
@@ -115,6 +117,7 @@ class Controller:
         self._narration_due = 0.0         # when her next unprompted line is due (0 = not drawn yet)
         self.pool = None                  # LinePool: pre-generated, never-repeating narration lines (set by the main loop)
         self._said_recent = []            # her last lines (any kind), handed to the model as "do not repeat"
+        self._tasks_used = []             # physical orders already given this session (no repeats)
         self._themes_recent = []          # narration themes used lately (no repeats)
         self._penalty_until = 0.0         # an open refusal costs: nothing is granted until you apologise or the time is up
         self.busy = lambda: False         # True while she is speaking / listening is muted (set by the main loop)
@@ -159,6 +162,29 @@ class Controller:
             self._log(transcript, outcome)
             return self._say(outcome)
 
+    def is_repeat(self, line):
+        """True when she already said this (or a close paraphrase) - the pool's whole history, else the recent lines"""
+        if self.pool is not None:
+            return self.pool.is_repeat(line)
+        return any(similar(line, s) >= 0.8 for s in self._said_recent)
+
+    def _draw_task(self, stage):
+        """a physical order for the stage, never the same one twice in a session (then care lines, then any)"""
+        t = self.persona_cfg["narration"].get("tasks", {})
+        by_stage = t.get("by_stage", {})
+        pool = []
+        for s in range(stage, -1, -1):
+            pool += [x for x in by_stage.get(str(s), []) if x not in self._tasks_used]
+            if len(pool) >= 3:
+                break
+        if not pool:
+            pool = [x for x in t.get("care", []) if x not in self._tasks_used] or list(t.get("care", []))
+        if not pool:
+            return None
+        task = self.rng.choice(pool)
+        self._tasks_used.append(task)
+        return task
+
     def _remember_said(self, line):
         self._said_recent.append(line)
         del self._said_recent[:-40]
@@ -168,6 +194,8 @@ class Controller:
     def _say(self, outcome):
         line = outcome.extra.get("say")
         if line and outcome.extra.get("source") != "pool":
+            if outcome.extra.get("source") != "task" and self.is_repeat(line):
+                outcome.extra["repeat"] = True     # the model ignored "nie_powtarzaj"; logged, she still speaks
             self._remember_said(line)      # pool lines are recorded by the pool itself
         if line and (self.speak or self.speak_ex):
             try:
@@ -386,14 +414,28 @@ class Controller:
             self._last_line = now                 # a failed call must not be retried in a loop
             self._narration_due = now + self._draw_narration_gap(stage)
         source, left = "live", None
-        line = self.pool.take(theme) if self.pool is not None else None
-        if line:
-            source, left = "pool", self.pool.left(theme)
-        else:
-            try:
-                line = self.persona.narrate(state, history, theme, list(cfg.get("examples", [])), int(cfg.get("max_words", 16)))
-            except Exception:
-                return None
+        tasks = cfg.get("tasks", {})
+        share = tasks.get("share", [0.0])
+        line = None
+        if tasks.get("enabled") and self.rng.random() < float(share[max(0, min(stage, len(share) - 1))]):
+            with self._lock:
+                line = self._draw_task(stage)
+            if line:
+                source, theme = "task", "polecenie"
+        if not line:
+            line = self.pool.take(theme) if self.pool is not None else None
+            if line:
+                source, left = "pool", self.pool.left(theme)
+        if not line:
+            for attempt in range(2):
+                try:
+                    line = self.persona.narrate(state, history, theme, list(cfg.get("examples", [])), int(cfg.get("max_words", 16)),
+                                                str(cfg.get("style", "")))
+                except Exception:
+                    return None
+                if line and not self.is_repeat(line):
+                    break
+                line = None                        # a repeat: one more try with the model, then silence
         if not line:
             return None
         with self._lock:

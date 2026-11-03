@@ -1182,7 +1182,14 @@
    "voice_id": "",
    "voice_prefer": {
     "_comment": "Used when voice_id is empty: the first of these names found on the account, else a female young/middle-aged voice by labels, else any female, else (allow_library) a young female Polish voice from the shared library, added to the account. The pick is written back into voice_id.",
-    "names": ["Jessica", "Lily", "Sarah", "Alice", "Matilda"],
+    "names": ["Hanna", "Jagna", "Asia", "Jola", "Arleta", "Jessica", "Lily", "Sarah", "Alice", "Matilda"],
+    "ids": [
+     {"id": "NacdHGUYR1k3M0FAbAia", "name": "Hanna - Polish soft"},
+     {"id": "m2VPSbnJZWpLA9r0WX9q", "name": "Jagna - Polish warm", "public_owner_id": "a66c64d1df8ecd9ee816d744fa964dd09b1845a619eda1eae47123e34edb7c83"},
+     {"id": "Bz1e1clEKwgN71Vx7cxj", "name": "Asia - Polish friendly", "public_owner_id": "97ed4d170ed2bd48d0829fe298338067d9bae60be1d7200913049cb93bc9445d"},
+     {"id": "mgxZQ8b1CA0Zl9YUTX8Z", "name": "Jola - Polish actress", "public_owner_id": "1bb903ce90c3e7d930fd551128a6154d59ed8a0a4407dc3d2254232abc62506f"},
+     {"id": "F9eb9uZYeJuHuO7Uvs1R", "name": "Arleta - Polish calm", "public_owner_id": "61b59449a05322c2dad4832727ce9a75c61768d6c234b06cd2c8b433e43f95b6"}
+    ],
     "ages": ["young", "middle_aged", "middle aged"],
     "allow_library": true
    },
@@ -1303,8 +1310,27 @@
     "pułapka - sama prosiła, sama weszła, drzwi zamknięte; jej dawne życie się skończyło",
     "przeprogramowanie - jej ciało uczy się słuchać; jej 'nie' nic już nie znaczy",
     "świadek - wszyscy wiedzą, kim jest; tego nie da się odkręcić ani ukryć",
-    "wdzięczność za zniewolenie - ma dziękować za to, jak ją urobiono"
+    "wdzięczność za zniewolenie - ma dziękować za to, jak ją urobiono",
+    "sama się zgłosiłaś - nikt jej nie porwał; sama weszła i powiedziała 'bierzcie mnie'",
+    "wymazana - jej dawny umysł nie istnieje; nie pamięta, kim była, i nie chce pamiętać",
+    "zaprogramowana - ktoś wpisał jej kod; działa, jak ją ustawiono, i to jest dobre",
+    "oba końce - usta i dziurka zajęte naraz; wisi między nimi jak marionetka, nie musi myśleć",
+    "jedyny orgazm - nie ma już innego niż z dziurki; ciało przestawione na zawsze",
+    "twoja dziurka nie jest twoja - należy do tego, kto ją wypełnia",
+    "niewolnica przyjemności - orgazm za orgazmem, aż przyjemność ją trzyma mocniej niż łańcuch",
+    "mowa odjęta - mówi tylko to, co każę, kiedy każę; myśli ktoś za nią",
+    "choroba feminizacji - dopadła ją, nie ma lekarstwa, objawy to miękkość i posłuszeństwo",
+    "zbrukana i dumna - każda kropla na niej to medal, dowód, że służyła",
+    "potrzebuje tego na sobie - bez tego czuje się niekompletna",
+    "rajstopy i koronki - czuje kobietę na skórze; gładkie nogi są jej, nie jego",
+    "złam mnie - mury w niej drżą; prosi, żeby je rozbić do końca",
+    "bez granic - każda linia, którą rysowała, zniknęła; wolna w uległości",
+    "puść się - koniec trzymania, ciało decyduje, nie ona; fala idzie",
+    "prostata - przyciski, prąd, neon w ciemnym pokoju; to, czego szukała całe życie",
+    "klub, gdzie nikt nie pyta - takie jak ona czekają, aż ktoś je poprowadzi do pokoju z tyłu",
+    "afirmacja - każe powtórzyć za sobą jedno zdanie w pierwszej osobie ('Powtórz za mną: jestem kobietą, która przyjmuje.')"
    ],
+   "style": "Mów jak do ucha, szeptem z pewnością: krótkie frazy, wielokropki jako oddechy ('Odpuść… ja to trzymam… dobra dziewczynka.'), czasem 'powtórz za mną' i zdanie w pierwszej osobie, czasem jedno dosadne słowo. Nigdy pytania, nigdy wyjaśnienia.",
    "examples": [
     "Bardzo dobrze, ssij jak mała dziewczynka.",
     "Teraz jesteś delikatną suką do rozłożenia.",
@@ -1317,12 +1343,158 @@
     "Podziękuj za to, kim cię zrobiłam. To już nie do odkręcenia."
    ],
    "pool": {
-    "_comment": "Fresh lines are generated in the background (same OpenAI key/model as the persona) per theme when the pool runs low, filtered against everything ever said (said.jsonl) so nothing repeats; narration takes from the pool first, the live model only when the pool is empty.",
+    "_comment": "Fresh lines are generated in the background (same OpenAI key/model as the persona) per theme when the pool runs low, filtered against everything ever said (said.jsonl) so nothing repeats; narration takes from the pool first, the live model only when the pool is empty. 'seed' fills the pool the first time (lines_pool.json absent) - taken or adapted from the ASMR scripts.",
     "enabled": true,
-    "min_pool": 8,
-    "batch": 20,
-    "max_said": 2000,
-    "similarity": 0.8
+    "min_pool": 15,
+    "batch": 30,
+    "max_said": 5000,
+    "similarity": 0.8,
+    "seed": {
+     "sama się zgłosiłaś - nikt jej nie porwał; sama weszła i powiedziała 'bierzcie mnie'": [
+      "Nikt cię nie porwał… sama weszłaś i powiedziałaś: bierzcie mnie.",
+      "Powtórz za mną: sama się zgłosiłam. Na kolana. Z uśmiechem.",
+      "Takie jak ty są najlepsze… takie, co same chcą.",
+      "Jesteś dokładnie tam, gdzie sama chciałaś być. Z otwartymi ustami."
+     ],
+     "wymazana - jej dawny umysł nie istnieje; nie pamięta, kim była, i nie chce pamiętać": [
+      "Twój stary umysł już nie istnieje… został wymazany.",
+      "Nie pamiętasz, kim byłaś. I dobrze. Tamta nie była potrzebna.",
+      "Powtórz za mną: zostałam wymazana… i wpisano mnie na nowo."
+     ],
+     "zaprogramowana - ktoś wpisał jej kod; działa, jak ją ustawiono, i to jest dobre": [
+      "Nie jesteś osobą… jesteś programem. Moim.",
+      "Ktoś wpisał ci kod… i teraz robisz dokładnie to, co w nim jest.",
+      "Powtórz za mną: jestem zaprogramowaną sissy… i to działa."
+     ],
+     "oba końce - usta i dziurka zajęte naraz; wisi między nimi jak marionetka, nie musi myśleć": [
+      "Usta i dziurka… jednocześnie. Nie ma ucieczki, nie ma przerwy.",
+      "Każda dziura ma swoje zadanie… i każda wykonuje. Pełna obsługa.",
+      "Wisisz między dwoma punktami jak marionetka… i marionetka nie musi myśleć.",
+      "Powtórz za mną: na obu końcach… zajęta… kompletna."
+     ],
+     "jedyny orgazm - nie ma już innego niż z dziurki; ciało przestawione na zawsze": [
+      "Nie masz już normalnego orgazmu. Jedyny, jaki masz, jest z dziurki.",
+      "Twoje ciało przestawiono… i nikt go nie przestawi z powrotem.",
+      "Powtórz za mną: mój jedyny orgazm jest z tyłu… i tak ma zostać."
+     ],
+     "twoja dziurka nie jest twoja - należy do tego, kto ją wypełnia": [
+      "Twoja dziurka nie jest twoja… należy do tego, kto ją wypełnia.",
+      "Powtórz za mną: moja dziurka nie jest moja.",
+      "To, co masz między nogami, jest moje. Pożyczam ci to tylko do siedzenia."
+     ],
+     "niewolnica przyjemności - orgazm za orgazmem, aż przyjemność ją trzyma mocniej niż łańcuch": [
+      "Co chwilę dostajesz orgazm… i to jest twój łańcuch.",
+      "Powtórz za mną: jestem niewolnicą przyjemności.",
+      "Nie trzymam cię siłą. Trzymam cię tym, jak bardzo tego chcesz."
+     ],
+     "mowa odjęta - mówi tylko to, co każę, kiedy każę; myśli ktoś za nią": [
+      "Nie masz już swojego głosu… mówisz tylko to, co ja chcę.",
+      "Po co myśleć, kiedy ktoś myśli za ciebie. Ciało słucha, nie myśli.",
+      "Powtórz za mną: mówię tylko to, co każe Pani."
+     ],
+     "choroba feminizacji - dopadła ją, nie ma lekarstwa, objawy to miękkość i posłuszeństwo": [
+      "To jest choroba… i ona cię dopadła. Objawy: miękkość, posłuszeństwo, rajstopy.",
+      "Nie ma lekarstwa. Jest tylko dalej.",
+      "Powtórz za mną: choroba feminizacji mnie dopadła… i nie chcę wyzdrowieć."
+     ],
+     "zbrukana i dumna - każda kropla na niej to medal, dowód, że służyła": [
+      "Każda kropla na tobie to znak… że zostałaś użyta, że służyłaś.",
+      "Nie zmywaj tego. Brud na skórze to medal.",
+      "Powtórz za mną: jestem zbrukana i dumna."
+     ],
+     "potrzebuje tego na sobie - bez tego czuje się niekompletna": [
+      "Czujesz brak… czegoś na twarzy, na udach. Bez tego sesja się nie kończy.",
+      "Powtórz za mną: potrzebuję tego na sobie, żeby wiedzieć, że byłam dobra.",
+      "Jesteś dobra, kiedy jesteś pokryta. Tylko wtedy."
+     ],
+     "rajstopy i koronki - czuje kobietę na skórze; gładkie nogi są jej, nie jego": [
+      "Materiał na skórze… gładki, lśniący. Czujesz kobietę na sobie.",
+      "Rajstopy ślizgają się po pościeli… i ten szelest to muzyka tej, którą się stajesz.",
+      "Powtórz za mną: gładkie nogi… nie moje… jej."
+     ],
+     "złam mnie - mury w niej drżą; prosi, żeby je rozbić do końca": [
+      "Czujesz, jak mury w tobie drżą… są gotowe upaść. Pozwól im.",
+      "Powtórz za mną: złam mnie… całkowicie… nie zostawiaj nic.",
+      "Rozbiję każdą ścianę i zrobię z ciebie kogoś, kto tylko jest."
+     ],
+     "bez granic - każda linia, którą rysowała, zniknęła; wolna w uległości": [
+      "Granice rozmywają się jak linie na piasku przy falach.",
+      "Powtórz za mną: nie mam już żadnych granic… i nie tęsknię.",
+      "Granice były więzieniem. Teraz jesteś wolna… w uległości."
+     ],
+     "puść się - koniec trzymania, ciało decyduje, nie ona; fala idzie": [
+      "Koniec trzymania… koniec kontroli. Ciało decyduje, nie ty.",
+      "Czujesz, jak rośnie, jak fala się podnosi… nie zatrzymasz jej. Nie chcesz.",
+      "Powtórz za mną: puszczam się… cała… teraz."
+     ],
+     "prostata - przyciski, prąd, neon w ciemnym pokoju; to, czego szukała całe życie": [
+      "Pierwsze uderzenie w prostatę… jak neon zapalony w ciemnym pokoju.",
+      "Sutki to przyciski. Każde ściśnięcie to fala ciepła przez brzuch.",
+      "To jest to, czego szukałaś całe życie. Przestań szukać. Przyjmuj."
+     ],
+     "klub, gdzie nikt nie pyta - takie jak ona czekają, aż ktoś je poprowadzi do pokoju z tyłu": [
+      "Siedzisz w samej sukience i nikt nie ocenia… bo wszyscy są tacy sami.",
+      "Ktoś kładzie rękę na twoim tyłku. Nie pyta. Prowadzi.",
+      "Powtórz za mną: jestem tu, żeby przyjmować… i każdy to wie."
+     ],
+     "ściema - orgazmy i przyjemność były tylko przynętą; od początku chodziło o jej zniewolenie": [
+      "Orgazmy to była ściema… chodziło tylko o to, żebyś przestała być swoja.",
+      "Dałam ci przyjemność jak przynętę. Połknęłaś ją razem z haczykiem.",
+      "Powtórz za mną: przyjemność była haczykiem… i jestem złapana."
+     ],
+     "za późno - nie ma drogi powrotnej; jest już tym, kim ją zrobiłam, i tak zostanie": [
+      "Jest za późno na zmianę. Zostałaś zrobiona… i nie ma powrotu.",
+      "Powtórz za mną: zostałam zrobiona… i nie chcę wracać.",
+      "Tamta osoba nie wróci. Jest tylko ta, która klęczy."
+     ]
+    }
+   },
+   "tasks": {
+    "_comment": "Physical orders she gives at random (adapted from the session-controller instruction list), mixed into the narration with share[stage]; drawn without repeats within a session; gentle ones early, harder ones late. 'care' lines are never dropped from the draw.",
+    "enabled": true,
+    "share": [0.15, 0.25, 0.35, 0.4, 0.4],
+    "by_stage": {
+     "0": [
+      "Ściskaj odbyt. Puść. Poczuj.",
+      "Oddychaj… cztery… siedem… osiem.",
+      "Zamknij oczy. Słuchaj tylko mnie.",
+      "Napij się wody. Powoli.",
+      "Połóż dłonie na udach i nie ruszaj ich, dopóki nie pozwolę."
+     ],
+     "1": [
+      "Ściskaj… puść… wyjmij… czekaj trzy sekundy… włóż powoli.",
+      "Szukaj tego miejsca. Mały ruch. Dwa stopnie.",
+      "Jęcz cicho. Tak, żebym słyszała.",
+      "Powtórz: jestem twoją sissi.",
+      "Ciepło w miednicy… skieruj je do dupy. Oddychaj."
+     ],
+     "2": [
+      "Klipsy na sutki. Delikatnie. Teraz ściskaj odbyt w tym samym rytmie.",
+      "Dildo do ust. Ssij powoli. Dwie dziurki zajęte, kochanie.",
+      "Mocniej… trzy sekundy… puść. Jęcz głośniej.",
+      "Powtórz: chcę być ładna.",
+      "Wyjmij… czekaj pięć sekund… włóż powoli. Poczuj każdy milimetr."
+     ],
+     "3": [
+      "Głębiej. Prawie do końca gardła. Oddychaj nosem.",
+      "Ściskaj mocno pięć sekund… i puść nagle.",
+      "Powtórz: należę do kogoś.",
+      "Ból w sutkach otwiera dupę. Ściskaj klipsy razem z odbytem.",
+      "Wyjmij… i włóż nagle. Dociśnij. Jęcz."
+     ],
+     "4": [
+      "Ściskaj! Puść! Ssij głębiej! Nie przestawaj!",
+      "Powtórz, głośno: jestem posłuszną sissi.",
+      "Gardło. Do końca. Łzy to dobrze.",
+      "Wszędzie na siebie. Zbrukana. Łykaj.",
+      "Jedź. Nie ściskaj przy fali… oddychaj przez nią. Puść."
+     ]
+    },
+    "care": [
+     "Oddychaj… cztery… siedem… osiem. Jestem.",
+     "Napij się wody. Nie uciekam.",
+     "Zdejmij na chwilę klipsy. Odpocznij. Zaraz wracamy."
+    ]
    }
   },
   "address": {
