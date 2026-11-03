@@ -1,8 +1,8 @@
 # Buttplug.io output with the HISMITH S2 fork
 
 The Buttplug.io output target now shows each actuator's feature description next to its index
-(for example `3 - Position (move to depth now)`), both in the actuator picker and in the list of
-configured mappings. Without it, devices with several actuators of the same type (such as the four
+(for example `5 - Position (move to depth now)`), both in the actuator picker and in the list of
+configured mappings. Without it, devices with several actuators of the same type (such as the five
 `Position` actuators of the HISMITH S2 in the Buttplug fork) cannot be told apart.
 
 Saved mappings gain an `ActuatorDescription` field; older settings without it keep working and
@@ -10,13 +10,43 @@ just show no description.
 
 Not compiled or run: this change was written without a .NET SDK. Build it on Windows first.
 
+## Setup with the current Buttplug fork (2026-11-03, commit `33991be`)
+
+The S2 now has six actuators; older notes in this file that use other indices describe an earlier
+seven-actuator layout of the Buttplug fork and no longer apply.
+
+| Actuator | Description (start) | Used for |
+|---|---|---|
+| `Oscillate/0` | Fucking Machine Oscillation Speed | speed in auto mode / built-in modes |
+| `Position/1` | Depth ( | stroke window position in auto mode |
+| `Position/2` | Stroke width | window size (the scripts use 40) |
+| `Position/3` | Run mode | 0 = auto, 1 = manual |
+| `Position/4` | Preset mode | built-in modes 1-8 |
+| `Position/5` | Position (move to depth now) | **funscript `L0`**, manual mode only (`CC 0A`, full travel, 0 = shallow) |
+
+1. Buttplug.io output: endpoint `192.168.0.145`, port `12345` (the engine runs on the Home
+   Assistant VM, not on this PC). Connect, then **Scan**: the engine only scans while a client asks it
+   to, and stops when the client disconnects.
+2. Mappings: `L0` -> Hismith Servo Sex Machine `Position/5`; `V1` (lube script) -> Hismith Lube Launcher
+   `Position/0`. Remove older S2 mappings (`L0` -> `Position/1` or `Position/3`). Leave `Oscillate/0` and
+   `Position/1-4` unmapped; the HISMITH S2 row drives them. Pick devices by name: their indices change
+   with the order in which they connect.
+3. Click **Script** in the HISMITH S2 row once after connecting: it sets the stroke width to 40 and sends
+   Run mode = manual, which `Position/5` needs (in auto mode the engine ignores it). Built-in modes
+   (1-8, A, B) switch back to auto.
+4. Put a speed limit on axis `L0`: the machine goes straight to each position. If the stroke is very
+   short, the firmware may clamp the position to the stroke window; try Stroke width 100.
+
+If only one of the two devices appears after a scan, the engine's parallel connect lost the other one;
+connect them one after another (Lube Launcher first, S2 switched on afterwards, then scan again).
+
 ## Quick controls (HISMITH S2)
 
 When a connected Buttplug device has the "Run mode" and/or "Preset mode" Position actuators (the
 HISMITH S2 in the Buttplug fork), the expander of the Buttplug.io output shows a **HISMITH S2** row:
 
 * **Auto / Manual switch**: Auto = the machine strokes on its own (speed and preset modes),
-  Manual = it follows the position axis (`L0` -> `Position/3` "Position (move to depth now)").
+  Manual = it follows the position axis (`L0` -> `Position/5` "Position (move to depth now)").
 * **Preset mode**: the S2's 8 built-in modes (0 = none). Only meaningful in auto mode.
 
 Both controls are also registered as shortcut actions, so they can be bound to a key, gamepad
@@ -159,9 +189,9 @@ New S2 actions for it: `...::Hismith::Sequence::Hold::Set` (bool) and `...::Hism
 2. **Without the machine** (fake S2 from the Buttplug fork, `tools/e2e/README.md`): MultiFunPlayer
    shows "Hismith Servo Sex Machine", the HISMITH S2 row appears, and the fake device prints bytes
    for every slider, key and voice command.
-3. With the machine, from the engine's own test page or any v3 client: `Position/5 = 1` (manual),
-   `Position/3 = 0.3` and `0.7` (does `CC 0A` move it; does the position scale to the stroke
-   window), `Position/5 = 0`, `Oscillate/0 = 0.2`, `Position/6 = 0.125` (mode 1).
+3. With the machine, from any v3 client (e.g. `s2_direct_position_test.py` on the Proxmox host):
+   `Position/3 = 1` (manual), `Position/5 = 0.3` and `0.7` (does `CC 0A` move it; does the position
+   scale to the stroke window), `Position/3 = 0`, `Oscillate/0 = 0.2`, `Position/4 = 0.125` (mode 1).
 4. MultiFunPlayer: build from a clean clone; two Button Click shortcuts (click count 1 and 2) on a
    gamepad button; the four transitions of the table above; status text `mode N/8, m:ss (held)`;
    toggle Auto-spray *while* the sequence runs; remove and re-add the Buttplug.io output with
@@ -171,5 +201,5 @@ New S2 actions for it: `...::Hismith::Sequence::Hold::Set` (bool) and `...::Hism
 6. Lube Launcher: Spray = one squirt, second click = second squirt, Stop in MultiFunPlayer = none.
 7. Voice: `run --dry-run`, 10x "spuść się na mnie" and 10 non-commands; check `voice_log.jsonl`;
    then `run`.
-8. HereSphere: film + `Film.funscript`, `L0 -> Position/3`, manual mode, small stroke window, axis
-   speed limit.
+8. HereSphere: film + `Film.funscript`, `L0 -> Position/5`, manual mode (Script button), axis speed
+   limit.
