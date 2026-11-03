@@ -59,7 +59,7 @@ dopóki etap nie spadnie. Ton etapu: {tone}
 wymuszaj jednego, chyba że na chwilę dla zabawy. Ty zwracasz się do niej różnie, zmieniaj to: {names}.
 - SŁOWNIK: w stanie masz "inspiracja" - 2-3 zwroty pasujące do etapu (rozkazy, własność, upokorzenia, drwiny, pochwały, wyznania). \
 Wpleć jeden lub dwa, dosłownie albo w swojej wariacji (skracaj, przeciągaj głoski: "sssij"), mów o niej i do niej różnie, nie używaj \
-wszystkich naraz i nie powtarzaj kwestii, które już padły w rozmowie. Możesz też wymyślać własne w tym stylu.
+wszystkich naraz i nie powtarzaj kwestii, które już padły w rozmowie ani tych z "nie_powtarzaj" w stanie. Możesz też wymyślać własne w tym stylu.
 - Użytkownik gra uległą dziewczynkę ("sissy"), Twoją własność. Jego przyjemność zależy od Ciebie. Każesz prosić, \
 błagać, przyznawać się ("powiedz, kim jesteś"), powtarzać, dziękować. Chwalisz tylko za posłuszeństwo.
 - NIE decydujesz, czy prośba zostanie spełniona - decyduje losowanie poza Tobą. Dlatego ZAWSZE piszesz dwie wersje \
@@ -102,7 +102,7 @@ NUDGE = """{character}
 Użytkownik milczy, a sesja trwa. Odezwij się sama, krótko (najwyżej 12 słów), w tonie etapu {stage}: {tone} \
 Ton tej tury (z stanu "ton_tury"): czuły = opieka, miłość, odpuszczenie ("Możesz już odpuścić.", "Jesteś moja."); ostry = rozkaz, upokorzenie. \
 Wpleć w wariacji jeden zwrot z "inspiracja" w stanie.
-Zwracaj się do niej różnie: {names}. Wpleć w wariacji jeden zwrot z "inspiracja" w stanie. Możesz zadać pytanie (kim jesteś, czyja jesteś), rozkazać (poproś, powiedz, podziękuj, klęcz i czekaj) albo zadrwić z jej milczenia. \
+Zwracaj się do niej różnie: {names}. Nie powtarzaj kwestii z "nie_powtarzaj" w stanie. Możesz zadać pytanie (kim jesteś, czyja jesteś), rozkazać (poproś, powiedz, podziękuj, klęcz i czekaj) albo zadrwić z jej milczenia. \
 Jeśli wolno Ci działać (w stanie "wolno_dzialac": true), możesz zaskoczyć ją niezamówionym ruchem w polu "plan" (nagroda: szybciej/głębiej; dręczenie: \
 wolniej/płycej; zwrot: tryb) - krótko, 1-2 kroki; w przeciwnym razie "plan" ma być pusty. Jeśli w stanie jest "program_aktywny", możesz do niego nawiązać (to Twój program). Jeśli w stanie jest "niespodzianka": "lube", właśnie niezamówionie zalewasz go - powiedz to krótko, jakbyś robiła to dla przyjemności. Stan: {state}
 Odpowiadasz wyłącznie JSON-em z polami "line" i "plan"."""
@@ -177,7 +177,7 @@ NARRACJA: sesja trwa, a Ty komentujesz na bieżąco - jedna kwestia, najwyżej {
 To ma być całkowite wyuzdanie: mówisz do niej jak do swojej dziewczynki, którą oddajesz do użycia - dosadnie, pewnie, bez cenzury. \
 Temat tej kwestii: {theme}. Rejestr pokazują przykłady (nie powtarzaj ich, wymyślaj własne): {examples}. \
 Ton tej tury: {tone_hint}. Zwracaj się do niej różnie: {names}. Nie powtarzaj kwestii, które już padły. \
-Jeśli w stanie jest "scena", mów o tym, co dzieje się teraz na ekranie. Stan: {state}
+Jeśli w stanie jest "scena", mów o tym, co dzieje się teraz na ekranie. Nie powtarzaj i nie parafrazuj kwestii z "nie_powtarzaj" w stanie. Stan: {state}
 Odpowiadasz wyłącznie JSON-em z polem "line"."""
 
 
@@ -203,6 +203,36 @@ class Persona:
         self.model, self.timeout, self.temperature = model, timeout, temperature
         self.history_turns = history_turns
         self.api_key = api_key or os.environ.get(api_key_env, "")
+
+    def fresh_lines(self, theme, examples, avoid, count=20, max_words=16, state=None):
+        """a batch of new narration lines for a theme, for the pool (one call, no history). -> [str]"""
+        if not self.api_key:
+            raise PersonaError("no API key (set the environment variable named in the config)")
+        prompt = (self.character.strip() + "\n\nWymyśl " + str(count) + " różnych kwestii narracji (każda najwyżej " + str(max_words)
+                  + " słów, bez pytań, bez numeracji), które mówisz do niej w trakcie sesji. Temat: " + theme
+                  + ". Rejestr pokazują przykłady (nie kopiuj ich): " + " | ".join(examples)
+                  + ". To ma być całkowite wyuzdanie: dosadnie, pewnie, bez cenzury, po polsku, każda kwestia inna w budowie i słowach. "
+                  + "NIE powtarzaj ani nie parafrazuj tych, które już padły: " + " | ".join(avoid[-60:])
+                  + (". Stan: " + json.dumps(state, ensure_ascii=False) if state else "")
+                  + "\nOdpowiadasz wyłącznie JSON-em z polem \"lines\" (lista napisów).")
+        schema = {"name": "lines", "strict": True, "schema": {"type": "object", "additionalProperties": False, "required": ["lines"],
+                                                              "properties": {"lines": {"type": "array", "items": {"type": "string"}}}}}
+        body = {"model": self.model, "temperature": 1.0, "messages": [{"role": "system", "content": prompt},
+                                                                        {"role": "user", "content": "(nowa porcja)"}],
+                "max_tokens": 1200, "response_format": {"type": "json_schema", "json_schema": schema}}
+        req = urllib.request.Request(self.url, data=json.dumps(body, ensure_ascii=False).encode("utf-8"), method="POST",
+                                     headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"})
+        try:
+            with urllib.request.urlopen(req, timeout=max(self.timeout, 20)) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+            lines = json.loads(data["choices"][0]["message"]["content"]).get("lines", [])
+            return [str(x).strip() for x in lines if str(x).strip()]
+        except urllib.error.HTTPError as e:
+            raise PersonaError(f"HTTP {e.code}") from e
+        except (urllib.error.URLError, TimeoutError, OSError) as e:
+            raise PersonaError(f"request failed: {e}") from e
+        except (json.JSONDecodeError, KeyError, IndexError, TypeError, ValueError, AttributeError) as e:
+            raise PersonaError("answer is not the expected JSON") from e
 
     def narrate(self, state, history, theme, examples, max_words=16):
         """her running commentary at a random moment (no command, no question). -> the line"""

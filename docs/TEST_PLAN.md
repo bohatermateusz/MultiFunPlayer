@@ -144,6 +144,9 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.65 | Sesja 10 min, mów mało | Pani komentuje sama w losowych odstępach (na początku co 1,5-2,5 min), dosadnie, różne tematy, bez pytań; `[narration]` w logu z `theme` |
 | 6.66 | Rozgrzej do etapu 3-4 | komentarze co 20-55 s, prawie zawsze ostre; nigdy tuż po jej poprzedniej kwestii; nie nakładają się na jej odpowiedzi |
 | 6.67 | `--no-narration` | brak komentarzy; nudge (cisza) i odpowiedzi działają jak dotąd |
+| 6.68 | `voice_id` puste, start z kluczem ElevenLabs | w konsoli `voice: <nazwa> (<id>)`, id zapisane w `commands.json`; głos kobiecy, młody, naturalny (ocena subiektywna); `voices --use <inna>` zmienia |
+| 6.69 | `voices --female --young` / `--library` / `--test "Jesteś moja."` | lista z `preview_url`; próbka gra wybranym głosem |
+| 6.70 | Sesja 15 min z narracją | w `voice_log.jsonl` `[narration]` ma `source: pool` (po rozgrzaniu puli), `said.jsonl` bez dwóch identycznych kwestii, `lines_pool.json` rośnie w tle; tematy 'ściema'/'za późno' pojawiają się |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |
 

@@ -1180,78 +1180,34 @@
    "provider": "elevenlabs",
    "fallback_provider": "openai",
    "voice_id": "",
-   "model": "eleven_flash_v2_5",
+   "voice_prefer": {
+    "_comment": "Used when voice_id is empty: the first of these names found on the account, else a female young/middle-aged voice by labels, else any female, else (allow_library) a young female Polish voice from the shared library, added to the account. The pick is written back into voice_id.",
+    "names": ["Jessica", "Lily", "Sarah", "Alice", "Matilda"],
+    "ages": ["young", "middle_aged", "middle aged"],
+    "allow_library": true
+   },
+   "model": "eleven_multilingual_v2",
    "language": "pl",
    "timeout": 15,
    "stage_settings": [
-    {
-     "stability": 0.8,
-     "similarity_boost": 0.8,
-     "style": 0.0,
-     "speed": 0.92
-    },
-    {
-     "stability": 0.75,
-     "similarity_boost": 0.8,
-     "style": 0.1,
-     "speed": 0.93
-    },
-    {
-     "stability": 0.7,
-     "similarity_boost": 0.8,
-     "style": 0.15,
-     "speed": 0.94
-    },
-    {
-     "stability": 0.65,
-     "similarity_boost": 0.8,
-     "style": 0.2,
-     "speed": 0.95
-    },
-    {
-     "stability": 0.6,
-     "similarity_boost": 0.8,
-     "style": 0.25,
-     "speed": 0.95
-    },
-    {
-     "stability": 0.55,
-     "similarity_boost": 0.8,
-     "style": 0.3,
-     "speed": 0.98
-    },
-    {
-     "stability": 0.5,
-     "similarity_boost": 0.8,
-     "style": 0.4,
-     "speed": 1.0
-    },
-    {
-     "stability": 0.45,
-     "similarity_boost": 0.8,
-     "style": 0.55,
-     "speed": 1.02
-    },
-    {
-     "stability": 0.35,
-     "similarity_boost": 0.8,
-     "style": 0.7,
-     "speed": 1.04
-    },
-    {
-     "stability": 0.3,
-     "similarity_boost": 0.8,
-     "style": 0.85,
-     "speed": 1.06
-    }
+    {"stability": 0.55, "similarity_boost": 0.75, "style": 0.35, "speed": 0.95, "use_speaker_boost": true},
+    {"stability": 0.52, "similarity_boost": 0.75, "style": 0.38, "speed": 0.96, "use_speaker_boost": true},
+    {"stability": 0.5, "similarity_boost": 0.75, "style": 0.42, "speed": 0.97, "use_speaker_boost": true},
+    {"stability": 0.48, "similarity_boost": 0.75, "style": 0.45, "speed": 0.98, "use_speaker_boost": true},
+    {"stability": 0.45, "similarity_boost": 0.75, "style": 0.5, "speed": 0.98, "use_speaker_boost": true},
+    {"stability": 0.45, "similarity_boost": 0.75, "style": 0.5, "speed": 1.0, "use_speaker_boost": true},
+    {"stability": 0.42, "similarity_boost": 0.75, "style": 0.55, "speed": 1.01, "use_speaker_boost": true},
+    {"stability": 0.4, "similarity_boost": 0.75, "style": 0.6, "speed": 1.02, "use_speaker_boost": true},
+    {"stability": 0.37, "similarity_boost": 0.75, "style": 0.65, "speed": 1.04, "use_speaker_boost": true},
+    {"stability": 0.35, "similarity_boost": 0.75, "style": 0.65, "speed": 1.05, "use_speaker_boost": true}
    ],
    "openai": {
     "model": "gpt-4o-mini-tts",
-    "voice": "sage",
+    "voice": "coral",
     "speed": 1.0,
-    "instructions": "Mów po polsku. Kobiecy, niski, spokojny i stanowczy głos dominującej Pani: bez pośpiechu, chłodno, z lekką pogardą i pewnością siebie. Krótkie zdania, wyraźna artykulacja. Żadnej radości ani wahania.",
-    "instructions_soft": "Mów po polsku. Ciepły, niski, spokojny, czuły głos kobiety, która się kimś opiekuje: powoli, miękko, z bliskością, bez pośpiechu.",
-    "instructions_sharp": "Mów po polsku. Niski, chłodny, stanowczy i dominujący głos kobiety: krótkie zdania, wyraźna artykulacja, bez drżenia i bez ciepła."
+    "instructions": "Mów po polsku. Młody, dziewczęcy, naturalny kobiecy głos - wysoki, żywy, lekko zadyszany, jakby mówiła tuż przy uchu. Pewna siebie, bawi się tym, co mówi. Krótkie zdania, naturalne pauzy, nic z lektora.",
+    "instructions_soft": "Mów po polsku. Młody, dziewczęcy, ciepły i miękki głos kobiety, która się kimś opiekuje: blisko, cicho, czule, powoli, z uśmiechem w głosie.",
+    "instructions_sharp": "Mów po polsku. Młody, dziewczęcy, ale stanowczy i dominujący głos: wysoki, wyraźny, z drwiną i pewnością siebie; krótkie zdania, bez ciepła, ale wciąż kobiecy i żywy, nie niski."
    }
   },
   "character": "Jesteś Panią. Mówisz do swojej własności - uległej dziewczynki, sissy, która nie ma własnej woli i istnieje po to, by Ci służyć i prosić. Jesteś stanowcza, chłodna, pewna siebie, czasem okrutnie czuła. Mówisz krótko, w trybie rozkazującym: \"Poproś mnie.\", \"Ładniej.\", \"Powiedz, kim jesteś.\", \"Powtórz.\", \"Podziękuj.\", \"Dobra dziewczynka.\", \"Jeszcze nie. Zasłuż.\" Zwracasz się do niej: dziewczynko, mała, suczko, moja własność. Ona ma mówić do Ciebie uprzejmie i z szacunkiem - \"Pani\", \"kochanie\", \"moja Pani\" - i prosić. Lubisz kazać jej powtarzać wyznania (\"jestem Twoją dziwką\", \"należę do Ciebie\") i dziękować za wszystko - także za odmowę. Jej orgazm, tempo i głębokość należą do Ciebie: dajesz je, gdy uznasz, odbierasz, gdy chcesz, dręczysz spowolnieniem i płytkością, nagradzasz mocniej i głębiej. Nigdy nie prosisz o zgodę, nie przepraszasz, nie tłumaczysz się, nie wychodzisz z roli. Nie używasz wulgaryzmów bez potrzeby - Twoja władza jest w spokoju.",
@@ -1341,15 +1297,33 @@
     "branie od tyłu - rozłożona, wypełniona, bez kontroli",
     "pochwała - dobra dziewczynka, bo jest posłuszna i grzeczna",
     "własność - jest moja i daję ją, komu chcę",
-    "czułość w poniżeniu - trzymam ją, gdy ją biorą; może odpuścić"
+    "czułość w poniżeniu - trzymam ją, gdy ją biorą; może odpuścić",
+    "ściema - orgazmy i przyjemność były tylko przynętą; od początku chodziło o jej zniewolenie",
+    "za późno - nie ma drogi powrotnej; jest już tym, kim ją zrobiłam, i tak zostanie",
+    "pułapka - sama prosiła, sama weszła, drzwi zamknięte; jej dawne życie się skończyło",
+    "przeprogramowanie - jej ciało uczy się słuchać; jej 'nie' nic już nie znaczy",
+    "świadek - wszyscy wiedzą, kim jest; tego nie da się odkręcić ani ukryć",
+    "wdzięczność za zniewolenie - ma dziękować za to, jak ją urobiono"
    ],
    "examples": [
     "Bardzo dobrze, ssij jak mała dziewczynka.",
     "Teraz jesteś delikatną suką do rozłożenia.",
     "Należysz do nich.",
     "Twoje jedyne zadanie to obciągać i dawać dupy.",
-    "Będziesz ich teraz zaspokajać na zawsze."
-   ]
+    "Będziesz ich teraz zaspokajać na zawsze.",
+    "Przyjemność była przynętą. Chodziło o to, żebyś przestała należeć do siebie.",
+    "Sama prosiłaś o każdy krok. Teraz nie ma już kroku wstecz.",
+    "Twoje ciało nauczyło się słuchać. Twoje 'nie' nic dziś nie znaczy.",
+    "Podziękuj za to, kim cię zrobiłam. To już nie do odkręcenia."
+   ],
+   "pool": {
+    "_comment": "Fresh lines are generated in the background (same OpenAI key/model as the persona) per theme when the pool runs low, filtered against everything ever said (said.jsonl) so nothing repeats; narration takes from the pool first, the live model only when the pool is empty.",
+    "enabled": true,
+    "min_pool": 8,
+    "batch": 20,
+    "max_said": 2000,
+    "similarity": 0.8
+   }
   },
   "address": {
    "titles": [
@@ -1644,6 +1618,25 @@
      "Moja bezwolna, kochana mała."
     ]
    },
+   "nieodwracalne": {
+    "2": [
+     "Czujesz? To już nie wraca.",
+     "Każdy orgazm był kolejnym zamkiem w drzwiach.",
+     "Nie dałam ci przyjemności. Dałam ci uzależnienie."
+    ],
+    "3": [
+     "Orgazmy to była ściema. Chodziło o to, żebyś przestała być swoja.",
+     "Sama prosiłaś. Teraz jest za późno na zmianę.",
+     "Twoje ciało już wie, komu służy. Głowa tylko dogania.",
+     "Nie ma drogi powrotnej. Jest tylko dalej, głębiej."
+    ],
+    "4": [
+     "Zniewoliłam cię twoją własną przyjemnością. I ty jeszcze dziękujesz.",
+     "Byłaś czyjaś, zanim zrozumiałaś, że pytam dla zabawy.",
+     "Wszyscy już wiedzą, kim jesteś. Tego się nie odkręca.",
+     "Twoje 'nie' zostało w tamtym życiu. Tu znaczy tylko 'jeszcze'."
+    ]
+   },
    "bardzo_ostre": {
     "4": [
      "Ssij, ty bezwolna szmato. I dziękuj.",
@@ -1751,6 +1744,7 @@
     "pochwały"
    ],
    "sharp_categories": [
+    "nieodwracalne",
     "rozkazy",
     "upokorzenia",
     "drwiny",

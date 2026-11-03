@@ -86,7 +86,7 @@ class IgnoringHerDemand(Server):
 
 class RefusalIsPunished(Server):
     def test_an_open_refusal_wipes_the_progress_and_blocks_everything_for_a_while(self):
-        self.c.persona_cfg = dict(P, base_p=0.0, base_p_overrides={}, step_p_overrides={}, step_p=0.3)
+        self.c.persona_cfg = dict(P, base_p=0.0, base_p_overrides={}, step_p_overrides={}, step_p=0.0)
         for i in range(3):
             self.say(f"kochanie, proszę {i}, spuść się na mnie", request="lube_fire")
         self.assertEqual(self.c._asks["lube_fire"], 3)

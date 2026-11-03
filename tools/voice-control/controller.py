@@ -113,6 +113,8 @@ class Controller:
         self._retry = set()               # requests that were refused at the last second: the next ask is likelier
         self._program = None              # her running program (e.g. a random mode every 3 minutes), see tick()
         self._narration_due = 0.0         # when her next unprompted line is due (0 = not drawn yet)
+        self.pool = None                  # LinePool: pre-generated, never-repeating narration lines (set by the main loop)
+        self._said_recent = []            # her last lines (any kind), handed to the model as "do not repeat"
         self._themes_recent = []          # narration themes used lately (no repeats)
         self._penalty_until = 0.0         # an open refusal costs: nothing is granted until you apologise or the time is up
         self.busy = lambda: False         # True while she is speaking / listening is muted (set by the main loop)
@@ -157,8 +159,16 @@ class Controller:
             self._log(transcript, outcome)
             return self._say(outcome)
 
+    def _remember_said(self, line):
+        self._said_recent.append(line)
+        del self._said_recent[:-40]
+        if self.pool is not None:
+            self.pool.remember(line)
+
     def _say(self, outcome):
         line = outcome.extra.get("say")
+        if line and outcome.extra.get("source") != "pool":
+            self._remember_said(line)      # pool lines are recorded by the pool itself
         if line and (self.speak or self.speak_ex):
             try:
                 if self.speak_ex:
@@ -375,10 +385,15 @@ class Controller:
             history = list(self._history)
             self._last_line = now                 # a failed call must not be retried in a loop
             self._narration_due = now + self._draw_narration_gap(stage)
-        try:
-            line = self.persona.narrate(state, history, theme, list(cfg.get("examples", [])), int(cfg.get("max_words", 16)))
-        except Exception:
-            return None
+        source, left = "live", None
+        line = self.pool.take(theme) if self.pool is not None else None
+        if line:
+            source, left = "pool", self.pool.left(theme)
+        else:
+            try:
+                line = self.persona.narrate(state, history, theme, list(cfg.get("examples", [])), int(cfg.get("max_words", 16)))
+            except Exception:
+                return None
         if not line:
             return None
         with self._lock:
@@ -386,8 +401,11 @@ class Controller:
             del self._history[:-24]
             self._window_until = self.clock() + float(self.persona_cfg["reply_window"])
             self._last_line = self.clock()
-            outcome = Outcome("talk", "narration", "", 0.0, "persona", {"say": line, "stage": stage, "tone": tone, "harsh": harsh,
-                                                                        "theme": theme, "voice": stage + (5 if tone == "ostry" else 0)})
+            extra = {"say": line, "stage": stage, "tone": tone, "harsh": harsh, "theme": theme, "source": source,
+                     "voice": stage + (5 if tone == "ostry" else 0)}
+            if left is not None:
+                extra["pool_left"] = left
+            outcome = Outcome("talk", "narration", "", 0.0, "persona", extra)
             self._log("[narration]", outcome)
         self._say(outcome)
         return line
@@ -463,7 +481,8 @@ class Controller:
                 "zwroty_do_niej": list(address.get("names", [])), "prosby_bez_zgody": dict(self._asks),
                 "nalezy_sie_po_wykonaniu_zadania": self._owed, "kara_sekundy": round(self.penalty_remaining()),
                 "blokada_5_min": self.lock_remaining() > 0,
-                "ostatnie_komendy": list(self._recent), "program_aktywny": self.program_summary()}
+                "ostatnie_komendy": list(self._recent), "program_aktywny": self.program_summary(),
+                "nie_powtarzaj": list(self._said_recent[-20:])}
 
     def _need_persona(self, transcript, plain=None):
         return _NeedPersona(transcript, self._persona_state(), list(self._history), plain)

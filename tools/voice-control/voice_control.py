@@ -11,6 +11,7 @@
 import argparse
 import json
 import os
+import re
 import sys
 import threading
 import time
@@ -49,6 +50,75 @@ def stt_prompt(intents, wake_words=None):
     return "Komendy: " + wake + ", ".join(i.phrases[0] for i in intents if i.phrases)[:220]
 
 
+def save_voice_id(config_path, voice_id):
+    """writes persona.tts.voice_id into commands.json without reformatting the file (text replacement of that one line)"""
+    with open(config_path, encoding="utf-8") as f:
+        text = f.read()
+    new, n = re.subn(r'("voice_id"\s*:\s*)"[^"]*"', lambda m: m.group(1) + json.dumps(voice_id), text, count=1)
+    if n != 1:
+        raise ValueError("persona.tts.voice_id not found in the config")
+    tmp = config_path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        f.write(new)
+    os.replace(tmp, config_path)
+
+
+def voices_command(args, cfg):
+    """`voices`: list / filter / pick / test ElevenLabs voices"""
+    from tts import PCM_RATE, ElevenLabsSpeaker, TtsError
+    from audio import play_stream
+    t = cfg.get("persona", {}).get("tts", {})
+    sp = ElevenLabsSpeaker(t.get("voice_id", ""), t.get("model", "eleven_multilingual_v2"), base_url=t.get("base_url", "https://api.elevenlabs.io"),
+                           timeout=t.get("timeout", 15), stage_settings=t.get("stage_settings"), language=t.get("language", "pl"))
+    try:
+        voices = sp.library_voices(language=t.get("language", "pl")) if args.library else sp.voices()
+        if args.female:
+            voices = [v for v in voices if str(v[2].get("gender", "")).lower() == "female"]
+        if args.young:
+            voices = [v for v in voices if str(v[2].get("age", "")).lower() in ("young", "middle_aged", "middle aged")]
+        if args.use:
+            want = args.use.lower()
+            hit = next((v for v in voices if v[0] == args.use or v[1].lower() == want), None)
+            if hit is None:
+                return f"voices: no voice {args.use!r} in this list (try without filters, or --library)"
+            vid, name, labels = hit
+            if labels.get("library"):
+                vid = sp.add_library_voice(labels["public_owner_id"], vid, name)
+            save_voice_id(args.config, vid)
+            sp.voice_id = vid
+            print(f"voice: {name} ({vid}) saved to {args.config}")
+        if args.test:
+            if not sp.voice_id:
+                return "voices: no voice_id yet (use --use <id|name>)"
+            play_stream(sp.stream(args.test, 7), PCM_RATE)
+            return 0
+    except TtsError as e:
+        return f"voices: {e}"
+    if not args.use:
+        print("Pick one with: python voice_control.py voices --use <id|name>   (listen first: open preview_url)")
+        for vid, name, labels in voices:
+            labels = {k: v for k, v in labels.items() if k not in ("public_owner_id", "library")}
+            print(f"  {vid}  {name}  {', '.join(f'{k}={v}' for k, v in labels.items())}")
+    return 0
+
+
+def build_pool(args, pc, persona, log_path):
+    """the never-repeating narration pool (lines_pool.json + said.jsonl next to the log), filled by the persona model"""
+    n = pc.get("narration", {})
+    p = n.get("pool", {})
+    if persona is None or not n.get("enabled") or not p.get("enabled", True) or getattr(args, "no_narration", False):
+        return None
+    from lines import LinePool
+    folder = os.path.dirname(os.path.abspath(args.config))
+    examples, max_words = list(n.get("examples", [])), int(n.get("max_words", 16))
+    pool = LinePool(lambda theme, avoid, count: persona.fresh_lines(theme, examples, avoid, count, max_words),
+                    pool_path=None if args.no_log else os.path.join(folder, "lines_pool.json"),
+                    said_path=None if args.no_log else os.path.join(folder, "said.jsonl"),
+                    min_pool=p.get("min_pool", 8), batch=p.get("batch", 20), max_said=p.get("max_said", 2000),
+                    similarity=p.get("similarity", 0.8), max_words=max_words)
+    return pool
+
+
 def build(args):
     cfg, intents = load_config(args.config)
     udp = cfg.get("udp", {})
@@ -72,6 +142,7 @@ def build(args):
                             wake_words=wake_words, wake_min_similarity=wake.get("min_similarity", 0.8), llm=llm, llm_cfg=lc,
                             lock_cfg=cfg.get("lock"), persona=persona, persona_cfg=pc)
     controller.speak = lambda line: print(f"  Pani: {line}")
+    controller.pool = build_pool(args, pc, persona, log_path)
     s = cfg.get("stt", {})
     stt = CloudStt(s.get("base_url", "https://api.openai.com/v1"), s.get("model", "whisper-1"), s.get("language", "pl"),
                    api_key_env=s.get("api_key_env", "OPENAI_API_KEY"), timeout=s.get("timeout", 15), prompt=stt_prompt(intents, wake_words))
@@ -105,7 +176,13 @@ def main():
     w = sub.add_parser("wav"); w.add_argument("file"); add_options(w, suppress=True)
     e = sub.add_parser("eval"); e.add_argument("file", nargs="?"); add_options(e, suppress=True)
     add_options(sub.add_parser("keys"), suppress=True)
-    add_options(sub.add_parser("voices"), suppress=True)
+    v = sub.add_parser("voices")
+    v.add_argument("--female", action="store_true", help="only female voices")
+    v.add_argument("--young", action="store_true", help="only young / middle-aged voices")
+    v.add_argument("--library", action="store_true", help="search the shared library (female, young, Polish) instead of your account")
+    v.add_argument("--use", metavar="ID_OR_NAME", help="put this voice into commands.json -> persona.tts.voice_id (a library voice is added to the account)")
+    v.add_argument("--test", metavar="TEXT", help="play this text with the configured (or --use) voice")
+    add_options(v, suppress=True)
     add_options(sub.add_parser("mic"), suppress=True)
     args = ap.parse_args()
 
@@ -115,16 +192,7 @@ def main():
         from llm_eval import run_eval
         sys.exit(run_eval(controller, args.file))
     if args.cmd == "voices":
-        from tts import ElevenLabsSpeaker, TtsError
-        t = cfg.get("persona", {}).get("tts", {})
-        try:
-            voices = ElevenLabsSpeaker(api_key=None, base_url=t.get("base_url", "https://api.elevenlabs.io")).voices()
-        except TtsError as e:
-            sys.exit(f"voices: {e}")
-        print("Put the id of the voice you like into commands.json -> persona.tts.voice_id")
-        for vid, name, labels in voices:
-            print(f"  {vid}  {name}  {', '.join(f'{k}={v}' for k, v in labels.items())}")
-        return
+        sys.exit(voices_command(args, cfg))
     if args.cmd == "keys":
         from hotkeys import cheat_sheet
         print("Keyboard shortcuts (global, NumLock on):")
@@ -187,11 +255,24 @@ def main():
     def build_speakers():
         out = {}
         if tcfg.get("provider", "elevenlabs") == "elevenlabs" or tcfg.get("fallback_provider") == "elevenlabs":
-            out["elevenlabs"] = ElevenLabsSpeaker(tcfg.get("voice_id", ""), tcfg.get("model", "eleven_flash_v2_5"),
-                                                  base_url=tcfg.get("base_url", "https://api.elevenlabs.io"), timeout=tcfg.get("timeout", 15),
-                                                  stage_settings=tcfg.get("stage_settings"), language=tcfg.get("language", "pl"))
+            el = ElevenLabsSpeaker(tcfg.get("voice_id", ""), tcfg.get("model", "eleven_multilingual_v2"),
+                                   base_url=tcfg.get("base_url", "https://api.elevenlabs.io"), timeout=tcfg.get("timeout", 15),
+                                   stage_settings=tcfg.get("stage_settings"), language=tcfg.get("language", "pl"))
+            if not el.voice_id and el.api_key:
+                # no voice chosen yet: pick a girlish female voice once and remember it in the config
+                try:
+                    picked = el.pick_voice(tcfg.get("voice_prefer", {}))
+                    if picked:
+                        print(f"  voice: {picked[1]} ({picked[0]})")
+                        try:
+                            save_voice_id(args.config, picked[0])
+                        except (OSError, ValueError) as e:
+                            print(f"  voice: could not save voice_id: {e}")
+                except TtsError as e:
+                    print(f"  voice: no ElevenLabs voice picked ({e}); OpenAI voice is used")
+            out["elevenlabs"] = el
         o = tcfg.get("openai", {})
-        out["openai"] = Speaker(o.get("base_url", "https://api.openai.com/v1"), o.get("model", "gpt-4o-mini-tts"), o.get("voice", "sage"),
+        out["openai"] = Speaker(o.get("base_url", "https://api.openai.com/v1"), o.get("model", "gpt-4o-mini-tts"), o.get("voice", "coral"),
                                 o.get("instructions", ""), api_key_env=o.get("api_key_env", "OPENAI_API_KEY"), speed=o.get("speed", 1.0))
         return out
 
@@ -242,6 +323,8 @@ def main():
         print(f"Listening continuously. Say \"{', '.join(wake.get('words', []))}\" and a command. "
               f"{'DRY RUN. ' if args.dry_run else ''}Ctrl+C to quit.")
         if controller.persona is not None:
+            if controller.pool is not None:
+                controller.pool.warm_up(cfg.get("persona", {}).get("narration", {}).get("themes", []))
             def nudger():
                 while True:
                     time.sleep(1.0)
