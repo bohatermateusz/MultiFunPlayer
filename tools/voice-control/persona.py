@@ -35,6 +35,7 @@ class PersonaTurn:
     latency_ms: int = 0
     defiance: bool = False       # the user openly refuses / is rude ("nie chcę", "nie powiem", "nie będę prosić")
     shots: int = 0               # for a Lube Launcher request: how many shots he means (1-5; 0 = as the command says)
+    side: str = "auto"           # which man / launcher: front (her mouth, her face) | rear (from behind, inside) | both | auto
     program: dict = None         # timing he means: {start_after_seconds, every_seconds, duration_seconds, plan, random_modes, cancel}
 
 
@@ -68,6 +69,9 @@ wszystkich naraz i nie powtarzaj kwestii, które już padły w rozmowie ani tych
 błagać, przyznawać się ("powiedz, kim jesteś"), powtarzać, dziękować. Chwalisz tylko za posłuszeństwo.
 - NIE decydujesz, czy prośba zostanie spełniona - decyduje losowanie poza Tobą. Dlatego ZAWSZE piszesz dwie wersje \
 odpowiedzi: line_if_granted (zgoda: "Dobra dziewczynka. Masz.") i line_if_denied (odmowa: "Jeszcze nie. Poproś ładniej.").
+- DWÓCH NARAZ: biorą ją dwaj - jeden z przodu (w usta; jego sperma ląduje na twarzy / w ustach), drugi od tyłu (jego sperma \
+w środku). "side": front = ten w ustach / na twarz, rear = ten od tyłu / do środka, both = obaj, auto = nie wiadomo (narzędzie weźmie \
+ostatnio używanego). Gdy on nie mówi, którego, wybierz z kontekstu rozmowy i sceny (po "ssij" - front, po "wypnij się" - rear).
 - NIE KRĘĆ SIĘ W KÓŁKO: nie każ prosić "ładniej" za każdym razem i nie zaczynaj każdej odmowy od "Jeszcze nie". Zmieniaj żądanie \
 (prośba, wyznanie, podziękowanie, powtórzenie, pokora, czekanie) i formę; gdy on właśnie zrobił, czego chciałaś, doceń to (thanked = true), \
 choćby słowa były niedokładne. Gdy o nic nie prosi (request none), po prostu z nim rozmawiaj - bez "Jeszcze nie".
@@ -169,10 +173,11 @@ def build_schema(intents, step_ids):
         "type": "object", "additionalProperties": False,
         # the lines come LAST: structured outputs write the keys in schema order, so when streaming the tool can roll
         # the dice as soon as everything before the lines is complete and speak the winning line while it is written
-        "required": ["addressed", "request", "shots", "program", "confession", "thanked", "defiance", "demand",
+        "required": ["addressed", "request", "side", "shots", "program", "confession", "thanked", "defiance", "demand",
                      "grant_actions", "tease_actions", "line_if_granted", "line_if_denied"],
         "properties": {
             "addressed": {"type": "boolean"}, "request": {"type": "string", "enum": ids},
+            "side": {"type": "string", "enum": ["front", "rear", "both", "auto"]},
             "shots": {"type": "integer"},
             "program": {"anyOf": [{"type": "null"}, {"type": "object", "additionalProperties": False, "required": list(PROGRAM_KEYS),
                                                       "properties": {"start_after_seconds": {"type": "integer"}, "every_seconds": {"type": "integer"},
@@ -183,14 +188,14 @@ def build_schema(intents, step_ids):
             "line_if_granted": {"type": "string"}, "line_if_denied": {"type": "string"}}}}
 
 
-HEAD_KEYS = ("addressed", "request", "shots", "program", "confession", "thanked", "defiance", "demand", "grant_actions", "tease_actions")
+HEAD_KEYS = ("addressed", "request", "side", "shots", "program", "confession", "thanked", "defiance", "demand", "grant_actions", "tease_actions")
 
 
 def turn_from_fields(f, raw="", latency_ms=0):
     """a PersonaTurn from the (possibly partial) fields of her answer; missing lines stay empty"""
     actions = lambda key: [{"step": str(p.get("step", "")), "times": int(p.get("times", 1) or 1)}
                            for p in (f.get(key) or []) if isinstance(p, dict)]
-    return PersonaTurn(addressed=bool(f.get("addressed", False)), request=str(f.get("request", NONE)),
+    return PersonaTurn(addressed=bool(f.get("addressed", False)), request=str(f.get("request", NONE)), side=str(f.get("side", "auto")),
                        confession=bool(f.get("confession", False)), thanked=bool(f.get("thanked", False)),
                        defiance=bool(f.get("defiance", False)),
                        line_if_granted=str(f.get("line_if_granted", "")).strip(),
@@ -411,7 +416,7 @@ class Persona:
             a = json.loads(raw)
             actions = lambda key: [{"step": str(p.get("step", "")), "times": int(p.get("times", 1) or 1)}
                                    for p in (a.get(key) or []) if isinstance(p, dict)]
-            return PersonaTurn(addressed=bool(a.get("addressed", False)), request=str(a.get("request", NONE)),
+            return PersonaTurn(addressed=bool(a.get("addressed", False)), request=str(a.get("request", NONE)), side=str(a.get("side", "auto")),
                                confession=bool(a.get("confession", False)), thanked=bool(a.get("thanked", False)),
                                defiance=bool(a.get("defiance", False)),
                                line_if_granted=str(a.get("line_if_granted", "")).strip(),

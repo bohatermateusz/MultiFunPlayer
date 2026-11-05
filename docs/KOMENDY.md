@@ -101,6 +101,15 @@ a z Twoich skryptów ASMR m.in. "sama się zgłosiłaś", "wymazana", "zaprogram
 "jego sperma"; sprzęt to ich ciała. Do tego **polecenia**: co jakiś czas zamiast komentarza pada rozkaz fizyczny (ściskaj, oddychaj, klipsy, dildo do ust, "powtórz: jestem
 posłuszną sissi"), łagodniejszy na początku, ostrzejszy później, nigdy ten sam dwa razy w sesji.
 
+## Dwie maszyny i dwa Lube Launchery: przód i tył
+
+W MultiFunPlayer (Buttplug.io -> **Device roles**) ustaw każdemu urządzeniu rolę: **Rear** (od tyłu), **Front** (usta) albo
+**Both** (wszystko, jak dotąd). Potem mówisz naturalnie: "spuść mi się do ust" / "na twarz" -> przedni launcher, "spuść się do
+środka" / "w dupę" -> tylny, "bierz mnie szybciej od tyłu" -> tylna maszyna, "głębiej w usta" -> przednia. Bez wskazania Pani
+wybiera z kontekstu, a gdy nie wie - tę stronę, której używaliście ostatnio. Klawisze i "koniec" działają zawsze na wszystko.
+
+Co 10 minut zmienia się głos - nowa Pani przejmuje Cię kwestią w stylu "Teraz ja się tobą zajmę, misiaczku."
+
 ## F11: rozmowa bez przerw
 
 Trzy tryby rozmowy, F11 przełącza w locie (Pani potwierdza): **klasyczny** - jak dotąd (nagranie, rozpoznanie, odpowiedź, głos:

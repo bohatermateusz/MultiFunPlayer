@@ -23,6 +23,30 @@ REPLACE_WHOLE = {("narration", "pool", "seed"), ("narration", "tasks", "by_stage
                  ("vocabulary",), ("address",)}
 
 
+SIDE_WORDS = {
+    "front": [" do ust", " w usta", " ust ", " usta ", " buzi", " buzię", " gardło", " gardła", " z przodu", " przód ", " przodem",
+              " ssij", " ssać", " ssanie", " obciąg", " loda", " na twarz", " twarz", " język",
+              " mouth", " throat", " face", " front", " suck", " blowjob", " lips"],
+    "rear": [" od tyłu", " z tyłu", " tył ", " tyłek", " tyłka", " dupy", " dupę", " dupa", " dupie", " cipk", " cipę", " cipy",
+             " do środka", " w środek", " w środku", " anal", " pośladk",
+             " behind", " ass ", " butt", " rear", " inside", " pussy", " from the back"],
+}
+SIDED_ACTIONS = {"Speed", "Depth", "Mode", "Calm", "Boost", "LubeLauncher"}
+# the same words as the matcher sees them (no accents), each with a space in front: " do ust", " od tylu", ...
+SIDE_NORM = {k: [" " + normalize(w) + ("" if not w.endswith(" ") else " ") for w in v] for k, v in SIDE_WORDS.items()}
+SIDE_PHRASES = sorted({normalize(w) for v in SIDE_WORDS.values() for w in v if len(normalize(w).split()) >= 1
+                       and normalize(w) not in ("ust", "usta", "twarz", "jezyk", "ssij", "ssac", "ssanie", "loda", "obciag", "suck",
+                                                "blowjob", "lips", "face", "mouth", "throat")}, key=lambda p: -len(p))
+
+
+def strip_side_words(text):
+    """the command without the words that only say where ("szybciej od tyłu" -> "szybciej"), for the strict matcher"""
+    low = " " + normalize(text) + " "
+    for p in SIDE_PHRASES:
+        low = low.replace(" " + p + " ", " ")
+    return " ".join(low.split())
+
+
 REPEAT_RE = re.compile(r"(?:powtórz|powiedz\s+dokładnie|powiedz\s+głośno|repeat|say\s+it)(?:[\s,]+\w+){0,3}\s*:\s*['\"„“]?(.+?)['\"”]?\s*$", re.I)
 
 
@@ -119,7 +143,11 @@ class Controller:
         self.llm = llm
         self.llm_cfg = dict(LLM_DEFAULTS, **(llm_cfg or {}))
         self._lock = threading.RLock()   # voice and keyboard threads share the cool-downs
-        self.run_steps = run_steps        # callable(list of steps)
+        self._run_raw = run_steps          # callable(list of steps)
+        self.run_steps = self._run_sided  # the same, with the side of the current turn (front / rear) applied
+        self.sides_enabled = True         # the machines are told apart (MFP device roles); False: every command to all
+        self._turn_side = None            # "front" / "rear" for the turn being handled, None = every side
+        self._last_side = None            # the side used last (when nothing says which, she goes on with it)
         self.dry_run = dry_run
         self.log_path = log_path
         self.clock = clock
@@ -236,6 +264,9 @@ class Controller:
     def handle(self, transcript: str) -> Outcome:
         with self._lock:
             self._last_heard = self.clock()
+            words = self.side_of(transcript)
+            self._turn_side = words if words in ("front", "rear") else (None if words == "both" else self._last_side)
+            self._turn_side_from_words = words is not None
             result = self._handle(transcript)
             if isinstance(result, Outcome):
                 self._log(transcript, result)
@@ -496,6 +527,40 @@ class Controller:
             self._log(transcript, outcome)
         return outcome
 
+    # ---- two machines and two launchers: front (her mouth) and rear (from behind) ----------------------
+    def side_of(self, transcript):
+        """the side the words point at: "do ust", "ssij", "na twarz" -> front; "od tyłu", "w dupę", "do środka" -> rear"""
+        low = " " + normalize(transcript) + " "
+        front = sum(1 for w in SIDE_NORM["front"] if w in low)
+        rear = sum(1 for w in SIDE_NORM["rear"] if w in low)
+        if front and not rear:
+            return "front"
+        if rear and not front:
+            return "rear"
+        if front and rear:
+            return "both"
+        return None
+
+    def _sided(self, steps, side):
+        """the steps for one side: a machine / launcher action gets the side in its name (Hismith::Front::Speed::Faster)"""
+        if side not in ("front", "rear") or not self.sides_enabled:
+            return steps
+        tag = "Front" if side == "front" else "Rear"
+        out = []
+        for st in steps:
+            action = st.get("action", "")
+            head, sep, tail = action.partition("::Hismith::")
+            if sep and tail.split("::")[0] in SIDED_ACTIONS and not tail.startswith(("Front::", "Rear::")):
+                st = dict(st, action=f"{head}::Hismith::{tag}::{tail}")
+            out.append(st)
+        return out
+
+    def _run_sided(self, steps):
+        side = self._turn_side
+        if side in ("front", "rear"):
+            self._last_side = side
+        return self._run_raw(self._sided(steps, side))
+
     def is_banned(self, line):
         """she never names the hardware: the men in VR take her (narration.pool.banned_words)"""
         from lines import is_banned_line
@@ -737,6 +802,8 @@ class Controller:
         return self.rng.random() < p
 
     def _fire_lube_surprise(self, extra):
+        if self._turn_side is None:
+            self._turn_side = self._last_side or "front"            # an unasked shot: in her face, unless the scene is behind
         intent = next((i for i in self.intents if i.id == "lube_fire"), None)
         if intent is None:
             return False
@@ -757,6 +824,9 @@ class Controller:
         gaps = self.persona_cfg["narration"]["gap_seconds"]
         lo, hi = gaps[max(0, min(stage, len(gaps) - 1))]
         return self.rng.uniform(float(lo), float(hi))
+
+    def _idle_side(self):
+        self._turn_side = self._last_side
 
     def idle_narration(self):
         """Called about once a second by the main loop. While a session is on she comments at random moments, whether
@@ -978,6 +1048,8 @@ class Controller:
             turn.confession = True
         if self._says_any(transcript, self.persona_cfg["obey_phrases"], 0.88):
             turn.thanked = True
+        if not getattr(self, "_turn_side_from_words", False) and getattr(turn, "side", "auto") in ("front", "rear", "both"):
+            self._turn_side = None if turn.side == "both" else turn.side          # she chose the side from the context
         m = self.persona_cfg["manners"]
         met = self._demand_met(transcript)
         if met:
@@ -1183,10 +1255,10 @@ class Controller:
             back = {"faster": "slower", "slower": "faster", "deeper": "shallower", "shallower": "deeper"}
             undo = [{"step": back[u.split("x")[0]], "times": int(u.split("x")[1]) if "x" in u else 1} for u in used if u.split("x")[0] in back]
             undo_steps, undo_used = self._persona_steps(undo, self._program_allowed()) if undo else ([], [])
-            self._program = {"next_at": now, "every": 0, "until": 0, "steps": steps, "used": used, "random_modes": False,
+            self._program = {"next_at": now, "every": 0, "until": 0, "steps": steps, "used": used, "random_modes": False, "side": self._turn_side,
                              "then": {"at": now + duration, "steps": undo_steps, "used": undo_used}, "source": intent.id if intent else "program"}
         else:
-            self._program = {"next_at": now + start_after, "every": every, "until": (now + start_after + duration) if duration else 0,
+            self._program = {"next_at": now + start_after, "every": every, "until": (now + start_after + duration) if duration else 0, "side": self._turn_side,
                              "steps": steps, "used": used, "random_modes": random_modes, "then": None,
                              "source": intent.id if intent else "program"}
         extra["program"] = self.program_summary()
@@ -1251,6 +1323,7 @@ class Controller:
             if now < pr["next_at"] or self.lock_remaining() > 0:
                 return False
             extra = {"program": self.program_summary()}
+            self._turn_side = pr.get("side")
             ran = self._run_program_step(now, extra)
             self._log("[program]", Outcome("executed" if ran else "talk", "program step", pr["source"], 0.0, "program", extra))
             return ran
@@ -1280,7 +1353,7 @@ class Controller:
                 self._track_lock(intent)
                 outcome = Outcome("dry-run", f"would run {len(intent.steps)} step(s)", intent.id, 1.0, "key")
             else:
-                self.run_steps(intent.steps)
+                self._run_raw(intent.steps)          # a key is for every side
                 self._track_lock(intent)
                 self._remember(intent.id)
                 outcome = Outcome("executed", "key", intent.id, 1.0, "key")
@@ -1389,6 +1462,10 @@ class Controller:
             return Outcome("ignored", "wake word only")
 
         m, reason = match(command, self.intents)
+        if m is None and self.sides_enabled:
+            bare = strip_side_words(command)
+            if bare and bare != normalize(command):
+                m, reason = match(bare, self.intents)       # "szybciej od tyłu" is "szybciej" for the rear one
         if m is None:
             return self._maybe_llm(transcript, Outcome("ignored", reason))
         if self._gated(m.intent.id):

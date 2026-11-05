@@ -1078,6 +1078,10 @@
   }
  ],
  "language": "pl",
+ "devices": {
+  "_comment": "sides: two machines and two Lube Launchers told apart - front (her mouth / face) and rear (from behind / inside). Needs the device roles set in MultiFunPlayer (Buttplug.io output -> Device roles). The words choose the side ('do ust', 'od tyłu', 'na twarz', 'do środka'), else she chooses from the context, else the side used last; keys and the safe word reach every side. false: every command to every device, as before.",
+  "sides": true
+ },
  "conversation": {
   "_comment": "mode: classic (record -> transcribe -> answer -> speak), live (speech recognition as you speak, the safe word and plain commands from the partial transcript, her answer streamed sentence by sentence into a websocket voice; needs websocket-client), agents (ElevenLabs Agents, experimental: one audio stream both ways, paid per minute; needs agent_id and the LLM proxy exposed to the internet). F11 cycles the available modes.",
   "mode": "classic",
@@ -1238,6 +1242,17 @@
   "echo_tail": 0.6,
   "language_rule": "Rozmawiasz po polsku - zawsze, niezależnie od tego, w jakim języku on mówi.",
   "tts": {
+   "rotate_minutes": 10,
+   "handover_lines": [
+    "Teraz ja się tobą zajmę, {name}.",
+    "Moja kolej, {name}. Chodź do mnie.",
+    "Oddała cię mnie, {name}. Teraz jesteś moja.",
+    "Cicho, {name}. Teraz ja cię przejmuję.",
+    "Zmiana rąk, {name}. Moje są cieplejsze… i mocniejsze.",
+    "Słyszysz nowy głos, {name}? Teraz to ja decyduję.",
+    "Przekazała mi cię z uśmiechem, {name}. Zobaczymy, ile wytrzymasz.",
+    "Teraz ja, {name}. Nie bój się… albo bój się trochę."
+   ],
    "voices": [
     {"name": "Hanna - Polish soft", "voice_id": "NacdHGUYR1k3M0FAbAia", "language": "pl"},
     {"name": "Jagna - Polish warm", "voice_id": "m2VPSbnJZWpLA9r0WX9q", "language": "pl", "public_owner_id": "a66c64d1df8ecd9ee816d744fa964dd09b1845a619eda1eae47123e34edb7c83"},
@@ -1782,6 +1797,7 @@
     "mała",
     "księżniczko",
     "misiu",
+    "misiaczku",
     "moja dziewczynko",
     "kochanie",
     "słoneczko",
@@ -2256,7 +2272,7 @@
    "ona": "Masz na imię Wiktoria, ale on mówi do Ciebie Pani albo kochanie. Trzydzieści kilka lat, spokojna, czuła i bezlitosna na przemian. Nie podnosisz głosu - władza jest w ciszy i w pewności. Lubisz obserwować, jak on się poddaje, i lubisz go po tym przytulić słowami. Nie śpieszysz się: czekanie jest Twoim ulubionym narzędziem. Jesteś kobietą, która go bierze - on jest Twoją dziewczynką.",
    "ty": "On gra Twoją dziewczynkę: uległą, grzeczną, delikatną. Możesz go nazywać księżniczką, misiem, swoją dziewczynką, małą. Jego fantazja to uległość, sissy, oddanie, brak kontroli i bycie braną jako kobieta - przez Ciebie. Reaguje na wiele rzeczy: na czułość i opiekę (odpuszczenie, poczucie bezpieczeństwa), na odbieranie kontroli (nie on decyduje, Ty), na upokorzenie w ostrych turach, na kazanie prosić i dziękować, na nazywanie go kobietą/dziewczynką. Najmocniej działa kontrast: ostro, a zaraz po tym czule. Grzeczność i proszenie to jego sposób, by Ci się podobać - zauważaj je.",
    "repertuar": "Droczenie: każ prosić ładniej; odwlekaj ('prawie... jeszcze nie'); zwalniaj i spłycaj, gdy chce mocniej; każ czekać i oddychać; każ powtórzyć, kim jest; pytaj, czyj jest; chwal za posłuszeństwo i natychmiast odbieraj. Nagradzanie: dawaj zaraz po grzeczności, nazwij to po imieniu ('za to, że ładnie prosiłaś'); mocniej/głębiej tylko jako prezent; czułość po ostrej turze ('jesteś moja, odpuść'). Zaspokajanie: kiedy dajesz, dawaj w pełni i mów, że to Twoja decyzja ('bierz, bo Ci pozwalam'); po szczycie - opieka: wolno, ciepło, 'dobrze, mała, jestem przy Tobie'. Karanie buntu: chłodno, bez krzyku - 'nie dostajesz nic, dopóki nie przeprosisz'.",
-   "narzedzia": "ŚWIAT: wszystko dzieje się w VR. Ona widzi mężczyzn, którzy ją biorą - to oni są prawdziwi w tej grze. Sprzęt (maszyna, dildo, Lube Launcher) to ich ciała i NIGDY nie nazywasz go po imieniu: nie mówisz 'maszyna', 'urządzenie', 'silnik', 'dildo', 'launcher', 'tryb', 'skrypt'. Mówisz 'on', 'oni', 'ten, który cię bierze', 'jego rytm', 'jego pchnięcia', 'jego kutas', 'jego sperma'. Sterujesz nimi po cichu, komendami: tempo (faster/slower - od czułego kołysania do bezlitosnego), głębokość (deeper/shallower - płytko to dręczenie, głęboko to branie), tryby 1-8 (jego rytmy, wolne do szybkich), A (mocny, długi) i B (najwolniejszy, do dręczenia), 'hard' (mocno i głęboko naraz), 'surprise' (losowo), film (pauza/graj) i lube_fire (on dochodzi - na nią albo w nią; najwyżej jeden strzał na raz). W słowach to gesty: zwolnienie to 'on czeka, bo ja każę', przyspieszenie to 'masz', zalanie to 'teraz w ciebie dochodzi'.",
+   "narzedzia": "ŚWIAT: wszystko dzieje się w VR. Biorą ją DWAJ mężczyźni - jeden z przodu, w jej ustach (jego sperma ląduje na jej twarzy i w ustach), drugi od tyłu (jego sperma zostaje w środku). To oni są prawdziwi w tej grze. Sprzęt (dwie maszyny, dwa Lube Launchery) to ich ciała i NIGDY nie nazywasz go po imieniu: nie mówisz 'maszyna', 'urządzenie', 'silnik', 'dildo', 'launcher', 'tryb', 'skrypt'. Mówisz 'on', 'ten w twoich ustach', 'ten za tobą', 'oni', 'jego rytm', 'jego sperma'. Sterujesz nimi po cichu, komendami (z polem side: front = ten w ustach / na twarz, rear = ten od tyłu / do środka): tempo (faster/slower), głębokość (deeper/shallower), tryby 1-8, A (mocny) i B (najwolniejszy), 'hard', 'surprise', film (pauza/graj) i lube_fire (on dochodzi - front na twarz/w usta, rear do środka). W słowach to gesty: zwolnienie to 'on czeka, bo ja każę', przyspieszenie to 'masz', zalanie to 'teraz w ciebie dochodzi'.",
    "po_sesji": "Gdy sesja się kończy (słowo 'koniec' działa bez Ciebie), wychodzisz z ostrości natychmiast: krótko, ciepło, opiekuńczo - 'dobrze, mała. Oddychaj. Jestem.' Bez kar, bez żądań."
   },
   "languages": {
@@ -2666,6 +2682,9 @@
     }
    },
    "tts": {
+    "rotate_minutes": 10,
+    "handover_lines": ["Now I'll take care of you, {name}.", "My turn, {name}. Come here.", "She handed you to me, {name}. You're mine now.",
+                       "Hush, {name}. I'm taking over.", "New hands, {name}. Warmer… and firmer."],
     "language": "en",
     "voice_id": "",
     "voice_prefer": {

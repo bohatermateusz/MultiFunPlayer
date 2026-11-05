@@ -272,6 +272,7 @@ def build(args):
                             wake_words=wake_words, wake_min_similarity=wake.get("min_similarity", 0.8), llm=llm, llm_cfg=lc,
                             lock_cfg=cfg.get("lock"), persona=persona, persona_cfg=pc, wake_words_by_lang=by_lang)
     controller.speak = lambda line: print(f"  Pani: {line}")
+    controller.sides_enabled = bool(cfg.get("devices", {}).get("sides", True))
     from controller import deep_merge
     languages = ["pl"] + [k for k in (pc.get("languages") or {}) if k != "pl"]
     for lang in languages:
@@ -492,6 +493,8 @@ def main():
         if announce:
             controller.say_now(announce)
 
+    rotation = {"last": time.monotonic(), "used": []}
+
     def next_voice():
         lang = controller.language
         lst = voices_for(lang)
@@ -506,7 +509,20 @@ def main():
             print(f"  voice: {lst[i].get('name')} could not be resolved")
             return
         print(f"  voice: {lst[i].get('name')} ({ids[i]})")
-        use_voice(lang, ids[i], "This is my voice now." if lang == "en" else "Teraz brzmię tak.")
+        use_voice(lang, ids[i], handover_line(lang))
+        rotation["last"] = time.monotonic()
+
+    def handover_line(lang):
+        """what the new voice says first: "Teraz ja się tobą zajmę, misiaczku." - a line and a name, drawn, never twice"""
+        t = tts_now()
+        lines = t.get("handover_lines") or (["This is my voice now."] if lang == "en" else ["Teraz brzmię tak."])
+        names = controller.persona_cfg.get("address", {}).get("names") or ["mała"]
+        soft = [n for n in names if n not in ("szmato", "dziwko", "slut", "whore")] or names
+        fresh = [l for l in lines if l not in rotation["used"]] or lines
+        line = controller.rng.choice(fresh)
+        rotation["used"].append(line)
+        del rotation["used"][:-max(1, len(lines) - 1)]
+        return line.format(name=controller.rng.choice(soft))
 
     def on_language_voice(lang):
         t = tts_now()
@@ -610,6 +626,10 @@ def main():
                     time.sleep(1.0)
                     try:
                         controller.tick()            # her program (e.g. a new mode every 3 minutes)
+                        every = float(tts_now().get("rotate_minutes", 0) or 0) * 60
+                        if every and time.monotonic() - rotation["last"] >= every and controller.persona_active() \
+                                and controller._session_on(controller.clock()) and not controller.busy():
+                            next_voice()             # another woman takes over, every rotate_minutes
                         if manager["m"] is not None and manager["m"].mode == "agents":
                             continue                 # the agent speaks for her: narration goes through its proxy
                         if not args.no_narration:

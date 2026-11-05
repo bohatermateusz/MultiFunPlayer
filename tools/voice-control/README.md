@@ -203,6 +203,16 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   (not doing what she asked) cuts them further (x0.4). An open refusal ("nie chcę", "nie powiem", "nie będę prosić", or
   the model flags defiance) wipes your asks and nothing is granted for 90 s, or until you apologise ("przepraszam,
   Pani"). Not even the 8th ask beats an active punishment. "koniec"/End and "utrzymaj to" are never punished.
+* **Two machines, two Lube Launchers** (`devices.sides`): in MultiFunPlayer, Buttplug.io output -> **Device roles**, set
+  each connected device to Rear (from behind), Front (her mouth) or Both (every command, the default). MFP keeps a separate
+  state per side (mode, speed, depth, boosts, Lube Launcher burst) and has side actions (`Hismith::Rear::Speed::Faster`,
+  `Hismith::Front::LubeLauncher::FireMany`, ...). The voice tool picks the side from your words ("spuść mi się do ust" ->
+  front launcher, "bierz mnie szybciej od tyłu" -> rear machine, "do środka" -> rear launcher), else she picks it from the
+  context (the `side` field of her answer), else the side used last; nothing ever said -> every side. Keys and the safe
+  word always reach every side. Her programs keep the side they were made with.
+* **Another woman every 10 minutes** (`tts.rotate_minutes`): the next voice of the list takes over and introduces herself
+  with a line from `tts.handover_lines` ("Teraz ja się tobą zajmę, misiaczku."), never the same twice in a row; F9 still
+  switches by hand.
 * **No endless "ask nicer"**: what she demanded is remembered; doing it roughly is enough (a polite word after "ask
   nicer" adds `manners.beg_met_bonus` 0.35 and continues the same ask even if you do not repeat it; "dziękuję" after
   "thank me", a "jestem ..." after "say what you are", a close repetition after "repeat" - she gives it). Her refusal is

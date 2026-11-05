@@ -30,7 +30,7 @@ STEP_IDS = [i.id for i in INTENTS if i.improvise]
 
 
 def answer(request="none", granted="Masz, mała. Dobra dziewczynka.", denied="Jeszcze nie. Poproś ładniej.", **kw):
-    a = {"addressed": True, "request": request, "shots": 0, "program": None, "confession": False, "thanked": False,
+    a = {"addressed": True, "request": request, "side": "auto", "shots": 0, "program": None, "confession": False, "thanked": False,
          "defiance": False, "demand": "beg", "grant_actions": [], "tease_actions": [], "line_if_granted": granted, "line_if_denied": denied}
     a.update(kw)
     return a

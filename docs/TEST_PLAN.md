@@ -169,6 +169,11 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.91 | 'Powtórz za mną: ...' i powtórz z jednym przekręconym słowem | nie ma kary; uznane za wykonanie |
 | 6.92 | Poproś o coś, ona każe prosić ładniej - powiedz tylko 'proszę bardzo' | szansa wyraźnie rośnie (w logu `demand_met: beg`), bez powtarzania samej prośby |
 | 6.93 | 10 próśb pod rząd | jej odmowy są różne, nigdy dwa razy to samo zdanie; najpóźniej 5. prośba przechodzi |
+| 6.94 | MFP: Buttplug.io -> Device roles: tylna maszyna i launcher = Rear, przednie = Front | status pokazuje obie strony; F8 strzela oboma |
+| 6.95 | 'kochanie, spuść mi się do ust' (po zgodzie) / 'spuść się do środka' | strzela tylko przedni / tylko tylny launcher |
+| 6.96 | 'kochanie, bierz mnie szybciej od tyłu', potem 'kochanie, szybciej' | przyspiesza tylko tylna maszyna, oba razy |
+| 6.97 | 'koniec' przy dwóch pracujących maszynach | obie stają |
+| 6.98 | 10 min sesji | głos zmienia się sam, nowy przedstawia się ("Teraz ja się tobą zajmę, ...") |
 | 6.88 | Koszt | po 30 min: znaki w ElevenLabs (classic/live) vs minuty Agents w dashboardzie - porównaj |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |
