@@ -9,10 +9,11 @@ import time
 
 class RealtimeStt:
     def __init__(self, api_key, model="gpt-4o-mini-transcribe", language="pl", prompt="", silence_ms=500, threshold=0.5,
-                 connect=None, url="wss://api.openai.com/v1/realtime?intent=transcription",
+                 connect=None, url="wss://api.openai.com/v1/realtime?intent=transcription", api="ga", rate=24000,
                  on_partial=None, on_final=None, on_speech_start=None, on_speech_stop=None, log=print):
         self.api_key, self.model, self.language, self.prompt = api_key, model, language, prompt
         self.silence_ms, self.threshold, self.url = int(silence_ms), float(threshold), url
+        self.api, self.rate = api, int(rate)            # "ga" (the current API) or "beta" (the old shape, retired)
         self.connect = connect or self._default_connect
         self.on_partial, self.on_final = on_partial, on_final
         self.on_speech_start, self.on_speech_stop = on_speech_start, on_speech_stop
@@ -37,12 +38,25 @@ class RealtimeStt:
         return websocket.create_connection(url, header=[f"{k}: {v}" for k, v in headers.items()], timeout=30)
 
     def session_update(self):
+        vad = {"type": "server_vad", "threshold": self.threshold, "prefix_padding_ms": 300, "silence_duration_ms": self.silence_ms}
+        transcription = {"model": self.model, "language": self.language, "prompt": self.prompt}
+        if self.api == "beta":
+            return {"type": "session.update", "session": {
+                "input_audio_format": "pcm16", "input_audio_transcription": transcription, "turn_detection": vad,
+                "input_audio_noise_reduction": {"type": "near_field"}}}
+        # the GA shape: a transcription session, audio input settings under session.audio.input
         return {"type": "session.update", "session": {
-            "input_audio_format": "pcm16",
-            "input_audio_transcription": {"model": self.model, "language": self.language, "prompt": self.prompt},
-            "turn_detection": {"type": "server_vad", "threshold": self.threshold, "prefix_padding_ms": 300,
-                               "silence_duration_ms": self.silence_ms},
-            "input_audio_noise_reduction": {"type": "near_field"}}}
+            "type": "transcription",
+            "audio": {"input": {"format": {"type": "audio/pcm", "rate": self.rate},
+                                "noise_reduction": {"type": "near_field"},
+                                "transcription": transcription,
+                                "turn_detection": vad}}}}
+
+    def headers(self):
+        h = {"Authorization": f"Bearer {self.api_key}"}
+        if self.api == "beta":
+            h["OpenAI-Beta"] = "realtime=v1"       # the beta header selects the retired API shape
+        return h
 
     def start(self):
         if self._thread and self._thread.is_alive():
@@ -87,7 +101,7 @@ class RealtimeStt:
         delay = 1.0
         while not self._stop.is_set():
             try:
-                ws = self.connect(self.url, {"Authorization": f"Bearer {self.api_key}", "OpenAI-Beta": "realtime=v1"})
+                ws = self.connect(self.url, self.headers())
                 self._ws = ws
                 ws.send(json.dumps(self.session_update()))
                 self.connected = True
@@ -135,4 +149,9 @@ class RealtimeStt:
             if self.on_final and text:
                 self.on_final(item, text)
         elif t == "error":
-            self.log(f"  realtime stt error: {msg.get('error', msg)}")
+            err = msg.get("error", msg)
+            self.log(f"  realtime stt error: {err}")
+            code = str((err or {}).get("code", "")) if isinstance(err, dict) else ""
+            if code == "beta_api_shape_disabled" and self.api == "beta":
+                self.api = "ga"                     # switch to the current API shape and reconnect
+                raise RuntimeError("beta shape retired, switching to GA")

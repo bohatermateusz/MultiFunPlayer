@@ -1081,7 +1081,8 @@
  "conversation": {
   "_comment": "mode: classic (record -> transcribe -> answer -> speak), live (speech recognition as you speak, the safe word and plain commands from the partial transcript, her answer streamed sentence by sentence into a websocket voice; needs websocket-client), agents (ElevenLabs Agents, experimental: one audio stream both ways, paid per minute; needs agent_id and the LLM proxy exposed to the internet). F11 cycles the available modes.",
   "mode": "classic",
-  "live": {"stt_model": "gpt-4o-mini-transcribe", "silence_ms": 500, "vad_threshold": 0.5, "speculative": true, "interrupt_on_speech": true},
+  "live": {"stt_model": "gpt-4o-mini-transcribe", "silence_ms": 500, "vad_threshold": 0.5, "speculative": true, "interrupt_on_speech": true,
+           "api": "ga", "url": "wss://api.openai.com/v1/realtime?intent=transcription"},
   "agents": {"agent_id": "", "proxy_port": 8787, "input_rate": 16000, "output_rate": 16000, "override_prompt": false}
  },
  "wake": {

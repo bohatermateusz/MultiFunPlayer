@@ -290,8 +290,20 @@ class Realtime(unittest.TestCase):
         self.assertIn(("p", "i1", "kochanie, szybciej"), seen)
         self.assertEqual(seen[-1], ("f", "i1", "kochanie, szybciej"))
         self.assertEqual(sock.sent[0]["type"], "session.update")
-        self.assertEqual(sock.sent[0]["session"]["turn_detection"]["silence_duration_ms"], 500)
-        self.assertEqual(sock.sent[0]["session"]["input_audio_transcription"]["language"], "pl")
+        session = sock.sent[0]["session"]
+        self.assertEqual(session["type"], "transcription")                                     # the GA shape
+        self.assertEqual(session["audio"]["input"]["turn_detection"]["silence_duration_ms"], 500)
+        self.assertEqual(session["audio"]["input"]["transcription"]["language"], "pl")
+        self.assertEqual(session["audio"]["input"]["format"], {"type": "audio/pcm", "rate": 24000})
+        self.assertNotIn("OpenAI-Beta", rt.headers())
+
+    def test_beta_shape_and_the_switch_to_ga(self):
+        rt = RealtimeStt("k", api="beta", connect=lambda u, h: FakeSocket([""]), log=lambda *a: None)
+        self.assertIn("input_audio_transcription", rt.session_update()["session"])
+        self.assertEqual(rt.headers()["OpenAI-Beta"], "realtime=v1")
+        with self.assertRaises(RuntimeError):
+            rt.handle_event({"type": "error", "error": {"code": "beta_api_shape_disabled"}})
+        self.assertEqual(rt.api, "ga")
 
     def test_audio_is_appended_only_while_connected(self):
         rt = RealtimeStt("k", connect=lambda u, h: FakeSocket([""]), log=lambda *a: None)

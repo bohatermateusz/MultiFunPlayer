@@ -183,7 +183,8 @@ def build_conversation(args, cfg, controller, stt, voice, speakers, muted, gate,
     if RealtimeStt.available():
         s = cfg.get("stt", {})
         rt = RealtimeStt(os.environ.get(s.get("api_key_env", "OPENAI_API_KEY"), ""), live.get("stt_model", "gpt-4o-mini-transcribe"),
-                         controller.language, stt.prompt, silence_ms=live.get("silence_ms", 500), threshold=live.get("vad_threshold", 0.5))
+                         controller.language, stt.prompt, silence_ms=live.get("silence_ms", 500), threshold=live.get("vad_threshold", 0.5),
+                         api=live.get("api", "ga"), url=live.get("url", "wss://api.openai.com/v1/realtime?intent=transcription"))
         from audio import SegmentDetector
         from stt import pcm_to_wav
         detector = SegmentDetector(sample_rate=24000, threshold_db=lis.get("threshold_db"), margin_db=lis.get("margin_db", 12),
