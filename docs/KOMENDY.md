@@ -177,7 +177,7 @@ Grzeczność się liczy: prośba bez "proszę"/"Pani" ma gorsze szanse, a zignor
 "trąbka" i "utrzymaj to" działają zawsze, bez kary. Przy odmowie potrafi dręczyć: zwolnić, spłycić, włączyć najwolniejszy tryb.
 
 Co jej wolno: mówić, dawać i odbierać tempo, głębokość, tryby, jeden strzał z lube na raz. Czego nie wolno nigdy:
-zatrzymać maszyny samej z siebie ("trąbka" to Twoje słowo), włączyć blokady, zaskoczyć sama z siebie. **"Kochanie, koniec" i klawisz End
+zatrzymać maszyny samej z siebie ("trąbka" to Twoje słowo), włączyć blokady, zaskoczyć sama z siebie. **"Trąbka" i klawisz End
 działają zawsze, także gdy mówi.** W blokadzie 5 minut tylko mówi (i lube dalej przez nią przechodzi).
 
 Gdy Pani jest niedostępna (brak internetu / klucza): łagodne komendy (dość, wolniej, płycej, wróć do filmu, normalnie, pauza, graj, pętla) działają zwyczajnie, a lube, szybciej, głębiej, sceny i tryby są ignorowane, dopóki wróci.
