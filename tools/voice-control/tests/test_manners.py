@@ -143,7 +143,7 @@ class RefusalIsPunished(Server):
 
     def test_the_safe_word_and_the_hold_are_never_punished(self):
         self.say("kochanie, nie chcę", request="none")
-        self.assertEqual(self.say("kochanie, koniec").status, "executed")
+        self.assertEqual(self.say("kochanie, trąbka").status, "executed")
         self.assertEqual(self.say("kochanie, utrzymaj to").status, "executed")
 
 

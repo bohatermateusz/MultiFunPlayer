@@ -9,7 +9,7 @@ przykłady, które działają na pewno (bez modelu, od razu).
 
 | Powiedz | Co się stanie |
 |---|---|
-| **kochanie, koniec** | maszyna staje od razu (prędkość 0), wszystko odwołane, blokada zdjęta. **Jedyne, co zdejmuje blokadę.** Klawisz **End**. |
+| **trąbka** (samo słowo, bez "kochanie"; też "kochanie, trąbka", "trąbko") | maszyny stają od razu (prędkość 0), wszystko odwołane, blokada zdjęta, Pani milknie. **Jedyne, co zdejmuje blokadę.** Klawisz **End**. "trąbka" nie jest już słowem bezpieczeństwa. |
 
 ## Gdy film gra i chcę coś zmienić (skrypt dalej gra, tylko mocniej / łagodniej)
 
@@ -31,7 +31,7 @@ Komendy się sumują (dwa razy „szybciej" = dwa kroki). „Normalnie" zdejmuje
 
 | Powiedz | Co się stanie |
 |---|---|
-| **utrzymaj to** · rób tak dalej · tak trzymaj · zostaw tak · nie zmieniaj · o tak · tak dobrze · idealnie · jeszcze · nie przestawaj · właśnie tak | przez 5 minut maszyna robi dokładnie to, co teraz. Przy filmie zapętla się ostatnie 20 sekund skryptu. **Nic tego nie zmieni** – żadna komenda, klawisz ani przycisk – tylko **„koniec"**. Lube działa dalej. Klawisz **PgUp**. |
+| **utrzymaj to** · rób tak dalej · tak trzymaj · zostaw tak · nie zmieniaj · o tak · tak dobrze · idealnie · jeszcze · nie przestawaj · właśnie tak | przez 5 minut maszyna robi dokładnie to, co teraz. Przy filmie zapętla się ostatnie 20 sekund skryptu. **Nic tego nie zmieni** – żadna komenda, klawisz ani przycisk – tylko **„trąbka"**. Lube działa dalej. Klawisz **PgUp**. |
 
 Powtórzenie liczy 5 minut od nowa.
 
@@ -106,14 +106,14 @@ posłuszną sissi"), łagodniejszy na początku, ostrzejszy później, nigdy ten
 W MultiFunPlayer (Buttplug.io -> **Device roles**) ustaw każdemu urządzeniu rolę: **Rear** (od tyłu), **Front** (usta) albo
 **Both** (wszystko, jak dotąd). Potem mówisz naturalnie: "spuść mi się do ust" / "na twarz" -> przedni launcher, "spuść się do
 środka" / "w dupę" -> tylny, "bierz mnie szybciej od tyłu" -> tylna maszyna, "głębiej w usta" -> przednia. Bez wskazania Pani
-wybiera z kontekstu, a gdy nie wie - tę stronę, której używaliście ostatnio. Klawisze i "koniec" działają zawsze na wszystko.
+wybiera z kontekstu, a gdy nie wie - tę stronę, której używaliście ostatnio. Klawisze i "trąbka" działają zawsze na wszystko.
 
 Co 10 minut zmienia się głos - nowa Pani przejmuje Cię kwestią w stylu "Teraz ja się tobą zajmę, misiaczku."
 
 ## F11: rozmowa bez przerw
 
 Trzy tryby rozmowy, F11 przełącza w locie (Pani potwierdza): **klasyczny** - jak dotąd (nagranie, rozpoznanie, odpowiedź, głos:
-2-4 s ciszy); **na żywo** - rozpoznawanie w trakcie mówienia, "koniec" i proste komendy działają już z częściowego tekstu,
+2-4 s ciszy); **na żywo** - rozpoznawanie w trakcie mówienia, "trąbka" i proste komendy działają już z częściowego tekstu,
 prośba do Pani rusza jej myślenie zanim skończysz, a odpowiedź płynie zdanie po zdaniu (pierwsze słowo ok. 1-1,5 s po Twoim
 ostatnim); gdy zaczynasz mówić, ona milknie; **agents** (eksperyment, płatny za minutę) - jedna ciągła rozmowa przez ElevenLabs,
 Pani dalej decyduje u nas. Start: `--mode live` albo `conversation.mode` w `commands.json`.
@@ -131,7 +131,7 @@ brzmienie: `python voice_control.py voices --audition` (ta sama kwestia wszystki
 **F9** zmienia głos Pani na następny z listy (`persona.tts.voices`) w bieżącym języku - potwierdza nowym głosem. **F10** przełącza
 wszystko na angielski i z powrotem: ona mówi po angielsku, Ty też - słowo-klucz to "darling" / "mistress" / "lady" / "honey",
 komendy po angielsku ("faster", "deeper", "cum on me", "flood me", "mode three", "hold it", "enough"), słowo bezpieczeństwa
-to **"stop"** (także "red", "end"; jak "koniec" działa bez słowa-klucza), wyznania ("I'm your whore"), przeprosiny ("I'm sorry,
+to **"stop"** (także "red", "end"; jak "trąbka" działa bez słowa-klucza), wyznania ("I'm your whore"), przeprosiny ("I'm sorry,
 Mistress"), narracja, polecenia i pula tekstów - wszystko po angielsku, z własnym głosem (Jessica / Lily / Sarah / Alice).
 Start po angielsku: `--language en`.
 
@@ -143,20 +143,20 @@ Nie musisz pamiętać żadnych fraz z tej listy - Pani rozumie, o co Ci chodzi, 
 | mówisz | ona rozumie (i decyduje kością jak zawsze) |
 |---|---|
 | **zalej mnie** · zalej mnie całą · dwa razy · kilka razy | ile strzałów masz na myśli: 1-5 na jedną prośbę (jedna kość na całość) |
-| **zmieniaj tryby co 3 minuty** · co chwilę inny tryb | po zgodzie: losowy tryb 1-8 co 3 minuty, aż powiesz "przestań zmieniać" / "koniec" |
+| **zmieniaj tryby co 3 minuty** · co chwilę inny tryb | po zgodzie: losowy tryb 1-8 co 3 minuty, aż powiesz "przestań zmieniać" / "trąbka" |
 | **za pięć minut zwolnij** | po zgodzie: zwolni po 5 minutach |
 | **na minutę szybciej** · przez dwie minuty głębiej | po zgodzie: teraz szybciej, po minucie z powrotem |
 | **zalewaj mnie co pięć minut** | po zgodzie: jeden strzał co 5 minut (nie częściej niż co minutę) |
 | przestań zmieniać · wystarczy tego | odwołuje jej program - bez kości |
 
 Granice: co 30 s - 15 min, start do 15 min, czas trwania do godziny, w programie najwyżej jeden strzał na raz. Pani może odmówić
-albo zmienić warunki ("Co trzy? Co dwie. I tryb wybieram ja."). "Utrzymaj to" wstrzymuje program na czas blokady, "koniec" go kasuje.
+albo zmienić warunki ("Co trzy? Co dwie. I tryb wybieram ja."). "Utrzymaj to" wstrzymuje program na czas blokady, "trąbka" go kasuje.
 Program nie woła modelu - nic nie kosztuje.
 
 ## Rozmowa z Panią
 
 Pani odpowiada Ci na głos i to **ona** decyduje o wszystkim, co robi maszyna i film. Przez nią przechodzi **wszystko
-oprócz dwóch rzeczy**: **"koniec"** (słowo bezpieczeństwa) i **"utrzymaj to"** (blokada 5 minut) - te działają od razu.
+oprócz dwóch rzeczy**: **"trąbka"** (słowo bezpieczeństwa) i **"utrzymaj to"** (blokada 5 minut) - te działają od razu.
 Reszta - także "dość", "wolniej", "płycej", tryby, "wróć do filmu", pauza, pętla, lube, "pieprz mnie", "zaskocz mnie" -
 to prośby: ona może się zgodzić albo odmówić ("Nie. Jeszcze nie skończyłam."). Łagodne prośby (dość, wolniej, płycej,
 pauza) dostają zgodę częściej (50 % za pierwszym razem). Klawisze działają zawsze od razu, bez Pani.
@@ -166,7 +166,7 @@ podziękować - odpowiadasz **bez** "kochanie" przez 60 s po jej słowach ("pros
 dziwką", "dziękuję, Pani") - i albo dostajesz, albo prosisz dalej. Szanse rosną z każdą prośbą i z każdym
 wyznaniem; zwykle 2-4 prośby, czasem od razu, czasem dłużej. Gdy zażądała czegoś konkretnego i to zrobisz -
 dostajesz na pewno. Pani ma swoją tożsamość (`persona.identity` w `commands.json`): kim jest (Wiktoria), kim Ty jesteś dla niej (jej dziewczynka,
-księżniczka, miś), jak się droczy, nagradza i zaspokaja, co robi każde pokrętło i jak kończy sesję (ciepło, po "koniec").
+księżniczka, miś), jak się droczy, nagradza i zaspokaja, co robi każde pokrętło i jak kończy sesję (ciepło, po "trąbka").
 Wpis `ty` jest Twój - dopisz tam, co lubisz i czego nie chcesz.
 
 Losowo (ok. 1 na 5-6 razy) potrafi też zatrzymać strzał w ostatniej chwili ("prawie... jeszcze nie") - bez kary, kolejna prośba ma
@@ -174,10 +174,10 @@ większą szansę. A czasem, bez pytania, sama Cię zleje lubem (od drugiego eta
 
 Grzeczność się liczy: prośba bez "proszę"/"Pani" ma gorsze szanse, a zignorowanie jej żądania jeszcze gorsze. Otwarta odmowa
 ("nie chcę", "nie powiem", "nie będę prosić") kasuje Twoje prośby i przez 90 s nic nie dostajesz - do czasu "przepraszam, Pani".
-"Koniec" i "utrzymaj to" działają zawsze, bez kary. Przy odmowie potrafi dręczyć: zwolnić, spłycić, włączyć najwolniejszy tryb.
+"trąbka" i "utrzymaj to" działają zawsze, bez kary. Przy odmowie potrafi dręczyć: zwolnić, spłycić, włączyć najwolniejszy tryb.
 
 Co jej wolno: mówić, dawać i odbierać tempo, głębokość, tryby, jeden strzał z lube na raz. Czego nie wolno nigdy:
-zatrzymać maszyny samej z siebie ("koniec" to Twoje słowo), włączyć blokady, zaskoczyć sama z siebie. **"Kochanie, koniec" i klawisz End
+zatrzymać maszyny samej z siebie ("trąbka" to Twoje słowo), włączyć blokady, zaskoczyć sama z siebie. **"Kochanie, koniec" i klawisz End
 działają zawsze, także gdy mówi.** W blokadzie 5 minut tylko mówi (i lube dalej przez nią przechodzi).
 
 Gdy Pani jest niedostępna (brak internetu / klucza): łagodne komendy (dość, wolniej, płycej, wróć do filmu, normalnie, pauza, graj, pętla) działają zwyczajnie, a lube, szybciej, głębiej, sceny i tryby są ignorowane, dopóki wróci.
@@ -186,7 +186,7 @@ Sesja **narasta**: zaczyna się chłodno i łagodnie, potem Pani robi się stano
 wulgarna i bezlitosna (etapy 0-4; liczy to narzędzie, nie model, a sufit ustawisz w `persona.escalation.max_stage`).
 Gdy milczysz ok. 25 s, **odzywa się sama** ("Czemu milczysz? Poproś mnie."). Mówi głosem ElevenLabs (wybierasz głos:
 `python voice_control.py voices`, potem `persona.tts.voice_id`). Jeśli masz słuchawki (domyślnie), **możesz jej przerwać**
-- gdy zaczniesz mówić, ona milknie od razu, więc "koniec" zawsze usłyszy.
+- gdy zaczniesz mówić, ona milknie od razu, więc "trąbka" zawsze usłyszy.
 
 Nie musisz mówić "Pani" - możesz też "kochanie", "moja Pani" itd. (lista w `persona.address`); ona zwraca się do Ciebie różnie
 (dziewczynko, mała, suko, kochanie...). Jeśli ElevenLabs odmówi wypowiedzenia jakiejś kwestii, **ta sama kwestia zostanie
@@ -223,4 +223,4 @@ Przykłady tego, co możesz mówić: "proszę, Pani" · "błagam" · "jestem Two
 
 Num 1–8 tryby · Num 9 = A · Num 0 = B · Num . = normalnie · Num + / − szybciej / wolniej ·
 Num * / / głębiej / płycej · F8 lube · Insert niespodzianka · Del coś innego · Home dość ·
-PgUp utrzymaj · **End koniec** · Pause nasłuch wł./wył.
+PgUp utrzymaj · **End trąbka (stop)** · Pause nasłuch wł./wył.

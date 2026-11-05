@@ -203,6 +203,9 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   (not doing what she asked) cuts them further (x0.4). An open refusal ("nie chcę", "nie powiem", "nie będę prosić", or
   the model flags defiance) wipes your asks and nothing is granted for 90 s, or until you apologise ("przepraszam,
   Pani"). Not even the 8th ask beats an active punishment. "koniec"/End and "utrzymaj to" are never punished.
+* **Safe word "trąbka"**: "trąbka" (also "trąbko", "trąbki", alone or after the wake word, also in English mode) stops
+  every machine at once, releases the hold, cuts her voice. "koniec" is no longer the safe word (it is free for
+  role-play; "koniec pętli" etc. stay commands). The End key does the same.
 * **Two machines, two Lube Launchers** (`devices.sides`): in MultiFunPlayer, Buttplug.io output -> **Device roles**, set
   each connected device to Rear (from behind), Front (her mouth) or Both (every command, the default). MFP keeps a separate
   state per side (mode, speed, depth, boosts, Lube Launcher burst) and has side actions (`Hismith::Rear::Speed::Faster`,

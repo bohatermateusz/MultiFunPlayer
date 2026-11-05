@@ -63,7 +63,7 @@ class HoldTests(unittest.TestCase):
                      "tryb ręczny", "włącz sekwencję", "zapętl to"]:
             o = self.say(text)
             self.assertEqual(o.status, "locked", text)
-            self.assertIn("koniec", o.detail)
+            self.assertIn("trąbka", o.detail)
         self.assertEqual(len(self.runs), sent)
 
     def test_lube_launcher_still_works(self):
@@ -74,7 +74,7 @@ class HoldTests(unittest.TestCase):
 
     def test_stop_always_works_and_releases_the_hold(self):
         self.hold()
-        self.assertEqual(self.say("koniec").status, "executed")
+        self.assertEqual(self.say("trąbka").status, "executed")
         self.assertEqual(self.runs[-1], [{"action": "{target}::Hismith::Halt", "args": []}])
         self.assertEqual(self.c.lock_remaining(), 0)
         self.assertEqual(self.say("szybciej").status, "executed")
@@ -85,7 +85,7 @@ class HoldTests(unittest.TestCase):
             o = self.say(text)
             self.assertNotEqual(o.status, "executed", text)
             self.assertGreater(self.c.lock_remaining(), 0, text)
-        self.assertEqual(self.say("koniec").status, "executed")
+        self.assertEqual(self.say("trąbka").status, "executed")
         self.assertEqual(self.c.lock_remaining(), 0)
 
     # ---- time -------------------------------------------------------------------------------------

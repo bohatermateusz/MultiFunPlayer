@@ -60,7 +60,7 @@ class Words(unittest.TestCase):
         self.say("kochanie, szybciej od tyłu")
         self.c.press("faster")
         self.assertEqual(actions(self.runs)[-1], "Hismith::Speed::Faster")
-        self.say("koniec")
+        self.say("trąbka")
         self.assertEqual(actions(self.runs)[-1], "Hismith::Halt")
 
     def test_off_switch(self):

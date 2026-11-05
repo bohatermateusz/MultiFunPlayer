@@ -1392,7 +1392,7 @@ class Controller:
         """the hold ("utrzymaj to") ignores everything except the configured commands (Lube Launcher, stop, release)"""
         left = self.lock_remaining()
         if left > 0 and intent.id not in self.lock_cfg["allow"]:
-            return Outcome("locked", f"held for another {left:.0f}s (only the safe word 'koniec' ends it)", intent.id)
+            return Outcome("locked", f"held for another {left:.0f}s (only the safe word 'trąbka' ends it)", intent.id)
         return None
 
     def _track_lock(self, intent):
@@ -1443,10 +1443,10 @@ class Controller:
 
         safe = self._safe_word_first(transcript)
         if safe is not None:
-            return self._run_match(safe, now)                # "koniec ..." stops, whatever follows
+            return self._run_match(safe, now)                # "trąbka ..." stops, whatever follows
         command = self.strip_wake_word(transcript)
         if command is None:
-            # the safe word needs no wake word, ever ("koniec" / "stop")
+            # the safe word needs no wake word, ever ("trąbka")
             m, _ = match(transcript, self.intents)
             if m is not None and m.intent.id == "halt":
                 return self._run_match(m, now)

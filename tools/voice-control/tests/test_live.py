@@ -185,7 +185,7 @@ class Streamed(ChatBase):
         self.assertIsInstance(need, _NeedPersona)
         self.assertIsNone(self.c.handle_partial("t2", "kochanie, szybciej, proszę"))
         self.clock.t += 20
-        o = self.c.handle_partial("t3", "koniec")                                 # the safe word, no wake word
+        o = self.c.handle_partial("t3", "trąbka")                                 # the safe word, no wake word
         self.assertEqual((o.intent, o.status), ("halt", "executed"))
 
     def test_speculation_fits(self):
@@ -369,7 +369,7 @@ class Live(ChatBase):
     def test_fallback_to_local_segments_when_the_session_is_down(self):
         from audio import SegmentDetector
         self.loop.detector = SegmentDetector(sample_rate=24000, threshold_db=-30, end_silence=0.1, min_seconds=0.05, calibration_seconds=0)
-        self.loop.fallback_transcribe = lambda pcm: "koniec"
+        self.loop.fallback_transcribe = lambda pcm: "trąbka"
         import struct
         loud = struct.pack("<" + "h" * 960, *([8000] * 960))
         quiet = b"\x00\x00" * 960
@@ -419,7 +419,7 @@ class Agents(ChatBase):
             json.dumps({"type": "ping", "ping_event": {"event_id": 7}}),
             json.dumps({"type": "audio", "audio_event": {"audio_base_64": base64.b64encode(b"\x01\x00").decode()}}),
             json.dumps({"type": "interruption", "interruption_event": {"event_id": 1}}),
-            json.dumps({"type": "user_transcript", "user_transcription_event": {"user_transcript": "koniec"}}),
+            json.dumps({"type": "user_transcript", "user_transcription_event": {"user_transcript": "trąbka"}}),
             json.dumps({"type": "agent_response", "agent_response_event": {"agent_response": "Dobrze, mała."}}),
             ""])
         loop = AgentsLoop(self.c, "k", "agent-1", lambda rate, on_block, stop: None, Player(), connect=lambda u, h: sock,

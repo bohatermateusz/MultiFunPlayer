@@ -140,7 +140,7 @@ class Program(Base):
 
     def test_koniec_by_voice_ends_it(self):
         self.modes_every()
-        self.c.handle("koniec")
+        self.c.handle("trąbka")
         self.assertIsNone(self.c._program)
 
     def test_cancel_by_words_no_dice(self):

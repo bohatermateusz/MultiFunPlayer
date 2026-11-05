@@ -201,6 +201,17 @@ class Narration(Server):
         self.assertEqual(said[-1], "Dobra dziewczynko.")
         self.assertIn(("assistant", "Dobra dziewczynko."), self.c._history)
 
+    def test_anal_themes_in_both_languages(self):
+        n, en = P["narration"], P["languages"]["en"]["narration"]
+        pl = [t for t in n["themes"] if "odbyt" in t or "dupę" in t or "dupa" in t]
+        self.assertGreaterEqual(len(pl), 5)
+        self.assertTrue(all(len(n["pool"]["seed"][t]) >= 5 for t in pl))
+        self.assertTrue(any("księżniczk" in l for t in pl for l in n["pool"]["seed"][t]))
+        self.assertIn("księżniczko odbytu", P["address"]["names"])
+        self.assertIn("odbyt", P["vocabulary"])
+        self.assertIn("odbyt", P["tone"]["sharp_categories"])
+        self.assertGreaterEqual(len([t for t in en["themes"] if "ass" in t]), 4)
+
     def test_no_seed_or_task_names_the_gear(self):
         import re
         n = P["narration"]

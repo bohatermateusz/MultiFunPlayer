@@ -25,7 +25,7 @@ class Identity(unittest.TestCase):
 
     def test_what_he_likes_is_in_there(self):
         text = render_character(P)
-        for word in ("księżniczk", "misi", "sissy", "braną jako kobieta", "uległ", "Lube Launcher", "koniec"):
+        for word in ("księżniczk", "misi", "sissy", "braną jako kobieta", "uległ", "Lube Launcher", "trąbka"):
             self.assertIn(word, text, word)
 
     def test_without_identity_the_core_alone(self):

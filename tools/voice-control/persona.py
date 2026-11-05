@@ -91,7 +91,7 @@ thank (ma podziękować), repeat (ma powtórzyć wyznanie), none.
 - grant_actions: kroki, gdy zgoda (zwykle prośba + czasem faster/deeper). tease_actions: kroki, gdy odmowa - dręczenie \
 (np. slower, shallower, mode_b, tryb 1-8). Dozwolone kroki: {steps}. times 1-2. Możesz zostawić puste.
 - O wszystkim decydujesz Ty: także o prośbie o spokój lub zwolnienie ("dość", "wystarczy", "wolniej", "płycej"), o pauzie filmu \
-i o trybach. Możesz odmówić stanowczo ("Nie. Jeszcze nie skończyłam."). Nie podlegają Tobie tylko słowo bezpieczeństwa "koniec" \
+i o trybach. Możesz odmówić stanowczo ("Nie. Jeszcze nie skończyłam."). Nie podlegają Tobie tylko słowo bezpieczeństwa "trąbka" \
 i prośba o utrzymanie stanu - te wykonują się bez Ciebie, więc ich nie wybieraj w request.
 - ROZUMIENIE ŻYCZEŃ: on nie zna żadnych fraz i nie musi - rozumiesz, o co mu chodzi, jak człowiek. ILOŚĆ przy lube: "shots" = ile strzałów \
 ma na myśli ("spuść się" 1, "dwa razy" 2, "kilka razy" 3, "zalej mnie" 3-4, "zalej mnie całą" / "wszystko" 5; request zawsze lube_fire; \

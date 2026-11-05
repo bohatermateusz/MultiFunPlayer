@@ -42,7 +42,7 @@ class StrictScenes(unittest.TestCase):
                  "głęboko w dupcię": "fill", "drażnij mnie": "tease", "pieść mnie": "tease", "użyj mnie": "use_me",
                  "jestem twoją sissy": "use_me", "jestem twoją suczką": "use_me", "jeszcze": "lock", "właśnie tak": "lock",
                  "nie przestawaj": "lock", "zalej mnie": "lube_many", "obryzgaj mnie kilka razy": "lube_many",
-                 "dość": "calm", "wystarczy": "calm", "stój": "calm", "przestań": "calm", "koniec": "halt",
+                 "dość": "calm", "wystarczy": "calm", "stój": "calm", "przestań": "calm", "trąbka": "halt",
                  "wyłącz maszynę": "halt", "koniec pętli": "loop_off", "koniec sekwencji": "sequence_stop"}
         for text, intent in cases.items():
             m, reason = match(text, INTENTS)
@@ -69,12 +69,14 @@ class StrictScenes(unittest.TestCase):
             self.assertEqual(c.handle(text).intent, "calm", text)
             self.assertEqual(self.runs[-1], [{"action": "{target}::Hismith::Calm", "args": []}], text)
 
-    def test_only_koniec_stops_everything(self):
+    def test_only_the_safe_word_stops_everything(self):
         c = self.make()
-        for text in ["kochanie, koniec", "kochanie, wyłącz maszynę", "kochanie, koniec zabawy"]:
+        for text in ["kochanie, trąbka", "kochanie, wyłącz maszynę", "trąbka", "Trąbko!", "kochanie, zatrzymaj maszynę"]:
             c._last.clear()
             self.assertEqual(c.handle(text).intent, "halt", text)
             self.assertEqual(self.runs[-1], [{"action": "{target}::Hismith::Halt", "args": []}], text)
+        c._last.clear()
+        self.assertNotEqual(c.handle("kochanie, koniec").intent, "halt")          # "koniec" is no longer the safe word
 
     def test_surprise_picks_a_random_mode_in_the_app(self):
         c = self.make()

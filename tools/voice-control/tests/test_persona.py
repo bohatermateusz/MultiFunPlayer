@@ -156,7 +156,7 @@ class PersonaTests(unittest.TestCase):
 
     # ---- what is not hers to decide ------------------------------------------------------------------
     def test_only_the_safe_word_and_the_hold_run_without_her(self):
-        for text, action in [("kochanie, koniec", "Hismith::Halt"), ("kochanie, utrzymaj to", "Hismith::Lock::Start")]:
+        for text, action in [("kochanie, trąbka", "Hismith::Halt"), ("kochanie, utrzymaj to", "Hismith::Lock::Start")]:
             self.c._locked_until = None
             o = self.say(text)
             self.assertEqual(o.status, "executed", text)
@@ -224,7 +224,7 @@ class PersonaTests(unittest.TestCase):
         self.say("kochanie, spuść się na mnie", request="lube_fire")
         calls = len(FakePani.calls)
         self.c._last.clear()
-        o = self.say("koniec")
+        o = self.say("trąbka")
         self.assertEqual(o.status, "executed")
         self.assertEqual(self.actions()[0], "Hismith::Halt")
         self.assertEqual(len(FakePani.calls), calls)
@@ -272,7 +272,7 @@ class PersonaTests(unittest.TestCase):
                 self.assertEqual(o.status, "ignored", text)
                 self.assertIn("persona unavailable", o.detail)
         FakePani.mode = "ok"
-        self.assertEqual(self.say("kochanie, koniec").status, "executed")
+        self.assertEqual(self.say("kochanie, trąbka").status, "executed")
         self.c._last.clear()
         FakePani.mode = "http500"
         self.assertEqual(self.say("kochanie, utrzymaj to").status, "executed")

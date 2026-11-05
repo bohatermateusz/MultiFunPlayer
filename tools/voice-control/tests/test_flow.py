@@ -1,6 +1,6 @@
 """Classic mode flow: her lines are not cut by your voice or by her next line (a queue), only the safe word cuts her;
 narration keeps quiet right after you speak; Whisper's hallucinations are dropped; a misheard repetition is obedience,
-not rebellion; "koniec ..." stops whatever follows; one retry of the speech recognition on a dropped connection."""
+not rebellion; "trąbka ..." stops whatever follows; one retry of the speech recognition on a dropped connection."""
 import os
 import random
 import sys
@@ -95,7 +95,7 @@ class SafeWord(unittest.TestCase):
         self.c.on_halt = lambda: self.halts.append(1)
 
     def test_koniec_first_stops_whatever_follows(self):
-        for text in ["koniec szybciej", "kochanie, koniec, szybciej", "Koniec. Dalej."]:
+        for text in ["trąbka szybciej", "kochanie, trąbka, szybciej", "Trąbka. Dalej."]:
             self.clock.t += 20
             self.c._last.clear()
             o = self.c.handle(text)

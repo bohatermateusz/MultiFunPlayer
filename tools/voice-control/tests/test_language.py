@@ -41,9 +41,9 @@ class Plain(unittest.TestCase):
         self.assertEqual(self.say("honey, mode three").intent, "mode_3")
         self.assertEqual(self.say("kochanie, szybciej").status, "ignored")   # Polish no longer understood
 
-    def test_the_safe_word_is_stop_in_english(self):
+    def test_the_safe_word_is_trabka_in_english_too(self):
         self.c.set_language("en")
-        o = self.say("stop")
+        o = self.say("trąbka")
         self.assertEqual((o.intent, o.status), ("halt", "executed"))
         self.assertEqual(self.say("darling, enough").intent, "calm")
 
@@ -52,7 +52,7 @@ class Plain(unittest.TestCase):
         self.assertFalse(self.c.set_language("en"))                           # no change
         self.assertTrue(self.c.set_language("pl"))
         self.assertEqual(self.say("kochanie, szybciej").intent, "faster")
-        self.assertEqual(self.say("koniec").intent, "halt")
+        self.assertEqual(self.say("trąbka").intent, "halt")
 
     def test_every_intent_with_phrases_has_english_ones(self):
         for i in INTENTS:

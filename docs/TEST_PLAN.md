@@ -174,6 +174,8 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.96 | 'kochanie, bierz mnie szybciej od tyłu', potem 'kochanie, szybciej' | przyspiesza tylko tylna maszyna, oba razy |
 | 6.97 | 'koniec' przy dwóch pracujących maszynach | obie stają |
 | 6.98 | 10 min sesji | głos zmienia się sam, nowy przedstawia się ("Teraz ja się tobą zajmę, ...") |
+| 6.99 | 'trąbka' (samo słowo) w trakcie pracy obu maszyn i jej kwestii | wszystko staje, Pani milknie; 'koniec' już nic nie zatrzymuje |
+| 6.100 | Sesja na wysokim etapie | padają wątki odbytu: "księżniczko odbytu", ruchają w dupę, spuszczają się w dupę, "lubisz to", "twój odbyt nie należy do ciebie" |
 | 6.88 | Koszt | po 30 min: znaki w ElevenLabs (classic/live) vs minuty Agents w dashboardzie - porównaj |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |
