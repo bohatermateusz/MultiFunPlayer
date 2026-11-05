@@ -419,7 +419,14 @@ def main():
                 except TtsError as e:
                     print(f"  voice: no ElevenLabs voice picked ({e}); OpenAI voice is used")
             el.delivery = tcfg.get("delivery") or {}
-            out["elevenlabs"] = el
+            if not el.api_key:
+                print("  voice: ELEVENLABS_API_KEY is not set - the OpenAI voice is used (set the key and restart for ElevenLabs)")
+            elif not el.voice_id:
+                print("  voice: no ElevenLabs voice chosen - run: python voice_control.py voices --use Hanna  (OpenAI voice for now)")
+            if el.api_key and el.voice_id:
+                out["elevenlabs"] = el
+            else:
+                out["_elevenlabs"] = el          # kept for the F9/F10 handlers, not used to speak
         o = tcfg.get("openai", {})
         out["openai"] = Speaker(o.get("base_url", "https://api.openai.com/v1"), o.get("model", "gpt-4o-mini-tts"), o.get("voice", "coral"),
                                 o.get("instructions", ""), api_key_env=o.get("api_key_env", "OPENAI_API_KEY"), speed=o.get("speed", 1.0))
@@ -448,7 +455,7 @@ def main():
 
     def resolve_voice(entry):
         """-> voice_id of a voices-list entry: as given, else by name on the account, else from the library"""
-        el = speakers.get("elevenlabs")
+        el = speakers.get("elevenlabs") or speakers.get("_elevenlabs")
         if entry.get("voice_id") or el is None:
             return entry.get("voice_id", "")
         try:
@@ -459,9 +466,13 @@ def main():
             return ""
 
     def use_voice(lang, voice_id, announce):
-        el = speakers.get("elevenlabs")
+        el = speakers.get("elevenlabs") or speakers.get("_elevenlabs")
         if el is None or not voice_id:
             return
+        if "elevenlabs" not in speakers and el.api_key:
+            speakers["elevenlabs"] = el       # a voice was chosen by key: ElevenLabs speaks from now on
+            voice.providers["elevenlabs"] = provider("elevenlabs")
+            voice.order = [n for n in order if n in voice.providers]
         el.voice_id, el.language = voice_id, tts_now().get("language", lang)
         chosen[lang] = voice_id
         try:
@@ -478,7 +489,8 @@ def main():
             print(f"  voice: no voices listed for {lang} (persona.tts.voices)")
             return
         ids = [resolve_voice(v) for v in lst]
-        current = chosen.get(lang) or (speakers["elevenlabs"].voice_id if "elevenlabs" in speakers else "")
+        el0 = speakers.get("elevenlabs") or speakers.get("_elevenlabs")
+        current = chosen.get(lang) or (el0.voice_id if el0 is not None else "")
         i = (ids.index(current) + 1) % len(ids) if current in ids else 0
         if not ids[i]:
             print(f"  voice: {lst[i].get('name')} could not be resolved")
@@ -492,9 +504,10 @@ def main():
         if not vid:
             lst = voices_for(lang)
             vid = resolve_voice(lst[0]) if lst else ""
-        if not vid and "elevenlabs" in speakers and speakers["elevenlabs"].api_key:
+        el0 = speakers.get("elevenlabs") or speakers.get("_elevenlabs")
+        if not vid and el0 is not None and el0.api_key:
             try:
-                picked = speakers["elevenlabs"].pick_voice(t.get("voice_prefer", {}))
+                picked = el0.pick_voice(t.get("voice_prefer", {}))
                 vid = picked[0] if picked else ""
             except TtsError:
                 vid = ""
@@ -516,7 +529,7 @@ def main():
             manager["m"].next()
 
     order = [tcfg.get("provider", "elevenlabs"), tcfg.get("fallback_provider", "openai")]
-    voice = Voice({n: provider(n) for n in speakers}, order, lambda stream, stop: play_stream(stream, PCM_RATE, stop=stop),
+    voice = Voice({n: provider(n) for n in speakers if not n.startswith("_")}, order, lambda stream, stop: play_stream(stream, PCM_RATE, stop=stop),
                   gate=gate, muted=lambda: muted["value"])
 
     def speak(line, stage=0, meta=None):
