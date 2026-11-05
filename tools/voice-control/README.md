@@ -57,7 +57,7 @@ when `"wake": {"required": false}`). The tool is silent by default; the result i
 | mode B: slowest, full depth, smallest stroke | tryb b, najwolniej, na minimum | Num 0 |
 | **surprise**: two separate draws. Machine: 70 % a random mode 1-8 / A / B (never the one that runs), else unchanged. Lube Launcher: nothing / one shot / three shots, 1/3 each. At least one of them always happens | zaskocz mnie, niespodzianka, wybierz za mnie, losowo, zdaj się na los | Insert |
 | **again**: the NEXT draw (mode + Lube Launcher, as above) is made and put into effect **120 s after the command**; the current surprise stays until then, shots that have not been fired yet are dropped at once; saying it again restarts the 120 s; choosing a mode / Script / Calm / Stop cancels it; **while mode A runs there is no waiting: the next draw is made at once** | nieee coś innego, zmień, inaczej, jeszcze raz, losuj ponownie, nie to | Del |
-| **hold**: the machine keeps exactly what it does now for **5 minutes**; everything else (modes, boosts, surprise, scenes, calm, sequence, keys) is ignored. Only the **Lube Launcher** and the safe word **"koniec" (End)** still work; nothing else ends it early | utrzymaj to, rób tak dalej, tak trzymaj, zostaw tak, nie zmieniaj, tak ma być, **jeszcze, nie przestawaj, właśnie tak** | PgUp |
+| **hold**: the machine keeps exactly what it does now for **5 minutes**; everything else (modes, boosts, surprise, scenes, calm, sequence, keys) is ignored. Only the **Lube Launcher** and the safe word **"trąbka" (End)** still work; nothing else ends it early | utrzymaj to, rób tak dalej, tak trzymaj, zostaw tak, nie zmieniaj, tak ma być, **jeszcze, nie przestawaj, właśnie tak** | PgUp |
 | back to the funscript and no boost | normalnie, zresetuj, bez zmian | Num . |
 | back to the funscript (keep boost) | wróć do filmu, wróć do skryptu, wyłącz tryb | (button "Script") |
 | Lube Launcher | spuść się na mnie, strzel na mnie, spuść się, dojdź na mnie | F8 |
@@ -65,7 +65,7 @@ when `"wake": {"required": false}`). The tool is silent by default; the result i
 | play / pause the video | graj, wznów / pauza, zatrzymaj film ("stop" is calm, not pause) | |
 | script loop on / off | zapętl to, powtórz to / koniec pętli, wyłącz pętlę | |
 | mode sequence (2 min per mode) | włącz sekwencję, wstrzymaj tryb, wznów sekwencję, koniec sekwencji | |
-| calm (slowest, medium depth) / stop everything | dość, wystarczy, starczy / koniec | Home / End |
+| calm (slowest, medium depth) / stop everything | dość, wystarczy, starczy / trąbka | Home / End |
 | listening on / off | | Pause |
 
 The keys are global and **NumLock must be on**. They are observed, not swallowed: if HereSphere
@@ -120,7 +120,7 @@ a single step; the same words work for the model when they are said loosely:
 | użyj mnie, jestem twoją dziwką / suką / suczką / dziewczynką / sissy, zrób ze mnie dziewczynkę | **use me**: builds up (faster + deeper) |
 | zalej mnie, obryzgaj mnie, wytrysnij na mnie, oznacz mnie (+ "kilka razy") | Lube Launcher |
 | **dość, wystarczy, starczy, przestań, stój, spokojnie** (key **Home**, button **Calm**) | **calm**: the machine **keeps going** at the slowest speed, medium depth (not a stop) |
-| **koniec, koniec wszystkiego, wyłącz maszynę, koniec zabawy** (key **End**, button **Stop**) | **stop everything**: speed 0 at once; the script is held back until you pick a mode or Script |
+| **trąbka, trąbko, wyłącz maszynę, zatrzymaj maszynę** (key **End**, button **Stop**) | **stop everything**: speed 0 at once; the script is held back until you pick a mode or Script |
 
 **Improvising.** When you say something erotic (sissy / submissive talk, begging, praise, teasing)
 that matches none of the phrases, the model composes a **short plan** from a fixed, harmless menu:
@@ -136,7 +136,7 @@ MultiFunPlayer still apply on top. Every improvised plan is printed and written 
 `voice_log.jsonl` (`plan`). Switch the model off with `--no-llm` (the scene phrases above keep working).
 
 **"Enough" is not "stop".** "dość / wystarczy / starczy" never stops the machine, it drops to the slowest
-speed at medium depth so you can catch your breath; only **"koniec"** (or key **End**) stops
+speed at medium depth so you can catch your breath; only **"trąbka"** (or key **End**) stops
 everything. Both work offline (no model); the model may also pick them with a low bar (0.6 / 0.7). Keep
 **End** in mind for when you cannot speak. Plain "stop" only pauses the video.
 
@@ -144,7 +144,7 @@ everything. Both work offline (no model); the model may also pick them with a lo
 `commands.json`, and the field next to the **Hold** button in MultiFunPlayer). While it lasts the tool answers
 `locked` to every machine command without sending it, and MultiFunPlayer itself ignores its machine controls
 (buttons, keys, remote commands), so the hold also covers the keyboard. Always allowed: the Lube Launcher and
-the safe word **"koniec" / End** (stop, the only thing that ends the hold early). "Dość" does **not** get through the hold
+the safe word **"trąbka" / End** (stop, the only thing that ends the hold early). "Dość" does **not** get through the hold
 (that is what you asked for); if you want it to, add `calm` to `lock.allow`. Film play / pause and the script
 loop are not machine controls: pause / play still work. A pending surprise draw is dropped when the hold starts, the
 mode sequence freezes while it lasts, and saying it again restarts the 5 minutes.
@@ -167,7 +167,7 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   "wystarczy"** (she may refuse), slower / shallower, the modes, the surprise, the film (pause / play) and the loop.
   While she refuses she may tease (slower, shallower, a crawling mode). The odds are the tool's, not the model's
   (`base_p`, `base_p_overrides`, `step_p`, `confession_p`, `max_asks`), every decision is logged with `p` and `roll`.
-* **What she cannot touch** (`persona.never_gated`): the safe word **"koniec"** and the hold **"utrzymaj to"**
+* **What she cannot touch** (`persona.never_gated`): the safe word **"trąbka"** and the hold **"utrzymaj to"**
   (and friends). They run at once, also in her reply window without "kochanie". **Every keyboard shortcut
   bypasses her** (End = koniec; when you cannot speak, the key is the way).
 * **If she cannot be reached** (no key / network): the mild commands in `persona.fallback_plain` (enough, slower,
@@ -188,11 +188,11 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   "zalewaj mnie co pięć minut" (one shot per firing, `program.lube_every_min` apart). A granted wish with timing becomes her
   program, run by `Controller.tick()` from the 1 s thread (no model calls); bounds in `persona.program` (every 30-900 s,
   start <= 900 s, duration <= 3600 s); one program at a time, a new one replaces it; "przestań zmieniać" cancels it without
-  dice; a hold makes it wait; "koniec"/End ends it. Her own unasked moves keep the one-shot limit.
+  dice; a hold makes it wait; "trąbka"/End ends it. Her own unasked moves keep the one-shot limit.
 * **Her identity** (`persona.identity`): five texts rendered in front of every prompt - `ona` (who she is: Wiktoria,
   calm, tender and merciless by turns), `ty` (who you are: his girl, princess, teddy bear; what he reacts to), `repertuar`
   (how she teases, rewards, satisfies, punishes), `narzedzia` (what each control means as a gesture) and `po_sesji`
-  (warm aftercare once "koniec" ends it). Edit `ty` to taste; `character` stays as the short core.
+  (warm aftercare once "trąbka" ends it). Edit `ty` to taste; `character` stays as the short core.
 * **Last-second refusal** (`persona.last_second`): sometimes (18 %, from stage 1) a Lube Launcher request that the dice
   granted is held back at the last second ("prawie... jeszcze nie"): no shot, no punishment, one ask is given back, the
   next ask is likelier (+0.25). Never twice in a row, never on the sure ask.
@@ -202,9 +202,9 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
 * **Manners** (`persona.manners`): asking without "proszę"/"błagam"/"Pani" cuts the odds (x0.6); ignoring her demand
   (not doing what she asked) cuts them further (x0.4). An open refusal ("nie chcę", "nie powiem", "nie będę prosić", or
   the model flags defiance) wipes your asks and nothing is granted for 90 s, or until you apologise ("przepraszam,
-  Pani"). Not even the 8th ask beats an active punishment. "koniec"/End and "utrzymaj to" are never punished.
+  Pani"). Not even the 8th ask beats an active punishment. "trąbka"/End and "utrzymaj to" are never punished.
 * **Safe word "trąbka"**: "trąbka" (also "trąbko", "trąbki", alone or after the wake word, also in English mode) stops
-  every machine at once, releases the hold, cuts her voice. "koniec" is no longer the safe word (it is free for
+  every machine at once, releases the hold, cuts her voice. "trąbka" is no longer the safe word (it is free for
   role-play; "koniec pętli" etc. stay commands). The End key does the same.
 * **Two machines, two Lube Launchers** (`devices.sides`): in MultiFunPlayer, Buttplug.io output -> **Device roles**, set
   each connected device to Rear (from behind), Front (her mouth) or Both (every command, the default). MFP keeps a separate
@@ -263,7 +263,7 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   added from the library), saved to the config, confirmed in her new voice ("Teraz brzmię tak." / "This is my voice
   now."). **F10** = Polish/English, and *everything* switches: the command phrases (`intents[].phrases_en`: "faster",
   "cum on me", "mode three", "hold it"...), the wake words (`wake.words_en`: darling, mistress, lady, honey), the safe
-  word ("stop" / "red" / "end" - like "koniec" it needs no wake word), speech recognition language, her addresses,
+  word ("stop" / "red" / "end" - like "trąbka" it needs no wake word), speech recognition language, her addresses,
   confessions, manners, narration themes / orders / seeds, the line pool (`lines_pool.en.json`), the voice and the
   OpenAI fallback instructions - all from the overlay `persona.languages.en`, merged over the Polish persona. Start in
   English with `--language en` or `"language": "en"` in the config. `voices --use <name> --lang en` saves an English voice.
@@ -341,7 +341,7 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
 * **She speaks first**: when you stay silent for 25 s during a session she says something herself ("Czemu
   milczysz? Poproś mnie.", questions, orders), up to 3 times in a row (`persona.initiative`, `--no-nudge`).
 * **Safe word while she talks**: `persona.output = "headphones"` (default; a VR headset): the microphone stays on and
-  **your voice cuts her off at once**, so "koniec" is always heard. With `"speakers"` the microphone is deaf while she
+  **your voice cuts her off at once**, so "trąbka" is always heard. With `"speakers"` the microphone is deaf while she
   speaks (and 0.6 s after, against echo) - then the safe word is the **End key**.
 * **Bounds**: her steps are validated like an improvised scene (allowed ids, ≤ 3 faster / 3 deeper, ≤ 1 shot);
   she can never stop or calm the machine, start a hold or a surprise. In a hold she only talks (and the Lube
