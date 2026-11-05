@@ -101,6 +101,14 @@ a z Twoich skryptów ASMR m.in. "sama się zgłosiłaś", "wymazana", "zaprogram
 "jego sperma"; sprzęt to ich ciała. Do tego **polecenia**: co jakiś czas zamiast komentarza pada rozkaz fizyczny (ściskaj, oddychaj, klipsy, dildo do ust, "powtórz: jestem
 posłuszną sissi"), łagodniejszy na początku, ostrzejszy później, nigdy ten sam dwa razy w sesji.
 
+## Jak ona to mówi
+
+Każda kwestia ma sposób czytania: szept, czułość, droczenie, ostro, wyciszenie po wszystkim - wybierany po rodzaju kwestii
+(polecenie, afirmacja "powtórz za mną", opieka) albo po tonie tury. Narracja z puli jest nagrywana z wyprzedzeniem
+najbardziej ekspresyjnym modelem ElevenLabs (v3, z tagami jak `[whispers]`), więc gra od razu i bez spłaszczenia. Jak oceniasz
+brzmienie: `python voice_control.py voices --audition` (ta sama kwestia wszystkimi głosami i stylami) albo `voices --test "..."
+--preset whisper`. Za płasko: podnieś `style`, obniż `stability` w `persona.tts.delivery`; za teatralnie - odwrotnie.
+
 ## Klawisze F9 / F10: głos i język
 
 **F9** zmienia głos Pani na następny z listy (`persona.tts.voices`) w bieżącym języku - potwierdza nowym głosem. **F10** przełącza

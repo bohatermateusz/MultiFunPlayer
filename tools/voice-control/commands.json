@@ -1240,6 +1240,23 @@
    ],
    "provider": "elevenlabs",
    "fallback_provider": "openai",
+   "narration_model": "eleven_v3",
+   "audio_cache": {"enabled": true, "prefetch": 6, "max_mb": 200},
+   "delivery": {
+    "_comment": "How a line is read, not only what it says. A preset is picked by the kind of line (by_kind) or the tone of the turn (by_tone; the second preset from stage 3). 'tags' are eleven_v3 audio tags put in front of the text; the v2 models get <break> pauses after ellipses and between sentences instead. Tune: too flat -> raise style, lower stability; too theatrical -> the opposite; too fast -> lower speed.",
+    "presets": {
+     "whisper": {"stability": 0.45, "similarity_boost": 0.8, "style": 0.25, "speed": 0.92, "use_speaker_boost": false, "tags": ["[whispers]"]},
+     "tender": {"stability": 0.55, "similarity_boost": 0.8, "style": 0.3, "speed": 0.95, "use_speaker_boost": false, "tags": []},
+     "tease": {"stability": 0.4, "similarity_boost": 0.75, "style": 0.6, "speed": 1.0, "use_speaker_boost": true, "tags": ["[mischievously]"]},
+     "sharp": {"stability": 0.5, "similarity_boost": 0.8, "style": 0.5, "speed": 1.03, "use_speaker_boost": true, "tags": []},
+     "afterglow": {"stability": 0.6, "similarity_boost": 0.85, "style": 0.2, "speed": 0.88, "use_speaker_boost": false, "tags": ["[whispers]"]}
+    },
+    "by_tone": {"czuły": ["whisper", "tender"], "ostry": ["tease", "sharp"]},
+    "by_kind": {"task": "sharp", "affirmation": "whisper", "aftercare": "afterglow"},
+    "break_after_ellipsis": "0.45s",
+    "break_after_sentence": "0.25s",
+    "text_shaping": true
+   },
    "voice_id": "",
    "voice_prefer": {
     "_comment": "Used when voice_id is empty: the first of these names found on the account, else a female young/middle-aged voice by labels, else any female, else (allow_library) a young female Polish voice from the shared library, added to the account. The pick is written back into voice_id.",

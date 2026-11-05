@@ -176,3 +176,95 @@ class LinePool:
         for t in themes:
             if self.left(t) < self.min_pool:
                 self.refill(t)
+
+
+class AudioCache:
+    """Narration lines synthesized ahead of time (the expressive, slower model can be used: latency does not matter),
+    kept as PCM files under folder; get(line) hands the audio over once and forgets it. warm(pool, themes) fills the
+    cache for the next lines of each theme in a background thread, one request at a time."""
+
+    def __init__(self, folder, synth, meta_for=None, prefetch=6, max_bytes=200 * 1024 * 1024, background=True):
+        self.folder, self.synth, self.meta_for = folder, synth, meta_for or (lambda line, theme: {})
+        self.prefetch, self.max_bytes, self.background = int(prefetch), int(max_bytes), background
+        self._lock = threading.Lock()
+        self._busy = False
+        self.failures = 0
+        self.last_error = None
+        os.makedirs(folder, exist_ok=True)
+
+    def _path(self, line):
+        import hashlib
+        return os.path.join(self.folder, hashlib.sha1(line.encode("utf-8")).hexdigest() + ".pcm")
+
+    def has(self, line):
+        return os.path.exists(self._path(line))
+
+    def get(self, line):
+        """-> the PCM bytes, or None; the file is removed (a line is said once)"""
+        path = self._path(line)
+        try:
+            with open(path, "rb") as f:
+                data = f.read()
+            os.remove(path)
+            return data if len(data) > 1 else None
+        except OSError:
+            return None
+
+    def warm(self, pool, themes):
+        """synthesize the next prefetch lines of every theme that are not cached yet (in the background)"""
+        with self._lock:
+            if self._busy:
+                return False
+            self._busy = True
+        if self.background:
+            threading.Thread(target=self._warm, args=(pool, list(themes)), daemon=True).start()
+        else:
+            self._warm(pool, list(themes))
+        return True
+
+    def _warm(self, pool, themes):
+        try:
+            for theme in themes:
+                with pool._lock:
+                    lines = list(pool.pool.get(theme, [])[: self.prefetch])
+                for line in lines:
+                    if self.has(line) or self._size() >= self.max_bytes:
+                        continue
+                    try:
+                        pcm = self.synth(line, self.meta_for(line, theme))
+                        self.last_error = None
+                    except Exception as e:                      # the cache must never break the session
+                        self.failures += 1
+                        self.last_error = str(e)
+                        continue
+                    if pcm:
+                        tmp = self._path(line) + ".tmp"
+                        with open(tmp, "wb") as f:
+                            f.write(pcm)
+                        os.replace(tmp, self._path(line))
+        finally:
+            with self._lock:
+                self._busy = False
+
+    def _size(self):
+        try:
+            return sum(os.path.getsize(os.path.join(self.folder, f)) for f in os.listdir(self.folder) if f.endswith(".pcm"))
+        except OSError:
+            return 0
+
+    def prune(self):
+        """drop the oldest files above max_bytes"""
+        try:
+            files = sorted((os.path.getmtime(os.path.join(self.folder, f)), os.path.join(self.folder, f))
+                           for f in os.listdir(self.folder) if f.endswith(".pcm"))
+        except OSError:
+            return
+        total = sum(os.path.getsize(p) for _, p in files)
+        for _, p in files:
+            if total <= self.max_bytes:
+                break
+            try:
+                total -= os.path.getsize(p)
+                os.remove(p)
+            except OSError:
+                pass

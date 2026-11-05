@@ -144,7 +144,8 @@ class Controller:
         self._themes_recent = []          # narration themes used lately (no repeats)
         self._penalty_until = 0.0         # an open refusal costs: nothing is granted until you apologise or the time is up
         self.busy = lambda: False         # True while she is speaking / listening is muted (set by the main loop)
-        self.speak_ex = None              # speak_ex(line, stage): like speak, but knows the escalation stage
+        self.speak_ex = None              # speak_ex(line, voice, meta): like speak, but knows the stage, tone and kind of line
+        self.audio_cache = None           # AudioCache: narration lines synthesized ahead (set by the main loop)
 
     @property
     def persona_cfg(self):
@@ -269,14 +270,38 @@ class Controller:
                 outcome.extra["names_gear"] = True # the model named the hardware; logged, so the prompt can be tightened
             self._remember_said(line)      # pool lines are recorded by the pool itself
         if line and (self.speak or self.speak_ex):
+            extra = outcome.extra
+            if "kind" not in extra:
+                extra["kind"] = self._kind_of(line, extra)
+            meta = {"tone": extra.get("tone", self._tone_now[0]), "kind": extra["kind"], "stage": extra.get("stage", self.stage()),
+                    "theme": extra.get("theme", ""), "language": self.language}
             try:
                 if self.speak_ex:
-                    self.speak_ex(line, outcome.extra.get("voice", outcome.extra.get("stage", 0)))
+                    try:
+                        self.speak_ex(line, extra.get("voice", extra.get("stage", 0)), meta)
+                    except TypeError:
+                        self.speak_ex(line, extra.get("voice", extra.get("stage", 0)))
                 else:
                     self.speak(line)
             except Exception:   # a silent persona must never break the loop
                 pass
         return outcome
+
+    def _kind_of(self, line, extra):
+        """what sort of line this is, for the delivery preset: an order, an affirmation, aftercare, narration, an answer"""
+        low = line.lower()
+        if extra.get("source") == "task":
+            return "task"
+        if low.startswith(("powtórz za mną", "repeat after me", "powtórz:", "repeat:")):
+            return "affirmation"
+        theme = str(extra.get("theme", "")).lower()
+        if theme.startswith(("po sesji", "aftercare")) or extra.get("aftercare"):
+            return "aftercare"
+        if extra.get("source") in ("pool", "live"):
+            return "narration"
+        if extra.get("nudge"):
+            return "nudge"
+        return "answer"
 
     # ---- escalation: the tool, not the model, decides how far the session has gone ---------------------
     def stage(self) -> int:

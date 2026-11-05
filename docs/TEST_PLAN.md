@@ -155,6 +155,9 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.76 | F10 | Pani mówi po angielsku ('English now, darling...'); 'darling, faster' działa, 'kochanie, szybciej' nie; 'stop' zatrzymuje bez słowa-klucza; narracja i polecenia po angielsku, głos EN |
 | 6.77 | F10 ponownie | powrót do polskiego: 'kochanie, szybciej' działa, 'koniec' działa; głos PL |
 | 6.78 | Sesja z narracją | pojawia się wątek hormonów (PL i EN) bez nazw leków i dawek |
+| 6.79 | `voices --audition` | ta sama kwestia każdym głosem i presetem (whisper/tender/tease/sharp), z nazwą w konsoli; wybierasz uchem |
+| 6.80 | `voices --test "Odpuść… ja to trzymam." --model eleven_v3 --tags "[whispers]"` vs `--model eleven_multilingual_v2` | v3 wyraźnie bardziej ekspresyjny (szept); jeśli v3 odmawia - w konsoli błąd, sesja używa v2 |
+| 6.81 | Sesja 10 min | narracja gra z cache (`Pani [n cache]:`), bez opóźnienia; odpowiedzi nadal streamowane; w `audio_cache/` pliki pojawiają się i znikają po odtworzeniu; polecenia brzmią ostro, afirmacje szeptem |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |
 

@@ -2,6 +2,7 @@
 Returns raw 16-bit mono PCM at 24 kHz (response_format "pcm")."""
 import json
 import os
+import re
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -41,6 +42,59 @@ class Speaker:
         return pcm[: len(pcm) - len(pcm) % 2]
 
 
+DELIVERY_DEFAULTS = {
+    "presets": {
+        "whisper":   {"stability": 0.45, "similarity_boost": 0.8, "style": 0.25, "speed": 0.92, "use_speaker_boost": False, "tags": ["[whispers]"]},
+        "tender":    {"stability": 0.55, "similarity_boost": 0.8, "style": 0.3, "speed": 0.95, "use_speaker_boost": False, "tags": []},
+        "tease":     {"stability": 0.4, "similarity_boost": 0.75, "style": 0.6, "speed": 1.0, "use_speaker_boost": True, "tags": ["[mischievously]"]},
+        "sharp":     {"stability": 0.5, "similarity_boost": 0.8, "style": 0.5, "speed": 1.03, "use_speaker_boost": True, "tags": []},
+        "afterglow": {"stability": 0.6, "similarity_boost": 0.85, "style": 0.2, "speed": 0.88, "use_speaker_boost": False, "tags": ["[whispers]"]},
+    },
+    "by_tone": {"czuły": ["whisper", "tender"], "ostry": ["tease", "sharp"]},
+    "by_kind": {"task": "sharp", "affirmation": "whisper", "aftercare": "afterglow"},
+    "break_after_ellipsis": "0.45s",
+    "break_after_sentence": "0.25s",
+    "text_shaping": True,
+}
+
+SPEAKER_KEYS = ("stability", "similarity_boost", "style", "speed", "use_speaker_boost")
+
+
+def choose_delivery(delivery, meta):
+    """-> (preset name, voice_settings, tags) for a line: by its kind (an order, an affirmation, aftercare) first,
+    else by the tone of the turn, the second preset of a tone from stage 3 on. meta: {tone, kind, stage}"""
+    cfg = dict(DELIVERY_DEFAULTS, **(delivery or {}))
+    presets = dict(DELIVERY_DEFAULTS["presets"], **cfg.get("presets", {}))
+    meta = meta or {}
+    name = cfg.get("by_kind", {}).get(meta.get("kind", ""))
+    if not name:
+        tone = meta.get("tone", "czuły")
+        choices = cfg.get("by_tone", {}).get(tone) or DELIVERY_DEFAULTS["by_tone"].get(tone, ["tender"])
+        name = choices[min(len(choices) - 1, 1 if int(meta.get("stage", 0) or 0) >= 3 else 0)]
+    preset = dict(presets.get(name) or presets["tender"])
+    settings = {k: preset[k] for k in SPEAKER_KEYS if k in preset}
+    return name, settings, list(preset.get("tags", []))
+
+
+def shape_text(text, model="eleven_multilingual_v2", delivery=None, tags=None):
+    """the line as the voice model should read it: v3 gets the audio tags in front (it paces by punctuation itself),
+    the v2 family gets <break> tags after ellipses and between sentences"""
+    cfg = dict(DELIVERY_DEFAULTS, **(delivery or {}))
+    text = " ".join(str(text).split())
+    if not cfg.get("text_shaping", True) or not text:
+        return text
+    if str(model).startswith("eleven_v3"):
+        prefix = " ".join(t for t in (tags or []) if t)
+        return (prefix + " " + text).strip()
+    ell, sent = cfg.get("break_after_ellipsis"), cfg.get("break_after_sentence")
+    out = text.replace("...", "…")
+    if ell:
+        out = re.sub(r"…(?=\s+\S)", f'… <break time="{ell}" />', out)
+    if sent:
+        out = re.sub(r"([.!])(?=\s+[^<\s])", f'\\1 <break time="{sent}" />', out)
+    return out
+
+
 class ElevenLabsSpeaker:
     """ElevenLabs text to speech, streamed: stream(text, stage) yields 16-bit mono PCM chunks (24 kHz) as they
     arrive, so playback can start after the first chunk. voice_settings follow the escalation stage."""
@@ -52,6 +106,8 @@ class ElevenLabsSpeaker:
         self.stage_settings = stage_settings or []
         self.api_key = api_key or os.environ.get(api_key_env, "")
         self.last_response = None    # the open HTTP response, so that a barge-in can close it
+        self.delivery = None         # persona.tts.delivery (presets, breaks); None = stage_settings only
+        self.last_request = None     # the body of the last request (what the voice was asked to read)
 
     def _settings(self, stage):
         if not self.stage_settings:
@@ -65,15 +121,37 @@ class ElevenLabsSpeaker:
     def _headers(self):
         return {"xi-api-key": self.api_key, "Content-Type": "application/json", "Accept": "audio/pcm"}
 
-    def stream(self, text: str, stage: int = 0):
+    def _v3_safe(self, settings):
+        s = dict(settings or {})
+        if self.model.startswith("eleven_v3"):
+            s.pop("style", None)
+            s.pop("speed", None)
+        return s
+
+    def stream(self, text: str, stage: int = 0, meta=None, preset=None, tags=None):
+        """meta ({tone, kind, stage}) picks a delivery preset when self.delivery is set; preset / tags force one"""
         if not self.api_key:
             raise TtsError("no ElevenLabs API key (ELEVENLABS_API_KEY)")
         if not self.voice_id:
             raise TtsError("no voice_id (persona.tts.voice_id); list your voices with: python voice_control.py voices")
+        settings, chosen = self._settings(stage), None
+        if self.delivery is not None and (meta or preset):
+            if preset:
+                presets = dict(DELIVERY_DEFAULTS["presets"], **self.delivery.get("presets", {}))
+                p = presets.get(preset)
+                if p is None:
+                    raise TtsError(f"no delivery preset {preset!r}")
+                chosen, settings, auto_tags = preset, {k: p[k] for k in SPEAKER_KEYS if k in p}, list(p.get("tags", []))
+            else:
+                chosen, settings, auto_tags = choose_delivery(self.delivery, meta)
+            settings = self._v3_safe(settings)
+            text = shape_text(text, self.model, self.delivery, auto_tags if tags is None else list(tags))
+        elif tags and self.model.startswith("eleven_v3"):
+            text = " ".join(tags) + " " + text
         body = {"text": text, "model_id": self.model}
-        settings = self._settings(stage)
         if settings:
             body["voice_settings"] = settings
+        self.last_request = dict(body, preset=chosen)
         if self.language:
             body["language_code"] = self.language
         url = f"{self.base_url}/v1/text-to-speech/{self.voice_id}/stream?output_format=pcm_24000"
@@ -86,6 +164,10 @@ class ElevenLabsSpeaker:
             raise TtsError(f"request failed: {e}") from e
         self.last_response = resp
         return self._chunks(resp)
+
+    def synthesize(self, text, meta=None, preset=None, tags=None) -> bytes:
+        """the whole line as PCM (for the audio cache)"""
+        return b"".join(self.stream(text, int((meta or {}).get("stage", 0) or 0), meta, preset, tags))
 
     def _chunks(self, resp):
         try:

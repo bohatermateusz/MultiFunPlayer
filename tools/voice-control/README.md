@@ -203,6 +203,19 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   (not doing what she asked) cuts them further (x0.4). An open refusal ("nie chcę", "nie powiem", "nie będę prosić", or
   the model flags defiance) wipes your asks and nothing is granted for 90 s, or until you apologise ("przepraszam,
   Pani"). Not even the 8th ask beats an active punishment. "koniec"/End and "utrzymaj to" are never punished.
+* **How she reads a line** (`persona.tts.delivery`): a delivery preset per line - `whisper`, `tender`, `tease`, `sharp`,
+  `afterglow` - picked by the kind of line (`by_kind`: an order -> sharp, a "powtórz za mną" affirmation -> whisper,
+  aftercare -> afterglow) or by the tone of the turn (`by_tone`: tender -> whisper/tender, sharp -> tease/sharp, the
+  second one from stage 3). With the v2 models the text gets `<break>` pauses after ellipses and between sentences;
+  with `eleven_v3` it gets audio tags in front (`[whispers]`, `[mischievously]`...) and v3 paces by punctuation. Tuning:
+  too flat -> raise `style`, lower `stability`; too theatrical -> the opposite; too fast -> lower `speed`.
+* **Narration synthesized ahead** (`tts.narration_model`, `tts.audio_cache`): pool lines are rendered in the background
+  with the expressive `eleven_v3` (v2 when v3 refuses) into `audio_cache/`, so a narration line plays instantly with
+  full expression (`Pani [3 cache]:` in the console); answers keep the streamed live model. 200 MB cap, a file is
+  played once.
+* **Hear it before you choose**: `voices --test "Odpuść… ja to trzymam." --preset whisper` vs `--preset sharp`, or
+  `--model eleven_v3 --tags "[whispers]"`; `voices --audition` plays the same line with every listed voice and every
+  preset, one after another, naming each - pick by ear, then `voices --use <name>`.
 * **Voices and languages by key**: **F9** = the next voice of the current language from `persona.tts.voices` (Hanna,
   Jagna, Asia, Jola, Arleta for Polish; Jessica, Lily, Sarah, Alice for English - resolved by name on the account, or
   added from the library), saved to the config, confirmed in her new voice ("Teraz brzmię tak." / "This is my voice

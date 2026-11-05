@@ -97,10 +97,30 @@ def voices_command(args, cfg):
             save_voice_id(args.config, vid, getattr(args, "lang", "pl"))
             sp.voice_id = vid
             print(f"voice: {name} ({vid}) saved to {args.config}")
+        if getattr(args, "model", None):
+            sp.model = args.model
+        sp.delivery = t.get("delivery") or {}
+        tags = [x for x in str(getattr(args, "tags", "") or "").split() if x] or None
+        if getattr(args, "audition", False):
+            line = args.test or ("Let go… I've got it. Good girl." if getattr(args, "lang", "pl") == "en" else "Odpuść… ja to trzymam. Dobra dziewczynka.")
+            presets = [args.preset] if args.preset else ["whisper", "tender", "tease", "sharp"]
+            for entry in [v for v in t.get("voices", []) if v.get("language", "pl") == getattr(args, "lang", "pl")]:
+                vid = entry.get("voice_id") or next((v for v, n, _ in voices if n.lower() == entry.get("name", "").lower()), "")
+                if not vid:
+                    print(f"  {entry.get('name')}: no voice_id on this account, skipped")
+                    continue
+                sp.voice_id = vid
+                for preset in presets:
+                    print(f"  {entry.get('name')} / {preset} / {sp.model}")
+                    try:
+                        play_stream(sp.stream(line, 7, None, preset, tags), PCM_RATE)
+                    except TtsError as e:
+                        print(f"    failed: {e}")
+            return 0
         if args.test:
             if not sp.voice_id:
                 return "voices: no voice_id yet (use --use <id|name>)"
-            play_stream(sp.stream(args.test, 7), PCM_RATE)
+            play_stream(sp.stream(args.test, 7, {"tone": "czuły", "kind": "narration", "stage": 2}, args.preset, tags), PCM_RATE)
             return 0
     except TtsError as e:
         return f"voices: {e}"
@@ -218,6 +238,10 @@ def main():
     v.add_argument("--use", metavar="ID_OR_NAME", help="put this voice into commands.json -> persona.tts.voice_id (a library voice is added to the account)")
     v.add_argument("--test", metavar="TEXT", help="play this text with the configured (or --use) voice")
     v.add_argument("--lang", choices=["pl", "en"], default="pl", help="which language's voice_id --use writes (default pl)")
+    v.add_argument("--preset", help="delivery preset for --test / --audition: whisper, tender, tease, sharp, afterglow")
+    v.add_argument("--model", help="ElevenLabs model for --test / --audition (e.g. eleven_v3, eleven_multilingual_v2)")
+    v.add_argument("--tags", help="audio tags in front of the text for eleven_v3, e.g. \"[whispers]\"")
+    v.add_argument("--audition", action="store_true", help="play the same line with every listed voice and preset, one after another")
     add_options(v, suppress=True)
     add_options(sub.add_parser("mic"), suppress=True)
     args = ap.parse_args()
@@ -306,6 +330,7 @@ def main():
                             print(f"  voice: could not save voice_id: {e}")
                 except TtsError as e:
                     print(f"  voice: no ElevenLabs voice picked ({e}); OpenAI voice is used")
+            el.delivery = tcfg.get("delivery") or {}
             out["elevenlabs"] = el
         o = tcfg.get("openai", {})
         out["openai"] = Speaker(o.get("base_url", "https://api.openai.com/v1"), o.get("model", "gpt-4o-mini-tts"), o.get("voice", "coral"),
@@ -319,7 +344,7 @@ def main():
 
     def provider(name):
         if name == "elevenlabs":
-            return lambda line, stage: speakers["elevenlabs"].stream(line, stage)
+            return lambda line, stage, meta=None: speakers["elevenlabs"].stream(line, stage, meta)
 
         def openai_stream(line, stage):
             o = tts_now().get("openai", {})
@@ -402,11 +427,35 @@ def main():
     voice = Voice({n: provider(n) for n in speakers}, order, lambda stream, stop: play_stream(stream, PCM_RATE, stop=stop),
                   gate=gate, muted=lambda: muted["value"])
 
-    def speak(line, stage=0):
-        print(f"  Pani [{stage}]: {line}")
-        voice.say(line, stage)
+    def speak(line, stage=0, meta=None):
+        pcm = controller.audio_cache.get(line) if (controller.audio_cache is not None and meta and meta.get("kind") == "narration") else None
+        print(f"  Pani [{stage}{' cache' if pcm else ''}]: {line}")
+        voice.say(line, stage, meta, pcm=pcm)
+        if pcm and controller.pool is not None:
+            controller.audio_cache.warm(controller.pool, controller.persona_cfg.get("narration", {}).get("themes", []))
 
     controller.speak_ex = speak
+
+    # the narration cache: pool lines synthesized ahead with the expressive model (v3 + audio tags), v2 as a fallback
+    ac = tcfg.get("audio_cache", {})
+    if "elevenlabs" in speakers and ac.get("enabled", True) and controller.pool is not None and not args.no_log:
+        from lines import AudioCache
+        el = speakers["elevenlabs"]
+        expressive = ElevenLabsSpeaker(el.voice_id, tcfg.get("narration_model", "eleven_v3"), base_url=el.base_url, timeout=max(el.timeout, 30),
+                                       stage_settings=el.stage_settings, language=el.language)
+        expressive.delivery = el.delivery
+
+        def synth(line, meta):
+            expressive.voice_id, expressive.language = el.voice_id, el.language
+            try:
+                return expressive.synthesize(line, meta)
+            except TtsError:
+                return el.synthesize(line, meta)              # the expressive model refused / failed: the live model
+        controller.audio_cache = AudioCache(os.path.join(os.path.dirname(os.path.abspath(args.config)), "audio_cache"), synth,
+                                            meta_for=lambda line, theme: {"tone": "ostry" if controller.stage() >= 3 else "czuły",
+                                                                          "kind": "narration", "stage": controller.stage(), "theme": theme},
+                                            prefetch=ac.get("prefetch", 6), max_bytes=int(ac.get("max_mb", 200)) * 1024 * 1024)
+        controller.audio_cache.prune()
     controller.busy = lambda: muted["value"] or voice.speaking() or gate.speaking()
 
     def barge_in():
@@ -439,6 +488,8 @@ def main():
         if controller.persona is not None:
             if controller.pool is not None:
                 controller.pool.warm_up(cfg.get("persona", {}).get("narration", {}).get("themes", []))
+                if controller.audio_cache is not None:
+                    controller.audio_cache.warm(controller.pool, controller.persona_cfg.get("narration", {}).get("themes", []))
             def nudger():
                 while True:
                     time.sleep(1.0)
