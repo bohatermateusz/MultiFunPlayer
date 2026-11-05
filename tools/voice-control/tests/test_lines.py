@@ -20,7 +20,7 @@ class Pool(unittest.TestCase):
         def generate(theme, avoid, count):
             self.calls.append((theme, list(avoid), count))
             base = len(self.calls) * 100
-            words = ["Klęcz i ssij, mała", "Należysz do nich bez reszty", "Twoje nie już nic nie znaczy", "Jesteś moją suką na zawsze",
+            words = ["Klęcz i ssij, mała", "Należysz do nich bez reszty", "Twoje nie już nic nie znaczy", "Jesteś moją dziwką na zawsze",
                      "Dziękuj za to, kim jesteś", "Odpuść, ja to trzymam", "Nikt cię stąd nie wypuści", "Zalewam cię, bo mogę"]
             out = [f"{words[(base + i) % len(words)]} {base + i}." for i in range(count)]
             return out + ["Czy to pytanie?", "x " * 40, out[0]]

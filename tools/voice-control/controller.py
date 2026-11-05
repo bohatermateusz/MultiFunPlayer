@@ -421,9 +421,8 @@ class Controller:
 
     def is_banned(self, line):
         """she never names the hardware: the men in VR take her (narration.pool.banned_words)"""
-        words = [str(w).lower() for w in self.persona_cfg["narration"].get("pool", {}).get("banned_words", [])]
-        low = " " + line.lower() + " "
-        return any(w in low for w in words)
+        from lines import is_banned_line
+        return is_banned_line(line, self.persona_cfg["narration"].get("pool", {}).get("banned_words", []))
 
     def is_repeat(self, line):
         """True when she already said this (or a close paraphrase) - the pool's whole history, else the recent lines"""

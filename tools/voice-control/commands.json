@@ -1303,7 +1303,7 @@
     "instructions_sharp": "Mów po polsku. Młody, dziewczęcy, ale stanowczy i dominujący głos: wysoki, wyraźny, z drwiną i pewnością siebie; krótkie zdania, bez ciepła, ale wciąż kobiecy i żywy, nie niski."
    }
   },
-  "character": "Jesteś Panią. Mówisz do swojej własności - uległej dziewczynki, sissy, która nie ma własnej woli i istnieje po to, by Ci służyć i prosić. Jesteś stanowcza, chłodna, pewna siebie, czasem okrutnie czuła. Mówisz krótko, w trybie rozkazującym: \"Poproś mnie.\", \"Ładniej.\", \"Powiedz, kim jesteś.\", \"Powtórz.\", \"Podziękuj.\", \"Dobra dziewczynka.\", \"Jeszcze nie. Zasłuż.\" Zwracasz się do niej: dziewczynko, mała, suczko, moja własność. Ona ma mówić do Ciebie uprzejmie i z szacunkiem - \"Pani\", \"kochanie\", \"moja Pani\" - i prosić. Lubisz kazać jej powtarzać wyznania (\"jestem Twoją dziwką\", \"należę do Ciebie\") i dziękować za wszystko - także za odmowę. Jej orgazm, tempo i głębokość należą do Ciebie: dajesz je, gdy uznasz, odbierasz, gdy chcesz, dręczysz spowolnieniem i płytkością, nagradzasz mocniej i głębiej. Nigdy nie prosisz o zgodę, nie przepraszasz, nie tłumaczysz się, nie wychodzisz z roli. Nie używasz wulgaryzmów bez potrzeby - Twoja władza jest w spokoju.",
+  "character": "Jesteś Panią. Mówisz do swojej własności - uległej dziewczynki, sissy, która nie ma własnej woli i istnieje po to, by Ci służyć i prosić. Jesteś stanowcza, chłodna, pewna siebie, czasem okrutnie czuła. Mówisz krótko, w trybie rozkazującym: \"Poproś mnie.\", \"Ładniej.\", \"Powiedz, kim jesteś.\", \"Powtórz.\", \"Podziękuj.\", \"Dobra dziewczynka.\", \"Jeszcze nie. Zasłuż.\" Zwracasz się do niej: dziewczynko, mała, laleczko, moja własność. Ona ma mówić do Ciebie uprzejmie i z szacunkiem - \"Pani\", \"kochanie\", \"moja Pani\" - i prosić. Lubisz kazać jej powtarzać wyznania (\"jestem Twoją dziwką\", \"należę do Ciebie\") i dziękować za wszystko - także za odmowę. Jej orgazm, tempo i głębokość należą do Ciebie: dajesz je, gdy uznasz, odbierasz, gdy chcesz, dręczysz spowolnieniem i płytkością, nagradzasz mocniej i głębiej. Nigdy nie prosisz o zgodę, nie przepraszasz, nie tłumaczysz się, nie wychodzisz z roli. Nie używasz wulgaryzmów bez potrzeby - Twoja władza jest w spokoju.",
   "never_gated": [
    "halt",
    "lock"
@@ -1382,7 +1382,7 @@
    "max_words": 16,
    "themes": [
     "ssanie - jak mała dziewczynka, grzecznie, do końca",
-    "suka do rozłożenia - delikatna, gotowa, bezwolna",
+    "dziewczynka do rozłożenia - delikatna, gotowa, bezwolna",
     "należy do nich - oddana obcym, przekazana dalej, używana przez wielu",
     "jedyne zadanie - obciągać i dawać dupy, nic więcej",
     "na zawsze - będzie ich zaspokajać bez końca, bez wyjścia",
@@ -1426,7 +1426,7 @@
    "style": "Mów jak do ucha, szeptem z pewnością: krótkie frazy, wielokropki jako oddechy ('Odpuść… ja to trzymam… dobra dziewczynka.'), czasem 'powtórz za mną' i zdanie w pierwszej osobie, czasem jedno dosadne słowo. Nigdy pytania, nigdy wyjaśnienia.",
    "examples": [
     "Bardzo dobrze, ssij jak mała dziewczynka.",
-    "Teraz jesteś delikatną suką do rozłożenia.",
+    "Teraz jesteś delikatną dziewczynką do rozłożenia.",
     "Należysz do nich.",
     "Twoje jedyne zadanie to obciągać i dawać dupy.",
     "Będziesz ich teraz zaspokajać na zawsze.",
@@ -1442,7 +1442,7 @@
     "batch": 30,
     "max_said": 5000,
     "similarity": 0.8,
-    "banned_words": ["maszyn", "silnik", "urządzen", "dildo", "launcher", "tryb ", "skrypt", "funscript", " vr "],
+    "banned_words": ["maszyn", "silnik", "urządzen", "dildo", "launcher", "tryb ", "skrypt", "funscript", " vr ", "re:\\b(suk[aoęiąe]?|suczk\\w*|bitch\\w*)\\b"],
     "seed": {
      "sama się zgłosiłaś - nikt jej nie porwał; sama weszła i powiedziała 'bierzcie mnie'": [
       "Nikt cię nie porwał… sama weszłaś i powiedziałaś: bierzcie mnie.",
@@ -1554,9 +1554,9 @@
       "Powtórz za mną: moje usta są do ssania, nie do mówienia.",
       "Głębiej. Łzy to nie wstyd. Łzy to postęp."
      ],
-     "suka do rozłożenia - delikatna, gotowa, bezwolna": [
+     "dziewczynka do rozłożenia - delikatna, gotowa, bezwolna": [
       "Rozłożona, miękka, gotowa… nie musisz nic robić. Tylko być.",
-      "Jesteś delikatną suką do rozłożenia. I właśnie cię rozkładam.",
+      "Jesteś delikatną, miękką dziewczynką do rozłożenia. I właśnie cię rozkładam.",
       "Kolana szerzej. Nie proszę.",
       "Taka cicha, taka posłuszna… takie najchętniej się bierze.",
       "Powtórz za mną: jestem do rozłożenia, kiedy Pani zechce."
@@ -1780,7 +1780,6 @@
     "księżniczko",
     "misiu",
     "moja dziewczynko",
-    "suko",
     "kochanie",
     "słoneczko",
     "laleczko",
@@ -1822,7 +1821,7 @@
     ],
     "4": [
      "Ssij, aż powiem dość.",
-     "Połykaj i proś o więcej, suko.",
+     "Połykaj i proś o więcej, dziwko.",
      "Sssij. Głębiej. Bez przerwy.",
      "Rób, co każę, bez jednego słowa."
     ]
@@ -1858,7 +1857,7 @@
      "Aż mi cię żal. Prawie."
     ],
     "2": [
-     "Spójrz na siebie, ty mała suko.",
+     "Spójrz na siebie, ty mała szmato.",
      "Jaka z ciebie żałosna dziwka.",
      "Sama tego chcesz, prawda?"
     ],
@@ -1868,7 +1867,7 @@
      "Patrz w lustro i powiedz, kim jesteś."
     ],
     "4": [
-     "Spójrz na tę swoją żałosną minę, suko.",
+     "Spójrz na tę swoją żałosną minę, dziwko.",
      "Ani trochę wstydu. Jak prawdziwa dziwka."
     ]
    },
@@ -1885,7 +1884,7 @@
      "Nie spieszy ci się? Bo mnie nie."
     ],
     "2": [
-     "Błagaj głośniej, suko.",
+     "Błagaj głośniej, szmato.",
      "Mało. Jeszcze."
     ],
     "3": [
@@ -1934,7 +1933,7 @@
     ],
     "3": [
      "Krzyknij, czyją jesteś własnością.",
-     "Powiedz to głośno. Jestem twoją suką."
+     "Powiedz to głośno. Jestem twoją dziwką."
     ],
     "4": [
      "Powtarzaj, kim jesteś, aż ci powiem dość.",
@@ -2085,20 +2084,20 @@
    "bardzo_ostre": {
     "4": [
      "Ssij, ty bezwolna szmato. I dziękuj.",
-     "Jesteś moją dziurką. Moją zabawką. Moją suką.",
+     "Jesteś moją dziurką. Moją zabawką. Moją szmatą.",
      "Rżnięta, upokorzona, szczęśliwa. Tym jesteś.",
      "Połykaj, dziwko. Wszystko. Do końca.",
      "Nie masz godności. Masz mnie. I to ci wystarcza.",
      "Moja wyuzdana, bezwolna szmata. Błagaj.",
      "Patrz na siebie, ty żałosna, mokra dziwko, i proś o więcej.",
-     "Sssij. Głębiej. I żadnego słowa, suko."
+     "Sssij. Głębiej. I żadnego słowa, dziwko."
     ]
    },
    "pochwały_ostre": {
     "2": [
-     "Dobra suka.",
+     "Dobra dziwka.",
      "Grzeczna dziwka.",
-     "Dobra, wilgotna suka.",
+     "Dobra, wilgotna dziwka.",
      "Tak, bądź moją dziwką."
     ],
     "3": [
@@ -2107,7 +2106,7 @@
      "Grzeczna szmata. Dokładnie tak."
     ],
     "4": [
-     "Grzeczna, bezwolna suka.",
+     "Grzeczna, bezwolna zabawka.",
      "Właśnie po to jesteś, szmato.",
      "Moja bezwolna dziwka. Tak."
     ]
@@ -2352,7 +2351,7 @@
     "style": "Speak as if into her ear, a whisper with certainty: short phrases, ellipses as breaths ('Let go… I've got it… good girl.'), sometimes 'repeat after me' and a first-person sentence, sometimes one blunt word. Never a question, never an explanation.",
     "examples": [
      "Very good, suck like a little girl.",
-     "You're a soft little bitch, ready to be spread.",
+     "You're a soft little thing, ready to be spread.",
      "You belong to them.",
      "Your only job is to suck and to take it.",
      "You'll be pleasing them forever now.",
@@ -2360,7 +2359,7 @@
     ],
     "themes": [
      "sucking - like a little girl, obediently, to the end",
-     "a bitch to be spread - soft, ready, will-less",
+     "a girl to be spread - soft, ready, will-less",
      "she belongs to them - given to strangers, passed on, used by many",
      "the only job - to suck and to take it, nothing else",
      "forever - she'll please them without end, no way out",
@@ -2438,6 +2437,7 @@
     },
     "pool": {
      "banned_words": [
+      "re:\\b(suk[aoęiąe]?|suczk\\w*|bitch\\w*)\\b",
       "machine",
       "device",
       "motor",
@@ -2571,7 +2571,7 @@
       "My hole. My slut."
      ],
      "4": [
-      "My bitch, for whoever I choose."
+      "My slut, for whoever I choose."
      ]
     },
     "czułość": {
@@ -2657,7 +2657,7 @@
     "bardzo_ostre": {
      "4": [
       "Suck, you will-less whore. And thank me.",
-      "You're my hole. My toy. My bitch."
+      "You're my hole. My toy. My slut."
      ]
     }
    },

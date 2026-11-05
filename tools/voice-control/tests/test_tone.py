@@ -121,7 +121,7 @@ class Vocabulary(unittest.TestCase):
         self.assertGreaterEqual(len(bank["4"]), 6)
         for cat in SOFT:
             sharp_words = " ".join(t for items in VOC[cat].values() for t in items).lower()
-            for word in ("szmat", "dziwk", "suk", "ssij", "połykaj"):
+            for word in ("szmat", "dziwk", "ssij", "połykaj", "zabawk"):
                 self.assertNotIn(word, sharp_words, f"{cat} must stay tender")
 
     def test_tender_turn_draws_only_tender_phrases(self):

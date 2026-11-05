@@ -171,6 +171,24 @@ class Narration(Server):
         self.c.persona.narrate = lambda *a, **k: "Maszyna jedzie na tobie."
         self.assertEqual(self.run_for(400), [])
 
+    def test_she_never_says_suka(self):
+        import re
+        bad = re.compile(r"\b(suk[aoęiąe]?|suczk\w*|bitch\w*)\b", re.I)
+        n = P["narration"]
+        texts = [P["character"]] + list(P["address"]["names"]) + [l for v in n["pool"]["seed"].values() for l in v] + n["themes"] + n["examples"]
+        texts += [l for cat in P["vocabulary"].values() for v in cat.values() for l in v] + [str(v) for v in P["identity"].values()]
+        texts += [l for v in n["tasks"]["by_stage"].values() for l in v]
+        en = P["languages"]["en"]
+        texts += list(en["address"]["names"]) + [l for v in en["narration"]["pool"]["seed"].values() for l in v] + en["narration"]["themes"]
+        texts += [l for cat in en["vocabulary"].values() for v in cat.values() for l in v] + en["narration"]["examples"]
+        for t in texts:
+            self.assertFalse(bad.search(t), t)
+        self.assertTrue(self.c.is_banned("Dobra suka."))
+        self.assertTrue(self.c.is_banned("Grzeczna suczko."))
+        self.assertFalse(self.c.is_banned("Założyłaś sukienkę. Ładnie."))
+        self.c.set_language("en")
+        self.assertTrue(self.c.is_banned("You're my bitch."))
+
     def test_no_seed_or_task_names_the_gear(self):
         import re
         n = P["narration"]

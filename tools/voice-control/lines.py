@@ -20,6 +20,18 @@ def similar(a, b):
     return difflib.SequenceMatcher(None, " ".join(_norm(a)), " ".join(_norm(b))).ratio()
 
 
+def is_banned_line(line, banned_words):
+    low = " " + line.lower() + " "
+    for w in banned_words or []:
+        w = str(w)
+        if w.startswith("re:"):
+            if re.search(w[3:], low, re.I):
+                return True
+        elif w.lower() in low:
+            return True
+    return False
+
+
 class LinePool:
     def __init__(self, generate, pool_path=None, said_path=None, min_pool=8, batch=20, max_said=2000, similarity=0.8,
                  max_words=16, avoid_recent=40, clock=time.time, background=True, seed=None, banned_words=None):
@@ -28,7 +40,7 @@ class LinePool:
         self.min_pool, self.batch, self.max_said = int(min_pool), int(batch), int(max_said)
         self.similarity, self.max_words, self.avoid_recent = float(similarity), int(max_words), int(avoid_recent)
         self.clock, self.background = clock, background
-        self.banned_words = [str(w).lower() for w in (banned_words or [])]
+        self.banned_words = [str(w) for w in (banned_words or [])]
         self._lock = threading.Lock()
         self._filling = set()
         self.pool = {}                        # theme -> [lines]
@@ -129,9 +141,8 @@ class LinePool:
                 pass
 
     def banned(self, line):
-        """True when the line names the hardware (the men take her; the gear is never mentioned)"""
-        low = " " + line.lower() + " "
-        return any(w in low for w in self.banned_words)
+        """True when the line uses a banned word: a plain entry is a substring, an "re:" entry a regular expression"""
+        return is_banned_line(line, self.banned_words)
 
     def is_repeat(self, line, window=400):
         """True when the line (or a close paraphrase) was said before"""

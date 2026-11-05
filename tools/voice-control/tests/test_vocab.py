@@ -44,7 +44,7 @@ class BankTests(unittest.TestCase):
             self.assertIn(needle, flat)
 
     def test_stage_zero_is_gentle_and_the_sharp_words_come_later(self):
-        sharp = ("suk", "dziwk", "szmat", "ssij", "połykaj")
+        sharp = ("dziwk", "szmat", "ssij", "połykaj", "zabawk")
         stage0 = " ".join(t for levels in VOC.values() for t in levels.get("0", [])).lower()
         for word in sharp:
             self.assertNotIn(word, stage0)
