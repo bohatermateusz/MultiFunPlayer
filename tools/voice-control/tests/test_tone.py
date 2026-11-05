@@ -181,8 +181,8 @@ class HarderDice(unittest.TestCase):
 
     def test_the_lube_launcher_takes_many_requests(self):
         mean = self.asks_until_granted("lube_fire")
-        self.assertGreater(mean, 4.0)
-        self.assertLess(mean, 8.01)
+        self.assertGreater(mean, 3.0)
+        self.assertLess(mean, 5.01)
 
     def test_mild_requests_are_easier_than_the_lube_launcher(self):
         self.assertLess(self.asks_until_granted("calm"), 3.3)
@@ -196,7 +196,7 @@ class HarderDice(unittest.TestCase):
 
     def test_it_is_harder_than_before(self):
         self.assertLessEqual(P["base_p"], 0.12)
-        self.assertGreaterEqual(P["max_asks"], 8)
+        self.assertLessEqual(P["max_asks"], 5)              # not endless: the 5th ask is (almost) sure
         self.assertLessEqual(P["base_p_overrides"]["lube_fire"], 0.06)
 
 

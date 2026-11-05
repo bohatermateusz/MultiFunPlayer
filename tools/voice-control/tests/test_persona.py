@@ -16,7 +16,7 @@ from voice_control import load_config  # noqa: E402
 
 CONFIG = os.path.join(os.path.dirname(__file__), "..", "commands.json")
 CFG, INTENTS = load_config(CONFIG)
-NOMANNERS = dict(CFG["persona"]["manners"], politeness_factor=1.0, ignore_demand_factor=1.0)   # these tests are about the dice, not the manners
+NOMANNERS = dict(CFG["persona"]["manners"], politeness_factor=1.0, ignore_demand_factor=1.0, beg_met_bonus=0.0)   # these tests are about the dice, not the manners
 STEP_IDS = [i.id for i in INTENTS if i.improvise]
 
 
@@ -93,7 +93,7 @@ class PersonaTests(unittest.TestCase):
             if o.status == "executed":
                 break
             self.assertEqual(o.status, "denied")
-            self.assertEqual(self.said[-1], "Jeszcze nie. Poproś ładniej.")
+            self.assertNotEqual(self.said[-1], "Dobra dziewczynka. Masz.")         # a refusal (varied, not always the same)
         self.assertIn("executed", outcomes)
         self.assertEqual(self.actions(), ["Hismith::LubeLauncher::Fire"])
         self.assertEqual(self.said[-1], "Dobra dziewczynka. Masz.")
@@ -232,9 +232,9 @@ class PersonaTests(unittest.TestCase):
         self.assertEqual(len(FakePani.calls), calls + 1)
 
     def test_conversation_without_a_request_is_talk(self):
-        o = self.say("kochanie, jestem Twoja", request="none", confession=True, denied="Wiem. Powtórz.")
+        o = self.say("kochanie, jestem Twoja", request="none", confession=True, granted="Wiem. Powtórz.", denied="Jeszcze nie.")
         self.assertEqual(o.status, "talk")
-        self.assertEqual(self.said[-1], "Wiem. Powtórz.")
+        self.assertEqual(self.said[-1], "Wiem. Powtórz.")            # nothing pending: she talks, no "Jeszcze nie"
         self.assertEqual(self.runs, [])
         self.assertTrue(self.c.in_reply_window())
 

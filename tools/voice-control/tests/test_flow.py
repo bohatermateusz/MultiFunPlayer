@@ -210,3 +210,43 @@ class Obedience(Server):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class LessLooping(Server):
+    def test_asking_nicer_after_she_said_so_is_credited(self):
+        self.c.persona_cfg = dict(P, base_p=0.0, base_p_overrides={}, step_p_overrides={}, step_p=0.0,
+                                  manners=dict(M, politeness_factor=1.0, ignore_demand_factor=1.0, beg_met_bonus=1.0))
+        self.c.persona_cfg["last_second"]["enabled"] = False
+        o = self.say("kochanie, zalej mnie", request="lube_fire", demand="beg")
+        self.assertEqual(o.status, "denied")
+        self.assertEqual(self.c._last_demand, ("lube_fire", "beg"))
+        o = self.say("proszę bardzo ładnie", request="none")         # the model did not repeat the request: the ask goes on
+        self.assertEqual(o.status, "executed")
+        self.assertEqual(o.extra.get("demand_met"), "beg")
+
+    def test_thanks_or_a_rough_confession_pay_what_was_demanded(self):
+        self.c.persona_cfg = dict(P, base_p=0.0, base_p_overrides={}, step_p_overrides={}, step_p=0.0)
+        self.c.persona_cfg["last_second"]["enabled"] = False
+        self.say("kochanie, szybciej", request="faster", demand="confess")
+        o = self.say("jestem twoją dziewczynką z dziureczką", request="none")
+        self.assertEqual(o.status, "executed")
+        self.say("kochanie, głębiej", request="deeper", demand="thank")
+        o = self.say("dziękuję", request="none")
+        self.assertEqual(o.status, "executed")
+
+    def test_the_same_refusal_is_not_said_twice_in_a_row(self):
+        self.c.persona_cfg = dict(P, base_p=0.0, base_p_overrides={}, step_p_overrides={}, step_p=0.0, max_asks=50)
+        lines = []
+        for i in range(6):
+            self.say(f"kochanie, szybciej {i}", request="faster", demand="beg", denied="Jeszcze nie. Poproś ładniej.")
+            lines.append(self.said[-1][0])
+        for a, b in zip(lines, lines[1:]):
+            self.assertNotEqual(a, b)
+        self.assertGreaterEqual(len(set(lines)), 4)
+
+    def test_plain_talk_without_a_pending_ask_is_not_a_refusal(self):
+        o = self.say("kochanie, jestem tu dla ciebie", request="none", granted="Wiem, mała. Chodź bliżej.", denied="Jeszcze nie.")
+        self.assertEqual(self.said[-1][0], "Wiem, mała. Chodź bliżej.")
+
+    def test_repeat_with_a_word_between(self):
+        self.assertEqual(repeat_target("Powtórz, głośno: jestem posłuszną sissi."), "jestem posłuszną sissi.")

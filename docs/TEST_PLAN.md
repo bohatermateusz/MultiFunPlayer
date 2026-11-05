@@ -167,6 +167,8 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.89 | Classic: ona mówi dłuższą kwestię, Ty zaczynasz prosić w trakcie | jej kwestia kończy się do końca; Twoja prośba jest rozpoznana i obsłużona po niej |
 | 6.90 | Classic: 'koniec' (albo 'koniec szybciej') w trakcie jej kwestii | urywa ją natychmiast i zatrzymuje maszynę |
 | 6.91 | 'Powtórz za mną: ...' i powtórz z jednym przekręconym słowem | nie ma kary; uznane za wykonanie |
+| 6.92 | Poproś o coś, ona każe prosić ładniej - powiedz tylko 'proszę bardzo' | szansa wyraźnie rośnie (w logu `demand_met: beg`), bez powtarzania samej prośby |
+| 6.93 | 10 próśb pod rząd | jej odmowy są różne, nigdy dwa razy to samo zdanie; najpóźniej 5. prośba przechodzi |
 | 6.88 | Koszt | po 30 min: znaki w ElevenLabs (classic/live) vs minuty Agents w dashboardzie - porównaj |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |

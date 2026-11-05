@@ -15,7 +15,7 @@ from test_persona import Clock, FakePani, turn  # noqa: E402
 from voice_control import load_config  # noqa: E402
 
 CFG, INTENTS = load_config(os.path.join(os.path.dirname(__file__), "..", "commands.json"))
-NOMANNERS = dict(CFG["persona"]["manners"], politeness_factor=1.0, ignore_demand_factor=1.0)
+NOMANNERS = dict(CFG["persona"]["manners"], politeness_factor=1.0, ignore_demand_factor=1.0, beg_met_bonus=0.0)
 VOC = CFG["persona"]["vocabulary"]
 
 

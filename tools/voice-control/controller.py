@@ -23,7 +23,7 @@ REPLACE_WHOLE = {("narration", "pool", "seed"), ("narration", "tasks", "by_stage
                  ("vocabulary",), ("address",)}
 
 
-REPEAT_RE = re.compile(r"(?:powtórz(?:\s+za\s+mną)?|powiedz\s+dokładnie|repeat(?:\s+after\s+me)?|say\s+it)\s*:\s*['\"„“]?(.+?)['\"”]?\s*$", re.I)
+REPEAT_RE = re.compile(r"(?:powtórz|powiedz\s+dokładnie|powiedz\s+głośno|repeat|say\s+it)(?:[\s,]+\w+){0,3}\s*:\s*['\"„“]?(.+?)['\"”]?\s*$", re.I)
 
 
 def repeat_target(line):
@@ -168,6 +168,8 @@ class Controller:
         self.on_halt = None               # on_halt(): the safe word ran - her voice is cut off at once
         self._last_heard = 0.0            # last time anything was heard from the user (narration keeps quiet after it)
         self._repeat_target = None        # the sentence she told him to repeat ("Powtórz za mną: ...")
+        self._last_demand = None          # (request id, demand) of her last refusal: what she wants before she gives it
+        self._beg_met = None              # a request whose "ask nicer" demand he has just met (a bonus on the dice)
 
     @property
     def persona_cfg(self):
@@ -252,6 +254,42 @@ class Controller:
             return self._say(outcome)
 
     # ---- the live mode: partial transcripts, streamed answers -------------------------------------------
+    def _varied_denial(self, line, demand):
+        """her refusal must not be the same sentence over and over: a line too close to one of her last ones is swapped
+        for a variant from manners.denials[demand] that she has not said lately"""
+        from lines import similar
+        recent = [t for r, t in self._history[-12:] if r == "assistant"]
+        if line and not any(similar(line, t) >= 0.75 for t in recent):
+            return line
+        options = list(self.persona_cfg["manners"].get("denials", {}).get(demand) or []) + \
+            list(self.persona_cfg["manners"].get("denials", {}).get("beg") or [])
+        fresh = [o for o in options if not any(similar(o, t) >= 0.75 for t in recent + self._said_recent[-20:])]
+        if fresh:
+            return self.rng.choice(fresh)
+        return line or (options[0] if options else "")
+
+    def _demand_met(self, transcript):
+        """did he do what she demanded last? beg -> a polite word; thank -> thanks; confess -> a confession ("jestem ...");
+        repeat -> close enough to the sentence she gave (misheard words allowed)"""
+        if not self._last_demand:
+            return False
+        dem = self._last_demand[1]
+        low = normalize(transcript)
+        words = set(low.split())
+        markers = {normalize(x) for x in self.persona_cfg["manners"].get("polite_markers", [])} | {"błagam", "proszę", "please", "beg"}
+        if dem == "beg":
+            return bool(words & markers)
+        if dem == "thank":
+            return any(w.startswith(("dzięk", "dziek", "thank")) for w in words)
+        if dem == "confess":
+            return (low.startswith(("jestem", "i am", "i m", "należę", "naleze")) or "jestem" in words
+                    or self._says_any(transcript, self.persona_cfg["confession_phrases"], 0.6))
+        if dem == "repeat":
+            from lines import similar
+            target = self._repeat_target or ""
+            return bool(target) and similar(transcript, target) >= 0.55
+        return False
+
     def _safe_word_first(self, transcript):
         """-> a Match of the safe word when the utterance starts with it (after the wake word, if any)"""
         halt = next((i for i in self.intents if i.id == "halt"), None)
@@ -736,9 +774,9 @@ class Controller:
             if not self._narration_due:
                 self._narration_due = now + self._draw_narration_gap(stage)
                 return None
-            if now < self._narration_due or now - self._last_line < 8.0:
+            if now < self._narration_due or now - self._last_line < 15.0:
                 return None
-            if now - self._last_heard < float(cfg.get("quiet_after_user", 12)):
+            if now - self._last_heard < float(cfg.get("quiet_after_user", 20)):
                 return None                       # he has just spoken: she answers first, the comment waits
             if self._owed is not None and now - self._last_line < 25.0:
                 return None                       # she is waiting for what she demanded
@@ -900,6 +938,9 @@ class Controller:
             p = max(p, 0.95)
         if request_id in self._retry:
             p = min(p + float(c["last_second"]["retry_bonus"]), 0.95)   # she held it back at the last second: now more likely
+        if self._beg_met == request_id:
+            p = min(p + float(m.get("beg_met_bonus", 0.35)), 0.95)      # he asked nicer, as she told him
+            self._beg_met = None
         if self.penalty_remaining() > 0:
             p = 0.0                                          # punished: nothing until you apologise
         roll = self.rng.random()
@@ -938,6 +979,21 @@ class Controller:
         if self._says_any(transcript, self.persona_cfg["obey_phrases"], 0.88):
             turn.thanked = True
         m = self.persona_cfg["manners"]
+        met = self._demand_met(transcript)
+        if met:
+            # he did what she asked - roughly is enough (the recognition is not exact): the ask goes on, with credit
+            rid, dem = self._last_demand
+            extra_met = {"demand_met": dem}
+            if dem in ("thank", "confess", "repeat"):
+                self._owed, turn.thanked = rid, True          # the demand done: she gives it
+            elif dem == "beg":
+                self._beg_met = rid
+            if rid and dem == "beg" and str(turn.request) in ("none", "", "improvise"):
+                turn.request = rid                            # "proszę bardzo" continues the same ask
+            turn.defiance = False
+            self._last_demand = None
+        else:
+            extra_met = {}
         if self._repeat_target:
             from lines import similar
             if similar(transcript, self._repeat_target) >= 0.6:
@@ -1007,7 +1063,12 @@ class Controller:
                 reward = turn.confession or self.rng.random() < 0.5
                 if self._spontaneous(turn.grant_actions if reward else turn.tease_actions, stage, extra, "reward" if reward else "tease"):
                     return spoken(turn.line_if_granted if reward else turn.line_if_denied, Outcome("talk", "persona (unsolicited)", "", 0.0, "persona", extra))
-            return spoken(turn.line_if_denied or turn.line_if_granted, Outcome("talk", "persona", "", 0.0, "persona", extra))
+            pending = self._owed or self._last_demand or self.penalty_remaining() > 0
+            line = (turn.line_if_denied or turn.line_if_granted) if pending else (turn.line_if_granted or turn.line_if_denied)
+            if pending and self._last_demand:
+                line = self._varied_denial(line, self._last_demand[1])
+            extra.update(extra_met)
+            return spoken(line, Outcome("talk", "persona", "", 0.0, "persona", extra))
 
         request_id = request
         if intent is not None and not self._gated(request_id):
@@ -1019,6 +1080,7 @@ class Controller:
             o = Outcome("locked", "held: she only talks (and the Lube Launcher works)", request_id, 0.0, "persona", extra)
             return spoken(turn.line_if_denied, o)
 
+        extra.update(extra_met)
         granted, p, roll = self._decide(request_id, turn, self._is_polite(transcript))
         extra.update(p=round(p, 2), roll=round(roll, 2), asks=self._asks.get(request_id, 0), demand=turn.demand,
                      polite=self._is_polite(transcript))
@@ -1027,6 +1089,7 @@ class Controller:
         self._last_ask = now
         asks_before = self._asks.get(request_id, 0)
         if granted:
+            self._last_demand = None
             self._asks.pop(request_id, None)
             self._owed = None
             if intent is None:   # "improvise": whatever she planned, bounded like a scene
@@ -1062,6 +1125,8 @@ class Controller:
         self._asks[request_id] = self._asks.get(request_id, 0) + 1
         if turn.demand in ("thank", "repeat", "confess"):
             self._owed = request_id
+        self._last_demand = (request_id, turn.demand if turn.demand in ("beg", "thank", "repeat", "confess") else "beg")
+        turn.line_if_denied = self._varied_denial(turn.line_if_denied, self._last_demand[1])
         o = Outcome("denied", f"persona: {turn.demand}", request_id, 0.0, "persona", extra)
         if not locked and self._tease_roll(stage):
             steps, used = self._persona_steps(turn.tease_actions, set(self.persona_cfg["tease_allowed"]))

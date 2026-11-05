@@ -423,7 +423,8 @@ def main():
             el.language = (controller.persona_cfg.get("tts", {}) or {}).get("language", lang)
 
             def remember(vid, name, lang=lang):
-                print(f"  voice: {name or vid} ({vid})")
+                if name and name != "configured":
+                    print(f"  voice: {name} ({vid})")
                 try:
                     save_voice_id(args.config, vid, controller.language)
                 except (OSError, ValueError):

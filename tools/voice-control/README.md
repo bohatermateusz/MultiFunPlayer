@@ -203,6 +203,11 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   (not doing what she asked) cuts them further (x0.4). An open refusal ("nie chcę", "nie powiem", "nie będę prosić", or
   the model flags defiance) wipes your asks and nothing is granted for 90 s, or until you apologise ("przepraszam,
   Pani"). Not even the 8th ask beats an active punishment. "koniec"/End and "utrzymaj to" are never punished.
+* **No endless "ask nicer"**: what she demanded is remembered; doing it roughly is enough (a polite word after "ask
+  nicer" adds `manners.beg_met_bonus` 0.35 and continues the same ask even if you do not repeat it; "dziękuję" after
+  "thank me", a "jestem ..." after "say what you are", a close repetition after "repeat" - she gives it). Her refusal is
+  never the same sentence twice in a row (`manners.denials` variants), plain talk without a pending ask gets her answer,
+  not "Jeszcze nie", and the fifth ask is (almost) sure (`max_asks` 5).
 * **Her lines are not cut** (classic mode): a new line waits until the one playing has ended (a queue; a comment
   waiting is dropped when an answer comes), your voice does not cut her (`listen.barge_in`: `safe_word` by default,
   `always` for the old behaviour), only the safe word / End does - at once, also when it starts a longer utterance
