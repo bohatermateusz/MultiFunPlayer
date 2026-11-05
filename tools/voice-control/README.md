@@ -169,7 +169,7 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   (`base_p`, `base_p_overrides`, `step_p`, `confession_p`, `max_asks`), every decision is logged with `p` and `roll`.
 * **What she cannot touch** (`persona.never_gated`): the safe word **"trąbka"** and the hold **"utrzymaj to"**
   (and friends). They run at once, also in her reply window without "kochanie". **Every keyboard shortcut
-  bypasses her** (End = koniec; when you cannot speak, the key is the way).
+  bypasses her** (End = trąbka; when you cannot speak, the key is the way).
 * **If she cannot be reached** (no key / network): the mild commands in `persona.fallback_plain` (enough, slower,
   shallower, back to the script, normal, pause, play, loop) run plainly; everything else (the Lube Launcher,
   faster, deeper, the scenes, the modes, the surprise) is ignored until she is back.
@@ -204,7 +204,7 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   the model flags defiance) wipes your asks and nothing is granted for 90 s, or until you apologise ("przepraszam,
   Pani"). Not even the 8th ask beats an active punishment. "trąbka"/End and "utrzymaj to" are never punished.
 * **Safe word "trąbka"**: "trąbka" (also "trąbko", "trąbki", alone or after the wake word, also in English mode) stops
-  every machine at once, releases the hold, cuts her voice. "trąbka" is no longer the safe word (it is free for
+  every machine at once, releases the hold, cuts her voice. "koniec" is no longer the safe word (it is free for
   role-play; "koniec pętli" etc. stay commands). The End key does the same.
 * **Two machines, two Lube Launchers** (`devices.sides`): in MultiFunPlayer, Buttplug.io output -> **Device roles**, set
   each connected device to Rear (from behind), Front (her mouth) or Both (every command, the default). MFP keeps a separate
@@ -224,7 +224,7 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
 * **Her lines are not cut** (classic mode): a new line waits until the one playing has ended (a queue; a comment
   waiting is dropped when an answer comes), your voice does not cut her (`listen.barge_in`: `safe_word` by default,
   `always` for the old behaviour), only the safe word / End does - at once, also when it starts a longer utterance
-  ("koniec szybciej"). Narration keeps quiet for 12 s after you speak (`narration.quiet_after_user`) and while she waits
+  ("trąbka szybciej"). Narration keeps quiet for 12 s after you speak (`narration.quiet_after_user`) and while she waits
   for what she demanded. Whisper's hallucinations (walls of "tryb pięć, tryb pięć...") are dropped (`listen.max_words`),
   the recognition prompt is short, a dropped connection is retried once. A repetition with a misheard word counts as
   obedience; the model's "defiance" counts only when you actually said no.
