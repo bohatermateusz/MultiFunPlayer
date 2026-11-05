@@ -19,6 +19,7 @@ internal sealed partial class ButtplugOutputTarget
     private const int ModeB = 10;
     private const int ModeCalm = 12;               // slowest speed, medium depth: "enough" without stopping
     private const int ModeHalt = 11;               // speed 0, the script is held back for the machine until another mode
+    private const int ModeCooldown = 13;           // the wind-down: slower, deeper, a narrower stroke, then micro strokes
     private const int SmallestStrokeWidth = 10;
     private const double SurpriseModeChance = 0.7;   // chance that the surprise also changes the machine's mode
 
@@ -444,6 +445,10 @@ internal sealed partial class ButtplugOutputTarget
         if (!fromSurprise)
             EndSurprise();         // a mode chosen by hand ends the surprise and any pending draw
 
+        CancelCooldown(Cur);       // any mode, the script or Stop ends this side's wind-down
+        if (mode == ModeHalt)
+            Interlocked.Exchange(ref _cooldownShotSource, null)?.Cancel();
+
         if (mode == ModeHalt && !GetQuickActuators(SpeedDescription, ActuatorType.Oscillate).Any())
         {
             Logger.Info("No device with a speed actuator is connected, nothing to stop");
@@ -574,6 +579,7 @@ internal sealed partial class ButtplugOutputTarget
         s.RegisterAction($"{Identifier}::Hismith::Surprise::Again", HismithSurpriseAgain);
         s.RegisterAction($"{Identifier}::Hismith::Halt", () => SetHismithMode(ModeHalt));
         s.RegisterAction($"{Identifier}::Hismith::Calm", () => SetHismithMode(ModeCalm));
+        s.RegisterAction($"{Identifier}::Hismith::Cooldown", HismithCooldown);
         RegisterHismithSideActions(s);
         s.RegisterAction($"{Identifier}::Hismith::Speed::Faster", HismithFaster);
         s.RegisterAction($"{Identifier}::Hismith::Speed::Slower", HismithSlower);
@@ -593,6 +599,7 @@ internal sealed partial class ButtplugOutputTarget
         s.UnregisterAction($"{Identifier}::Hismith::Surprise::Again");
         s.UnregisterAction($"{Identifier}::Hismith::Halt");
         s.UnregisterAction($"{Identifier}::Hismith::Calm");
+        s.UnregisterAction($"{Identifier}::Hismith::Cooldown");
         s.UnregisterAction($"{Identifier}::Hismith::Speed::Faster");
         s.UnregisterAction($"{Identifier}::Hismith::Speed::Slower");
         s.UnregisterAction($"{Identifier}::Hismith::Depth::Deeper");
@@ -610,6 +617,7 @@ internal sealed partial class ButtplugOutputTarget
         settings[nameof(HismithSurpriseDelaySeconds)] = HismithSurpriseDelaySeconds;
         settings[nameof(HismithLockMinutes)] = HismithLockMinutes;
         settings[nameof(HismithHoldLoopSeconds)] = HismithHoldLoopSeconds;
+        settings[nameof(HismithCooldownSeconds)] = HismithCooldownSeconds;
         SaveHismithSideSettings(settings);
     }
 
@@ -627,7 +635,145 @@ internal sealed partial class ButtplugOutputTarget
             HismithLockMinutes = lockMinutes;
         if (settings.TryGetValue<int>(nameof(HismithHoldLoopSeconds), out var holdLoop))
             HismithHoldLoopSeconds = holdLoop;
+        if (settings.TryGetValue<int>(nameof(HismithCooldownSeconds), out var cooldown))
+            HismithCooldownSeconds = cooldown;
         LoadHismithSideSettings(settings);
+    }
+
+    // Cooldown ("tryb uspokajania"): over HismithCooldownSeconds (default 5 min) every side winds down smoothly from
+    // what it does now to the slowest speed at full depth with the smallest stroke (10 %: only the last bit, over and
+    // over), and stays there until another mode. Somewhere in the middle (20-80 % of the time) one Lube Launcher shot:
+    // front, rear or both, drawn. A hold pauses the wind-down; any other mode, the script or Stop ends it.
+    private int _cooldownSeconds = 300;
+    private CancellationTokenSource _cooldownShotSource;
+
+    public int HismithCooldownSeconds
+    {
+        get => _cooldownSeconds;
+        set => SetAndNotify(ref _cooldownSeconds, Math.Clamp(value, 30, 1800));
+    }
+
+    public void HismithCooldown() => StartCooldown(null);
+
+    private void StartCooldown(HismithSide? only)
+    {
+        if (RejectedByLock("the cooldown"))
+            return;
+
+        EndSurprise();
+        var present = PresentSides();
+        var sides = only is { } one ? new List<HismithSide> { one } : present;
+        var seconds = _cooldownSeconds;
+        foreach (var side in sides)
+            InSide(side, () => _ = RunCooldownAsync(seconds));
+
+        // one shot: the side asked for, else front / rear / both (only one side present: its launcher)
+        HismithSide shot = only ?? (present.Count > 1 ? new[] { HismithSide.Front, HismithSide.Rear, HismithSide.Both }[Random.Shared.Next(3)] : HismithSide.Both);
+        var at = seconds * (0.2 + Random.Shared.NextDouble() * 0.6);
+        var source = new CancellationTokenSource();
+        Interlocked.Exchange(ref _cooldownShotSource, source)?.Cancel();
+        _ = CooldownShotAsync(shot, at, source);
+        Logger.Info("Cooldown for {0} s on {1}; one Lube Launcher shot ({2}) after {3:0} s", seconds, string.Join(", ", sides), shot, at);
+    }
+
+    private async Task CooldownShotAsync(HismithSide side, double afterSeconds, CancellationTokenSource source)
+    {
+        try
+        {
+            await Task.Delay(TimeSpan.FromSeconds(afterSeconds), source.Token);
+            var previous = _sideScope.Value;
+            _sideScope.Value = side;
+            try
+            {
+                await FireLubeLauncherAsync();
+            }
+            finally
+            {
+                _sideScope.Value = previous;
+            }
+        }
+        catch (OperationCanceledException) { }
+        finally
+        {
+            Interlocked.CompareExchange(ref _cooldownShotSource, null, source);
+        }
+    }
+
+    private void CancelCooldown(HismithSideState state)
+    {
+        Interlocked.Exchange(ref state.Cooldown, null)?.Cancel();
+        state.CooldownRemaining = 0;
+    }
+
+    private async Task RunCooldownAsync(int seconds)
+    {
+        var state = Cur;
+        var source = new CancellationTokenSource();
+        Interlocked.Exchange(ref state.Cooldown, source)?.Cancel();
+        var token = source.Token;
+        try
+        {
+            int startSpeed, startDepth;
+            await _modeGate.WaitAsync(token);
+            try
+            {
+                StopHismithSequence(sendToDevice: false);
+                var previous = state.Mode;
+                startSpeed = previous is >= 1 and <= ModeCalm and not ModeHalt ? state.Speed : 60;
+                startDepth = state.Depth;
+                state.Mode = ModeCooldown;      // the script output to this side's machine is suppressed from here on
+                NotifyModeChanged();
+                EventAggregator.Publish(new ScriptLoopMessage(ScriptLoopCommand.Clear));
+                _hismithManualMode = false;
+                NotifyOfPropertyChange(nameof(HismithManualMode));
+                await SendQuickActuatorsAsync(RunModeDescription, 0, 1);
+                await Task.Delay(150, token);
+            }
+            finally
+            {
+                _modeGate.Release();
+            }
+
+            const int stepSeconds = 6;
+            var steps = Math.Max(1, seconds / stepSeconds);
+            for (var i = 1; i <= steps; i++)
+            {
+                while (HismithLocked)
+                    await Task.Delay(1000, token);         // a hold keeps everything as it is, the wind-down waits
+
+                var t = (double)i / steps;
+                var e = 1 - (1 - t) * (1 - t);              // ease-out: the biggest change first, gentle at the end
+                var speed = (int)Math.Round(startSpeed + (_hismithSlowestSpeed - startSpeed) * e);
+                state.Depth = (int)Math.Round(startDepth + (100 - startDepth) * e);
+                var width = (int)Math.Round(_hismithScriptWidth + (SmallestStrokeWidth - _hismithScriptWidth) * e);
+                await SendQuickActuatorsAsync(WidthDescription, width, 100);
+                await SendQuickActuatorsAsync(DepthDescription, state.Depth, 100);
+                await SetSpeedAbsoluteAsync(speed);
+                state.CooldownRemaining = seconds - i * stepSeconds;
+                NotifyOfPropertyChange(nameof(HismithDepth));
+                NotifyOfPropertyChange(nameof(HismithModeStatus));
+                if (i < steps)
+                    await Task.Delay(TimeSpan.FromSeconds(stepSeconds), token);
+            }
+
+            // the end state: micro strokes over the prostate, slow and even, until another mode
+            await SendQuickActuatorsAsync(WidthDescription, SmallestStrokeWidth, 100);
+            state.Depth = 100;
+            await SendQuickActuatorsAsync(DepthDescription, 100, 100);
+            await SetSpeedAbsoluteAsync(_hismithSlowestSpeed);
+            state.CooldownRemaining = 0;
+            NotifyOfPropertyChange(nameof(HismithModeStatus));
+            Logger.Info("Cooldown done: micro strokes at the slowest speed");
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception e)
+        {
+            Logger.Debug(e, "Hismith cooldown exception");
+        }
+        finally
+        {
+            Interlocked.CompareExchange(ref state.Cooldown, null, source);
+        }
     }
 
     public int HismithSlowestSpeed
@@ -640,8 +786,10 @@ internal sealed partial class ButtplugOutputTarget
     {
         HismithLockClear();
         EndSurprise();
+        Interlocked.Exchange(ref _cooldownShotSource, null)?.Cancel();
         foreach (var state in _sideStates.Values)
         {
+            CancelCooldown(state);
             state.Mode = 0;
             state.SpeedBoost = 0;
             state.DepthBoost = 0;

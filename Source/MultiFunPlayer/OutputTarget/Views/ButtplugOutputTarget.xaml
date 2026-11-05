@@ -437,6 +437,18 @@
                     <Button Style="{StaticResource MaterialDesignOutlinedButton}"
                             MinWidth="44"
                             Padding="8 0"
+                            Click="{s:Action HismithCooldown}"
+                            Content="Cooldown"
+                            ToolTip="Wind down over HismithCooldownSeconds: slower, deeper, a narrower stroke, then slow micro strokes at full depth; one Lube Launcher shot on the way"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text="Scroll Lock"/>
+                </StackPanel>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
                             Click="{s:Action HismithDeeper}"
                             Content="Deeper"
                             ToolTip="Go deeper"/>
