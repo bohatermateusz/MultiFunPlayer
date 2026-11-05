@@ -242,7 +242,12 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   confessions, manners, narration themes / orders / seeds, the line pool (`lines_pool.en.json`), the voice and the
   OpenAI fallback instructions - all from the overlay `persona.languages.en`, merged over the Polish persona. Start in
   English with `--language en` or `"language": "en"` in the config. `voices --use <name> --lang en` saves an English voice.
-* **Her voice is picked for you**: with `persona.tts.voice_id` empty, the first run looks for a girlish female voice on your
+* **Her voice needs no setup**: with the ElevenLabs key set, the first line she says tries the voices of
+  `persona.tts.voices` for the current language in order (Polish: Hanna, Jagna, Asia, Jola, Arleta; English: Jessica,
+  Lily, Sarah, Alice), adds a library voice to your account when it is not there yet, falls back to a female voice from
+  your account, keeps the first one that speaks and writes it into the config - nothing to run by hand. F9 switches to
+  the next one any time. (The `voices` command below is optional, for auditioning.)
+* **Her voice is picked for you** (older notes): with `persona.tts.voice_id` empty, the first run looks for a girlish female voice on your
   ElevenLabs account (`voice_prefer.names` - Hanna, Jagna, Asia, Jola, Arleta from the ASMR app first, then Jessica / Lily /
   Sarah / Alice / Matilda - then `voice_prefer.ids` (your own picks by id, added from the library when missing), then any female young/middle-aged by
   labels, then any female, then - `allow_library` - a young female Polish voice from the shared library, added to the

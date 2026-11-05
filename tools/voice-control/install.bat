@@ -60,7 +60,6 @@ echo Done. Next:
 echo  1. MultiFunPlayer ^> Buttplug.io output ^> switch on "Remote commands" ^(port 23555^).
 echo     Buttplug server may run on another machine ^(e.g. Linux^): use ws://IP:12345 in MFP.
 echo  2. Set your headset microphone as the default recording device in Windows.
-echo  3. python voice_control.py voices --use Hanna      ^(her voice; "voices --audition" plays them all^)
-echo  4. python voice_control.py run --dry-run           ^(say "kochanie, ..." - shows what it would do^)
-echo  5. python voice_control.py run --mode live         ^(for real; F9 voice, F10 language, F11 conversation mode^)
+echo  3. run.bat           ^(dry run: say "kochanie, ..." - shows what it would do; her voice is chosen automatically^)
+echo  4. run.bat live      ^(for real, conversation without pauses; F9 voice, F10 language, F11 conversation mode^)
 pause

@@ -17,7 +17,7 @@ CFG_PATH = os.path.join(os.path.dirname(__file__), "..", "commands.json")
 
 
 class FakeEleven(BaseHTTPRequestHandler):
-    mine, library, added = [], [], []
+    mine, library, added, speakable, tts_calls = [], [], [], None, []
 
     def do_GET(self):
         self.send_response(200); self.send_header("Content-Type", "application/json"); self.end_headers()
@@ -27,6 +27,16 @@ class FakeEleven(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps({"voices": FakeEleven.mine}).encode())
 
     def do_POST(self):
+        if "/text-to-speech/" in self.path:
+            vid = self.path.split("/text-to-speech/")[1].split("/")[0]
+            FakeEleven.tts_calls.append(vid)
+            if FakeEleven.speakable is not None and vid not in FakeEleven.speakable:
+                self.send_response(404); self.end_headers()
+                self.wfile.write(b'{"detail":{"status":"voice_not_found","message":"A voice with that id was not found"}}'); return
+            if FakeEleven.speakable == "401":
+                pass
+            self.send_response(200); self.send_header("Content-Type", "audio/pcm"); self.end_headers()
+            self.wfile.write(b"\x01\x00" * 100); return
         FakeEleven.added.append(self.path)
         self.send_response(200); self.send_header("Content-Type", "application/json"); self.end_headers()
         self.wfile.write(json.dumps({"voice_id": "new-" + self.path.rsplit("/", 1)[1]}).encode())
@@ -47,7 +57,7 @@ class Pick(unittest.TestCase):
         cls.server.shutdown()
 
     def setUp(self):
-        FakeEleven.mine, FakeEleven.library, FakeEleven.added = [], [], []
+        FakeEleven.mine, FakeEleven.library, FakeEleven.added, FakeEleven.speakable, FakeEleven.tts_calls = [], [], [], None, []
         self.sp = ElevenLabsSpeaker("", "eleven_multilingual_v2", api_key="k", base_url=self.base, language="pl")
         self.prefer = {"names": ["Jessica", "Lily"], "allow_library": True}
 
@@ -86,6 +96,33 @@ class Pick(unittest.TestCase):
         sp = ElevenLabsSpeaker("", api_key="", api_key_env="NO_SUCH_VAR_X", base_url=self.base)
         with self.assertRaises(Exception):
             sp.pick_voice(self.prefer)
+
+    def test_automatic_voice_on_the_first_line_without_any_setup(self):
+        sp = ElevenLabsSpeaker("", "eleven_multilingual_v2", api_key="k", base_url=self.base, language="pl")
+        sp.candidates = [{"voice_id": "hanna", "name": "Hanna"}, {"voice_id": "jagna", "name": "Jagna", "public_owner_id": "own"},
+                         {"voice_id": "asia", "name": "Asia"}]
+        saved = []
+        sp.on_voice = lambda vid, name: saved.append((vid, name))
+        FakeEleven.speakable = {"asia", "new-jagna"}            # Hanna is not reachable, Jagna only after adding it
+        pcm = b"".join(sp.stream_auto("Masz.", 2))
+        self.assertEqual(len(pcm), 200)
+        self.assertEqual(FakeEleven.tts_calls, ["hanna", "jagna", "new-jagna"])
+        self.assertEqual(FakeEleven.added, ["/v1/voices/add/own/jagna"])
+        self.assertEqual(saved, [("new-jagna", "Jagna")])
+        self.assertTrue(sp.verified)
+        FakeEleven.tts_calls.clear()
+        b"".join(sp.stream_auto("Jeszcze.", 2))                 # remembered: straight to the working voice
+        self.assertEqual(FakeEleven.tts_calls, ["new-jagna"])
+        self.assertEqual(len(saved), 1)
+
+    def test_last_resort_is_a_pick_from_the_account(self):
+        sp = ElevenLabsSpeaker("", "eleven_multilingual_v2", api_key="k", base_url=self.base, language="pl")
+        sp.candidates = [{"voice_id": "gone", "name": "Gone"}]
+        sp.prefer = {"names": ["Lily"]}
+        FakeEleven.mine = [{"voice_id": "l1", "name": "Lily", "labels": {"gender": "female"}}]
+        FakeEleven.speakable = {"l1"}
+        b"".join(sp.stream_auto("Masz.", 0))
+        self.assertEqual(sp.voice_id, "l1")
 
     def test_v3_drops_style_and_speed(self):
         sp = ElevenLabsSpeaker("v", "eleven_v3", api_key="k", stage_settings=[{"stability": 0.5, "style": 0.6, "speed": 1.1, "similarity_boost": 0.7}])

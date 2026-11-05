@@ -108,6 +108,10 @@ class ElevenLabsSpeaker:
         self.last_response = None    # the open HTTP response, so that a barge-in can close it
         self.delivery = None         # persona.tts.delivery (presets, breaks); None = stage_settings only
         self.last_request = None     # the body of the last request (what the voice was asked to read)
+        self.candidates = []         # [{voice_id, name, public_owner_id?}]: tried in order until one speaks
+        self.prefer = {}             # voice_prefer: the last resort (pick from the account by name / labels)
+        self.on_voice = None         # on_voice(voice_id, name): a voice that worked (saved to the config)
+        self.verified = False        # the current voice_id has spoken at least once
 
     def _settings(self, stage):
         if not self.stage_settings:
@@ -164,6 +168,64 @@ class ElevenLabsSpeaker:
             raise TtsError(f"request failed: {e}") from e
         self.last_response = resp
         return self._chunks(resp)
+
+    def stream_auto(self, text, stage=0, meta=None, preset=None, tags=None):
+        """stream() with the voice chosen automatically: the configured voice first, then the candidates (a library
+        voice is added to the account when needed), then a pick from the account; the first one that speaks is kept"""
+        tried, last = set(), None
+        order = ([{"voice_id": self.voice_id, "name": "configured"}] if self.voice_id else []) + list(self.candidates)
+        if self.verified:
+            order = order[:1]
+        for cand in order + [None]:
+            if cand is None:
+                if self.verified or not self.prefer:
+                    break
+                try:
+                    picked = self.pick_voice(self.prefer)
+                except TtsError as e:
+                    last = last or e
+                    break
+                if not picked or picked[0] in tried:
+                    break
+                cand = {"voice_id": picked[0], "name": picked[1]}
+            vid = str(cand.get("voice_id", ""))
+            if not vid or vid in tried:
+                continue
+            tried.add(vid)
+            self.voice_id = vid
+            try:
+                gen = self.stream(text, stage, meta, preset, tags)
+                first = next(gen)
+            except StopIteration:
+                last = TtsError("empty answer")
+                continue
+            except TtsError as e:
+                msg = str(e)
+                last = e
+                if "HTTP 401" in msg or "missing_permissions" in msg or "quota" in msg:
+                    raise                    # the key itself is refused: no other voice will help
+                if cand.get("public_owner_id") and ("voice_not_found" in msg or "HTTP 404" in msg or "HTTP 400" in msg):
+                    try:
+                        new_id = self.add_library_voice(cand["public_owner_id"], vid, str(cand.get("name", vid)))
+                        tried.add(new_id)
+                        self.voice_id = new_id
+                        gen = self.stream(text, stage, meta, preset, tags)
+                        first = next(gen)
+                        vid = new_id
+                    except (TtsError, StopIteration) as e2:
+                        last = e2 if isinstance(e2, TtsError) else last
+                        continue
+                else:
+                    continue
+            if not self.verified:
+                self.verified = True
+                if self.on_voice:
+                    try:
+                        self.on_voice(vid, str(cand.get("name", "")))
+                    except Exception:
+                        pass
+            return _prepend(first, gen)
+        raise last or TtsError("no ElevenLabs voice could speak")
 
     def synthesize(self, text, meta=None, preset=None, tags=None) -> bytes:
         """the whole line as PCM (for the audio cache)"""
@@ -281,6 +343,11 @@ class ElevenLabsSpeaker:
                 self.voice_id = new_id
                 return new_id, name
         return None
+
+
+def _prepend(first, gen):
+    yield first
+    yield from gen
 
 
 def pcm_chunks(pcm: bytes, size: int = 4800):

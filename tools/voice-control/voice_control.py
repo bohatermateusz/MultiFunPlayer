@@ -407,27 +407,26 @@ def main():
             el = ElevenLabsSpeaker(tcfg.get("voice_id", ""), tcfg.get("model", "eleven_multilingual_v2"),
                                    base_url=tcfg.get("base_url", "https://api.elevenlabs.io"), timeout=tcfg.get("timeout", 15),
                                    stage_settings=tcfg.get("stage_settings"), language=tcfg.get("language", "pl"))
-            if not el.voice_id and el.api_key:
-                # no voice chosen yet: pick a girlish female voice once and remember it in the config
+            # no setup: the voices of the list (Hanna, Jagna, ... for Polish) are tried on the first line, a library
+            # voice is added to the account when needed, the first one that speaks is kept and written to the config
+            lang = controller.language
+            el.candidates = [v for v in tcfg.get("voices", []) if str(v.get("language", "pl")) == lang and v.get("voice_id")]
+            el.prefer = tcfg.get("voice_prefer", {})
+            el.language = (controller.persona_cfg.get("tts", {}) or {}).get("language", lang)
+
+            def remember(vid, name, lang=lang):
+                print(f"  voice: {name or vid} ({vid})")
                 try:
-                    picked = el.pick_voice(tcfg.get("voice_prefer", {}))
-                    if picked:
-                        print(f"  voice: {picked[1]} ({picked[0]})")
-                        try:
-                            save_voice_id(args.config, picked[0])
-                        except (OSError, ValueError) as e:
-                            print(f"  voice: could not save voice_id: {e}")
-                except TtsError as e:
-                    print(f"  voice: no ElevenLabs voice picked ({e}); OpenAI voice is used")
+                    save_voice_id(args.config, vid, controller.language)
+                except (OSError, ValueError):
+                    pass
+            el.on_voice = remember
             el.delivery = tcfg.get("delivery") or {}
             if not el.api_key:
                 print("  voice: ELEVENLABS_API_KEY is not set - the OpenAI voice is used (set the key and restart for ElevenLabs)")
-            elif not el.voice_id:
-                print("  voice: no ElevenLabs voice chosen - run: python voice_control.py voices --use Hanna  (OpenAI voice for now)")
-            if el.api_key and el.voice_id:
-                out["elevenlabs"] = el
-            else:
                 out["_elevenlabs"] = el          # kept for the F9/F10 handlers, not used to speak
+            else:
+                out["elevenlabs"] = el
         o = tcfg.get("openai", {})
         out["openai"] = Speaker(o.get("base_url", "https://api.openai.com/v1"), o.get("model", "gpt-4o-mini-tts"), o.get("voice", "coral"),
                                 o.get("instructions", ""), api_key_env=o.get("api_key_env", "OPENAI_API_KEY"), speed=o.get("speed", 1.0))
@@ -440,7 +439,7 @@ def main():
 
     def provider(name):
         if name == "elevenlabs":
-            return lambda line, stage, meta=None: speakers["elevenlabs"].stream(line, stage, meta)
+            return lambda line, stage, meta=None: speakers["elevenlabs"].stream_auto(line, stage, meta)
 
         def openai_stream(line, stage):
             o = tts_now().get("openai", {})
@@ -475,6 +474,7 @@ def main():
             voice.providers["elevenlabs"] = provider("elevenlabs")
             voice.order = [n for n in order if n in voice.providers]
         el.voice_id, el.language = voice_id, tts_now().get("language", lang)
+        el.verified = False
         chosen[lang] = voice_id
         try:
             save_voice_id(args.config, voice_id, lang)
@@ -501,19 +501,17 @@ def main():
 
     def on_language_voice(lang):
         t = tts_now()
-        vid = chosen.get(lang) or t.get("voice_id", "")
-        if not vid:
-            lst = voices_for(lang)
-            vid = resolve_voice(lst[0]) if lst else ""
-        el0 = speakers.get("elevenlabs") or speakers.get("_elevenlabs")
-        if not vid and el0 is not None and el0.api_key:
-            try:
-                picked = el0.pick_voice(t.get("voice_prefer", {}))
-                vid = picked[0] if picked else ""
-            except TtsError:
-                vid = ""
-        use_voice(lang, vid, "English now, darling. Say what you want." if lang == "en" else "Teraz po polsku, kochanie.")
+        el1 = speakers.get("elevenlabs") or speakers.get("_elevenlabs")
+        if el1 is not None:
+            el1.candidates = [v for v in tcfg.get("voices", []) if str(v.get("language", "pl")) == lang and v.get("voice_id")]
+            el1.prefer = t.get("voice_prefer", {})
+            el1.verified = False
+            # the voice of that language: the one used before, else the configured one, else the list decides on the
+            # first line (stream_auto) - nothing to choose by hand
+            el1.voice_id = chosen.get(lang) or t.get("voice_id", "")
+            el1.language = t.get("language", lang)
         print(f"  language: {lang}")
+        controller.say_now("English now, darling. Say what you want." if lang == "en" else "Teraz po polsku, kochanie.")
     controller.on_language_voice = on_language_voice
 
     def toggle_language():

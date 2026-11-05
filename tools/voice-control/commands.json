@@ -1241,10 +1241,10 @@
     {"name": "Asia - Polish friendly", "voice_id": "Bz1e1clEKwgN71Vx7cxj", "language": "pl", "public_owner_id": "97ed4d170ed2bd48d0829fe298338067d9bae60be1d7200913049cb93bc9445d"},
     {"name": "Jola - Polish actress", "voice_id": "mgxZQ8b1CA0Zl9YUTX8Z", "language": "pl", "public_owner_id": "1bb903ce90c3e7d930fd551128a6154d59ed8a0a4407dc3d2254232abc62506f"},
     {"name": "Arleta - Polish calm", "voice_id": "F9eb9uZYeJuHuO7Uvs1R", "language": "pl", "public_owner_id": "61b59449a05322c2dad4832727ce9a75c61768d6c234b06cd2c8b433e43f95b6"},
-    {"name": "Jessica", "voice_id": "", "language": "en"},
-    {"name": "Lily", "voice_id": "", "language": "en"},
-    {"name": "Sarah", "voice_id": "", "language": "en"},
-    {"name": "Alice", "voice_id": "", "language": "en"}
+    {"name": "Jessica", "voice_id": "cgSgspJ2msm6clMCkdW9", "language": "en"},
+    {"name": "Lily", "voice_id": "pFZP5JQG7iQjIQuC4Bku", "language": "en"},
+    {"name": "Sarah", "voice_id": "EXAVITQu4vr4xnSDxMaL", "language": "en"},
+    {"name": "Alice", "voice_id": "Xb7hH8MSUJpSbSDYk0k2", "language": "en"}
    ],
    "provider": "elevenlabs",
    "fallback_provider": "openai",

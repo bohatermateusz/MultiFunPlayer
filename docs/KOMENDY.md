@@ -91,8 +91,8 @@ model na bieżąco. Na początku rzadko (co 1,5-2,5 min), na wysokich etapach co
 pytań i niczego nie każe - to tło. Po jej kwestii masz 60 s okna, żeby odpowiedzieć bez "kochanie". Wyłączenie:
 `--no-narration` albo `persona.narration.enabled: false`.
 
-Głos: jeśli `voice_id` jest puste, narzędzie samo wybiera dziewczęcy, kobiecy głos z Twojego konta ElevenLabs (albo z biblioteki)
-i zapisuje go w `commands.json`; inny wybierzesz przez `python voice_control.py voices --female --young` i `voices --use <nazwa>`.
+Głos: nic nie trzeba ustawiać - przy pierwszej kwestii narzędzie samo próbuje głosów z listy (Hanna, Jagna, Asia, Jola, Arleta),
+w razie potrzeby dodaje go do konta ElevenLabs, zapamiętuje ten, który zadziałał. Inny głos: klawisz **F9**.
 Teksty narracji się nie powtarzają: pula świeżych kwestii dogenerowuje się w tle (OpenAI), a wszystko, co padło, jest pamiętane w `said.jsonl`.
 Nowe wątki: "przyjemność była przynętą, chodziło o zniewolenie", "za późno na zmianę", "sama weszła w pułapkę", "ciało nauczyło się słuchać",
 a z Twoich skryptów ASMR m.in. "sama się zgłosiłaś", "wymazana", "zaprogramowana", "oba końce", "jedyny orgazm", "zbrukana i dumna",
