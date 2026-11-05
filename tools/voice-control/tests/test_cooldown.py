@@ -1,4 +1,4 @@
-"""'Uspokój mnie' / Scroll Lock: the machines wind down (MFP Hismith::Cooldown) - never decided by dice; she only
+"""The password 'pomidor uspakajający' (EN also 'calming tomato') / Scroll Lock: the machines wind down (MFP Hismith::Cooldown) - never decided by dice; she only
 comments it tenderly, her narration stays tender meanwhile and her program does not speed anything up again."""
 import copy
 import os
@@ -23,14 +23,33 @@ class Plain(unittest.TestCase):
         self.c = Controller(INTENTS, self.runs.append, clock=self.clock, wake_words=CFG["wake"]["words"], lock_cfg=CFG["lock"],
                             wake_words_by_lang={"pl": CFG["wake"]["words"], "en": CFG["wake"]["words_en"]})
 
-    def test_the_phrases(self):
-        for text in ["kochanie, uspokój mnie", "kochanie, wycisz", "Pani, tryb uspokajania", "kochanie, powoli kończ",
-                     "kochanie, wyciszaj mnie", "kochanie, kończymy powoli"]:
-            self.clock.t += 20
-            self.c._last.clear()
-            o = self.c.handle(text)
+    def utter(self, text):
+        self.clock.t += 20
+        self.c._last.clear()
+        return self.c.handle(text)
+
+    def test_the_password_without_the_wake_word(self):
+        for text in ["pomidor uspakajający", "Pomidor uspokajający.", "pomidorze uspakajający", "kochanie, pomidor uspakajający",
+                     "pomidor uspakajający proszę"]:
+            o = self.utter(text)
             self.assertEqual((o.status, o.intent), ("executed", "cooldown"), text)
             self.assertEqual(actions(self.runs)[-1], "Hismith::Cooldown", text)
+
+    def test_the_old_phrases_do_not_run_it(self):
+        for text in ["kochanie, uspokój mnie", "kochanie, wycisz", "Pani, tryb uspokajania", "kochanie, powoli kończ",
+                     "uspokój mnie", "pomidor", "uspakajający"]:
+            o = self.utter(text)
+            self.assertNotEqual(o.intent, "cooldown", text)
+        self.assertNotIn("Hismith::Cooldown", actions(self.runs))
+
+    def test_live_runs_it_once_from_the_partial_transcript(self):
+        self.assertIsNone(self.c.handle_partial("t1", "pomidor"))
+        o = self.c.handle_partial("t1", "pomidor uspakajający")
+        self.assertEqual((o.status, o.intent), ("executed", "cooldown"))
+        self.assertIsNone(self.c.handle_partial("t1", "pomidor uspakajający proszę"))
+        o = self.c.handle_final("t1", "pomidor uspakajający proszę")
+        self.assertEqual(o.status, "done")
+        self.assertEqual(actions(self.runs).count("Hismith::Cooldown"), 1)
 
     def test_calm_and_slower_stay_what_they_were(self):
         self.c.handle("kochanie, spokojnie")
@@ -40,14 +59,15 @@ class Plain(unittest.TestCase):
         self.assertEqual(actions(self.runs)[-1], "Hismith::Speed::Slower")
 
     def test_one_side(self):
-        self.c.handle("kochanie, wycisz tył")
+        self.c.handle("pomidor uspakajający od tyłu")
         self.assertEqual(actions(self.runs)[-1], "Hismith::Rear::Cooldown")
 
     def test_english(self):
         self.c.set_language("en")
-        o = self.c.handle("darling, cool me down")
-        self.assertEqual(o.intent, "cooldown")
-        self.assertEqual(actions(self.runs)[-1], "Hismith::Cooldown")
+        for text in ["calming tomato", "darling, calming tomato", "pomidor uspakajający"]:
+            o = self.utter(text)
+            self.assertEqual((o.status, o.intent), ("executed", "cooldown"), text)
+        self.assertEqual(self.utter("darling, cool me down").intent, "")
 
     def test_the_key(self):
         self.assertEqual(CFG["keys"]["scroll_lock"], "cooldown")
@@ -58,7 +78,7 @@ class Plain(unittest.TestCase):
         self.assertEqual(actions(self.runs)[-1], "Hismith::Cooldown")      # a key is for every side
 
     def test_another_command_or_the_safe_word_ends_it(self):
-        self.c.handle("kochanie, uspokój mnie")
+        self.c.handle("pomidor uspakajający")
         self.assertTrue(self.c.cooldown_active())
         self.clock.t += 10
         self.c.press("lube_fire")
@@ -84,17 +104,17 @@ class WithHer(Server):
 
     def test_never_by_dice_even_while_punished(self):
         self.c._penalty_until = self.clock.t + 600
-        o = self.say("kochanie, uspokój mnie", request="calm")
+        o = self.say("pomidor uspakajający", request="calm")
         self.assertEqual((o.status, o.intent), ("executed", "cooldown"))
         self.assertEqual(actions(self.runs)[-1], "Hismith::Cooldown")
-        self.assertNotIn("kochanie, uspokój mnie", [c[0] if isinstance(c, tuple) else c for c in self._asked()])
+        self.assertNotIn("pomidor uspakajający", [c[0] if isinstance(c, tuple) else c for c in self._asked()])
 
     def _asked(self):
         from test_persona import FakePani
         return FakePani.calls
 
     def test_she_comments_it_tenderly(self):
-        o = self.say("kochanie, uspokój mnie")
+        o = self.say("pomidor uspakajający")
         self.assertIn(o.extra["say"], C["lines"])
         self.assertEqual((o.extra["kind"], o.extra["tone"]), ("aftercare", "czuły"))
         self.assertEqual(self.said[-1][0], o.extra["say"])
@@ -106,14 +126,14 @@ class WithHer(Server):
         self.assertEqual(self.said[-1][0], o.extra["say"])
 
     def test_no_line_twice_in_a_row(self):
-        first = self.say("kochanie, uspokój mnie").extra["say"]
+        first = self.say("pomidor uspakajający").extra["say"]
         self.clock.t += 30
-        second = self.say("kochanie, uspokój mnie").extra["say"]
+        second = self.say("pomidor uspakajający").extra["say"]
         self.assertNotEqual(first, second)
 
     def test_her_turns_are_tender_meanwhile(self):
         self.c._heat, self.c._heat_last = 100.0, self.clock.t            # stage 4: sharp would be likely
-        self.say("kochanie, uspokój mnie")
+        self.say("pomidor uspakajający")
         tones = {self.c._roll_tone(4)[0] for _ in range(40)}
         self.assertEqual(tones, {"czuły"})
         self.assertTrue(self.c._persona_state()["wyciszanie"])
@@ -127,7 +147,7 @@ class WithHer(Server):
         self.c.persona_cfg["initiative"]["session_seconds"] = 10_000
         self.c._heat, self.c._heat_last = 100.0, self.clock.t
         self.say("kochanie, jestem twoja", request="none")      # a session is on
-        self.say("kochanie, uspokój mnie")
+        self.say("pomidor uspakajający")
         for _ in range(C["seconds"] - 5):
             self.clock.t += 1
             self.c._heat_last = self.clock.t
@@ -139,7 +159,7 @@ class WithHer(Server):
     def test_her_program_does_not_go_on(self):
         self.c._program = {"next_at": self.clock.t + 5, "every": 60, "until": 0, "steps": [{"action": "{target}::Hismith::Speed::Faster", "args": []}],
                            "used": ["faster"], "random_modes": False, "then": None, "side": None, "source": "faster"}
-        self.say("kochanie, uspokój mnie")
+        self.say("pomidor uspakajający")
         self.assertIsNone(self.c._program)
         n = len(self.runs)
         self.clock.t += 120
@@ -149,7 +169,7 @@ class WithHer(Server):
     def test_english_lines(self):
         self.c.wake_words_by_lang = {"pl": CFG["wake"]["words"], "en": CFG["wake"]["words_en"]}
         self.c.set_language("en")
-        o = self.say("darling, cool me down")
+        o = self.say("calming tomato")
         self.assertIn(o.extra["say"], P["languages"]["en"]["cooldown"]["lines"])
 
 

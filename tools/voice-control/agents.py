@@ -141,7 +141,7 @@ class AgentsLoop:
 
     def _safe_word(self, text):
         m, _ = match(text, self.c.intents)
-        if m is not None and m.intent.id in ("halt", "lock"):
+        if m is not None and m.intent.id in ("halt", "lock", "cooldown"):
             o = self.c.press(m.intent.id)
             self.log(f'  "{text}" -> {o.status} [{m.intent.id}] (agent transcript)')
 

@@ -44,6 +44,7 @@ SIDE_WORDS = {
              " do środka", " w środek", " w środku", " anal", " pośladk",
              " behind", " ass ", " butt", " rear", " inside", " pussy", " from the back"],
 }
+NO_WAKE_WORD = ("halt", "cooldown")   # said alone, at any moment: the safe word and the cooldown password
 SIDED_ACTIONS = {"Speed", "Depth", "Mode", "Calm", "Boost", "LubeLauncher", "Cooldown"}
 # the same words as the matcher sees them (no accents), each with a space in front: " do ust", " od tylu", ...
 SIDE_NORM = {k: [" " + normalize(w) + ("" if not w.endswith(" ") else " ") for w in v] for k, v in SIDE_WORDS.items()}
@@ -444,9 +445,9 @@ class Controller:
             now = self.clock()
             if item in self._consumed:
                 return None
-            m, _ = match(text, self.intents)
-            if m is not None and m.intent.id == "halt":
-                self._consumed[item] = ("halt", text)
+            m = self._match_no_wake(text)
+            if m is not None and (m.intent.id == "halt" or m.score >= 0.95):
+                self._consumed[item] = (m.intent.id, text)
                 o = self._run_match(m, now)
                 self._log(f"[partial] {text}", o)
                 return self._say(o)
@@ -476,6 +477,8 @@ class Controller:
             del self._consumed_log[:-50]
         if done is not None:
             m, _ = match(self.strip_wake_word(text) or text, self.intents)
+            if m is None or m.intent.id != done[0]:
+                m = self._match_no_wake(text) or m
             if m is not None and m.intent.id == done[0]:
                 o = Outcome("done", f"already ran from the partial transcript ({done[0]})", done[0], m.score, "live")
                 self._log(text, o)
@@ -1523,6 +1526,15 @@ class Controller:
         return any(len(t) >= min(min_length, len(w)) and _sim(w, t) >= threshold
                    for w in self.wake_words for t in tokens[:2 if len(w) >= 5 else 1])
 
+    def _match_no_wake(self, text):
+        """the safe word or the cooldown password, said without the wake word ("pomidor uspakajający od tyłu" too)"""
+        m, _ = match(text, self.intents)
+        if m is None and self.sides_enabled:
+            bare = strip_side_words(text)
+            if bare and bare != normalize(text):
+                m, _ = match(bare, self.intents)
+        return m if m is not None and m.intent.id in NO_WAKE_WORD else None
+
     def _handle(self, transcript: str):
         now = self.clock()
 
@@ -1541,9 +1553,9 @@ class Controller:
             return self._run_match(safe, now)                # "trąbka ..." stops, whatever follows
         command = self.strip_wake_word(transcript)
         if command is None:
-            # the safe word needs no wake word, ever ("trąbka")
-            m, _ = match(transcript, self.intents)
-            if m is not None and m.intent.id == "halt":
+            # the safe word and the cooldown password need no wake word, ever ("trąbka", "pomidor uspakajający")
+            m = self._match_no_wake(transcript)
+            if m is not None:
                 return self._run_match(m, now)
             if self.persona_active() and self.in_reply_window():
                 # an answer to her: strict commands that are not hers to decide still work without the wake word

@@ -39,7 +39,7 @@ Powtórzenie liczy 5 minut od nowa.
 
 | Powiedz | Co się stanie |
 |---|---|
-| **uspokój mnie** · wycisz · wyciszaj · tryb uspokajania · powoli kończ · kończymy powoli · wygaś | przez 5 minut obie maszyny płynnie zwalniają do minimum, wchodzą na pełną głębokość, a skok zwęża się do 10 % – na końcu tylko wolne, jednostajne mikroruchy po prostacie, aż do innej komendy. W losowym momencie **jeden** strzał lube: przód, tył albo oba naraz. **Bez kości** – Pani tylko czule to komentuje, potem mówi już tylko łagodnie, jej program się kończy. „wycisz tył" / „wycisz usta" = tylko ta maszyna. Szybciej / głębiej / tryb przerywa wyciszanie, „trąbka" zatrzymuje wszystko. Klawisz **Scroll Lock**. |
+| **pomidor uspakajający** – samo hasło, **bez „kochanie"**, w każdej chwili (jak „trąbka"); po angielsku także **calming tomato** | przez 5 minut obie maszyny płynnie zwalniają do minimum, wchodzą na pełną głębokość, a skok zwęża się do 10 % – na końcu tylko wolne, jednostajne mikroruchy po prostacie, aż do innej komendy. W losowym momencie **jeden** strzał lube: przód, tył albo oba naraz. **Bez kości** – Pani tylko czule to komentuje, potem mówi już tylko łagodnie, jej program się kończy. „pomidor uspakajający od tyłu" / „… do ust" = tylko ta maszyna. Zwykłe „uspokój mnie", „wycisz" to tylko rozmowa z Panią – ona decyduje. Szybciej / głębiej / tryb przerywa wyciszanie, „trąbka" zatrzymuje wszystko. Klawisz **Scroll Lock**. |
 
 ## Tryby maszyny (zastępują film, aż wrócisz)
 
@@ -162,7 +162,7 @@ Program nie woła modelu - nic nie kosztuje.
 ## Rozmowa z Panią
 
 Pani odpowiada Ci na głos i to **ona** decyduje o wszystkim, co robi maszyna i film. Przez nią przechodzi **wszystko
-oprócz trzech rzeczy**: **"trąbka"** (słowo bezpieczeństwa), **"utrzymaj to"** (blokada 5 minut) i **"uspokój mnie"** (wyciszanie) - te działają od razu.
+oprócz trzech rzeczy**: **"trąbka"** (słowo bezpieczeństwa), **"utrzymaj to"** (blokada 5 minut) i **"pomidor uspakajający"** (wyciszanie) - te działają od razu.
 Reszta - także "dość", "wolniej", "płycej", tryby, "wróć do filmu", pauza, pętla, lube, "pieprz mnie", "zaskocz mnie" -
 to prośby: ona może się zgodzić albo odmówić ("Nie. Jeszcze nie skończyłam."). Łagodne prośby (dość, wolniej, płycej,
 pauza) dostają zgodę częściej (50 % za pierwszym razem). Klawisze działają zawsze od razu, bez Pani.
@@ -180,7 +180,7 @@ większą szansę. A czasem, bez pytania, sama Cię zleje lubem (od drugiego eta
 
 Grzeczność się liczy: prośba bez "proszę"/"Pani" ma gorsze szanse, a zignorowanie jej żądania jeszcze gorsze. Otwarta odmowa
 ("nie chcę", "nie powiem", "nie będę prosić") kasuje Twoje prośby i przez 90 s nic nie dostajesz - do czasu "przepraszam, Pani".
-"trąbka", "utrzymaj to" i "uspokój mnie" działają zawsze, bez kary. Przy odmowie potrafi dręczyć: zwolnić, spłycić, włączyć najwolniejszy tryb.
+"trąbka", "utrzymaj to" i "pomidor uspakajający" działają zawsze, bez kary. Przy odmowie potrafi dręczyć: zwolnić, spłycić, włączyć najwolniejszy tryb.
 
 Co jej wolno: mówić, dawać i odbierać tempo, głębokość, tryby, jeden strzał z lube na raz. Czego nie wolno nigdy:
 zatrzymać maszyny samej z siebie ("trąbka" to Twoje słowo), włączyć blokady, zaskoczyć sama z siebie. **"Trąbka" i klawisz End
@@ -229,4 +229,4 @@ Przykłady tego, co możesz mówić: "proszę, Pani" · "błagam" · "jestem Two
 
 Num 1–8 tryby · Num 9 = A · Num 0 = B · Num . = normalnie · Num + / − szybciej / wolniej ·
 Num * / / głębiej / płycej · F8 lube · Insert niespodzianka · Del coś innego · Home dość ·
-PgUp utrzymaj · Scroll Lock uspokój · **End trąbka (stop)** · Pause nasłuch wł./wył.
+PgUp utrzymaj · Scroll Lock pomidor uspakajający · **End trąbka (stop)** · Pause nasłuch wł./wył.

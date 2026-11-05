@@ -828,31 +828,21 @@
   {
    "id": "cooldown",
    "phrases": [
-    "uspokój mnie",
-    "uspokajaj mnie",
-    "wycisz mnie",
-    "wycisz",
-    "wyciszaj",
-    "wyciszaj mnie",
-    "tryb uspokajania",
-    "powoli kończ",
-    "powoli kończymy",
-    "kończymy powoli",
-    "wygaś",
-    "wygaszaj",
-    "wyciszanie"
+    "pomidor uspakajający",
+    "pomidor uspokajający",
+    "pomidorze uspakajający"
    ],
-   "phrases_en": ["cool me down", "wind down", "wind me down", "calm me down slowly", "slowly finish", "cooldown", "cool down"],
+   "phrases_en": ["pomidor uspakajający", "pomidor uspokajający", "calming tomato"],
    "steps": [
     {
      "action": "{target}::Hismith::Cooldown",
      "args": []
     }
    ],
-   "description": "COOLDOWN, the end of a session ('uspokój mnie', 'wycisz', 'tryb uspokajania', 'powoli kończ'): over 5 minutes both machines slow down to the slowest speed, go to full depth and narrow the stroke to 10% (slow, even micro strokes), one Lube Launcher shot at a random moment; then they stay like that. Never decided by dice.",
+   "description": "COOLDOWN, the end of a session: ONLY the exact password 'pomidor uspakajający' (EN also 'calming tomato'), no wake word needed, like the safe word. Over 5 minutes both machines slow down to the slowest speed, go to full depth and narrow the stroke to 10% (slow, even micro strokes), one Lube Launcher shot at a random moment; then they stay like that. Never decided by dice. Not for 'uspokój mnie' / 'wycisz' - that is talk to her.",
    "cooldown": 5,
    "threshold": 0.9,
-   "max_extra_words": 1
+   "max_extra_words": 2
   },
   {
    "id": "hard",
