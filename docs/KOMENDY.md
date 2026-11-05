@@ -101,6 +101,14 @@ a z Twoich skryptów ASMR m.in. "sama się zgłosiłaś", "wymazana", "zaprogram
 "jego sperma"; sprzęt to ich ciała. Do tego **polecenia**: co jakiś czas zamiast komentarza pada rozkaz fizyczny (ściskaj, oddychaj, klipsy, dildo do ust, "powtórz: jestem
 posłuszną sissi"), łagodniejszy na początku, ostrzejszy później, nigdy ten sam dwa razy w sesji.
 
+## F11: rozmowa bez przerw
+
+Trzy tryby rozmowy, F11 przełącza w locie (Pani potwierdza): **klasyczny** - jak dotąd (nagranie, rozpoznanie, odpowiedź, głos:
+2-4 s ciszy); **na żywo** - rozpoznawanie w trakcie mówienia, "koniec" i proste komendy działają już z częściowego tekstu,
+prośba do Pani rusza jej myślenie zanim skończysz, a odpowiedź płynie zdanie po zdaniu (pierwsze słowo ok. 1-1,5 s po Twoim
+ostatnim); gdy zaczynasz mówić, ona milknie; **agents** (eksperyment, płatny za minutę) - jedna ciągła rozmowa przez ElevenLabs,
+Pani dalej decyduje u nas. Start: `--mode live` albo `conversation.mode` w `commands.json`.
+
 ## Jak ona to mówi
 
 Każda kwestia ma sposób czytania: szept, czułość, droczenie, ostro, wyciszenie po wszystkim - wybierany po rodzaju kwestii

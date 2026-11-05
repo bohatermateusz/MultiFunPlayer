@@ -141,11 +141,15 @@ class Controller:
         self.pool = None                  # LinePool of the current language (see pools / set_language)
         self._said_recent = []            # her last lines (any kind), handed to the model as "do not repeat"
         self._tasks_used = []             # physical orders already given this session (no repeats)
+        self._consumed = {}               # live mode: turn id -> (intent, text) already run from a partial transcript
+        self._speculated = {}             # live mode: turn id -> partial text handed to the persona ahead of time
+        self._consumed_log = []
         self._themes_recent = []          # narration themes used lately (no repeats)
         self._penalty_until = 0.0         # an open refusal costs: nothing is granted until you apologise or the time is up
         self.busy = lambda: False         # True while she is speaking / listening is muted (set by the main loop)
         self.speak_ex = None              # speak_ex(line, voice, meta): like speak, but knows the stage, tone and kind of line
         self.audio_cache = None           # AudioCache: narration lines synthesized ahead (set by the main loop)
+        self.external_voice = False       # agents mode: the agent speaks her lines, the tool only keeps the books
 
     @property
     def persona_cfg(self):
@@ -226,6 +230,195 @@ class Controller:
             self._log(transcript, outcome)
             return self._say(outcome)
 
+    # ---- the live mode: partial transcripts, streamed answers -------------------------------------------
+    def prepare(self, transcript):
+        """the first half of handle(): -> ("outcome", Outcome) when it is settled (and spoken), ("persona", _NeedPersona)
+        or ("llm", _NeedLlm) when a model has to answer (the live mode streams that answer)"""
+        with self._lock:
+            result = self._handle(transcript)
+            if isinstance(result, Outcome):
+                self._log(transcript, result)
+                return "outcome", self._say(result)
+        if isinstance(result, _NeedPersona):
+            return "persona", result
+        return "llm", result
+
+    def finish_llm(self, transcript, need):
+        answer = self._ask_llm(need)
+        with self._lock:
+            outcome = self._finish_llm(transcript, answer)
+            self._log(transcript, outcome)
+        return self._say(outcome)
+
+    def finish_persona(self, transcript, answer):
+        """a persona answer obtained elsewhere (e.g. speculatively) -> Outcome, spoken"""
+        with self._lock:
+            outcome = self._finish_persona(transcript, answer)
+            self._log(transcript, outcome)
+        return self._say(outcome)
+
+    def narration_line(self):
+        """a narration line for an external voice (the agents mode): chosen like idle_narration, not spoken here.
+        -> (line, meta) or (None, None)"""
+        cfg = self.persona_cfg["narration"]
+        if not cfg.get("enabled") or not cfg.get("themes"):
+            return None, None
+        with self._lock:
+            stage = self.stage()
+            themes = [t for t in cfg["themes"] if t not in self._themes_recent[-max(1, len(cfg["themes"]) - 2):]] or list(cfg["themes"])
+            theme = self.rng.choice(themes)
+            self._themes_recent.append(theme)
+            del self._themes_recent[:-len(cfg["themes"])]
+            tasks = cfg.get("tasks", {})
+            share = tasks.get("share", [0.0])
+            line, source = None, "pool"
+            if tasks.get("enabled") and self.rng.random() < float(share[max(0, min(stage, len(share) - 1))]):
+                line, source = self._draw_task(stage), "task"
+        if not line and self.pool is not None:
+            line = self.pool.take(theme)
+        if not line:
+            return None, None
+        with self._lock:
+            self._history.append(("assistant", line))
+            del self._history[:-24]
+            self._last_line = self.clock()
+            tone, harsh = self._tone_now
+            extra = {"say": line, "stage": stage, "tone": tone, "harsh": harsh, "theme": theme, "source": source,
+                     "kind": "task" if source == "task" else self._kind_of(line, {"source": source, "theme": theme})}
+            self._log("[narration]", Outcome("talk", "narration (agent)", "", 0.0, "persona", extra))
+            if source == "task":
+                self._remember_said(line)
+        return line, {"tone": extra["tone"], "kind": extra["kind"], "stage": stage, "theme": theme, "language": self.language}
+
+    def handle_partial(self, item, text):
+        """A transcript still being written (live mode). Only strict matches, no dice: the safe word runs at once, an
+        ungated complete command runs at once (and is remembered, so the final transcript does not run it twice); a
+        gated request is returned as a _NeedPersona for a speculative call. -> Outcome | _NeedPersona | None"""
+        with self._lock:
+            now = self.clock()
+            if item in self._consumed:
+                return None
+            m, _ = match(text, self.intents)
+            if m is not None and m.intent.id == "halt":
+                self._consumed[item] = ("halt", text)
+                o = self._run_match(m, now)
+                self._log(f"[partial] {text}", o)
+                return self._say(o)
+            command = self.strip_wake_word(text)
+            if command is None or not command.strip():
+                return None
+            m, _ = match(command, self.intents)
+            if m is None:
+                return None
+            if not self._gated(m.intent.id):
+                if m.score < 0.95 or len(normalize(command).split()) < len(normalize(m.phrase).split()):
+                    return None                        # the phrase is not complete (or not certain) yet
+                self._consumed[item] = (m.intent.id, text)
+                o = self._run_match(m, now, via="live")
+                self._log(f"[partial] {text}", o)
+                return self._say(o)
+            if self.persona_active() and item not in self._speculated:
+                self._speculated[item] = text
+                return self._need_persona(text, m)       # hers to decide: start thinking already
+            return None
+
+    def handle_final(self, item, text):
+        """the completed transcript of a turn (live mode): what a partial already ran is not run again"""
+        with self._lock:
+            done = self._consumed.pop(item, None)
+            self._speculated.pop(item, None)
+            del self._consumed_log[:-50]
+        if done is not None:
+            m, _ = match(self.strip_wake_word(text) or text, self.intents)
+            if m is not None and m.intent.id == done[0]:
+                o = Outcome("done", f"already ran from the partial transcript ({done[0]})", done[0], m.score, "live")
+                self._log(text, o)
+                return o
+        return self.handle(text)
+
+    def speculation_fits(self, partial, final):
+        """the speculative answer to a partial transcript is used when the final one says the same thing"""
+        a, b = normalize(partial).split(), normalize(final).split()
+        if not a or not b:
+            return False
+        if a == b:
+            return True
+        if b[:len(a)] == a and len(b) - len(a) <= 2:
+            return True                                # the final only adds a word or two ("..., proszę")
+        ma, _ = match(self.strip_wake_word(partial) or partial, self.intents)
+        mb, _ = match(self.strip_wake_word(final) or final, self.intents)
+        return ma is not None and mb is not None and ma.intent.id == mb.intent.id and b[:len(a)] == a
+
+    def handle_streamed(self, transcript, events, speak_sentence, need=None):
+        """A persona answer arriving as a stream (persona.respond_stream events). The dice are rolled and the steps
+        run as soon as the head is complete; the winning line is handed out sentence by sentence through
+        speak_sentence(text, meta, final) while the model still writes it. -> Outcome"""
+        G, D = "\x00G", "\x00D"
+        head = None
+        outcome = None
+        chosen = None
+        buf = {"line_if_granted": "", "line_if_denied": ""}
+        sent = {"line_if_granted": "", "line_if_denied": ""}
+        meta = None
+        try:
+            for ev in events:
+                if ev[0] == "head":
+                    head = ev[1]
+                    head.line_if_granted, head.line_if_denied = G, D
+                    with self._lock:
+                        outcome = self._finish_persona(transcript, head)
+                    say = outcome.extra.get("say", "")
+                    chosen = "line_if_granted" if say == G else "line_if_denied" if say == D else None
+                    if chosen is None:
+                        outcome.extra.pop("say", None)
+                    meta = {"tone": outcome.extra.get("tone", self._tone_now[0]), "kind": "answer",
+                            "stage": outcome.extra.get("stage", self.stage()), "language": self.language}
+                    outcome.extra["streamed"] = True
+                elif ev[0] == "delta":
+                    buf[ev[1]] += ev[2]
+                    if chosen == ev[1]:
+                        pending = buf[ev[1]][len(sent[ev[1]]):]
+                        from tts_ws import split_sentences
+                        whole, _ = split_sentences(pending)
+                        for s in whole:
+                            speak_sentence(s.strip(), meta, False)
+                            sent[ev[1]] += pending[:pending.index(s) + len(s)]
+                            pending = buf[ev[1]][len(sent[ev[1]]):]
+                elif ev[0] == "done":
+                    turn = ev[1]
+                    if chosen:
+                        line = getattr(turn, chosen).strip()
+                        rest = line[len(sent[chosen].strip()):].strip() if line.startswith(sent[chosen].strip()) else ""
+                        speak_sentence(rest, meta, True)
+                        with self._lock:
+                            outcome.extra["say"] = line
+                            outcome.extra["kind"] = self._kind_of(line, outcome.extra)
+                            self._history = [(r, line if t in (G, D) else t) for r, t in self._history]
+                            if self.is_repeat(line):
+                                outcome.extra["repeat"] = True
+                            if self.is_banned(line):
+                                outcome.extra["names_gear"] = True
+                            self._remember_said(line)
+                    else:
+                        speak_sentence("", meta or {}, True)
+                    outcome.extra["persona_raw"] = turn.raw
+                    outcome.extra["latency_ms"] = turn.latency_ms
+        except Exception as e:
+            if outcome is None:
+                # nothing decided yet: the ordinary path (a full answer) takes over
+                answer = self._ask_persona(need) if need is not None else (e, None)
+                with self._lock:
+                    outcome = self._finish_persona(transcript, answer)
+                    self._log(transcript, outcome)
+                return self._say(outcome)
+            speak_sentence("", meta or {}, True)
+            outcome.extra["stream_error"] = str(e)
+            with self._lock:
+                self._history = [(r, t) for r, t in self._history if t not in (G, D)]
+        with self._lock:
+            self._log(transcript, outcome)
+        return outcome
+
     def is_banned(self, line):
         """she never names the hardware: the men in VR take her (narration.pool.banned_words)"""
         words = [str(w).lower() for w in self.persona_cfg["narration"].get("pool", {}).get("banned_words", [])]
@@ -269,7 +462,7 @@ class Controller:
             if self.is_banned(line):
                 outcome.extra["names_gear"] = True # the model named the hardware; logged, so the prompt can be tightened
             self._remember_said(line)      # pool lines are recorded by the pool itself
-        if line and (self.speak or self.speak_ex):
+        if line and (self.speak or self.speak_ex) and not self.external_voice:
             extra = outcome.extra
             if "kind" not in extra:
                 extra["kind"] = self._kind_of(line, extra)

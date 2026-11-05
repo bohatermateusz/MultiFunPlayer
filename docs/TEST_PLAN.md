@@ -158,6 +158,13 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.79 | `voices --audition` | ta sama kwestia każdym głosem i presetem (whisper/tender/tease/sharp), z nazwą w konsoli; wybierasz uchem |
 | 6.80 | `voices --test "Odpuść… ja to trzymam." --model eleven_v3 --tags "[whispers]"` vs `--model eleven_multilingual_v2` | v3 wyraźnie bardziej ekspresyjny (szept); jeśli v3 odmawia - w konsoli błąd, sesja używa v2 |
 | 6.81 | Sesja 10 min | narracja gra z cache (`Pani [n cache]:`), bez opóźnienia; odpowiedzi nadal streamowane; w `audio_cache/` pliki pojawiają się i znikają po odtworzeniu; polecenia brzmią ostro, afirmacje szeptem |
+| 6.82 | `run --mode live`, mów zdanie | częściowa transkrypcja pojawia się w konsoli w trakcie mówienia; 'koniec' w pół zdania zatrzymuje natychmiast |
+| 6.83 | live: 'kochanie, szybciej' | jej pierwsze słowo ok. 1-1,5 s po Twoim ostatnim (zegarek); w logu `streamed: true` albo `speculative: true` |
+| 6.84 | live: zacznij mówić, gdy ona mówi (słuchawki) | milknie od razu |
+| 6.85 | live: wyłącz sieć na chwilę / błąd Realtime | w konsoli `realtime stt: ... reconnecting`; komendy dalej działają (lokalny detektor + Whisper); po powrocie znów na żywo |
+| 6.86 | F11 | classic -> live -> (agents) -> classic bez restartu; Pani potwierdza; klawisze i 'koniec' działają w każdym trybie |
+| 6.87 | agents (po konfiguracji agenta i tunelu) | rozmowa ciągła; 'kochanie, szybciej' wykonuje się (proxy), narracja co jakiś czas; 'stop'/'koniec' z transkrypcji agenta zatrzymuje |
+| 6.88 | Koszt | po 30 min: znaki w ElevenLabs (classic/live) vs minuty Agents w dashboardzie - porównaj |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |
 

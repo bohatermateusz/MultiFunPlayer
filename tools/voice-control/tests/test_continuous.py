@@ -109,7 +109,7 @@ class Keys(unittest.TestCase):
     def test_every_key_points_at_an_intent(self):
         ids = {i.id for i in INTENTS} | {"@mute"}
         for key, target in CFG["keys"].items():
-            self.assertIn(target, ids | {"@voice", "@lang"}, key)
+            self.assertIn(target, ids | {"@voice", "@lang", "@mode"}, key)
 
     def test_press_runs_the_intent_at_once_without_wake_word_or_cooldown(self):
         c, runs = controller()

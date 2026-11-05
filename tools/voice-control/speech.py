@@ -34,18 +34,42 @@ class Voice:
         self._thread = None
         self.last_provider = None
 
-    def say(self, line, stage=0, meta=None, pcm=None):
-        """speak the line (pcm given: play that audio instead of asking a provider - the narration cache)"""
-        if (not self.providers and pcm is None) or self.muted():
+    def say(self, line, stage=0, meta=None, pcm=None, stream=None):
+        """speak the line (pcm given: play that audio instead of asking a provider - the narration cache;
+        stream given: a ready generator of PCM chunks, e.g. the websocket voice of the live mode)"""
+        if (not self.providers and pcm is None and stream is None) or self.muted():
             return
         self._stop = True                    # a new line interrupts the previous one
         previous = self._thread
         if previous is not None:
             previous.join(2.0)
         self._stop = False
-        target, args = (self._run_pcm, (pcm,)) if pcm is not None else (self._run, (line, stage, meta))
+        if stream is not None:
+            target, args = (self._run_stream, (stream, line, stage, meta))
+        else:
+            target, args = (self._run_pcm, (pcm,)) if pcm is not None else (self._run, (line, stage, meta))
         self._thread = threading.Thread(target=target, args=args, daemon=True)
         self._thread.start()
+
+    def _run_stream(self, stream, line, stage, meta):
+        """a ready chunk stream; when it fails before any sound, the ordinary providers speak the (whole) line"""
+        if self.gate:
+            self.gate.begin()
+        counter = {"chunks": 0}
+        try:
+            self.last_provider = "stream"
+            self.play(self._counted(stream, counter), lambda: self._stop)
+            return
+        except TtsError as e:
+            self.log(f"  streamed voice failed: {e}")
+        except Exception as e:
+            self.log(f"  playback failed: {e}")
+            return
+        finally:
+            if self.gate:
+                self.gate.end()
+        if not counter["chunks"] and line and not self._stop:
+            self._run(line, stage, meta)
 
     def _run_pcm(self, pcm):
         if self.gate:

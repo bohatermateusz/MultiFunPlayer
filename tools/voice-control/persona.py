@@ -161,18 +161,37 @@ def build_schema(intents, step_ids):
                                                          "times": {"type": "integer"}}}}
     return {"name": "persona_turn", "strict": True, "schema": {
         "type": "object", "additionalProperties": False,
-        "required": ["addressed", "request", "confession", "thanked", "defiance", "line_if_granted", "line_if_denied", "demand",
-                     "grant_actions", "tease_actions", "shots", "program"],
+        # the lines come LAST: structured outputs write the keys in schema order, so when streaming the tool can roll
+        # the dice as soon as everything before the lines is complete and speak the winning line while it is written
+        "required": ["addressed", "request", "shots", "program", "confession", "thanked", "defiance", "demand",
+                     "grant_actions", "tease_actions", "line_if_granted", "line_if_denied"],
         "properties": {
             "addressed": {"type": "boolean"}, "request": {"type": "string", "enum": ids},
-            "confession": {"type": "boolean"}, "thanked": {"type": "boolean"}, "defiance": {"type": "boolean"},
-            "line_if_granted": {"type": "string"}, "line_if_denied": {"type": "string"},
-            "demand": {"type": "string", "enum": DEMANDS}, "grant_actions": actions, "tease_actions": actions,
             "shots": {"type": "integer"},
             "program": {"anyOf": [{"type": "null"}, {"type": "object", "additionalProperties": False, "required": list(PROGRAM_KEYS),
                                                       "properties": {"start_after_seconds": {"type": "integer"}, "every_seconds": {"type": "integer"},
                                                                      "duration_seconds": {"type": "integer"}, "plan": actions,
-                                                                     "random_modes": {"type": "boolean"}, "cancel": {"type": "boolean"}}}]}}}}
+                                                                     "random_modes": {"type": "boolean"}, "cancel": {"type": "boolean"}}}]},
+            "confession": {"type": "boolean"}, "thanked": {"type": "boolean"}, "defiance": {"type": "boolean"},
+            "demand": {"type": "string", "enum": DEMANDS}, "grant_actions": actions, "tease_actions": actions,
+            "line_if_granted": {"type": "string"}, "line_if_denied": {"type": "string"}}}}
+
+
+HEAD_KEYS = ("addressed", "request", "shots", "program", "confession", "thanked", "defiance", "demand", "grant_actions", "tease_actions")
+
+
+def turn_from_fields(f, raw="", latency_ms=0):
+    """a PersonaTurn from the (possibly partial) fields of her answer; missing lines stay empty"""
+    actions = lambda key: [{"step": str(p.get("step", "")), "times": int(p.get("times", 1) or 1)}
+                           for p in (f.get(key) or []) if isinstance(p, dict)]
+    return PersonaTurn(addressed=bool(f.get("addressed", False)), request=str(f.get("request", NONE)),
+                       confession=bool(f.get("confession", False)), thanked=bool(f.get("thanked", False)),
+                       defiance=bool(f.get("defiance", False)),
+                       line_if_granted=str(f.get("line_if_granted", "")).strip(),
+                       line_if_denied=str(f.get("line_if_denied", "")).strip(),
+                       demand=str(f.get("demand", "none")), grant_actions=actions("grant_actions"),
+                       tease_actions=actions("tease_actions"), raw=raw,
+                       shots=int(f.get("shots", 0) or 0), program=parse_program(f.get("program")), latency_ms=latency_ms)
 
 
 NARRATION = """{character}
@@ -307,16 +326,75 @@ class Persona:
         except (json.JSONDecodeError, KeyError, IndexError, TypeError, AttributeError) as e:
             raise PersonaError("answer is not the expected JSON") from e
 
-    def respond(self, utterance, intents, step_ids, state, history) -> PersonaTurn:
-        """history: [(role, text)] with role "user" or "assistant" (her earlier lines)"""
-        if not self.api_key:
-            raise PersonaError("no API key (set the environment variable named in the config)")
+    def _body(self, utterance, intents, step_ids, state, history):
         messages = [{"role": "system", "content": build_system_prompt(self.character, intents, step_ids, state)}]
         for role, text in history[-self.history_turns:]:
             messages.append({"role": role, "content": text})
         messages.append({"role": "user", "content": utterance})
-        body = {"model": self.model, "temperature": self.temperature, "messages": messages, "max_tokens": 400,
+        return {"model": self.model, "temperature": self.temperature, "messages": messages, "max_tokens": 400,
                 "response_format": {"type": "json_schema", "json_schema": build_schema(intents, step_ids)}}
+
+    def respond_stream(self, utterance, intents, step_ids, state, history):
+        """Her answer as it is written (SSE): yields ("head", PersonaTurn) once every field before the lines is
+        complete, then ("delta", key, text) for the line texts, then ("done", PersonaTurn) with everything.
+        Raises PersonaError (the caller falls back to respond)."""
+        if not self.api_key:
+            raise PersonaError("no API key (set the environment variable named in the config)")
+        from streamjson import StreamObject
+        body = dict(self._body(utterance, intents, step_ids, state, history), stream=True)
+        req = urllib.request.Request(self.url, data=json.dumps(body, ensure_ascii=False).encode("utf-8"), method="POST",
+                                     headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json",
+                                              "Accept": "text/event-stream"})
+        started = time.monotonic()
+        try:
+            resp = urllib.request.urlopen(req, timeout=self.timeout)
+        except urllib.error.HTTPError as e:
+            raise PersonaError(f"HTTP {e.code}") from e
+        except (urllib.error.URLError, TimeoutError, OSError) as e:
+            raise PersonaError(f"request failed: {e}") from e
+        obj, raw, head_sent = StreamObject(), "", False
+        try:
+            for line in resp:
+                line = line.decode("utf-8", "replace").strip()
+                if not line.startswith("data:"):
+                    continue
+                data = line[5:].strip()
+                if data == "[DONE]":
+                    break
+                try:
+                    piece = json.loads(data)["choices"][0]["delta"].get("content") or ""
+                except (ValueError, KeyError, IndexError, TypeError):
+                    continue
+                if not piece:
+                    continue
+                raw += piece
+                for ev in obj.feed(piece):
+                    if ev[0] == "delta" and ev[1] in ("line_if_granted", "line_if_denied"):
+                        if not head_sent and obj.has(*HEAD_KEYS):
+                            head_sent = True
+                            yield ("head", turn_from_fields(obj.fields, raw, int((time.monotonic() - started) * 1000)))
+                        yield ("delta", ev[1], ev[2])
+                    elif ev[0] == "field" and not head_sent and obj.has(*HEAD_KEYS):
+                        head_sent = True
+                        yield ("head", turn_from_fields(obj.fields, raw, int((time.monotonic() - started) * 1000)))
+        except (OSError, TimeoutError, ValueError) as e:
+            raise PersonaError(f"stream failed: {e}") from e
+        finally:
+            try:
+                resp.close()
+            except Exception:
+                pass
+        if not obj.has("line_if_granted", "line_if_denied"):
+            raise PersonaError("answer is not the expected JSON")
+        if not head_sent:
+            yield ("head", turn_from_fields(obj.fields, raw))
+        yield ("done", turn_from_fields(obj.fields, raw, int((time.monotonic() - started) * 1000)))
+
+    def respond(self, utterance, intents, step_ids, state, history) -> PersonaTurn:
+        """history: [(role, text)] with role "user" or "assistant" (her earlier lines)"""
+        if not self.api_key:
+            raise PersonaError("no API key (set the environment variable named in the config)")
+        body = self._body(utterance, intents, step_ids, state, history)
         req = urllib.request.Request(self.url, data=json.dumps(body, ensure_ascii=False).encode("utf-8"), method="POST",
                                      headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"})
         started = time.monotonic()

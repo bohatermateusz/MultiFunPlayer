@@ -203,6 +203,23 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   (not doing what she asked) cuts them further (x0.4). An open refusal ("nie chcę", "nie powiem", "nie będę prosić", or
   the model flags defiance) wipes your asks and nothing is granted for 90 s, or until you apologise ("przepraszam,
   Pani"). Not even the 8th ask beats an active punishment. "koniec"/End and "utrzymaj to" are never punished.
+* **Conversation modes, F11** (`conversation.mode`, `--mode`): **classic** is the old loop (record the whole utterance,
+  transcribe, answer, speak: ~2-4 s of silence before her first word). **live** streams everything: OpenAI Realtime
+  transcription as you speak (`gpt-4o-mini-transcribe`, server VAD, `silence_ms` 500), the safe word and plain commands
+  run from the *partial* transcript, a request to her starts her thinking early (speculative; used when the final
+  transcript says the same), her answer is streamed (the schema puts the lines last, so the dice roll as soon as the
+  head is in and the winning line is spoken sentence by sentence through the ElevenLabs websocket voice while it is
+  still being written), and your voice cuts her off the moment you start speaking. Target: her first word ~1-1.5 s
+  after your last; if the realtime session drops, the local detector and the batch model take over. Needs
+  `websocket-client` (in requirements). **agents** is the experimental ElevenLabs Agents mode: one audio stream both
+  ways, the most fluent turn-taking, paid per minute (Starter: ~50 min/month, then 0.08 USD/min); our persona stays
+  the agent's brain through a local OpenAI-compatible proxy (the agent's "Custom LLM"), so the dice, the steps, the
+  programs and the narration (the proxy answers a periodic text turn with a pool line) are still ours; the safe word is
+  also caught locally from the agent's transcripts. Setup: create an agent in the ElevenLabs dashboard (Polish, a
+  female voice, "v3 Conversational" for turn-taking, LLM = Custom LLM), expose the proxy (`cloudflared tunnel --url
+  http://localhost:8787`) and put `https://<tunnel>/v1` as the Custom LLM server URL, then `conversation.agents.agent_id`
+  in the config. Without an `agent_id` the mode is skipped. F11 cycles the available modes; she confirms
+  ("Teraz na żywo." / "Klasycznie.").
 * **How she reads a line** (`persona.tts.delivery`): a delivery preset per line - `whisper`, `tender`, `tease`, `sharp`,
   `afterglow` - picked by the kind of line (`by_kind`: an order -> sharp, a "powtórz za mną" affirmation -> whisper,
   aftercare -> afterglow) or by the tone of the turn (`by_tone`: tender -> whisper/tender, sharp -> tease/sharp, the

@@ -151,6 +151,93 @@ def build_pool(args, pc, persona, log_path, lang="pl"):
     return pool
 
 
+def build_conversation(args, cfg, controller, stt, voice, speakers, muted, gate, headphones, barge_in, process, rate):
+    """the conversation modes (classic / live / agents) and the F11 switch between them"""
+    from audio import listen_segments, play_stream
+    from conversation import ClassicLoop, ConversationManager, LiveLoop
+    a, lis = cfg.get("audio", {}), cfg.get("listen", {})
+    conv = cfg.get("conversation", {})
+    muted_fn = lambda: muted["value"] or (not headphones and gate.speaking())
+
+    def listen(stop):
+        return listen_segments(rate, a.get("device"), stop=stop, muted=muted_fn, on_speech_start=barge_in,
+                               threshold_db=lis.get("threshold_db"), margin_db=lis.get("margin_db", 12),
+                               end_silence=lis.get("end_silence", 0.7), pre_roll=lis.get("pre_roll", 0.3),
+                               min_seconds=lis.get("min_seconds", 0.5), max_seconds=lis.get("max_seconds", 6.0))
+    loops = {"classic": ClassicLoop(listen, process)}
+
+    def mic(sample_rate, on_block, stop):
+        import queue as _q
+        import sounddevice as sd
+        blocks = _q.Queue()
+        with sd.InputStream(samplerate=sample_rate, channels=1, dtype="int16", device=a.get("device"),
+                            blocksize=int(sample_rate * 0.04), callback=lambda indata, frames, t, status: blocks.put(bytes(indata))):
+            while not stop():
+                try:
+                    on_block(blocks.get(timeout=0.2))
+                except _q.Empty:
+                    continue
+
+    live = conv.get("live", {})
+    from realtime_stt import RealtimeStt
+    if RealtimeStt.available():
+        s = cfg.get("stt", {})
+        rt = RealtimeStt(os.environ.get(s.get("api_key_env", "OPENAI_API_KEY"), ""), live.get("stt_model", "gpt-4o-mini-transcribe"),
+                         controller.language, stt.prompt, silence_ms=live.get("silence_ms", 500), threshold=live.get("vad_threshold", 0.5))
+        from audio import SegmentDetector
+        from stt import pcm_to_wav
+        detector = SegmentDetector(sample_rate=24000, threshold_db=lis.get("threshold_db"), margin_db=lis.get("margin_db", 12),
+                                   end_silence=lis.get("end_silence", 0.7), pre_roll=lis.get("pre_roll", 0.3),
+                                   min_seconds=lis.get("min_seconds", 0.5), max_seconds=lis.get("max_seconds", 6.0))
+        ws_speaker = None
+        if "elevenlabs" in speakers:
+            from tts_ws import ElevenLabsWsSpeaker
+            ws_speaker = ElevenLabsWsSpeaker(speakers["elevenlabs"])
+        loops["live"] = LiveLoop(controller, rt, mic, voice, ws_speaker, fallback_transcribe=lambda pcm: stt.transcribe_wav(pcm_to_wav(pcm, 24000)),
+                                 detector=detector, headphones=headphones, muted=muted_fn, speculative=live.get("speculative", True),
+                                 interrupt_on_speech=live.get("interrupt_on_speech", True))
+        old_on_language = controller.on_language
+
+        def on_language(lang):
+            if old_on_language:
+                old_on_language(lang)
+            rt.set_language(lang, stt.prompt)
+        controller.on_language = on_language
+    else:
+        print("  live mode needs websocket-client (pip install websocket-client); only classic is available")
+
+    ag = conv.get("agents", {})
+    if ag.get("agent_id") and RealtimeStt.available() and controller.persona is not None:
+        from agents import AgentsLoop, ChunkPlayer, LlmProxy
+        proxy = LlmProxy(controller, controller.persona, port=int(ag.get("proxy_port", 8787)))
+        port = proxy.start()
+        print(f"  agents: custom LLM proxy on http://127.0.0.1:{port}/v1 - expose it (e.g. cloudflared tunnel --url http://localhost:{port})"
+              f" and put the public URL + /v1 into the agent's Custom LLM settings")
+        player = ChunkPlayer(play_stream, rate=int(ag.get("output_rate", 16000)))
+        gaps = controller.persona_cfg.get("narration", {}).get("gap_seconds", [[60, 120]])
+
+        def gap():
+            lo, hi = gaps[max(0, min(controller.stage(), len(gaps) - 1))]
+            return controller.rng.uniform(float(lo), float(hi))
+        overrides = {"agent": {"prompt": {"prompt": controller.persona.character}, "language": controller.language}} if ag.get("override_prompt") else {}
+        loops["agents"] = AgentsLoop(controller, os.environ.get("ELEVENLABS_API_KEY", ""), ag["agent_id"], mic, player,
+                                     rate_in=int(ag.get("input_rate", 16000)), rate_out=int(ag.get("output_rate", 16000)),
+                                     overrides=overrides, narration_gap=gap)
+
+    def on_switch(mode):
+        controller.external_voice = (mode == "agents")
+        if mode != "agents":
+            controller.say_now({"classic": "Klasycznie." if controller.language == "pl" else "Classic mode.",
+                                "live": "Teraz na żywo." if controller.language == "pl" else "Live now."}[mode])
+    start_mode = getattr(args, "mode", None) or conv.get("mode", "classic")
+    if start_mode not in loops:
+        print(f"  mode {start_mode} not available, starting classic")
+        start_mode = "classic"
+    m = ConversationManager(loops, start_mode, on_switch=on_switch)
+    controller.external_voice = (start_mode == "agents")
+    return m
+
+
 def build(args):
     cfg, intents = load_config(args.config)
     udp = cfg.get("udp", {})
@@ -222,6 +309,7 @@ def main():
         parser.add_argument("--no-nudge", action="store_true", help="the persona never speaks first", **d)
         parser.add_argument("--no-narration", action="store_true", help="no running commentary at random moments", **d)
         parser.add_argument("--language", choices=["pl", "en"], help="start in this language (default: 'language' in the config)", **d)
+        parser.add_argument("--mode", choices=["classic", "live", "agents"], help="conversation mode (default: conversation.mode in the config)", **d)
 
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     add_options(ap, suppress=False)
@@ -417,11 +505,15 @@ def main():
     def toggle_language():
         controller.set_language("en" if controller.language == "pl" else "pl")
 
+    manager = {"m": None}
+
     def on_special(target):
         if target == "@voice":
             next_voice()
         elif target == "@lang":
             toggle_language()
+        elif target == "@mode" and manager["m"] is not None:
+            manager["m"].next()
 
     order = [tcfg.get("provider", "elevenlabs"), tcfg.get("fallback_provider", "openai")]
     voice = Voice({n: provider(n) for n in speakers}, order, lambda stream, stop: play_stream(stream, PCM_RATE, stop=stop),
@@ -495,6 +587,8 @@ def main():
                     time.sleep(1.0)
                     try:
                         controller.tick()            # her program (e.g. a new mode every 3 minutes)
+                        if manager["m"] is not None and manager["m"].mode == "agents":
+                            continue                 # the agent speaks for her: narration goes through its proxy
                         if not args.no_narration:
                             controller.idle_narration()
                         if not args.no_nudge:
@@ -502,12 +596,13 @@ def main():
                     except Exception:
                         pass
             threading.Thread(target=nudger, daemon=True).start()
-        for pcm in listen_segments(rate, a.get("device"), muted=lambda: muted["value"] or (not headphones and gate.speaking()),
-                                   on_speech_start=barge_in,
-                                   threshold_db=lis.get("threshold_db"), margin_db=lis.get("margin_db", 12),
-                                   end_silence=lis.get("end_silence", 0.7), pre_roll=lis.get("pre_roll", 0.3),
-                                   min_seconds=lis.get("min_seconds", 0.5), max_seconds=lis.get("max_seconds", 6.0)):
-            process(pcm)
+        manager["m"] = build_conversation(args, cfg, controller, stt, voice, speakers, muted, gate, headphones, barge_in, process, rate)
+        manager["m"].start()
+        try:
+            while True:
+                time.sleep(0.5)
+        except KeyboardInterrupt:
+            manager["m"].current.stop() if manager["m"].current else None
         return
 
     ptt = PushToTalk(p.get("keyboard"), p.get("gamepad_button"))

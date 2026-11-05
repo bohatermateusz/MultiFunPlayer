@@ -36,7 +36,7 @@ def cheat_sheet(keys: dict, intents) -> str:
     label = {i.id: i.phrases[0] for i in intents if i.phrases}
     lines = []
     for key, target in keys.items():
-        special = {"@mute": "listening on/off", "@voice": "next voice", "@lang": "language PL/EN"}
+        special = {"@mute": "listening on/off", "@voice": "next voice", "@lang": "language PL/EN", "@mode": "conversation mode (classic/live/agents)"}
         what = special.get(target, label.get(target, target))
         lines.append(f"  {caption(key):<8} {what}")
     return "\n".join(lines)
