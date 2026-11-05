@@ -10,6 +10,13 @@ import threading
 from tts import TtsError, pcm_chunks
 
 
+def _short(msg):
+    """the useful part of an API error: its 'message' when there is one, else the first 160 characters"""
+    import re
+    m = re.search(r"message['\"]?\s*:\s*['\"]([^'\"]+)", msg)
+    return m.group(1) if m else msg[:160]
+
+
 def _with_meta(provider):
     """providers written for (line, stage) keep working; new ones get (line, stage, meta)"""
     try:
@@ -107,7 +114,13 @@ class Voice:
                     self.play(self._counted(stream, counter), lambda: self._stop)
                     return
                 except TtsError as e:
-                    self.log(f"  text-to-speech ({name}) failed: {e}")
+                    msg = str(e)
+                    if any(k in msg for k in ("HTTP 401", "missing_permissions", "quota_exceeded", "invalid_api_key")):
+                        self.order = [n for n in self.order if n != name]
+                        self.log(f"  text-to-speech ({name}) refused for good: {_short(msg)} - switched off for this session"
+                                 + (f", using {self.order[0]}" if self.order else ""))
+                    else:
+                        self.log(f"  text-to-speech ({name}) failed: {_short(msg)}")
                     if counter["chunks"]:
                         return               # it had started: do not say the line twice
                 except Exception as e:

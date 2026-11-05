@@ -111,6 +111,18 @@ class VoiceTests(unittest.TestCase):
         self.assertEqual(self.rec.played, [])                  # the player raised on the second chunk: nothing repeated
         self.assertFalse(any(b"openai" in c for chunks in self.rec.played for c in chunks))
 
+    def test_a_permission_error_switches_the_provider_off_once(self):
+        def no_permission(line, stage):
+            raise TtsError("HTTP 401: b'{\"detail\":{\"message\":\"The API key you used is missing the permission text_to_speech\",\"status\":\"missing_permissions\"}}'")
+        v = self.make({"elevenlabs": no_permission, "openai": good("openai")})
+        self.say(v)
+        self.say(v)
+        self.assertEqual(len(self.rec.played), 2)
+        self.assertEqual(v.order, ["openai"])
+        refused = [l for l in self.rec.logs if "refused for good" in l]
+        self.assertEqual(len(refused), 1)
+        self.assertIn("missing the permission text_to_speech", refused[0])
+
     def test_both_fail_is_logged_and_the_tool_goes_on(self):
         v = self.make({"elevenlabs": refusing, "openai": refusing})
         self.say(v)

@@ -189,6 +189,18 @@ class Narration(Server):
         self.c.set_language("en")
         self.assertTrue(self.c.is_banned("You're my bitch."))
 
+    def test_a_forbidden_word_in_her_answer_is_swapped_before_she_says_it(self):
+        from lines import scrub
+        self.assertEqual(scrub("Jeszcze nie. Poproś ładniej, moja suczko."), ("Jeszcze nie. Poproś ładniej, moja dziewczynko.", True))
+        self.assertEqual(scrub("Suka. Dobra suka, z suką i o suce."), ("Dziwka. Dobra dziwka, z dziwką i o suce.", True))
+        self.assertEqual(scrub("You're my bitch."), ("You're my slut.", True))
+        self.assertEqual(scrub("Założyłaś sukienkę."), ("Założyłaś sukienkę.", False))
+        said = []
+        self.c.speak_ex = lambda line, voice, meta=None: said.append(line)
+        self.say("kochanie, jestem twoja", request="none", granted="Dobra suczko.", denied="Dobra suczko.")
+        self.assertEqual(said[-1], "Dobra dziewczynko.")
+        self.assertIn(("assistant", "Dobra dziewczynko."), self.c._history)
+
     def test_no_seed_or_task_names_the_gear(self):
         import re
         n = P["narration"]

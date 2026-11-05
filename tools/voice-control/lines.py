@@ -20,6 +20,25 @@ def similar(a, b):
     return difflib.SequenceMatcher(None, " ".join(_norm(a)), " ".join(_norm(b))).ratio()
 
 
+SCRUB = [
+    # (pattern, replacement) - the forms of "suka" / "suczka" / "bitch" swapped for words she is allowed to use
+    (r"\bsucz?k?(?:o|uniu)\b", "dziewczynko"), (r"\bsuczko\b", "dziewczynko"), (r"\bsuko\b", "dziewczynko"),
+    (r"\bsucz?k(?:ą)\b", "dziwką"), (r"\bsuczką\b", "dziwką"), (r"\bsuką\b", "dziwką"),
+    (r"\bsuczkę\b", "dziwkę"), (r"\bsukę\b", "dziwkę"),
+    (r"\bsuczki\b", "dziwki"), (r"\bsuki\b", "dziwki"),
+    (r"\bsuczka\b", "dziwka"), (r"\bsuka\b", "dziwka"),
+    (r"\bbitches\b", "sluts"), (r"\bbitchy\b", "slutty"), (r"\bbitch\b", "slut"),
+]
+
+
+def scrub(line):
+    """the line with the forbidden words replaced (keeps the case of the first letter) -> (line, changed)"""
+    out = line
+    for pat, rep in SCRUB:
+        out = re.sub(pat, lambda m: rep[0].upper() + rep[1:] if m.group(0)[:1].isupper() else rep, out, flags=re.I)
+    return out, out != line
+
+
 def is_banned_line(line, banned_words):
     low = " " + line.lower() + " "
     for w in banned_words or []:

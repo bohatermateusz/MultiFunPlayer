@@ -380,8 +380,9 @@ class Controller:
                         pending = buf[ev[1]][len(sent[ev[1]]):]
                         from tts_ws import split_sentences
                         whole, _ = split_sentences(pending)
+                        from lines import scrub as _scrub
                         for s in whole:
-                            speak_sentence(s.strip(), meta, False)
+                            speak_sentence(_scrub(s.strip())[0], meta, False)
                             sent[ev[1]] += pending[:pending.index(s) + len(s)]
                             pending = buf[ev[1]][len(sent[ev[1]]):]
                 elif ev[0] == "done":
@@ -389,7 +390,9 @@ class Controller:
                     if chosen:
                         line = getattr(turn, chosen).strip()
                         rest = line[len(sent[chosen].strip()):].strip() if line.startswith(sent[chosen].strip()) else ""
-                        speak_sentence(rest, meta, True)
+                        from lines import scrub as _scrub
+                        speak_sentence(_scrub(rest)[0], meta, True)
+                        line = _scrub(line)[0]
                         with self._lock:
                             outcome.extra["say"] = line
                             outcome.extra["kind"] = self._kind_of(line, outcome.extra)
@@ -455,6 +458,14 @@ class Controller:
 
     def _say(self, outcome):
         line = outcome.extra.get("say")
+        if line:
+            from lines import scrub
+            clean, changed = scrub(line)
+            if changed:
+                # the model ignored the ban: the word is swapped before she says it (and in what she remembers)
+                outcome.extra["say"], outcome.extra["scrubbed"] = clean, True
+                self._history = [(r, clean if t == line else t) for r, t in self._history]
+                line = clean
         if line and outcome.extra.get("source") != "pool":
             if outcome.extra.get("source") != "task" and self.is_repeat(line):
                 outcome.extra["repeat"] = True     # the model ignored "nie_powtarzaj"; logged, she still speaks
