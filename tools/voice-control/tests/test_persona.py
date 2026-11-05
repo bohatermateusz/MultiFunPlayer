@@ -326,7 +326,7 @@ class RequestShape(unittest.TestCase):
     def test_gated_is_everything_except_the_safe_word_and_the_hold(self):
         ids = {i.id for i in INTENTS}
         gated, never = set(CFG["persona"]["gated"]), set(CFG["persona"]["never_gated"])
-        self.assertEqual(never, {"halt", "lock"})
+        self.assertEqual(never, {"halt", "lock", "cooldown"})
         self.assertFalse(gated & never)
         self.assertEqual(gated | never, ids)
         for x in ("calm", "slower", "shallower", "pause", "play", "script", "normal", "mode_3", "mode_b", "lube_fire", "surprise", "loop_on"):

@@ -44,7 +44,7 @@ SIDE_WORDS = {
              " do środka", " w środek", " w środku", " anal", " pośladk",
              " behind", " ass ", " butt", " rear", " inside", " pussy", " from the back"],
 }
-SIDED_ACTIONS = {"Speed", "Depth", "Mode", "Calm", "Boost", "LubeLauncher"}
+SIDED_ACTIONS = {"Speed", "Depth", "Mode", "Calm", "Boost", "LubeLauncher", "Cooldown"}
 # the same words as the matcher sees them (no accents), each with a space in front: " do ust", " od tylu", ...
 SIDE_NORM = {k: [" " + normalize(w) + ("" if not w.endswith(" ") else " ") for w in v] for k, v in SIDE_WORDS.items()}
 SIDE_PHRASES = sorted({normalize(w) for v in SIDE_WORDS.values() for w in v if len(normalize(w).split()) >= 1
@@ -89,7 +89,8 @@ def deep_merge(base, overlay, path=()):
 
 PERSONA_DEFAULTS = {"enabled": True, "reply_window": 15.0, "base_p": 0.25, "step_p": 0.2, "confession_p": 0.3, "max_asks": 5,
                     "silence_reset": 180.0, "gated": [], "tease_allowed": [], "max_words": 30,
-                    "never_gated": ["halt", "lock"], "fallback_plain": [], "base_p_overrides": {},
+                    "never_gated": ["halt", "lock", "cooldown"], "fallback_plain": [], "base_p_overrides": {},
+                    "cooldown": {"seconds": 300, "lines": [], "themes": []},
                     "stages": ["spokojnie, chłodno, lekko uwodzicielsko"],
                     "escalation": {"enabled": True, "max_stage": 4, "points": {"turn": 1, "denied": 1, "confession": 2, "granted": 2},
                                    "thresholds": [0, 5, 12, 22, 35], "heat_reset": 600, "tease_chance": [0.3, 0.5, 0.7, 0.85, 1.0]},
@@ -211,6 +212,7 @@ class Controller:
         self._repeat_target = None        # the sentence she told him to repeat ("Powtórz za mną: ...")
         self._last_demand = None          # (request id, demand) of her last refusal: what she wants before she gives it
         self._beg_met = None              # a request whose "ask nicer" demand he has just met (a bonus on the dice)
+        self._cooldown_until = 0.0        # "uspokój mnie": until then she is only tender, her program waits
 
     @property
     def persona_cfg(self):
@@ -389,6 +391,15 @@ class Controller:
             self._log(transcript, outcome)
         return self._say(outcome)
 
+    def _narration_themes(self, cfg, soft=False):
+        """the themes she may comment on now (not the ones used lately); while winding down only the tender ones"""
+        allowed = list(cfg["themes"])
+        if soft:
+            tender = [t for t in self.persona_cfg["cooldown"].get("themes", []) if t in allowed]
+            allowed = tender or [t for t in allowed if t.lower().startswith(("po sesji", "aftercare"))] or allowed
+        recent = self._themes_recent[-max(1, len(allowed) - 2):]
+        return [t for t in allowed if t not in recent] or allowed
+
     def narration_line(self):
         """a narration line for an external voice (the agents mode): chosen like idle_narration, not spoken here.
         -> (line, meta) or (None, None)"""
@@ -397,14 +408,17 @@ class Controller:
             return None, None
         with self._lock:
             stage = self.stage()
-            themes = [t for t in cfg["themes"] if t not in self._themes_recent[-max(1, len(cfg["themes"]) - 2):]] or list(cfg["themes"])
+            soft = self.cooldown_active()
+            if soft:
+                self._tone_now = ("czuły", 0)
+            themes = self._narration_themes(cfg, soft)
             theme = self.rng.choice(themes)
             self._themes_recent.append(theme)
             del self._themes_recent[:-len(cfg["themes"])]
             tasks = cfg.get("tasks", {})
             share = tasks.get("share", [0.0])
             line, source = None, "pool"
-            if tasks.get("enabled") and self.rng.random() < float(share[max(0, min(stage, len(share) - 1))]):
+            if tasks.get("enabled") and not soft and self.rng.random() < float(share[max(0, min(stage, len(share) - 1))]):
                 line, source = self._draw_task(stage), "task"
         if not line and self.pool is not None:
             line = self.pool.take(theme)
@@ -723,6 +737,8 @@ class Controller:
             sharp = not sharp
             if run >= int(t["max_sharp_run"]):
                 sharp = False                       # a twist never breaks the run limit
+        if self.cooldown_active():
+            sharp = False                           # winding down: she is only tender
         tone = "ostry" if sharp else "czuły"
         harsh = 0
         if sharp:
@@ -886,12 +902,13 @@ class Controller:
             if self._owed is not None and now - self._last_line < 25.0:
                 return None                       # she is waiting for what she demanded
             sharp = self.persona_cfg["narration"]["sharp_p"]
-            tone = "ostry" if self.rng.random() < float(sharp[max(0, min(stage, len(sharp) - 1))]) else "czuły"
+            soft = self.cooldown_active()          # winding down: only tender, aftercare themes, no orders
+            tone = "ostry" if not soft and self.rng.random() < float(sharp[max(0, min(stage, len(sharp) - 1))]) else "czuły"
             harsh = (3 if stage >= 4 and self.rng.random() < 0.4 else 2) if tone == "ostry" else 0
             self._tone_now = (tone, harsh)
             self._tones.append(tone)
             del self._tones[:-12]
-            themes = [t for t in cfg["themes"] if t not in self._themes_recent[-max(1, len(cfg["themes"]) - 2):]] or list(cfg["themes"])
+            themes = self._narration_themes(cfg, soft)
             theme = self.rng.choice(themes)
             self._themes_recent.append(theme)
             del self._themes_recent[:-len(cfg["themes"])]
@@ -903,7 +920,7 @@ class Controller:
         tasks = cfg.get("tasks", {})
         share = tasks.get("share", [0.0])
         line = None
-        if tasks.get("enabled") and self.rng.random() < float(share[max(0, min(stage, len(share) - 1))]):
+        if tasks.get("enabled") and not soft and self.rng.random() < float(share[max(0, min(stage, len(share) - 1))]):
             with self._lock:
                 line = self._draw_task(stage)
             if line:
@@ -1008,7 +1025,7 @@ class Controller:
                 "zwroty_do_ciebie": list(address.get("titles", [])),
                 "zwroty_do_niej": list(address.get("names", [])), "prosby_bez_zgody": dict(self._asks),
                 "nalezy_sie_po_wykonaniu_zadania": self._owed, "kara_sekundy": round(self.penalty_remaining()),
-                "blokada_5_min": self.lock_remaining() > 0,
+                "blokada_5_min": self.lock_remaining() > 0, "wyciszanie": self.cooldown_active(),
                 "ostatnie_komendy": list(self._recent), "program_aktywny": self.program_summary(),
                 "nie_powtarzaj": list(self._said_recent[-20:]), "jezyk": self.language,
                 "regula_jezyka": self.persona_cfg.get("language_rule", "")}
@@ -1355,7 +1372,7 @@ class Controller:
             if pr is None:
                 return False
             now = self.clock()
-            if now < pr["next_at"] or self.lock_remaining() > 0:
+            if now < pr["next_at"] or self.lock_remaining() > 0 or self.cooldown_active():
                 return False
             extra = {"program": self.program_summary()}
             self._turn_side = pr.get("side")
@@ -1392,8 +1409,10 @@ class Controller:
                 self._track_lock(intent)
                 self._remember(intent.id)
                 outcome = Outcome("executed", "key", intent.id, 1.0, "key")
+                if intent.id == "cooldown":
+                    self._comment_cooldown(outcome)
             self._log(f"[key] {intent_id}", outcome)
-            return outcome
+        return self._say(outcome) if outcome.extra.get("say") else outcome
 
     def strip_wake_word(self, transcript: str):
         """-> the transcript without the leading wake word, or None when it does not start with one.
@@ -1431,17 +1450,58 @@ class Controller:
         return None
 
     def _track_lock(self, intent):
+        self._end_cooldown_by(intent)
         if intent.id == "lock":
             minutes = next((a for step in intent.steps for a in step.get("args", []) if isinstance(a, int)), 5)
             self._locked_until = self.clock() + max(1, minutes) * 60
+        elif intent.id == "cooldown":
+            self._cooldown_until = self.clock() + float(self.persona_cfg["cooldown"].get("seconds", 300))
+            self._program = None              # the wind-down is the end: nothing of hers speeds it up again
         elif intent.id == "halt":
             self._locked_until = None
             self._program = None
+            self._cooldown_until = 0.0
             if self.on_halt:
                 try:
                     self.on_halt()
                 except Exception:
                     pass
+
+    def cooldown_active(self) -> bool:
+        """True while the machines wind down after "uspokój mnie" (and nothing else has moved them since)"""
+        return self.clock() < self._cooldown_until
+
+    def _end_cooldown_by(self, intent):
+        """another machine command (faster, a mode, the script...) ends the wind-down; the Lube Launcher, the hold
+        and talk do not"""
+        if not self._cooldown_until or intent.id in ("cooldown", "lock") or intent.id.startswith("lube_"):
+            return
+        if any("::Hismith::" in st.get("action", "") for st in intent.steps):
+            self._cooldown_until = 0.0
+
+    def _cooldown_line(self):
+        """one of her tender lines for the start of the wind-down, not one said lately"""
+        lines = list(self.persona_cfg["cooldown"].get("lines", []))
+        fresh = [x for x in lines if not self.is_repeat(x)] or lines
+        return self.rng.choice(fresh) if fresh else None
+
+    def _comment_cooldown(self, outcome):
+        """the wind-down is not hers to decide, but she comments it - softly (preset afterglow)"""
+        if not self.persona_active() or outcome.extra.get("say"):
+            return outcome
+        line = self._cooldown_line()
+        if not line:
+            return outcome
+        stage = self.stage()
+        self._tone_now = ("czuły", 0)
+        outcome.extra.update({"say": line, "stage": stage, "tone": "czuły", "harsh": 0, "voice": stage, "kind": "aftercare",
+                              "aftercare": True})
+        self._history.append(("assistant", line))
+        del self._history[:-24]
+        self._window_until = self.clock() + float(self.persona_cfg["reply_window"])
+        self._last_line = self.clock()
+        self._narration_due = self.clock() + self._draw_narration_gap(stage)
+        return outcome
 
     def _remember(self, intent_id):
         self._recent.append(intent_id)
@@ -1609,4 +1669,5 @@ class Controller:
             return Outcome("dry-run", f"would run {len(steps)} step(s)", m.intent.id, m.score, via, extra or {})
         self.run_steps(steps)
         self._remember(m.intent.id if m.intent.id != "improvise" else "improvised " + "+".join((extra or {}).get("plan", [])))
-        return Outcome("executed", "", m.intent.id, m.score, via, extra or {})
+        outcome = Outcome("executed", "", m.intent.id, m.score, via, extra or {})
+        return self._comment_cooldown(outcome) if m.intent.id == "cooldown" else outcome

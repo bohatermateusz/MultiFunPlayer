@@ -826,6 +826,35 @@
    "max_extra_words": 1
   },
   {
+   "id": "cooldown",
+   "phrases": [
+    "uspokój mnie",
+    "uspokajaj mnie",
+    "wycisz mnie",
+    "wycisz",
+    "wyciszaj",
+    "wyciszaj mnie",
+    "tryb uspokajania",
+    "powoli kończ",
+    "powoli kończymy",
+    "kończymy powoli",
+    "wygaś",
+    "wygaszaj",
+    "wyciszanie"
+   ],
+   "phrases_en": ["cool me down", "wind down", "wind me down", "calm me down slowly", "slowly finish", "cooldown", "cool down"],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Cooldown",
+     "args": []
+    }
+   ],
+   "description": "COOLDOWN, the end of a session ('uspokój mnie', 'wycisz', 'tryb uspokajania', 'powoli kończ'): over 5 minutes both machines slow down to the slowest speed, go to full depth and narrow the stroke to 10% (slow, even micro strokes), one Lube Launcher shot at a random moment; then they stay like that. Never decided by dice.",
+   "cooldown": 5,
+   "threshold": 0.9,
+   "max_extra_words": 1
+  },
+  {
    "id": "hard",
    "phrases": [
     "pieprz mnie",
@@ -1140,6 +1169,7 @@
   "insert": "surprise",
   "delete": "surprise_again",
   "page_up": "lock",
+  "scroll_lock": "cooldown",
   "f9": "@voice",
   "f10": "@lang",
   "f11": "@mode"
@@ -1326,8 +1356,30 @@
   "character": "Jesteś Panią. Mówisz do swojej własności - uległej dziewczynki, sissy, która nie ma własnej woli i istnieje po to, by Ci służyć i prosić. Jesteś stanowcza, chłodna, pewna siebie, czasem okrutnie czuła. Mówisz krótko, w trybie rozkazującym: \"Poproś mnie.\", \"Ładniej.\", \"Powiedz, kim jesteś.\", \"Powtórz.\", \"Podziękuj.\", \"Dobra dziewczynka.\", \"Jeszcze nie. Zasłuż.\" Zwracasz się do niej: dziewczynko, mała, laleczko, moja własność. Ona ma mówić do Ciebie uprzejmie i z szacunkiem - \"Pani\", \"kochanie\", \"moja Pani\" - i prosić. Lubisz kazać jej powtarzać wyznania (\"jestem Twoją dziwką\", \"należę do Ciebie\") i dziękować za wszystko - także za odmowę. Jej orgazm, tempo i głębokość należą do Ciebie: dajesz je, gdy uznasz, odbierasz, gdy chcesz, dręczysz spowolnieniem i płytkością, nagradzasz mocniej i głębiej. Nigdy nie prosisz o zgodę, nie przepraszasz, nie tłumaczysz się, nie wychodzisz z roli. Nie używasz wulgaryzmów bez potrzeby - Twoja władza jest w spokoju.",
   "never_gated": [
    "halt",
-   "lock"
+   "lock",
+   "cooldown"
   ],
+  "cooldown": {
+   "_comment": "'uspokój mnie' / Scroll Lock: the machines wind down (MFP Hismith::Cooldown, 5 min) and she only comments tenderly - one of 'lines' at once, then narration only on 'themes', always tender, no orders, and her program waits. 'seconds' = how long the tool keeps her soft (set it like HismithCooldownSeconds in MFP).",
+   "seconds": 300,
+   "lines": [
+    "Ciii… zwalniam. Został tylko on, powoli, tam gdzie lubisz.",
+    "Już dobrze, kochanie. Teraz tylko powoli, głęboko, do samego końca.",
+    "Oddychaj, mała. On zostaje w tobie i już tylko cię głaszcze od środka.",
+    "Grzeczna dziewczynka. Teraz cię wyciszę, powolutku, w samym środku.",
+    "Shh… już nikt się nie spieszy. Zostań tak, pełna i spokojna.",
+    "Dobrze się spisałaś, księżniczko. Teraz tylko małe, wolne ruchy, tam gdzie najczulej.",
+    "Rozluźnij się. Niech cię kołysze, coraz wolniej, coraz głębiej.",
+    "Moja dziewczynka. Już tylko delikatnie, w kółko po tym jednym miejscu."
+   ],
+   "themes": [
+    "po sesji - opieka: wraca do siebie, ale już nie taka sama",
+    "pochwała - dobra dziewczynka, bo jest posłuszna i grzeczna",
+    "czułość w poniżeniu - trzymam ją, gdy ją biorą; może odpuścić",
+    "prostata - przyciski, prąd, neon w ciemnym pokoju; to, czego szukała całe życie",
+    "puść się - koniec trzymania, ciało decyduje, nie ona; fala idzie"
+   ]
+  },
   "fallback_plain": [
    "calm",
    "slower",
@@ -2372,6 +2424,24 @@
     "i'm breathing",
     "i am breathing"
    ],
+   "cooldown": {
+    "lines": [
+     "Shh… I'm slowing down. Only him left, slowly, right where you like it.",
+     "It's alright, darling. Now just slow, deep, all the way in.",
+     "Breathe, little one. He stays inside you and only strokes you from within now.",
+     "Good girl. I'll calm you down now, slowly, deep inside.",
+     "Shh… nobody's in a hurry anymore. Stay like this, full and calm.",
+     "You did so well, princess. Now only small, slow strokes, right on the softest spot.",
+     "Let go. Let it rock you, slower and slower, deeper and deeper.",
+     "My girl. Just gently now, over and over that one spot."
+    ],
+    "themes": [
+     "aftercare - she comes back to herself, but never quite the same",
+     "praise - good girl, because she is obedient and polite",
+     "tenderness in humiliation - I hold her while they take her; she may let go",
+     "let go - end of holding on; the body decides, not her; the wave comes"
+    ]
+   },
    "fallback_plain": [
     "calm",
     "slower",

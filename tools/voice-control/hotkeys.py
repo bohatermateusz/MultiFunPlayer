@@ -9,7 +9,8 @@ NUMPAD_VK = {0x60: "num0", 0x61: "num1", 0x62: "num2", 0x63: "num3", 0x64: "num4
              0x6E: "num_decimal", 0x6F: "num_divide"}
 
 # how a key is written on the keyboard (for the cheat sheet)
-CAPTIONS = {"num_multiply": "Num *", "num_add": "Num +", "num_subtract": "Num -", "num_decimal": "Num .", "num_divide": "Num /"}
+CAPTIONS = {"num_multiply": "Num *", "num_add": "Num +", "num_subtract": "Num -", "num_decimal": "Num .", "num_divide": "Num /",
+            "scroll_lock": "Scroll Lock", "page_up": "Page Up", "page_down": "Page Down"}
 
 
 def caption(key: str) -> str:

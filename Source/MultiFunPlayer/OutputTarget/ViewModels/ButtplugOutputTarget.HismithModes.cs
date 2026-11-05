@@ -151,6 +151,7 @@ internal sealed partial class ButtplugOutputTarget
 
     private void ChangeSpeed(int delta)
     {
+        CancelCooldown(Cur);       // faster / deeper while winding down: the ramp stops here, the change stays
         if (Cur.Mode == 0 && IsActuatorMapped(SpeedDescription, ActuatorType.Oscillate))
             HismithSpeedBoost += delta;
         else
@@ -160,6 +161,7 @@ internal sealed partial class ButtplugOutputTarget
 
     private void ChangeDepth(int delta)
     {
+        CancelCooldown(Cur);       // faster / deeper while winding down: the ramp stops here, the change stays
         if (Cur.Mode == 0 && IsActuatorMapped(DepthDescription, ActuatorType.Position))
             HismithDepthBoost += delta;
         else

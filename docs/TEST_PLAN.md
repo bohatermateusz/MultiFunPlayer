@@ -176,6 +176,10 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.98 | 10 min sesji | głos zmienia się sam, nowy przedstawia się ("Teraz ja się tobą zajmę, ...") |
 | 6.99 | 'trąbka' (samo słowo) w trakcie pracy obu maszyn i jej kwestii | wszystko staje, Pani milknie; 'koniec' już nic nie zatrzymuje |
 | 6.100 | Sesja na wysokim etapie | padają wątki odbytu: "księżniczko odbytu", ruchają w dupę, spuszczają się w dupę, "lubisz to", "twój odbyt nie należy do ciebie" |
+| 6.101 | 'kochanie, uspokój mnie' przy dwóch pracujących maszynach (także w trakcie kary) | od razu, bez kości; Pani mówi coś czułego; status w MFP: `COOLDOWN 4:54 left` na obu stronach; przez 5 min obie zwalniają, wchodzą głęboko, skok się zwęża; potem `COOLDOWN done (micro strokes)` – wolne mikroruchy aż do innej komendy |
+| 6.102 | Jak 6.101 – patrz na Lube Launchery | dokładnie jeden strzał w trakcie wyciszania (przód, tył albo oba naraz – w logu MFP `Cooldown ... one Lube Launcher shot`) |
+| 6.103 | W trakcie wyciszania: cisza 3 min / 'kochanie, szybciej' / 'trąbka' | narracja tylko czuła (opieka, pochwała); 'szybciej' przerywa wyciszanie tej maszyny; 'trąbka' zatrzymuje wszystko i odwołuje strzał |
+| 6.104 | 'kochanie, wycisz tył' / klawisz Scroll Lock / przycisk Cooldown w MFP | tylko tylna maszyna i tylny launcher / obie strony / obie strony |
 | 6.88 | Koszt | po 30 min: znaki w ElevenLabs (classic/live) vs minuty Agents w dashboardzie - porównaj |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |
