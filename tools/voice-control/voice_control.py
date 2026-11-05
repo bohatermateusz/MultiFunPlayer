@@ -45,10 +45,14 @@ def load_config(path):
     return cfg, intents
 
 
+STT_HINT_INTENTS = ("faster", "slower", "deeper", "shallower", "halt", "lock", "lube_fire")
+
+
 def stt_prompt(intents, wake_words=None):
-    # the cloud model is nudged towards the vocabulary of the commands (a hint, not a guarantee)
+    # a short hint only: a long list of commands is what Whisper loops on noise ("tryb pięć, tryb pięć, ...")
     wake = ", ".join(w for w in wake_words) + ". " if wake_words else ""
-    return "Komendy: " + wake + ", ".join(i.phrases[0] for i in intents if i.phrases)[:220]
+    phrases = [i.phrases[0] for i in intents if i.phrases and i.id in STT_HINT_INTENTS]
+    return (wake + ", ".join(phrases))[:100]
 
 
 def save_voice_id(config_path, voice_id, lang="pl"):
@@ -384,6 +388,10 @@ def main():
             print("  speech-to-text failed:", e)
             beep("error")
             return
+        from stt import is_hallucination
+        if is_hallucination(text, lis.get("max_words", 25)):
+            print(f'  "{text[:60]}..." -> ignored (speech-to-text hallucination)')
+            return
         outcome = controller.handle(text)
         report(outcome, text)
         beep({"executed": "ok", "dry-run": "ok", "confirm": "confirm"}.get(outcome.status, "ignored"))
@@ -529,7 +537,7 @@ def main():
 
     order = [tcfg.get("provider", "elevenlabs"), tcfg.get("fallback_provider", "openai")]
     voice = Voice({n: provider(n) for n in speakers if not n.startswith("_")}, order, lambda stream, stop: play_stream(stream, PCM_RATE, stop=stop),
-                  gate=gate, muted=lambda: muted["value"])
+                  gate=gate, muted=lambda: muted["value"], cut_previous=bool(lis.get("cut_previous_line", False)))
 
     def speak(line, stage=0, meta=None):
         pcm = controller.audio_cache.get(line) if (controller.audio_cache is not None and meta and meta.get("kind") == "narration") else None
@@ -563,8 +571,10 @@ def main():
     controller.busy = lambda: muted["value"] or voice.speaking() or gate.speaking()
 
     def barge_in():
-        if headphones:
+        # your voice cuts her off only with listen.barge_in "always"; by default ("safe_word") only the safe word does
+        if headphones and lis.get("barge_in", "safe_word") == "always":
             voice.interrupt()
+    controller.on_halt = voice.interrupt
 
     def toggle_mute():
         muted["value"] = not muted["value"]

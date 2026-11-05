@@ -164,6 +164,9 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.85 | live: wyłącz sieć na chwilę / błąd Realtime | w konsoli `realtime stt: ... reconnecting`; komendy dalej działają (lokalny detektor + Whisper); po powrocie znów na żywo |
 | 6.86 | F11 | classic -> live -> (agents) -> classic bez restartu; Pani potwierdza; klawisze i 'koniec' działają w każdym trybie |
 | 6.87 | agents (po konfiguracji agenta i tunelu) | rozmowa ciągła; 'kochanie, szybciej' wykonuje się (proxy), narracja co jakiś czas; 'stop'/'koniec' z transkrypcji agenta zatrzymuje |
+| 6.89 | Classic: ona mówi dłuższą kwestię, Ty zaczynasz prosić w trakcie | jej kwestia kończy się do końca; Twoja prośba jest rozpoznana i obsłużona po niej |
+| 6.90 | Classic: 'koniec' (albo 'koniec szybciej') w trakcie jej kwestii | urywa ją natychmiast i zatrzymuje maszynę |
+| 6.91 | 'Powtórz za mną: ...' i powtórz z jednym przekręconym słowem | nie ma kary; uznane za wykonanie |
 | 6.88 | Koszt | po 30 min: znaki w ElevenLabs (classic/live) vs minuty Agents w dashboardzie - porównaj |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |

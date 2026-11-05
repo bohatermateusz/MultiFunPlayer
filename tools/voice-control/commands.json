@@ -1100,6 +1100,9 @@
   "min_similarity": 0.8
  },
  "listen": {
+  "barge_in": "safe_word",
+  "cut_previous_line": false,
+  "max_words": 25,
   "mode": "always",
   "threshold_db": null,
   "margin_db": 12,

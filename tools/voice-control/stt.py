@@ -2,6 +2,8 @@
 import io
 import json
 import os
+import re
+import time
 import uuid
 import urllib.error
 import urllib.request
@@ -10,6 +12,23 @@ import wave
 
 class SttError(Exception):
     pass
+
+
+def is_hallucination(text, max_words=25, max_repeats=3):
+    """Whisper invents text on noise or silence, often looping its prompt ("tryb pięć, tryb pięć, ..."): too many
+    words for a spoken command, or the same 1-3 word phrase over and over -> True"""
+    words = re.sub(r"[^\w\s]", " ", text.lower()).split()
+    if not words:
+        return False
+    if len(words) > max_words:
+        return True
+    for n in (1, 2, 3):
+        grams = [" ".join(words[i:i + n]) for i in range(0, len(words) - n + 1)]
+        for g in set(grams):
+            c = grams.count(g)
+            if c >= max_repeats and n * c >= 0.6 * len(words) and len(words) >= 8:
+                return True
+    return False
 
 
 def pcm_to_wav(pcm: bytes, sample_rate: int = 16000) -> bytes:
@@ -39,6 +58,7 @@ class CloudStt:
                  api_key=None, api_key_env="OPENAI_API_KEY", timeout=15.0, prompt=""):
         self.url = base_url.rstrip("/") + "/audio/transcriptions"
         self.model, self.language, self.timeout, self.prompt = model, language, timeout, prompt
+        self.retry_delay = 0.5
         self.api_key = api_key or os.environ.get(api_key_env, "")
 
     def transcribe_wav(self, wav: bytes) -> str:
@@ -52,13 +72,17 @@ class CloudStt:
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": f"multipart/form-data; boundary={boundary}",
         })
-        try:
-            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
-        except urllib.error.HTTPError as e:
-            raise SttError(f"HTTP {e.code}: {e.read()[:200]!r}") from e
-        except (urllib.error.URLError, TimeoutError, OSError) as e:
-            raise SttError(f"request failed: {e}") from e
-        except json.JSONDecodeError as e:
-            raise SttError("answer is not JSON") from e
+        for attempt in (1, 2):
+            try:
+                with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                    data = json.loads(resp.read().decode("utf-8"))
+                break
+            except urllib.error.HTTPError as e:
+                raise SttError(f"HTTP {e.code}: {e.read()[:200]!r}") from e
+            except (urllib.error.URLError, TimeoutError, OSError) as e:
+                if attempt == 2:
+                    raise SttError(f"request failed: {e}") from e
+                time.sleep(self.retry_delay)               # a dropped connection: one more try
+            except json.JSONDecodeError as e:
+                raise SttError("answer is not JSON") from e
         return str(data.get("text", "")).strip()

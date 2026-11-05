@@ -203,6 +203,13 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   (not doing what she asked) cuts them further (x0.4). An open refusal ("nie chcę", "nie powiem", "nie będę prosić", or
   the model flags defiance) wipes your asks and nothing is granted for 90 s, or until you apologise ("przepraszam,
   Pani"). Not even the 8th ask beats an active punishment. "koniec"/End and "utrzymaj to" are never punished.
+* **Her lines are not cut** (classic mode): a new line waits until the one playing has ended (a queue; a comment
+  waiting is dropped when an answer comes), your voice does not cut her (`listen.barge_in`: `safe_word` by default,
+  `always` for the old behaviour), only the safe word / End does - at once, also when it starts a longer utterance
+  ("koniec szybciej"). Narration keeps quiet for 12 s after you speak (`narration.quiet_after_user`) and while she waits
+  for what she demanded. Whisper's hallucinations (walls of "tryb pięć, tryb pięć...") are dropped (`listen.max_words`),
+  the recognition prompt is short, a dropped connection is retried once. A repetition with a misheard word counts as
+  obedience; the model's "defiance" counts only when you actually said no.
 * **Conversation modes, F11** (`conversation.mode`, `--mode`): **classic** is the old loop (record the whole utterance,
   transcribe, answer, speak: ~2-4 s of silence before her first word). **live** streams everything: OpenAI Realtime
   transcription as you speak (`gpt-4o-mini-transcribe`, server VAD, `silence_ms` 500), the safe word and plain commands

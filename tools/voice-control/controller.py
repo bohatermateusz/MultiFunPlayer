@@ -6,6 +6,7 @@ The LLM only picks one of the configured commands; the tool validates the pick a
 import copy
 import json
 import random
+import re
 import threading
 import time
 from dataclasses import dataclass, field
@@ -20,6 +21,20 @@ LLM_DEFAULTS = {"min_confidence": 0.8, "max_words": 14, "prefilter_similarity": 
                 "max_steps": 4, "max_faster": 3, "max_deeper": 3, "max_lube": 1}
 REPLACE_WHOLE = {("narration", "pool", "seed"), ("narration", "tasks", "by_stage"), ("narration", "tasks", "care"),
                  ("vocabulary",), ("address",)}
+
+
+REPEAT_RE = re.compile(r"(?:powtórz(?:\s+za\s+mną)?|powiedz\s+dokładnie|repeat(?:\s+after\s+me)?|say\s+it)\s*:\s*['\"„“]?(.+?)['\"”]?\s*$", re.I)
+
+
+def repeat_target(line):
+    """the sentence she told him to repeat ("Powtórz za mną: sama się zgłosiłam."), or None"""
+    m = REPEAT_RE.search(line)
+    return m.group(1).strip() if m and len(m.group(1).split()) >= 2 else None
+
+
+REFUSAL_MARKERS = re.compile(r"\b(nie|nigdy|spierdalaj|spadaj|odwal|odpierdol|pierdol\w*|won|głup\w*|idiot\w*|chuj\w*|"
+                             r"no|never|won't|refuse|stupid|fuck\s+off)\b", re.I)
+SAFE_WORD_COMPOUNDS = {"pętli", "petli", "sekwencji", "trybu", "blokady", "filmu", "loop", "sequence", "mode", "the"}
 
 
 def deep_merge(base, overlay, path=()):
@@ -150,6 +165,9 @@ class Controller:
         self.speak_ex = None              # speak_ex(line, voice, meta): like speak, but knows the stage, tone and kind of line
         self.audio_cache = None           # AudioCache: narration lines synthesized ahead (set by the main loop)
         self.external_voice = False       # agents mode: the agent speaks her lines, the tool only keeps the books
+        self.on_halt = None               # on_halt(): the safe word ran - her voice is cut off at once
+        self._last_heard = 0.0            # last time anything was heard from the user (narration keeps quiet after it)
+        self._repeat_target = None        # the sentence she told him to repeat ("Powtórz za mną: ...")
 
     @property
     def persona_cfg(self):
@@ -197,6 +215,8 @@ class Controller:
             tone, _ = self._tone_now
             outcome = Outcome("talk", "key", "", 0.0, "key", {"say": line, "stage": stage, "voice": stage + (5 if tone == "ostry" else 0)})
             self._history.append(("assistant", line))
+            self._window_until = self.clock() + float(self.persona_cfg["reply_window"])   # he may answer without the wake word
+            self._last_line = self.clock()
             self._log("[key]", outcome)
         self._say(outcome)
 
@@ -213,6 +233,7 @@ class Controller:
 
     def handle(self, transcript: str) -> Outcome:
         with self._lock:
+            self._last_heard = self.clock()
             result = self._handle(transcript)
             if isinstance(result, Outcome):
                 self._log(transcript, result)
@@ -231,6 +252,21 @@ class Controller:
             return self._say(outcome)
 
     # ---- the live mode: partial transcripts, streamed answers -------------------------------------------
+    def _safe_word_first(self, transcript):
+        """-> a Match of the safe word when the utterance starts with it (after the wake word, if any)"""
+        halt = next((i for i in self.intents if i.id == "halt"), None)
+        if halt is None:
+            return None
+        singles = {normalize(p) for p in halt.phrases if len(normalize(p).split()) == 1}
+        tokens = normalize(transcript).split()
+        if tokens and self.wake_words and any(_sim(w, tokens[0]) >= self.wake_min_similarity for w in self.wake_words):
+            tokens = tokens[1:]
+        if tokens and tokens[0] in singles:
+            if len(tokens) > 1 and tokens[1] in SAFE_WORD_COMPOUNDS:
+                return None                    # "koniec pętli", "koniec sekwencji", ... are commands of their own
+            return Match(halt, 1.0, tokens[0])
+        return None
+
     def prepare(self, transcript):
         """the first half of handle(): -> ("outcome", Outcome) when it is settled (and spoken), ("persona", _NeedPersona)
         or ("llm", _NeedLlm) when a model has to answer (the live mode streams that answer)"""
@@ -458,6 +494,10 @@ class Controller:
 
     def _say(self, outcome):
         line = outcome.extra.get("say")
+        if line:
+            target = repeat_target(line)
+            if target:
+                self._repeat_target = target
         if line:
             from lines import scrub
             clean, changed = scrub(line)
@@ -698,6 +738,10 @@ class Controller:
                 return None
             if now < self._narration_due or now - self._last_line < 8.0:
                 return None
+            if now - self._last_heard < float(cfg.get("quiet_after_user", 12)):
+                return None                       # he has just spoken: she answers first, the comment waits
+            if self._owed is not None and now - self._last_line < 25.0:
+                return None                       # she is waiting for what she demanded
             sharp = self.persona_cfg["narration"]["sharp_p"]
             tone = "ostry" if self.rng.random() < float(sharp[max(0, min(stage, len(sharp) - 1))]) else "czuły"
             harsh = (3 if stage >= 4 and self.rng.random() < 0.4 else 2) if tone == "ostry" else 0
@@ -763,7 +807,7 @@ class Controller:
                 return None                      # no session on
             if self._nudges >= int(ini["max_nudges"]):
                 return None
-            if now - max(self._last_user, self._last_line) < float(ini["idle_prompt_seconds"]):
+            if now - max(self._last_user, self._last_line, self._last_heard) < float(ini["idle_prompt_seconds"]):
                 return None
             state = dict(self._persona_state(), etap=self.stage(), ton=self._tone(self.stage()))
             history = list(self._history)
@@ -894,7 +938,14 @@ class Controller:
         if self._says_any(transcript, self.persona_cfg["obey_phrases"], 0.88):
             turn.thanked = True
         m = self.persona_cfg["manners"]
-        defiant = turn.defiance or self._says_any(transcript, m["refusal_phrases"], 0.92)
+        if self._repeat_target:
+            from lines import similar
+            if similar(transcript, self._repeat_target) >= 0.6:
+                # he repeated what she asked, maybe with a word misheard ("korana" for "kolana"): that is obedience
+                turn.thanked, turn.defiance = True, False
+                self._repeat_target = None
+        # the model's "defiance" counts only when he actually said no: a misheard word is not rebellion
+        defiant = (turn.defiance and bool(REFUSAL_MARKERS.search(transcript))) or self._says_any(transcript, m["refusal_phrases"], 0.92)
         if not defiant and self.penalty_remaining() > 0 and self._says_any(transcript, m["apology_phrases"], 0.8):
             self._penalty_until = 0.0                        # an apology ends the punishment
             self._heat_up("turn")
@@ -1213,6 +1264,11 @@ class Controller:
         elif intent.id == "halt":
             self._locked_until = None
             self._program = None
+            if self.on_halt:
+                try:
+                    self.on_halt()
+                except Exception:
+                    pass
 
     def _remember(self, intent_id):
         self._recent.append(intent_id)
@@ -1247,6 +1303,9 @@ class Controller:
                 return Outcome("cancelled", "no confirmation", m.intent.id, m.score)
             # confirmation timed out: treat the new utterance as a normal one
 
+        safe = self._safe_word_first(transcript)
+        if safe is not None:
+            return self._run_match(safe, now)                # "koniec ..." stops, whatever follows
         command = self.strip_wake_word(transcript)
         if command is None:
             # the safe word needs no wake word, ever ("koniec" / "stop")

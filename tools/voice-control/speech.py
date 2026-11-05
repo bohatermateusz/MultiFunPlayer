@@ -29,34 +29,92 @@ def _with_meta(provider):
     return lambda line, stage, meta=None: provider(line, stage)
 
 
+PRIORITY = {"answer": 3, "affirmation": 3, "aftercare": 3, "task": 2, "nudge": 2, "narration": 1}
+
+
 class Voice:
-    def __init__(self, providers, order, play, gate=None, muted=lambda: False, log=print):
+    """Lines are spoken one after another: a new line waits until the one playing has ended (cut_previous=True
+    restores the old behaviour: a new line cuts the previous one). Waiting narration is dropped when an answer comes;
+    at most max_pending lines wait. interrupt() stops the line playing and drops everything waiting."""
+
+    def __init__(self, providers, order, play, gate=None, muted=lambda: False, log=print, cut_previous=False, max_pending=2):
         self.providers = providers          # name -> open(line, stage[, meta])
         self.order = [n for n in order if n in providers]
         self.play = play                    # play(stream, stop) -> plays until the end or until stop() is true
         self.gate = gate
         self.muted = muted
         self.log = log
+        self.cut_previous, self.max_pending = cut_previous, max_pending
         self._stop = False
         self._thread = None
+        self._pending = []                  # [(priority, target, args)]
+        self._qlock = threading.Lock()
         self.last_provider = None
+        self.dropped = 0
 
     def say(self, line, stage=0, meta=None, pcm=None, stream=None):
         """speak the line (pcm given: play that audio instead of asking a provider - the narration cache;
         stream given: a ready generator of PCM chunks, e.g. the websocket voice of the live mode)"""
         if (not self.providers and pcm is None and stream is None) or self.muted():
             return
-        self._stop = True                    # a new line interrupts the previous one
-        previous = self._thread
-        if previous is not None:
-            previous.join(2.0)
-        self._stop = False
         if stream is not None:
             target, args = (self._run_stream, (stream, line, stage, meta))
         else:
             target, args = (self._run_pcm, (pcm,)) if pcm is not None else (self._run, (line, stage, meta))
-        self._thread = threading.Thread(target=target, args=args, daemon=True)
-        self._thread.start()
+        prio = PRIORITY.get((meta or {}).get("kind", "answer"), 3)
+        previous = None
+        with self._qlock:
+            if self.cut_previous:
+                self._pending = []
+                self._stop = True
+                previous = self._thread
+            else:
+                if prio > PRIORITY["narration"]:
+                    kept = [p for p in self._pending if p[0] > PRIORITY["narration"]]
+                    self.dropped += len(self._pending) - len(kept)
+                    self._pending = kept                         # an answer beats a comment that has not started yet
+                elif any(p[0] > prio for p in self._pending):
+                    self.dropped += 1
+                    return                                       # a comment never queues behind an answer
+                self._pending.append((prio, target, args))
+                while len(self._pending) > self.max_pending:
+                    i = min(range(len(self._pending)), key=lambda k: (self._pending[k][0], -k))
+                    self._pending.pop(i)
+                    self.dropped += 1
+                if self._thread is not None and self._thread.is_alive():
+                    return                                       # the worker takes it after the current line
+        if previous is not None:
+            previous.join(2.0)
+        with self._qlock:
+            if self.cut_previous:
+                self._pending = [(prio, target, args)]
+            self._stop = False
+            self._thread = threading.Thread(target=self._worker, daemon=True)
+            self._thread.start()
+
+    def _worker(self):
+        while True:
+            with self._qlock:
+                if not self._pending:
+                    return
+                self._pending.sort(key=lambda p: -p[0])
+                _, target, args = self._pending.pop(0)
+                self._stop = False
+            target(*args)
+
+    def speaking(self) -> bool:
+        return (self._thread is not None and self._thread.is_alive()) or bool(self._pending)
+
+    def interrupt(self):
+        """cut her off at once (the safe word, or your voice when barge-in is on) and drop what was waiting"""
+        with self._qlock:
+            self._pending = []
+            if self._thread is not None and self._thread.is_alive():
+                self._stop = True
+
+    def wait(self, timeout=5.0):
+        if self._thread is not None:
+            self._thread.join(timeout)
 
     def _run_stream(self, stream, line, stage, meta):
         """a ready chunk stream; when it fails before any sound, the ordinary providers speak the (whole) line"""
@@ -89,18 +147,6 @@ class Voice:
         finally:
             if self.gate:
                 self.gate.end()
-
-    def speaking(self) -> bool:
-        return self._thread is not None and self._thread.is_alive()
-
-    def interrupt(self):
-        """the user starts to speak while she talks (headphones): she is cut off at once"""
-        if self.speaking():
-            self._stop = True
-
-    def wait(self, timeout=5.0):
-        if self._thread is not None:
-            self._thread.join(timeout)
 
     def _run(self, line, stage, meta=None):
         if self.gate:
