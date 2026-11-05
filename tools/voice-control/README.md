@@ -203,6 +203,15 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   (not doing what she asked) cuts them further (x0.4). An open refusal ("nie chcę", "nie powiem", "nie będę prosić", or
   the model flags defiance) wipes your asks and nothing is granted for 90 s, or until you apologise ("przepraszam,
   Pani"). Not even the 8th ask beats an active punishment. "koniec"/End and "utrzymaj to" are never punished.
+* **Voices and languages by key**: **F9** = the next voice of the current language from `persona.tts.voices` (Hanna,
+  Jagna, Asia, Jola, Arleta for Polish; Jessica, Lily, Sarah, Alice for English - resolved by name on the account, or
+  added from the library), saved to the config, confirmed in her new voice ("Teraz brzmię tak." / "This is my voice
+  now."). **F10** = Polish/English, and *everything* switches: the command phrases (`intents[].phrases_en`: "faster",
+  "cum on me", "mode three", "hold it"...), the wake words (`wake.words_en`: darling, mistress, lady, honey), the safe
+  word ("stop" / "red" / "end" - like "koniec" it needs no wake word), speech recognition language, her addresses,
+  confessions, manners, narration themes / orders / seeds, the line pool (`lines_pool.en.json`), the voice and the
+  OpenAI fallback instructions - all from the overlay `persona.languages.en`, merged over the Polish persona. Start in
+  English with `--language en` or `"language": "en"` in the config. `voices --use <name> --lang en` saves an English voice.
 * **Her voice is picked for you**: with `persona.tts.voice_id` empty, the first run looks for a girlish female voice on your
   ElevenLabs account (`voice_prefer.names` - Hanna, Jagna, Asia, Jola, Arleta from the ASMR app first, then Jessica / Lily /
   Sarah / Alice / Matilda - then `voice_prefer.ids` (your own picks by id, added from the library when missing), then any female young/middle-aged by

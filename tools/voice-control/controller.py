@@ -18,6 +18,23 @@ NO = {"nie", "anuluj", "stop", "odwolaj"}
 
 LLM_DEFAULTS = {"min_confidence": 0.8, "max_words": 14, "prefilter_similarity": 0.5, "prefilter_min_length": 5, "context": 3,
                 "max_steps": 4, "max_faster": 3, "max_deeper": 3, "max_lube": 1}
+REPLACE_WHOLE = {("narration", "pool", "seed"), ("narration", "tasks", "by_stage"), ("narration", "tasks", "care"),
+                 ("vocabulary",), ("address",)}
+
+
+def deep_merge(base, overlay, path=()):
+    """dicts merged key by key, everything else (lists, scalars) replaced by the overlay; the blocks in REPLACE_WHOLE
+    (a language's seeds, orders, vocabulary, addresses) are taken from the overlay as they are"""
+    out = dict(base)
+    for k, v in (overlay or {}).items():
+        here = path + (k,)
+        if isinstance(v, dict) and isinstance(out.get(k), dict) and here not in REPLACE_WHOLE:
+            out[k] = deep_merge(out[k], v, here)
+        else:
+            out[k] = v
+    return out
+
+
 PERSONA_DEFAULTS = {"enabled": True, "reply_window": 15.0, "base_p": 0.25, "step_p": 0.2, "confession_p": 0.3, "max_asks": 5,
                     "silence_reset": 180.0, "gated": [], "tease_allowed": [], "max_words": 30,
                     "never_gated": ["halt", "lock"], "fallback_plain": [], "base_p_overrides": {},
@@ -74,9 +91,15 @@ class _NeedPersona:
 class Controller:
     def __init__(self, intents, run_steps, dry_run=False, log_path=None, clock=time.monotonic, confirm_timeout=6.0,
                  wake_words=None, wake_min_similarity=0.8, llm=None, llm_cfg=None, lock_cfg=None,
+                 wake_words_by_lang=None, language="pl",
                  persona=None, persona_cfg=None, speak=None, rng=None):
         self.intents = intents
+        self._base_intents = list(intents)
         self.wake_words = [normalize(w) for w in (wake_words or []) if normalize(w)]
+        self.wake_words_by_lang = {k: list(v) for k, v in (wake_words_by_lang or {}).items()}
+        self.language = language
+        self.pools = {}                   # LinePool per language (set by the main loop)
+        self.on_language = None           # on_language(lang): the main loop switches the speech recognition and the voice
         self.wake_min_similarity = wake_min_similarity
         self.llm = llm
         self.llm_cfg = dict(LLM_DEFAULTS, **(llm_cfg or {}))
@@ -115,7 +138,7 @@ class Controller:
         self._retry = set()               # requests that were refused at the last second: the next ask is likelier
         self._program = None              # her running program (e.g. a random mode every 3 minutes), see tick()
         self._narration_due = 0.0         # when her next unprompted line is due (0 = not drawn yet)
-        self.pool = None                  # LinePool: pre-generated, never-repeating narration lines (set by the main loop)
+        self.pool = None                  # LinePool of the current language (see pools / set_language)
         self._said_recent = []            # her last lines (any kind), handed to the model as "do not repeat"
         self._tasks_used = []             # physical orders already given this session (no repeats)
         self._themes_recent = []          # narration themes used lately (no repeats)
@@ -129,8 +152,48 @@ class Controller:
 
     @persona_cfg.setter
     def persona_cfg(self, value):
-        # whatever is assigned (also by tests) is completed with the defaults
-        self._persona_cfg = dict(PERSONA_DEFAULTS, **(value or {}))
+        # whatever is assigned (also by tests) is completed with the defaults; the overlay of the current language
+        # (persona.languages.<lang>) is merged on top, so that in English she addresses, hears and comments in English
+        self._persona_base = dict(value or {})
+        self._apply_language()
+
+    def _apply_language(self):
+        merged = dict(PERSONA_DEFAULTS, **self._persona_base)
+        lang = getattr(self, "language", "pl")
+        overlay = (self._persona_base.get("languages") or {}).get(lang)
+        if overlay:
+            merged = deep_merge(merged, overlay)
+        self._persona_cfg = merged
+
+    def set_language(self, lang):
+        """Switch everything to that language: the command phrases, the wake words, the persona overlay (addresses,
+        confessions, manners, narration, voices), the line pool, the orders given so far. -> True when it changed."""
+        lang = str(lang or "pl").lower()
+        if lang == getattr(self, "language", "pl") and hasattr(self, "_persona_cfg"):
+            return False
+        with self._lock:
+            self.language = lang
+            self.intents = [i.for_language(lang) for i in self._base_intents]
+            if lang in self.wake_words_by_lang:
+                self.wake_words = [normalize(w) for w in self.wake_words_by_lang[lang] if normalize(w)]
+            self._apply_language()
+            self.pool = self.pools.get(lang)
+            self._tasks_used.clear()
+            self._themes_recent.clear()
+            self._narration_due = 0.0
+        if self.on_language:
+            self.on_language(lang)
+        return True
+
+    def say_now(self, line):
+        """a line of hers outside any turn (a confirmation after a key): spoken, remembered, logged"""
+        with self._lock:
+            stage = self.stage()
+            tone, _ = self._tone_now
+            outcome = Outcome("talk", "key", "", 0.0, "key", {"say": line, "stage": stage, "voice": stage + (5 if tone == "ostry" else 0)})
+            self._history.append(("assistant", line))
+            self._log("[key]", outcome)
+        self._say(outcome)
 
     def _log(self, transcript, outcome):
         if not self.log_path:
@@ -438,7 +501,7 @@ class Controller:
             for attempt in range(2):
                 try:
                     line = self.persona.narrate(state, history, theme, list(cfg.get("examples", [])), int(cfg.get("max_words", 16)),
-                                                str(cfg.get("style", "")))
+                                                str(cfg.get("style", "")), self.persona_cfg.get("language_rule", ""))
                 except Exception:
                     return None
                 if line and not self.is_repeat(line) and not self.is_banned(line):
@@ -532,7 +595,8 @@ class Controller:
                 "nalezy_sie_po_wykonaniu_zadania": self._owed, "kara_sekundy": round(self.penalty_remaining()),
                 "blokada_5_min": self.lock_remaining() > 0,
                 "ostatnie_komendy": list(self._recent), "program_aktywny": self.program_summary(),
-                "nie_powtarzaj": list(self._said_recent[-20:])}
+                "nie_powtarzaj": list(self._said_recent[-20:]), "jezyk": self.language,
+                "regula_jezyka": self.persona_cfg.get("language_rule", "")}
 
     def _need_persona(self, transcript, plain=None):
         return _NeedPersona(transcript, self._persona_state(), list(self._history), plain)
@@ -957,6 +1021,10 @@ class Controller:
 
         command = self.strip_wake_word(transcript)
         if command is None:
+            # the safe word needs no wake word, ever ("koniec" / "stop")
+            m, _ = match(transcript, self.intents)
+            if m is not None and m.intent.id == "halt":
+                return self._run_match(m, now)
             if self.persona_active() and self.in_reply_window():
                 # an answer to her: strict commands that are not hers to decide still work without the wake word
                 m, _ = match(transcript, self.intents)

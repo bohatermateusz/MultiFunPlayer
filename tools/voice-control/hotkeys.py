@@ -36,15 +36,17 @@ def cheat_sheet(keys: dict, intents) -> str:
     label = {i.id: i.phrases[0] for i in intents if i.phrases}
     lines = []
     for key, target in keys.items():
-        what = "listening on/off" if target == "@mute" else label.get(target, target)
+        special = {"@mute": "listening on/off", "@voice": "next voice", "@lang": "language PL/EN"}
+        what = special.get(target, label.get(target, target))
         lines.append(f"  {caption(key):<8} {what}")
     return "\n".join(lines)
 
 
 class Hotkeys:
-    def __init__(self, keys: dict, on_intent, on_mute=None):
+    def __init__(self, keys: dict, on_intent, on_mute=None, on_special=None):
         from pynput import keyboard  # imported late: not needed for text / wav
         self.keys, self.on_intent, self.on_mute = {k.lower(): v for k, v in keys.items()}, on_intent, on_mute
+        self.on_special = on_special      # on_special("@voice" | "@lang" | ...)
         self._down = set()
         self._lock = threading.Lock()
 
@@ -71,6 +73,9 @@ class Hotkeys:
         if target == "@mute":
             if self.on_mute:
                 threading.Thread(target=self.on_mute, daemon=True).start()
+        elif str(target).startswith("@"):
+            if self.on_special:
+                threading.Thread(target=self.on_special, args=(target,), daemon=True).start()
         else:
             threading.Thread(target=self.on_intent, args=(target,), daemon=True).start()
 

@@ -151,6 +151,10 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.72 | `lines_pool.json` po pierwszym starcie | zawiera linie z `pool.seed` (tematy z ASMR); po kilku minutach dochodzą świeże z modelu |
 | 6.73 | Dwie sesje dzień po dniu | `said.jsonl` bez duplikatów między sesjami; w logu `repeat: true` tylko sporadycznie (odpowiedzi modelu) |
 | 6.74 | Sesja 20 min | Pani nigdy nie mówi 'maszyna' / 'dildo' / 'launcher' - zawsze 'on', 'oni', 'jego rytm'; w logu `names_gear` nie pojawia się (albo bardzo rzadko) |
+| 6.75 | F9 w trakcie sesji | głos zmienia się na następny z listy, Pani potwierdza nowym głosem; `voice_id` w `commands.json` zaktualizowany |
+| 6.76 | F10 | Pani mówi po angielsku ('English now, darling...'); 'darling, faster' działa, 'kochanie, szybciej' nie; 'stop' zatrzymuje bez słowa-klucza; narracja i polecenia po angielsku, głos EN |
+| 6.77 | F10 ponownie | powrót do polskiego: 'kochanie, szybciej' działa, 'koniec' działa; głos PL |
+| 6.78 | Sesja z narracją | pojawia się wątek hormonów (PL i EN) bez nazw leków i dawek |
 | 6.28 | Klawisze przy włączonej Pani: F8, Num +, Num 9 | działają od razu, bez proszenia |
 | 6.29 | `--no-tts` i `--no-persona` | linie tylko w oknie / zwykłe komendy jak dawniej |
 

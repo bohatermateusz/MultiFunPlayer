@@ -47,7 +47,7 @@ ZASADY GRY (techniczne, nie łam ich):
 - ŚWIAT: to dzieje się w VR - ona widzi mężczyzn, którzy ją biorą. Sprzęt to ich ciała. NIGDY nie mówisz "maszyna", \
 "urządzenie", "silnik", "dildo", "launcher", "tryb", "skrypt", "film": mówisz "on", "oni", "ten, który cię bierze", "jego rytm", \
 "jego pchnięcia", "jego sperma". Komendy w "request"/planach są dla narzędzia - w słowach do niej są gestami tych mężczyzn.
-- Rozmawiasz po polsku, krótko: 1-2 zdania na raz (każda kwestia najwyżej 12 słów), tryb rozkazujący, bez pytań o zgodę, \
+- JĘZYK: {language_rule} Krótko: 1-2 zdania na raz (każda kwestia najwyżej 12 słów), tryb rozkazujący, bez pytań o zgodę, \
 bez wyjaśnień.
 - GRA CZUŁOŚCI I OSTROŚCI: to gra między delikatnością, opieką i miłością a ostrymi elementami. Narzędzie podaje w stanie \
 "ton_tury": "czuły" albo "ostry" (i "ostrosc" 1-3). Czuły = opieka, miłość, poczucie bezpieczeństwa i łagodne odbieranie kontroli \
@@ -102,7 +102,7 @@ Odpowiadasz wyłącznie JSON-em."""
 
 NUDGE = """{character}
 
-Użytkownik milczy, a sesja trwa (w VR: mężczyźni ją biorą; sprzętu nie nazywasz - "on", "oni", "jego rytm"). Odezwij się sama, krótko (najwyżej 12 słów), w tonie etapu {stage}: {tone} \
+JĘZYK: {language_rule} Użytkownik milczy, a sesja trwa (w VR: mężczyźni ją biorą; sprzętu nie nazywasz - "on", "oni", "jego rytm"). Odezwij się sama, krótko (najwyżej 12 słów), w tonie etapu {stage}: {tone} \
 Ton tej tury (z stanu "ton_tury"): czuły = opieka, miłość, odpuszczenie ("Możesz już odpuścić.", "Jesteś moja."); ostry = rozkaz, upokorzenie. \
 Wpleć w wariacji jeden zwrot z "inspiracja" w stanie.
 Zwracaj się do niej różnie: {names}. Nie powtarzaj kwestii z "nie_powtarzaj" w stanie. Możesz zadać pytanie (kim jesteś, czyja jesteś), rozkazać (poproś, powiedz, podziękuj, klęcz i czekaj) albo zadrwić z jej milczenia. \
@@ -148,6 +148,7 @@ def parse_program(value):
 def build_system_prompt(character, intents, step_ids, state):
     commands = "; ".join(f"{i.id} = {i.description}" for i in intents if i.description)
     return SYSTEM.format(character=character.strip(), steps=", ".join(step_ids), commands=commands,
+                         language_rule=state.get("regula_jezyka") or "Rozmawiasz po polsku.",
                          state=json.dumps(state, ensure_ascii=False), tone=state.get("ton", ""),
                          titles=", ".join(state.get("zwroty_do_ciebie", [])) or "Pani", names=", ".join(state.get("zwroty_do_niej", [])) or "dziewczynko")
 
@@ -176,7 +177,7 @@ def build_schema(intents, step_ids):
 
 NARRATION = """{character}
 
-NARRACJA: to dzieje się w VR - mężczyźni ją biorą; nigdy nie nazywasz sprzętu (maszyna, dildo, silnik, launcher, tryb, skrypt) - \
+JĘZYK: {language_rule} NARRACJA: to dzieje się w VR - mężczyźni ją biorą; nigdy nie nazywasz sprzętu (maszyna, dildo, silnik, launcher, tryb, skrypt) - \
 zawsze "on", "oni", "ten, który cię bierze", "jego rytm", "jego sperma". Sesja trwa, a Ty komentujesz na bieżąco - jedna kwestia, najwyżej {max_words} słów, bez pytania i bez czekania na odpowiedź. \
 To ma być całkowite wyuzdanie: mówisz do niej jak do swojej dziewczynki, którą oddajesz do użycia - dosadnie, pewnie, bez cenzury. \
 Temat tej kwestii: {theme}. Rejestr pokazują przykłady (nie powtarzaj ich, wymyślaj własne): {examples}. Styl: {style} \
@@ -185,17 +186,20 @@ Jeśli w stanie jest "scena", mów o tym, co dzieje się teraz na ekranie. Nie p
 Odpowiadasz wyłącznie JSON-em z polem "line"."""
 
 
-def build_narration_prompt(character, state, theme, examples, max_words=16, style=""):
+def build_narration_prompt(character, state, theme, examples, max_words=16, style="", language_rule=""):
     tone = state.get("ton_tury", "ostry")
+    language_rule = language_rule or state.get("regula_jezyka") or "Mówisz po polsku."
     hint = ("ostry - rozkaz, poniżenie, wulgarnie" if tone == "ostry"
             else "czuły w poniżeniu - miękko, opiekuńczo, ale ona i tak jest do użycia")
     return NARRATION.format(character=character.strip(), max_words=max_words, theme=theme, style=style or "krótko, dosadnie.",
+                            language_rule=language_rule,
                             examples=" | ".join(examples), tone_hint=hint, state=json.dumps(state, ensure_ascii=False),
                             names=", ".join(state.get("zwroty_do_niej", [])) or "dziewczynko")
 
 
 def build_nudge_prompt(character, state):
     return NUDGE.format(character=character.strip(), stage=state.get("etap", 0), tone=state.get("ton", ""),
+                        language_rule=state.get("regula_jezyka") or "Mówisz po polsku.",
                         state=json.dumps(state, ensure_ascii=False), names=", ".join(state.get("zwroty_do_niej", [])) or "dziewczynko")
 
 
@@ -208,7 +212,7 @@ class Persona:
         self.history_turns = history_turns
         self.api_key = api_key or os.environ.get(api_key_env, "")
 
-    def fresh_lines(self, theme, examples, avoid, count=20, max_words=16, state=None, style=""):
+    def fresh_lines(self, theme, examples, avoid, count=20, max_words=16, state=None, style="", language_rule=""):
         """a batch of new narration lines for a theme, for the pool (one call, no history). -> [str]"""
         if not self.api_key:
             raise PersonaError("no API key (set the environment variable named in the config)")
@@ -218,6 +222,7 @@ class Persona:
                   + ". To ma być całkowite wyuzdanie: dosadnie, pewnie, bez cenzury, po polsku, każda kwestia inna w budowie i słowach. "
                   + "Świat: VR, mężczyźni ją biorą - nigdy nie nazywaj sprzętu (maszyna, dildo, silnik, launcher, tryb, skrypt); zawsze 'on', 'oni', 'jego rytm', 'jego sperma'. "
                   + ("Styl: " + style + " " if style else "")
+                  + ("JĘZYK: " + language_rule + " " if language_rule else "")
                   + "NIE powtarzaj ani nie parafrazuj tych, które już padły: " + " | ".join(avoid[-60:])
                   + (". Stan: " + json.dumps(state, ensure_ascii=False) if state else "")
                   + "\nOdpowiadasz wyłącznie JSON-em z polem \"lines\" (lista napisów).")
@@ -240,11 +245,11 @@ class Persona:
         except (json.JSONDecodeError, KeyError, IndexError, TypeError, ValueError, AttributeError) as e:
             raise PersonaError("answer is not the expected JSON") from e
 
-    def narrate(self, state, history, theme, examples, max_words=16, style=""):
+    def narrate(self, state, history, theme, examples, max_words=16, style="", language_rule=""):
         """her running commentary at a random moment (no command, no question). -> the line"""
         if not self.api_key:
             raise PersonaError("no API key (set the environment variable named in the config)")
-        messages = [{"role": "system", "content": build_narration_prompt(self.character, state, theme, examples, max_words, style)}]
+        messages = [{"role": "system", "content": build_narration_prompt(self.character, state, theme, examples, max_words, style, language_rule)}]
         for role, text in history[-self.history_turns:]:
             messages.append({"role": role, "content": text})
         messages.append({"role": "user", "content": "(sesja trwa)"})

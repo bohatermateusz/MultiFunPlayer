@@ -101,6 +101,15 @@ a z Twoich skryptów ASMR m.in. "sama się zgłosiłaś", "wymazana", "zaprogram
 "jego sperma"; sprzęt to ich ciała. Do tego **polecenia**: co jakiś czas zamiast komentarza pada rozkaz fizyczny (ściskaj, oddychaj, klipsy, dildo do ust, "powtórz: jestem
 posłuszną sissi"), łagodniejszy na początku, ostrzejszy później, nigdy ten sam dwa razy w sesji.
 
+## Klawisze F9 / F10: głos i język
+
+**F9** zmienia głos Pani na następny z listy (`persona.tts.voices`) w bieżącym języku - potwierdza nowym głosem. **F10** przełącza
+wszystko na angielski i z powrotem: ona mówi po angielsku, Ty też - słowo-klucz to "darling" / "mistress" / "lady" / "honey",
+komendy po angielsku ("faster", "deeper", "cum on me", "flood me", "mode three", "hold it", "enough"), słowo bezpieczeństwa
+to **"stop"** (także "red", "end"; jak "koniec" działa bez słowa-klucza), wyznania ("I'm your whore"), przeprosiny ("I'm sorry,
+Mistress"), narracja, polecenia i pula tekstów - wszystko po angielsku, z własnym głosem (Jessica / Lily / Sarah / Alice).
+Start po angielsku: `--language en`.
+
 ## Mów naturalnie (ilość i czas)
 
 Nie musisz pamiętać żadnych fraz z tej listy - Pani rozumie, o co Ci chodzi, jak człowiek. Lista wyżej to tylko to, co działa

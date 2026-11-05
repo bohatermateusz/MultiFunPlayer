@@ -40,6 +40,7 @@ def load_config(path):
             max_extra_words=i.get("max_extra_words", d.get("max_extra_words", 2)),
             confirm=i.get("confirm", d.get("confirm", False)),
             description=i.get("description", ""), repeatable=i.get("repeatable", False),
+            phrases_by_lang={k[len("phrases_"):]: v for k, v in i.items() if k.startswith("phrases_") and isinstance(v, list)},
             llm_min_confidence=i.get("llm_min_confidence"), improvise=i.get("improvise", False)))
     return cfg, intents
 
@@ -50,13 +51,22 @@ def stt_prompt(intents, wake_words=None):
     return "Komendy: " + wake + ", ".join(i.phrases[0] for i in intents if i.phrases)[:220]
 
 
-def save_voice_id(config_path, voice_id):
-    """writes persona.tts.voice_id into commands.json without reformatting the file (text replacement of that one line)"""
+def save_voice_id(config_path, voice_id, lang="pl"):
+    """writes persona.tts.voice_id (or persona.languages.<lang>.tts.voice_id) into commands.json without reformatting
+    the file: the one "voice_id" line of that tts block is replaced (the entries of the voices list are left alone)"""
     with open(config_path, encoding="utf-8") as f:
         text = f.read()
-    new, n = re.subn(r'("voice_id"\s*:\s*)"[^"]*"', lambda m: m.group(1) + json.dumps(voice_id), text, count=1)
-    if n != 1:
+    start = text.index('"persona"')
+    if lang != "pl":
+        start = text.index('"languages"', start)
+        start = text.index(json.dumps(lang), start)
+    tts_at = text.index('"tts"', start)
+    # the block's own "voice_id" is on a line of its own (the voices list keeps its ids inline in {...})
+    m = re.compile(r'^(\s*"voice_id"\s*:\s*)"[^"]*"', re.M).search(text, tts_at)
+    if not m:
         raise ValueError("persona.tts.voice_id not found in the config")
+    new = text[:m.start()] + m.group(1) + json.dumps(voice_id) + text[m.end():]
+    n = 1
     tmp = config_path + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
         f.write(new)
@@ -84,7 +94,7 @@ def voices_command(args, cfg):
             vid, name, labels = hit
             if labels.get("library"):
                 vid = sp.add_library_voice(labels["public_owner_id"], vid, name)
-            save_voice_id(args.config, vid)
+            save_voice_id(args.config, vid, getattr(args, "lang", "pl"))
             sp.voice_id = vid
             print(f"voice: {name} ({vid}) saved to {args.config}")
         if args.test:
@@ -102,8 +112,9 @@ def voices_command(args, cfg):
     return 0
 
 
-def build_pool(args, pc, persona, log_path):
-    """the never-repeating narration pool (lines_pool.json + said.jsonl next to the log), filled by the persona model"""
+def build_pool(args, pc, persona, log_path, lang="pl"):
+    """the never-repeating narration pool (lines_pool.json + said.jsonl next to the log), filled by the persona model;
+    pc is the persona config already merged for that language (its own pool file, the said history is shared)"""
     n = pc.get("narration", {})
     p = n.get("pool", {})
     if persona is None or not n.get("enabled") or not p.get("enabled", True) or getattr(args, "no_narration", False):
@@ -111,9 +122,9 @@ def build_pool(args, pc, persona, log_path):
     from lines import LinePool
     folder = os.path.dirname(os.path.abspath(args.config))
     examples, max_words = list(n.get("examples", [])), int(n.get("max_words", 16))
-    style = str(n.get("style", ""))
-    pool = LinePool(lambda theme, avoid, count: persona.fresh_lines(theme, examples, avoid, count, max_words, style=style),
-                    pool_path=None if args.no_log else os.path.join(folder, "lines_pool.json"),
+    style, rule = str(n.get("style", "")), str(pc.get("language_rule", ""))
+    pool = LinePool(lambda theme, avoid, count: persona.fresh_lines(theme, examples, avoid, count, max_words, style=style, language_rule=rule),
+                    pool_path=None if args.no_log else os.path.join(folder, "lines_pool.json" if lang == "pl" else f"lines_pool.{lang}.json"),
                     said_path=None if args.no_log else os.path.join(folder, "said.jsonl"),
                     min_pool=p.get("min_pool", 8), batch=p.get("batch", 20), max_said=p.get("max_said", 2000),
                     similarity=p.get("similarity", 0.8), max_words=max_words, seed=p.get("seed"), banned_words=p.get("banned_words"))
@@ -139,14 +150,36 @@ def build(args):
         persona = Persona(render_character(pc), pc.get("base_url", lc.get("base_url", "https://api.openai.com/v1")),
                           pc.get("model", lc.get("model", "gpt-4.1-mini")), api_key_env=pc.get("api_key_env", lc.get("api_key_env", "OPENAI_API_KEY")),
                           timeout=pc.get("timeout", 8), temperature=pc.get("temperature", 0.8), history_turns=pc.get("history_turns", 12))
+    by_lang = {"pl": wake.get("words", [])}
+    for k, v in wake.items():
+        if k.startswith("words_") and isinstance(v, list):
+            by_lang[k[len("words_"):]] = v
+    if not wake.get("required", True):
+        by_lang = {k: [] for k in by_lang}
     controller = Controller(intents, executor.run_steps, dry_run=args.dry_run, log_path=log_path,
                             wake_words=wake_words, wake_min_similarity=wake.get("min_similarity", 0.8), llm=llm, llm_cfg=lc,
-                            lock_cfg=cfg.get("lock"), persona=persona, persona_cfg=pc)
+                            lock_cfg=cfg.get("lock"), persona=persona, persona_cfg=pc, wake_words_by_lang=by_lang)
     controller.speak = lambda line: print(f"  Pani: {line}")
-    controller.pool = build_pool(args, pc, persona, log_path)
+    from controller import deep_merge
+    languages = ["pl"] + [k for k in (pc.get("languages") or {}) if k != "pl"]
+    for lang in languages:
+        merged = pc if lang == "pl" else deep_merge(pc, pc["languages"][lang])
+        controller.pools[lang] = build_pool(args, merged, persona, log_path, lang)
+    controller.pool = controller.pools.get("pl")
     s = cfg.get("stt", {})
     stt = CloudStt(s.get("base_url", "https://api.openai.com/v1"), s.get("model", "whisper-1"), s.get("language", "pl"),
                    api_key_env=s.get("api_key_env", "OPENAI_API_KEY"), timeout=s.get("timeout", 15), prompt=stt_prompt(intents, wake_words))
+
+    def on_language(lang):
+        # speech recognition follows her language (the user speaks it too); the voice is switched by the main loop
+        stt.language = lang
+        stt.prompt = stt_prompt(controller.intents, controller.wake_words)
+        if getattr(controller, "on_language_voice", None):
+            controller.on_language_voice(lang)
+    controller.on_language = on_language
+    start = getattr(args, "language", None) or cfg.get("language", "pl")
+    if start != "pl":
+        controller.set_language(start)
     return cfg, controller, stt
 
 
@@ -168,6 +201,7 @@ def main():
         parser.add_argument("--no-tts", action="store_true", help="print the persona's lines instead of speaking them", **d)
         parser.add_argument("--no-nudge", action="store_true", help="the persona never speaks first", **d)
         parser.add_argument("--no-narration", action="store_true", help="no running commentary at random moments", **d)
+        parser.add_argument("--language", choices=["pl", "en"], help="start in this language (default: 'language' in the config)", **d)
 
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     add_options(ap, suppress=False)
@@ -183,6 +217,7 @@ def main():
     v.add_argument("--library", action="store_true", help="search the shared library (female, young, Polish) instead of your account")
     v.add_argument("--use", metavar="ID_OR_NAME", help="put this voice into commands.json -> persona.tts.voice_id (a library voice is added to the account)")
     v.add_argument("--test", metavar="TEXT", help="play this text with the configured (or --use) voice")
+    v.add_argument("--lang", choices=["pl", "en"], default="pl", help="which language's voice_id --use writes (default pl)")
     add_options(v, suppress=True)
     add_options(sub.add_parser("mic"), suppress=True)
     args = ap.parse_args()
@@ -279,11 +314,89 @@ def main():
 
     speakers = build_speakers() if controller.persona is not None and not args.no_tts else {}
 
+    def tts_now():
+        return controller.persona_cfg.get("tts", {})       # merged for the current language
+
     def provider(name):
         if name == "elevenlabs":
             return lambda line, stage: speakers["elevenlabs"].stream(line, stage)
-        o = tcfg.get("openai", {})
-        return lambda line, stage: stream_openai(speakers["openai"], line, stage, o.get("instructions_soft"), o.get("instructions_sharp"))
+
+        def openai_stream(line, stage):
+            o = tts_now().get("openai", {})
+            speakers["openai"].instructions = o.get("instructions", speakers["openai"].instructions)
+            return stream_openai(speakers["openai"], line, stage, o.get("instructions_soft"), o.get("instructions_sharp"))
+        return openai_stream
+
+    # ---- the voice list (F9) and the language (F10) -----------------------------------------------------------
+    chosen = {}                                             # language -> voice_id in use
+
+    def voices_for(lang):
+        return [v for v in tcfg.get("voices", []) if str(v.get("language", "pl")) == lang]
+
+    def resolve_voice(entry):
+        """-> voice_id of a voices-list entry: as given, else by name on the account, else from the library"""
+        el = speakers.get("elevenlabs")
+        if entry.get("voice_id") or el is None:
+            return entry.get("voice_id", "")
+        try:
+            picked = el.pick_voice({"names": [entry.get("name", "")], "ids": [entry] if entry.get("public_owner_id") else [],
+                                    "allow_library": False})
+            return picked[0] if picked else ""
+        except TtsError:
+            return ""
+
+    def use_voice(lang, voice_id, announce):
+        el = speakers.get("elevenlabs")
+        if el is None or not voice_id:
+            return
+        el.voice_id, el.language = voice_id, tts_now().get("language", lang)
+        chosen[lang] = voice_id
+        try:
+            save_voice_id(args.config, voice_id, lang)
+        except (OSError, ValueError) as e:
+            print(f"  voice: could not save voice_id: {e}")
+        if announce:
+            controller.say_now(announce)
+
+    def next_voice():
+        lang = controller.language
+        lst = voices_for(lang)
+        if not lst:
+            print(f"  voice: no voices listed for {lang} (persona.tts.voices)")
+            return
+        ids = [resolve_voice(v) for v in lst]
+        current = chosen.get(lang) or (speakers["elevenlabs"].voice_id if "elevenlabs" in speakers else "")
+        i = (ids.index(current) + 1) % len(ids) if current in ids else 0
+        if not ids[i]:
+            print(f"  voice: {lst[i].get('name')} could not be resolved")
+            return
+        print(f"  voice: {lst[i].get('name')} ({ids[i]})")
+        use_voice(lang, ids[i], "This is my voice now." if lang == "en" else "Teraz brzmię tak.")
+
+    def on_language_voice(lang):
+        t = tts_now()
+        vid = chosen.get(lang) or t.get("voice_id", "")
+        if not vid:
+            lst = voices_for(lang)
+            vid = resolve_voice(lst[0]) if lst else ""
+        if not vid and "elevenlabs" in speakers and speakers["elevenlabs"].api_key:
+            try:
+                picked = speakers["elevenlabs"].pick_voice(t.get("voice_prefer", {}))
+                vid = picked[0] if picked else ""
+            except TtsError:
+                vid = ""
+        use_voice(lang, vid, "English now, darling. Say what you want." if lang == "en" else "Teraz po polsku, kochanie.")
+        print(f"  language: {lang}")
+    controller.on_language_voice = on_language_voice
+
+    def toggle_language():
+        controller.set_language("en" if controller.language == "pl" else "pl")
+
+    def on_special(target):
+        if target == "@voice":
+            next_voice()
+        elif target == "@lang":
+            toggle_language()
 
     order = [tcfg.get("provider", "elevenlabs"), tcfg.get("fallback_provider", "openai")]
     voice = Voice({n: provider(n) for n in speakers}, order, lambda stream, stop: play_stream(stream, PCM_RATE, stop=stop),
@@ -314,7 +427,7 @@ def main():
     if keys:
         try:
             from hotkeys import Hotkeys, cheat_sheet
-            Hotkeys(keys, on_key, toggle_mute)
+            Hotkeys(keys, on_key, toggle_mute, on_special)
             print("Keyboard shortcuts (global, NumLock on):")
             print(cheat_sheet(keys, controller.intents))
         except ImportError:

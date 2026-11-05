@@ -24,7 +24,7 @@ class Narration(Server):
         words = ["klęcz", "ssij", "odpuść", "należysz", "dziękuj", "oddychaj", "patrz", "powtórz", "zostań", "puść",
                  "milcz", "czekaj", "otwórz", "głębiej", "wolniej", "moja", "grzecznie", "teraz", "dalej", "cicho"]
 
-        def narrate(state, history, theme, examples, max_words=16, style=""):
+        def narrate(state, history, theme, examples, max_words=16, style="", language_rule=""):
             self.calls.append((state, theme, examples, max_words))
             n = len(self.calls)
             return f"{words[n % 20].capitalize()} {words[(n * 7) % 19]} {words[(n * 13) % 17]} {n}."

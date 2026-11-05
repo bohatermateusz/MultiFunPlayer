@@ -5,7 +5,7 @@ Everything else - film dialogue, breathing artefacts, speech-to-text hallucinati
 """
 import re
 import unicodedata
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from difflib import SequenceMatcher
 
 DIGITS = {"1": "jeden", "2": "dwa", "3": "trzy", "4": "cztery", "5": "piec", "6": "szesc", "7": "siedem", "8": "osiem"}
@@ -70,10 +70,18 @@ class Intent:
     repeatable: bool = False         # "much faster" may repeat the steps (LLM "times")
     llm_min_confidence: float = None # None: the global llm.min_confidence
     improvise: bool = False          # the LLM may use this command as a step of an improvised plan
+    phrases_by_lang: dict = field(default_factory=dict)   # {"en": [...]} - the phrases in other languages
     _tokens: list = field(default_factory=list, repr=False)
 
     def __post_init__(self):
         self._tokens = [normalize(p).split() for p in self.phrases]
+
+    def for_language(self, lang):
+        """the same command with the phrases of that language (the default phrases when it has none)"""
+        phrases = self.phrases_by_lang.get(lang)
+        if phrases is None:
+            return self
+        return replace(self, phrases=list(phrases))
 
 
 @dataclass
