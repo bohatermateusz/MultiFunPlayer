@@ -2384,6 +2384,7 @@
     "loop_off"
    ],
    "manners": {
+    "plain_lines": ["Mhm… go on, little one.", "I'm listening. Closely.", "Good. That's how I like you.", "I'm here. I'm watching you.", "Good. Breathe and wait.", "I know, little one. I know."],
     "denials": {"beg": ["Nicer. Make me believe it.", "Not enough. Try harder.", "I hear you… you don't convince me.", "Almost. Again, from the heart.", "Ask like you really need it.", "Too quiet. Beg.", "Politely, little one. From the start."], "confess": ["First tell me what you are.", "Whose are you? Out loud.", "Confess. Then we talk."], "thank": ["Thank me. For listening at all.", "Where's my thank you?", "Gratitude first."], "repeat": ["Repeat it. Clearly.", "Again, and mean it.", "Word for word. You can do it."]},
     "polite_markers": [
      "please",
@@ -2781,6 +2782,7 @@
   }
   },
   "manners": {
+   "plain_lines": ["Mhm… mów dalej, mała.", "Słucham cię. Uważnie.", "Grzecznie. Tak lubię.", "Jestem tu. Patrzę na ciebie.", "Dobrze. Oddychaj i czekaj.", "Wiem, mała. Wiem."],
    "beg_met_bonus": 0.35,
    "denials": {"beg": ["Ładniej. Tak, żebym uwierzyła.", "Mało. Postaraj się bardziej.", "Słyszę cię… ale nie przekonujesz.", "Prawie. Jeszcze raz, z serca.", "Mów, jakbyś naprawdę tego potrzebowała.", "Za cicho. Błagaj.", "Grzecznie, mała. Od początku.", "Może. Jeśli poprosisz jak dziewczynka."], "confess": ["Najpierw powiedz, kim jesteś.", "Czyja jesteś? Głośno.", "Przyznaj się. Potem pogadamy.", "Chcę usłyszeć, kim dla mnie jesteś."], "thank": ["Podziękuj. Za to, że w ogóle słucham.", "Gdzie dziękuję?", "Dziękuj, zanim cokolwiek dostaniesz.", "Najpierw wdzięczność."], "repeat": ["Powtórz. Wyraźnie.", "Jeszcze raz, tym razem z przekonaniem.", "Słowo w słowo. Dasz radę.", "Powtórz, aż w to uwierzysz."]},
    "politeness_factor": 0.6,

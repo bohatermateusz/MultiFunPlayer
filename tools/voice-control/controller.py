@@ -23,6 +23,19 @@ REPLACE_WHOLE = {("narration", "pool", "seed"), ("narration", "tasks", "by_stage
                  ("vocabulary",), ("address",)}
 
 
+POLISH_MARK = re.compile(r"[ąćęłńśźżó]|\b(nie|jeszcze|proszę|poproś|przeproś|dostajesz|jesteś|mała|teraz|ładniej|kim|powiedz|dziękuj)\b", re.I)
+ENGLISH_MARK = re.compile(r"\b(the|you|your|not|yet|please|now|good|girl|beg|say|what|who|nicer|apologize|thank)\b", re.I)
+
+
+def in_language(line, language):
+    """is the line in the session's language? (a cheap guess: Polish letters / common words of each language)"""
+    pl = len(POLISH_MARK.findall(line))
+    en = len(ENGLISH_MARK.findall(line))
+    if language == "en":
+        return not (pl and pl >= en)
+    return not (en >= 2 and not pl)
+
+
 SIDE_WORDS = {
     "front": [" do ust", " w usta", " ust ", " usta ", " buzi", " buzię", " gardło", " gardła", " z przodu", " przód ", " przodem",
               " ssij", " ssać", " ssanie", " obciąg", " loda", " na twarz", " twarz", " język",
@@ -285,6 +298,20 @@ class Controller:
             return self._say(outcome)
 
     # ---- the live mode: partial transcripts, streamed answers -------------------------------------------
+    def _line_in_language(self, outcome):
+        """a replacement in the session's language: a refusal for her pending demand, else a plain line of hers"""
+        m = self.persona_cfg["manners"]
+        if outcome.status == "denied" or self.penalty_remaining() > 0 or self._last_demand:
+            demand = (self._last_demand or (None, "beg"))[1]
+            line = self._varied_denial("", demand)
+            if line:
+                return line
+        options = list(m.get("plain_lines") or [])
+        from lines import similar
+        recent = [t for r, t in self._history[-12:] if r == "assistant"]
+        fresh = [o for o in options if not any(similar(o, t) >= 0.75 for t in recent)] or options
+        return self.rng.choice(fresh) if fresh else None
+
     def _varied_denial(self, line, demand):
         """her refusal must not be the same sentence over and over: a line too close to one of her last ones is swapped
         for a variant from manners.denials[demand] that she has not said lately"""
@@ -597,6 +624,14 @@ class Controller:
 
     def _say(self, outcome):
         line = outcome.extra.get("say")
+        if line and outcome.extra.get("source") not in ("pool", "task") and not in_language(line, self.language):
+            # the model slipped into the other language (it copies the Polish examples of its prompt): a line of hers in
+            # the language of the session is said instead
+            fixed = self._line_in_language(outcome)
+            if fixed:
+                outcome.extra["say"], outcome.extra["wrong_language"] = fixed, line
+                self._history = [(r, fixed if t == line else t) for r, t in self._history]
+                line = fixed
         if line:
             target = repeat_target(line)
             if target:

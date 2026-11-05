@@ -191,3 +191,25 @@ class Hormones(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class Slips(WithHer):
+    def test_a_polish_line_in_english_is_replaced(self):
+        from controller import in_language
+        self.assertFalse(in_language("Nie dostajesz nic. Przeproś.", "en"))
+        self.assertFalse(in_language("Poproś ładniej.", "en"))
+        self.assertTrue(in_language("Not yet. Beg nicer.", "en"))
+        self.assertTrue(in_language("No? You get nothing. Apologize.", "en"))
+        self.assertFalse(in_language("Not yet. Say it properly, princess.", "pl"))
+        self.assertTrue(in_language("Jeszcze nie. Poproś ładniej.", "pl"))
+        self.c.set_language("en")
+        self.say("darling, cum on me", request="lube_fire", denied="Poproś ładniej.")
+        line = self.said[-1][0]
+        self.assertTrue(in_language(line, "en"), line)
+        self.assertNotIn("Poproś", line)
+        self.say("darling, i'm yours", request="none", granted="Wiem, mała. Chodź bliżej.", denied="Nie.")
+        self.assertTrue(in_language(self.said[-1][0], "en"), self.said[-1][0])
+
+    def test_the_prompt_tells_her_to_translate_the_examples(self):
+        self.c.set_language("en")
+        self.assertIn("nigdy nie cytuj ich po polsku", build_system_prompt("x", INTENTS, ["faster"], self.c._persona_state()))
