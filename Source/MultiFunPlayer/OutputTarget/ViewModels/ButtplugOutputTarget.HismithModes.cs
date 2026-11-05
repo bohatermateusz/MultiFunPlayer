@@ -22,18 +22,15 @@ internal sealed partial class ButtplugOutputTarget
     private const int SmallestStrokeWidth = 10;
     private const double SurpriseModeChance = 0.7;   // chance that the surprise also changes the machine's mode
 
-    private volatile int _hismithMode;           // 0 = funscripts, 1-8 = built-in mode, 9 = A, 10 = B
-    private int _hismithSpeedBoost;
-    private int _hismithDepthBoost;
+    // mode, boosts, depth and speed live in the side state (Cur: the side of the current command, see HismithSides)
     private int _hismithSpeedStep = 20;
     private int _hismithDepthStep = 15;
-    private int _hismithDepth = 50;              // absolute depth (0-100) used while no script drives the machine
     private int _hismithSlowestSpeed = 1;
     private int _hismithScriptWidth = 40;        // stroke width the scripts run with (the machine's default window)
     private readonly SemaphoreSlim _modeGate = new(1, 1);
 
-    public int HismithMode => _hismithMode;
-    public bool HismithModeIsScript => _hismithMode == 0;
+    public int HismithMode => Cur.Mode;
+    public bool HismithModeIsScript => Cur.Mode == 0;
 
     public int HismithSpeedStep
     {
@@ -50,12 +47,12 @@ internal sealed partial class ButtplugOutputTarget
     // Boost: added to the script's value (-100..100 percentage points). Changing it re-sends the machine's values.
     public int HismithSpeedBoost
     {
-        get => _hismithSpeedBoost;
+        get => Cur.SpeedBoost;
         set
         {
             if (RejectedByLock("the speed boost"))
                 return;
-            if (SetAndNotify(ref _hismithSpeedBoost, Math.Clamp(value, -100, 100)))
+            if (SetAndNotify(ref Cur.SpeedBoost, Math.Clamp(value, -100, 100)))
             {
                 _forceResend = true;
                 NotifyOfPropertyChange(nameof(HismithModeStatus));
@@ -65,12 +62,12 @@ internal sealed partial class ButtplugOutputTarget
 
     public int HismithDepthBoost
     {
-        get => _hismithDepthBoost;
+        get => Cur.DepthBoost;
         set
         {
             if (RejectedByLock("the depth boost"))
                 return;
-            if (SetAndNotify(ref _hismithDepthBoost, Math.Clamp(value, -100, 100)))
+            if (SetAndNotify(ref Cur.DepthBoost, Math.Clamp(value, -100, 100)))
             {
                 _forceResend = true;
                 NotifyOfPropertyChange(nameof(HismithModeStatus));
@@ -81,14 +78,14 @@ internal sealed partial class ButtplugOutputTarget
     // Absolute depth, used in the built-in modes and when no axis is mapped to the depth actuator.
     public int HismithDepth
     {
-        get => _hismithDepth;
+        get => Cur.Depth;
         set
         {
             if (RejectedByLock("the depth"))
                 return;
-            if (SetAndNotify(ref _hismithDepth, Math.Clamp(value, 0, 100)))
+            if (SetAndNotify(ref Cur.Depth, Math.Clamp(value, 0, 100)))
             {
-                _ = SendQuickActuatorsAsync(DepthDescription, _hismithDepth, 100);
+                _ = SendQuickActuatorsAsync(DepthDescription, Cur.Depth, 100);
                 NotifyOfPropertyChange(nameof(HismithModeStatus));
             }
         }
@@ -98,19 +95,10 @@ internal sealed partial class ButtplugOutputTarget
     {
         get
         {
-            var mode = _hismithMode switch
-            {
-                0 => "funscript",
-                ModeA => "A (fastest, full depth, smallest stroke)",
-                ModeB => "B (slowest, full depth, smallest stroke)",
-                ModeHalt => "STOPPED (speed 0)",
-                ModeCalm => "CALM (slowest, medium depth)",
-                _ => $"built-in mode {_hismithMode}"
-            };
-
-            var text = _hismithMode == 0
-                ? $"{mode}; boost: speed {_hismithSpeedBoost:+0;-0;0}, depth {_hismithDepthBoost:+0;-0;0}"
-                : $"{mode}; speed {HismithSpeed}, depth {_hismithDepth}";
+            var sides = PresentSides();
+            var text = sides.Count > 1
+                ? string.Join("; ", sides.Select(sd => $"{sd}: {SideStatus(sd)}"))
+                : SideStatus(HismithSide.Rear);
             if (_lockRemaining > 0)
                 text += $"; HELD for {TimeSpan.FromSeconds(_lockRemaining):m\\:ss}";
             return _surpriseRemaining > 0 ? $"{text}; next surprise in {TimeSpan.FromSeconds(_surpriseRemaining):m\\:ss}" : text;
@@ -134,33 +122,35 @@ internal sealed partial class ButtplugOutputTarget
                                          && actuator is ButtplugDeviceScalarActuator scalar
                                          && scalar.FeatureDescriptor?.StartsWith(descriptionPrefix, StringComparison.OrdinalIgnoreCase) == true);
 
-    // The funscript value for a speed or depth actuator plus the boost; any other actuator is left alone.
-    private double ApplyBoost(ButtplugDeviceActuator actuator, double value)
+    // The funscript value for a speed or depth actuator plus the boost of the device's side; any other actuator is
+    // left alone.
+    private double ApplyBoost(ButtplugDeviceSettings settings, ButtplugDeviceActuator actuator, double value)
     {
         if (actuator is not ButtplugDeviceScalarActuator scalar || scalar.FeatureDescriptor == null)
             return value;
 
-        if (_hismithSpeedBoost != 0 && scalar.ActuatorType == ActuatorType.Oscillate
+        var state = StateOf(GetDeviceFromSettings(settings));
+        if (state.SpeedBoost != 0 && scalar.ActuatorType == ActuatorType.Oscillate
          && scalar.FeatureDescriptor.StartsWith(SpeedDescription, StringComparison.OrdinalIgnoreCase))
-            return Math.Clamp(value + _hismithSpeedBoost / 100d, 0, 1);
+            return Math.Clamp(value + state.SpeedBoost / 100d, 0, 1);
 
-        if (_hismithDepthBoost != 0 && scalar.ActuatorType == ActuatorType.Position
+        if (state.DepthBoost != 0 && scalar.ActuatorType == ActuatorType.Position
          && scalar.FeatureDescriptor.StartsWith(DepthDescription, StringComparison.OrdinalIgnoreCase))
-            return Math.Clamp(value + _hismithDepthBoost / 100d, 0, 1);
+            return Math.Clamp(value + state.DepthBoost / 100d, 0, 1);
 
         return value;
     }
 
     // "faster" etc.: on top of the script when an axis drives that actuator and no built-in mode runs,
     // otherwise an absolute value (the machine has no script to boost).
-    public void HismithFaster() => ChangeSpeed(HismithSpeedStep);
-    public void HismithSlower() => ChangeSpeed(-HismithSpeedStep);
-    public void HismithDeeper() => ChangeDepth(HismithDepthStep);
-    public void HismithShallower() => ChangeDepth(-HismithDepthStep);
+    public void HismithFaster() => ForEachSide(() => ChangeSpeed(HismithSpeedStep));
+    public void HismithSlower() => ForEachSide(() => ChangeSpeed(-HismithSpeedStep));
+    public void HismithDeeper() => ForEachSide(() => ChangeDepth(HismithDepthStep));
+    public void HismithShallower() => ForEachSide(() => ChangeDepth(-HismithDepthStep));
 
     private void ChangeSpeed(int delta)
     {
-        if (_hismithMode == 0 && IsActuatorMapped(SpeedDescription, ActuatorType.Oscillate))
+        if (Cur.Mode == 0 && IsActuatorMapped(SpeedDescription, ActuatorType.Oscillate))
             HismithSpeedBoost += delta;
         else
             HismithSpeed += delta;
@@ -169,32 +159,37 @@ internal sealed partial class ButtplugOutputTarget
 
     private void ChangeDepth(int delta)
     {
-        if (_hismithMode == 0 && IsActuatorMapped(DepthDescription, ActuatorType.Position))
+        if (Cur.Mode == 0 && IsActuatorMapped(DepthDescription, ActuatorType.Position))
             HismithDepthBoost += delta;
         else
             HismithDepth += delta;
         NotifyOfPropertyChange(nameof(HismithModeStatus));
     }
 
-    public void HismithBoostReset()
+    public void HismithBoostReset() => ForEachSide(BoostResetCore);
+
+    private void BoostResetCore()
     {
         HismithSpeedBoost = 0;
         HismithDepthBoost = 0;
     }
 
-    public void HismithMany(int count) => _ = FireLubeLauncherManyAsync(Math.Clamp(count, 1, 5));
+    public void HismithMany(int count) => ForEachSide(() => _ = FireLubeLauncherManyAsync(Math.Clamp(count, 1, 5)));
 
     // A burst of shots can be cut short (by a re-roll of the surprise or by Stop): the shots that are still to come
     // are dropped, the one that has been fired cannot be taken back.
-    private CancellationTokenSource _lubeBurstSource;
-
+    // (one burst per side: the front and the rear launcher can fire at the same time)
     private void CancelLubeBurst()
-        => Interlocked.Exchange(ref _lubeBurstSource, null)?.Cancel();
+    {
+        foreach (var state in _sideStates.Values)
+            Interlocked.Exchange(ref state.LubeBurst, null)?.Cancel();
+    }
 
     private async Task FireLubeLauncherManyAsync(int count)
     {
+        var state = Cur;
         var source = new CancellationTokenSource();
-        Interlocked.Exchange(ref _lubeBurstSource, source)?.Cancel();
+        Interlocked.Exchange(ref state.LubeBurst, source)?.Cancel();
         try
         {
             for (var i = 0; i < count && !source.IsCancellationRequested; i++)
@@ -207,7 +202,7 @@ internal sealed partial class ButtplugOutputTarget
         catch (OperationCanceledException) { }
         finally
         {
-            Interlocked.CompareExchange(ref _lubeBurstSource, null, source);
+            Interlocked.CompareExchange(ref state.LubeBurst, null, source);
         }
     }
 
@@ -292,7 +287,7 @@ internal sealed partial class ButtplugOutputTarget
         EndSurprise();
         var source = new CancellationTokenSource();
         Interlocked.Exchange(ref _lockSource, source)?.Cancel();
-        if (_hismithMode == 0)
+        if (Cur.Mode == 0)
         {
             _holdLoopActive = true;   // the funscript is running the machine: keep the last seconds of it going round
             EventAggregator.Publish(new ScriptLoopMessage(ScriptLoopCommand.Start, _holdLoopSeconds));
@@ -365,7 +360,7 @@ internal sealed partial class ButtplugOutputTarget
         }
 
         CancelLubeBurst();
-        if (_hismithMode == ModeA)
+        if (Cur.Mode == ModeA)
         {
             // mode A is the "all out" mode: no waiting, the next draw is made at once
             Interlocked.Exchange(ref _surpriseTimerSource, null)?.Cancel();
@@ -420,21 +415,23 @@ internal sealed partial class ButtplugOutputTarget
         _surpriseActive = true;
         Logger.Info("Surprise: mode change {0}, Lube Launcher shots {1}", changeMode, shots);
         if (changeMode)
-            HismithModeRandom();
+            HismithModeRandomCore();
         NotifyOfPropertyChange(nameof(HismithModeStatus));
         if (shots > 0)
             await FireLubeLauncherManyAsync(shots);
     }
 
     // Random mode only: one of the built-in modes 1-8 or the custom A / B, never the one that runs now.
-    public void HismithModeRandom()
+    public void HismithModeRandom() => ForEachSide(HismithModeRandomCore);
+
+    private void HismithModeRandomCore()
     {
-        var current = _hismithMode;
+        var current = Cur.Mode;
         var choices = Enumerable.Range(1, ModeB).Where(m => m != current).ToList();
         SetHismithModeCore(choices[Random.Shared.Next(choices.Count)], fromSurprise: true);
     }
 
-    public void SetHismithMode(int mode) => SetHismithModeCore(mode, fromSurprise: false);
+    public void SetHismithMode(int mode) => ForEachSide(() => SetHismithModeCore(mode, fromSurprise: false));
 
     private void SetHismithModeCore(int mode, bool fromSurprise)
     {
@@ -465,9 +462,9 @@ internal sealed partial class ButtplugOutputTarget
     private async Task SetSpeedAbsoluteAsync(int speed)
     {
         // sent directly (not through HismithSpeed) so that it also goes out when the value did not change
-        _hismithSpeed = Math.Clamp(speed, 0, 100);
+        Cur.Speed = Math.Clamp(speed, 0, 100);
         NotifyOfPropertyChange(nameof(HismithSpeed));
-        await SendQuickActuatorsAsync(SpeedDescription, _hismithSpeed, 100, ActuatorType.Oscillate);
+        await SendQuickActuatorsAsync(SpeedDescription, Cur.Speed, 100, ActuatorType.Oscillate);
     }
 
     private async Task ApplyHismithModeAsync(int mode)
@@ -477,7 +474,8 @@ internal sealed partial class ButtplugOutputTarget
         {
             // the old time-based sequence is replaced by an explicit mode, and an explicit mode by the sequence
             StopHismithSequence(sendToDevice: false);
-            var previous = _hismithMode;
+            var state = Cur;
+            var previous = state.Mode;
 
             if (mode == 0)
             {
@@ -503,7 +501,7 @@ internal sealed partial class ButtplugOutputTarget
                 _hismithPresetMode = 0;
                 NotifyOfPropertyChange(nameof(HismithPresetMode));
                 _forceResend = true;        // before the suppression is lifted, as after the sequence
-                _hismithMode = 0;
+                state.Mode = 0;
                 NotifyModeChanged();
                 return;
             }
@@ -511,7 +509,7 @@ internal sealed partial class ButtplugOutputTarget
             if (mode == ModeHalt)
             {
                 // stop: the script is held back for the machine and the speed goes to 0 at once
-                _hismithMode = mode;
+                state.Mode = mode;
                 NotifyModeChanged();
                 CancelLubeBurst();
                 EventAggregator.Publish(new ScriptLoopMessage(ScriptLoopCommand.Clear));
@@ -520,7 +518,7 @@ internal sealed partial class ButtplugOutputTarget
                 return;
             }
 
-            _hismithMode = mode;            // the script output to the machine is suppressed from here on
+            state.Mode = mode;              // the script output to the machine is suppressed from here on
             NotifyModeChanged();
             EventAggregator.Publish(new ScriptLoopMessage(ScriptLoopCommand.Clear));
 
@@ -539,7 +537,7 @@ internal sealed partial class ButtplugOutputTarget
             {
                 // calm: the slowest speed, the normal stroke width, a medium depth
                 await SendQuickActuatorsAsync(WidthDescription, _hismithScriptWidth, 100);
-                _hismithDepth = 50;
+                state.Depth = 50;
                 NotifyOfPropertyChange(nameof(HismithDepth));
                 await SendQuickActuatorsAsync(DepthDescription, 50, 100);
                 await SetSpeedAbsoluteAsync(_hismithSlowestSpeed);
@@ -548,7 +546,7 @@ internal sealed partial class ButtplugOutputTarget
             {
                 // A and B: the smallest stroke at full depth, A at full speed, B as slow as possible
                 await SendQuickActuatorsAsync(WidthDescription, SmallestStrokeWidth, 100);
-                _hismithDepth = 100;
+                state.Depth = 100;
                 NotifyOfPropertyChange(nameof(HismithDepth));
                 await SendQuickActuatorsAsync(DepthDescription, 100, 100);
                 await SetSpeedAbsoluteAsync(mode == ModeA ? 100 : _hismithSlowestSpeed);
@@ -576,6 +574,7 @@ internal sealed partial class ButtplugOutputTarget
         s.RegisterAction($"{Identifier}::Hismith::Surprise::Again", HismithSurpriseAgain);
         s.RegisterAction($"{Identifier}::Hismith::Halt", () => SetHismithMode(ModeHalt));
         s.RegisterAction($"{Identifier}::Hismith::Calm", () => SetHismithMode(ModeCalm));
+        RegisterHismithSideActions(s);
         s.RegisterAction($"{Identifier}::Hismith::Speed::Faster", HismithFaster);
         s.RegisterAction($"{Identifier}::Hismith::Speed::Slower", HismithSlower);
         s.RegisterAction($"{Identifier}::Hismith::Depth::Deeper", HismithDeeper);
@@ -600,6 +599,7 @@ internal sealed partial class ButtplugOutputTarget
         s.UnregisterAction($"{Identifier}::Hismith::Depth::Shallower");
         s.UnregisterAction($"{Identifier}::Hismith::Boost::Reset");
         s.UnregisterAction($"{Identifier}::Hismith::LubeLauncher::FireMany");
+        UnregisterHismithSideActions(s);
     }
 
     private void SaveHismithModeSettings(JObject settings)
@@ -610,6 +610,7 @@ internal sealed partial class ButtplugOutputTarget
         settings[nameof(HismithSurpriseDelaySeconds)] = HismithSurpriseDelaySeconds;
         settings[nameof(HismithLockMinutes)] = HismithLockMinutes;
         settings[nameof(HismithHoldLoopSeconds)] = HismithHoldLoopSeconds;
+        SaveHismithSideSettings(settings);
     }
 
     private void LoadHismithModeSettings(JObject settings)
@@ -626,6 +627,7 @@ internal sealed partial class ButtplugOutputTarget
             HismithLockMinutes = lockMinutes;
         if (settings.TryGetValue<int>(nameof(HismithHoldLoopSeconds), out var holdLoop))
             HismithHoldLoopSeconds = holdLoop;
+        LoadHismithSideSettings(settings);
     }
 
     public int HismithSlowestSpeed
@@ -638,9 +640,12 @@ internal sealed partial class ButtplugOutputTarget
     {
         HismithLockClear();
         EndSurprise();
-        _hismithMode = 0;
-        _hismithSpeedBoost = 0;
-        _hismithDepthBoost = 0;
+        foreach (var state in _sideStates.Values)
+        {
+            state.Mode = 0;
+            state.SpeedBoost = 0;
+            state.DepthBoost = 0;
+        }
         NotifyModeChanged();
     }
 }

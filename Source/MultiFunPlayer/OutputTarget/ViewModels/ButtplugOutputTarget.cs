@@ -205,18 +205,17 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
     // Speed of the machine's auto mode (the "Fucking Machine Oscillation Speed" actuator, 0-100). In manual
     // mode the machine follows the position instead.
     private const string SpeedDescription = "Fucking Machine Oscillation Speed";
-    private int _hismithSpeed = 50;
 
     public int HismithSpeed
     {
-        get => _hismithSpeed;
+        get => Cur.Speed;
         set
         {
             if (RejectedByLock("the speed"))
                 return;
 
             value = Math.Clamp(value, 0, 100);
-            if (SetAndNotify(ref _hismithSpeed, value))
+            if (SetAndNotify(ref Cur.Speed, value))
                 _ = SendQuickActuatorsAsync(SpeedDescription, value, 100, ActuatorType.Oscillate);
         }
     }
@@ -412,7 +411,7 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
     }
 
     private bool IsSequenceSuppressed(ButtplugDeviceSettings settings)
-        => (HismithSequenceActive || _hismithSequenceExiting || _hismithMode != 0) && IsHismithMachine(settings);
+        => (HismithSequenceActive || _hismithSequenceExiting || StateOf(GetDeviceFromSettings(settings)).Mode != 0) && IsHismithMachine(settings);
 
     private void NotifySequenceChanged()
     {
@@ -557,7 +556,7 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
         if (RejectedByLock("the key"))
             return;
 
-        if (_hismithMode != 0)
+        if (_sideStates.Values.Any(st => st.Mode != 0))
             SetHismithMode(0);
         else
             HismithSequenceActive = !HismithSequenceActive;
@@ -607,6 +606,7 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
 
     private IEnumerable<ButtplugDeviceScalarActuator> GetQuickActuators(string descriptionPrefix, ActuatorType actuatorType = ActuatorType.Position)
         => AvailableDevices.ToList()
+                           .Where(InSideScope)                      // a command for one side reaches only its devices
                            .SelectMany(d => d.ScalarActuators)
                            .Where(a => a.ActuatorType == actuatorType
                                     && a.FeatureDescriptor?.StartsWith(descriptionPrefix, StringComparison.OrdinalIgnoreCase) == true);
@@ -640,6 +640,7 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
             DeviceSettings.Refresh();
             NotifyOfPropertyChange(nameof(HasHismithControls));
             NotifyOfPropertyChange(nameof(HasLubeLauncherControls));
+            RefreshDeviceRoles();
         };
 
         _scanSemaphore = new SemaphoreSlim(0, 1);
@@ -851,7 +852,7 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
     private IEnumerable<Task> GetDeviceTasks(Dictionary<DeviceAxis, double> values, double interval, IEnumerable<ButtplugDeviceSettings> settings, CancellationToken token)
         => GetDeviceTasks(settings, (s, a) =>
         {
-            var value = ApplyBoost(a, values[s.SourceAxis]);
+            var value = ApplyBoost(s, a, values[s.SourceAxis]);
             if (a is ButtplugDeviceLinearActuator linearActuator)
             {
                 var duration = (uint)Math.Floor(interval + 0.75);
@@ -881,7 +882,7 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
                 return Task.CompletedTask;
 
             var axisSettings = AxisSettings[s.SourceAxis];
-            var value = ApplyBoost(a, MathUtils.Lerp(axisSettings.Minimum, axisSettings.Maximum, axisEvent.TargetValue));
+            var value = ApplyBoost(s, a, MathUtils.Lerp(axisSettings.Minimum, axisSettings.Maximum, axisEvent.TargetValue));
             if (a is ButtplugDeviceLinearActuator linearActuator)
             {
                 var duration = (uint)Math.Floor(axisEvent.Duration * 1000 + 0.75);

@@ -484,6 +484,27 @@
                 <TextBlock Margin="0 0 0 6" VerticalAlignment="Center" Text="{Binding HismithModeStatus}"/>
             </WrapPanel>
 
+            <StackPanel Margin="0 0 0 12"
+                        Visibility="{Binding HasDeviceRoles, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Margin="0 0 0 4"
+                           FontWeight="Bold"
+                           Text="Device roles"
+                           ToolTip="Which side each device serves: Rear (from behind), Front (the mouth), Both (every command, as before). Commands for one side (voice: 'do ust', 'od tyłu') reach only its devices."/>
+                <ItemsControl ItemsSource="{Binding DeviceRoles}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel Margin="0 0 0 4" LastChildFill="True">
+                                <ComboBox DockPanel.Dock="Right"
+                                          Width="100"
+                                          ItemsSource="{Binding DataContext.HismithSideNames, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                          SelectedItem="{Binding Role}"/>
+                                <TextBlock Margin="0 0 8 0" VerticalAlignment="Center" Text="{Binding Label}"/>
+                            </DockPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
             <StackPanel Margin="0 0 0 20"
                         Orientation="Horizontal"
                         Visibility="{Binding HasLubeLauncherControls, Converter={StaticResource BooleanToVisibilityConverter}}">
