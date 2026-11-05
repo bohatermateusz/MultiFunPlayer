@@ -105,7 +105,8 @@ a z Twoich skryptów ASMR m.in. "sama się zgłosiłaś", "wymazana", "zaprogram
 "rajstopy", "złam mnie", "bez granic", "puść się", "prostata", "klub" (część dosłownie, część przerobiona, resztę dogenerowuje model).
 Świat jest w VR: Pani nigdy nie mówi o maszynie, dildo czy launcherze - mówi "on", "oni", "ten, który cię bierze", "jego rytm",
 "jego sperma"; sprzęt to ich ciała. Do tego **polecenia**: co jakiś czas zamiast komentarza pada rozkaz fizyczny (ściskaj, oddychaj, klipsy, dildo do ust, "powtórz: jestem
-posłuszną sissi"), łagodniejszy na początku, ostrzejszy później, nigdy ten sam dwa razy w sesji.
+posłuszną sissi", pozycje: "wypnij dupcię wyżej", "głowa w dół, dupcia do góry", "kolana szerzej", "rozchyl pośladki",
+"nadziewaj się sama"), łagodniejszy na początku, ostrzejszy później, nigdy ten sam dwa razy w sesji.
 
 ## Dwie maszyny i dwa Lube Launchery: przód i tył
 
