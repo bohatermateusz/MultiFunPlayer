@@ -39,7 +39,7 @@ Powtórzenie liczy 5 minut od nowa.
 
 | Powiedz | Co się stanie |
 |---|---|
-| **pomidor uspakajający** – samo hasło, **bez „kochanie"**, w każdej chwili (jak „trąbka"); po angielsku także **calming tomato** | przez 5 minut obie maszyny płynnie zwalniają do minimum, wchodzą na pełną głębokość, a skok zwęża się do 10 % – na końcu tylko wolne, jednostajne mikroruchy po prostacie, aż do innej komendy. W losowym momencie **jeden** strzał lube: przód, tył albo oba naraz. **Bez kości** – Pani tylko czule to komentuje, potem mówi już tylko łagodnie, jej program się kończy. „pomidor uspakajający od tyłu" / „… do ust" = tylko ta maszyna. Zwykłe „uspokój mnie", „wycisz" to tylko rozmowa z Panią – ona decyduje. Szybciej / głębiej / tryb przerywa wyciszanie, „trąbka" zatrzymuje wszystko. Klawisz **Scroll Lock**. |
+| **pomidor uspakajający** – samo hasło, **bez „kochanie"**, w każdej chwili (jak „trąbka"); po angielsku także **calming tomato** | przez 5 minut obie maszyny płynnie zwalniają do minimum, wchodzą na pełną głębokość, a skok zwęża się do 10 % – na końcu tylko wolne, jednostajne mikroruchy po prostacie, aż do innej komendy. W losowym momencie **jeden** strzał lube: przód, tył albo oba naraz. **Bez kości** – Pani tylko czule to komentuje, potem mówi już tylko łagodnie, jej program się kończy. Samo hasło (bez części ciała) wycisza **wszystkie** maszyny, nawet jeśli wcześniej mówiłaś tylko o jednej; „pomidor uspakajający od tyłu" / „… do ust" = tylko ta maszyna. Zwykłe „uspokój mnie", „wycisz" to tylko rozmowa z Panią – ona decyduje. Szybciej / głębiej / tryb przerywa wyciszanie, „trąbka" zatrzymuje wszystko. Klawisz **Scroll Lock**. |
 
 ## Tryby maszyny (zastępują film, aż wrócisz)
 

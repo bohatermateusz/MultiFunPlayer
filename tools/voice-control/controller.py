@@ -448,6 +448,9 @@ class Controller:
             m = self._match_no_wake(text)
             if m is not None and (m.intent.id == "halt" or m.score >= 0.95):
                 self._consumed[item] = (m.intent.id, text)
+                words = self.side_of(text)
+                self._turn_side = words if words in ("front", "rear") else None
+                self._turn_side_from_words = words is not None
                 o = self._run_match(m, now)
                 self._log(f"[partial] {text}", o)
                 return self._say(o)
@@ -1673,6 +1676,8 @@ class Controller:
 
     def _execute(self, m: Match, now: float, override=None, via="fast", extra=None) -> Outcome:
         self._last[m.intent.id] = now
+        if m.intent.id == "cooldown" and not getattr(self, "_turn_side_from_words", False):
+            self._turn_side = None             # the password alone winds down every machine, not the side used last
         steps = self._steps_for(m.intent, override)
         self._track_lock(m.intent)
         if any("LubeLauncher" in st["action"] for st in steps):

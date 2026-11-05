@@ -42,6 +42,20 @@ class Plain(unittest.TestCase):
             self.assertNotEqual(o.intent, "cooldown", text)
         self.assertNotIn("Hismith::Cooldown", actions(self.runs))
 
+    def test_without_a_body_part_it_winds_down_every_machine(self):
+        self.utter("kochanie, szybciej od tyłu")
+        self.utter("kochanie, szybciej")
+        self.assertEqual(actions(self.runs)[-1], "Hismith::Rear::Speed::Faster")      # other commands go on with the last side
+        self.utter("pomidor uspakajający")
+        self.assertEqual(actions(self.runs)[-1], "Hismith::Cooldown")
+        self.utter("kochanie, pomidor uspakajający")
+        self.assertEqual(actions(self.runs)[-1], "Hismith::Cooldown")
+        self.utter("pomidor uspakajający do ust")
+        self.assertEqual(actions(self.runs)[-1], "Hismith::Front::Cooldown")
+        self.utter("kochanie, szybciej od tyłu")
+        self.c.handle_partial("t9", "pomidor uspakajający")                          # live mode too
+        self.assertEqual(actions(self.runs)[-1], "Hismith::Cooldown")
+
     def test_live_runs_it_once_from_the_partial_transcript(self):
         self.assertIsNone(self.c.handle_partial("t1", "pomidor"))
         o = self.c.handle_partial("t1", "pomidor uspakajający")
