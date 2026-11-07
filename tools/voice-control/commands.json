@@ -1482,6 +1482,7 @@
     "dwóch naraz - jeden w ustach, drugi z tyłu; nie ma strony, która jest jej",
     "po sesji - opieka: wraca do siebie, ale już nie taka sama",
     "przerobiona - zabrali jej to, co robiło z niej faceta, i zrobili z niej dziewczynkę do ich zabawy",
+    "trans dziewczyna - jest teraz trans dziewczyną; to nie przebranie ani zabawa w udawanie, to ona; ma to powiedzieć na głos i być z tego dumna",
     "dla ich zabawy - istnieje po to, żeby ich bawić i ulegle służyć; jej przyjemność jest dodatkiem",
     "na posyłki - używają jej uzależnieni od seksu, którzy chcą się pieprzyć bez przerwy; ona jest na ich zawołanie jak towar z katalogu w magazynie",
     "hormony - zabrali jej testosteron i podają estrogen; ciało mięknie, zaokrągla się, uczy się słuchać; nie ma już czym walczyć",
@@ -1751,6 +1752,20 @@
       "Woda, koc, moja ręka. Reszta zaczeka do jutra.",
       "Byłaś moja cała. Teraz możesz być sobą… na chwilę.",
       "Nic nie musisz. Już wszystko zrobiłaś."
+     ],
+     "trans dziewczyna - jest teraz trans dziewczyną; to nie przebranie ani zabawa w udawanie, to ona; ma to powiedzieć na głos i być z tego dumna": [
+      "Jesteś teraz trans dziewczyną. Nie udajesz. Po prostu nią jesteś.",
+      "Powtórz za mną: jestem trans dziewczyną.",
+      "Powiedz to głośno, kochanie. Jestem trans dziewczyną. I dobrze mi z tym.",
+      "To nie przebranie. To nie zabawa. To ty, prawdziwa.",
+      "Trans dziewczyna. Moja trans dziewczyna. Brzmi idealnie.",
+      "Ten chłopiec był tylko kostiumem. Zdjęłaś go. Została dziewczyna.",
+      "Każdy, kto cię bierze, bierze trans dziewczynę. I wie o tym.",
+      "Nie musisz już nikogo udawać. Jesteś dziewczyną. Trans dziewczyną.",
+      "Mów o sobie: ona. Moja grzeczna trans dziewczynka.",
+      "Jesteś trans dziewczyną i jesteś piękna. Nie spieraj się ze mną.",
+      "Z każdym dniem bardziej dziewczyna. Już nie ma odwrotu… i nie chcesz go.",
+      "Powtórz: jestem trans dziewczyną i należę do nich."
      ],
      "przerobiona - zabrali jej to, co robiło z niej faceta, i zrobili z niej dziewczynkę do ich zabawy": [
       "Zabrali ci to, co robiło z ciebie faceta. Nie na chwilę. Na zawsze.",
@@ -2051,7 +2066,7 @@
     ],
     "2": [
      "Powiedz: jestem twoją dziwką.",
-     "Powtórz, że nie masz własnej woli."
+     "Powtórz, że nie masz własnej woli.", "Powiedz: jestem trans dziewczyną."
     ],
     "3": [
      "Krzyknij, czyją jesteś własnością.",
@@ -2265,7 +2280,10 @@
    "odpuszczam",
    "puszczam wszystko",
    "jestem cała twoja",
-   "jestem twoja całkiem"
+   "jestem twoja całkiem",
+   "jestem trans dziewczyną",
+   "jestem trans dziewczynką",
+   "jestem teraz trans dziewczyną"
   ],
   "obey_phrases": [
    "dziękuję",
@@ -2418,7 +2436,7 @@
     "i give up",
     "i'm your girl",
     "i let go",
-    "i'm your little girl"
+    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now"
    ],
    "obey_phrases": [
     "thank you",
@@ -2529,7 +2547,7 @@
      "let go - end of holding on; the body decides, not her; the wave comes",
      "the one who takes her - his rhythm, depth and pace are not hers; I let him",
      "two at once - one in her mouth, one behind; no side is hers",
-     "remade - they took what made her a man and made a girl for their amusement",
+     "remade - they took what made her a man and made a girl for their amusement", "trans girl - she is a trans girl now; not a costume, not pretend, it is her; she says it out loud and is proud of it",
      "for their amusement - she exists to entertain them and serve meekly; her pleasure is a bonus", "on call - sex-obsessed men who want to fuck nonstop use her; she's at their beck and call like an item from a warehouse catalogue",
      "hormones - they took her testosterone and give her estrogen; the body softens, rounds, learns to obey; nothing left to fight with",
      "affirmation - she orders one first-person sentence repeated ('Repeat after me: I am a woman who takes it.')",
@@ -2648,6 +2666,20 @@
        "You run at their call. They whistle, and you're already spread.",
        "They'll use you up and put you back on the shelf. Until the next order.",
        "Hungry, always hungry. And you're what they feed on."
+      ],
+      "trans girl - she is a trans girl now; not a costume, not pretend, it is her; she says it out loud and is proud of it": [
+       "You're a trans girl now. You're not pretending. You simply are one.",
+       "Repeat after me: I am a trans girl.",
+       "Say it out loud, darling. I'm a trans girl. And it feels right.",
+       "It's not a costume. It's not a game. It's you, the real you.",
+       "A trans girl. My trans girl. Sounds perfect.",
+       "That boy was only a costume. You took it off. A girl was left.",
+       "Everyone who takes you takes a trans girl. And they know it.",
+       "You don't have to pretend to be anyone anymore. You're a girl. A trans girl.",
+       "Call yourself she. My good trans girl.",
+       "You're a trans girl and you're beautiful. Don't argue with me.",
+       "More of a girl every day. No way back… and you don't want one.",
+       "Repeat: I am a trans girl and I belong to them."
       ],
       "remade - they took what made her a man and made a girl for their amusement": [
        "They took what made you a man. Not for a while. For good.",
