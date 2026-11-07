@@ -96,6 +96,14 @@ class Pool(unittest.TestCase):
         self.assertTrue(p2.is_repeat("Jedna."))
         self.assertFalse(p2.is_repeat("Coś zupełnie innego."))
 
+    def test_a_theme_added_later_gets_its_seed(self):
+        p = LinePool(self.generate, self.pool_path, self.said_path, background=False, seed={"A": ["Jedna.", "Dwa razy."]})
+        p.take("A")
+        p2 = LinePool(self.generate, self.pool_path, self.said_path, background=False,
+                      seed={"A": ["Jedna.", "Dwa razy."], "B": ["Na posyłki.", "Z katalogu."]})
+        self.assertEqual(p2.pool["B"], ["Na posyłki.", "Z katalogu."])     # the new theme starts from its seed
+        self.assertNotIn("Jedna.", p2.pool["A"])                           # the old one keeps its saved pool
+
     def test_banned_words_never_enter_the_pool(self):
         p = LinePool(lambda t, a, c: ["Maszyna cię bierze.", "On cię bierze.", "Włącz silnik.", "Oni czekają."],
                      self.pool_path, self.said_path, background=False, banned_words=["maszyn", "silnik"])
