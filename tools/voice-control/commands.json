@@ -1483,6 +1483,7 @@
     "po sesji - opieka: wraca do siebie, ale już nie taka sama",
     "przerobiona - zabrali jej to, co robiło z niej faceta, i zrobili z niej dziewczynkę do ich zabawy",
     "trans dziewczyna - jest teraz trans dziewczyną; to nie przebranie ani zabawa w udawanie, to ona; ma to powiedzieć na głos i być z tego dumna",
+    "spełniona fantazja - zawsze tego chciała i teraz to się dzieje: biorą ją jak kobietę, a ona piszczy cienkim, dziewczęcym głosikiem",
     "dla ich zabawy - istnieje po to, żeby ich bawić i ulegle służyć; jej przyjemność jest dodatkiem",
     "na posyłki - używają jej uzależnieni od seksu, którzy chcą się pieprzyć bez przerwy; ona jest na ich zawołanie jak towar z katalogu w magazynie",
     "hormony - zabrali jej testosteron i podają estrogen; ciało mięknie, zaokrągla się, uczy się słuchać; nie ma już czym walczyć",
@@ -1752,6 +1753,20 @@
       "Woda, koc, moja ręka. Reszta zaczeka do jutra.",
       "Byłaś moja cała. Teraz możesz być sobą… na chwilę.",
       "Nic nie musisz. Już wszystko zrobiłaś."
+     ],
+     "spełniona fantazja - zawsze tego chciała i teraz to się dzieje: biorą ją jak kobietę, a ona piszczy cienkim, dziewczęcym głosikiem": [
+      "Zawsze tego chciałaś. I teraz to się dzieje. Naprawdę.",
+      "Twoja fantazja się spełniła, kochanie. Leżysz i bierze cię jak kobietę.",
+      "Słyszysz ten cienki głosik. To ty tak piszczysz. Jak dziewczyna.",
+      "Pamiętasz, jak o tym marzyłaś po nocach. Już nie musisz marzyć.",
+      "Piszcz, mała. Cieniutko. Tak piszczą dziewczyny, kiedy je dymają.",
+      "Tyle lat w głowie. A teraz w ciele. Fantazja spełniona.",
+      "Dymają cię jak dziewczynę. Tak, jak zawsze chciałaś.",
+      "Ten piskliwy głosik zdradza cię za każdym pchnięciem. Dziewczęcy do szpiku.",
+      "Nie musisz już sobie wyobrażać. On jest w tobie. Naprawdę.",
+      "Zawsze chciałaś być brana jak kobieta. Proszę bardzo. Bierze.",
+      "Głośniej i cieniej. Niech słyszy, jaką jesteś dziewczyną.",
+      "Twoje marzenie właśnie cię pieprzy. Podziękuj mu."
      ],
      "trans dziewczyna - jest teraz trans dziewczyną; to nie przebranie ani zabawa w udawanie, to ona; ma to powiedzieć na głos i być z tego dumna": [
       "Jesteś teraz trans dziewczyną. Nie udajesz. Po prostu nią jesteś.",
@@ -2547,7 +2562,7 @@
      "let go - end of holding on; the body decides, not her; the wave comes",
      "the one who takes her - his rhythm, depth and pace are not hers; I let him",
      "two at once - one in her mouth, one behind; no side is hers",
-     "remade - they took what made her a man and made a girl for their amusement", "trans girl - she is a trans girl now; not a costume, not pretend, it is her; she says it out loud and is proud of it",
+     "remade - they took what made her a man and made a girl for their amusement", "trans girl - she is a trans girl now; not a costume, not pretend, it is her; she says it out loud and is proud of it", "fantasy come true - she always wanted this and now it is real: they take her like a woman and she squeals in a thin, girlish voice",
      "for their amusement - she exists to entertain them and serve meekly; her pleasure is a bonus", "on call - sex-obsessed men who want to fuck nonstop use her; she's at their beck and call like an item from a warehouse catalogue",
      "hormones - they took her testosterone and give her estrogen; the body softens, rounds, learns to obey; nothing left to fight with",
      "affirmation - she orders one first-person sentence repeated ('Repeat after me: I am a woman who takes it.')",
@@ -2666,6 +2681,20 @@
        "You run at their call. They whistle, and you're already spread.",
        "They'll use you up and put you back on the shelf. Until the next order.",
        "Hungry, always hungry. And you're what they feed on."
+      ],
+      "fantasy come true - she always wanted this and now it is real: they take her like a woman and she squeals in a thin, girlish voice": [
+       "You always wanted this. And now it's happening. For real.",
+       "Your fantasy came true, darling. You're lying there and he takes you like a woman.",
+       "Hear that thin little voice. That's you squealing. Like a girl.",
+       "Remember dreaming about this at night. You don't have to dream anymore.",
+       "Squeal, sweetheart. Thin and high. That's how girls squeal when they get fucked.",
+       "So many years in your head. Now in your body. Fantasy fulfilled.",
+       "They fuck you like a girl. Just like you always wanted.",
+       "That squeaky voice gives you away with every thrust. Girly to the bone.",
+       "No need to imagine it anymore. He's inside you. For real.",
+       "You always wanted to be taken like a woman. Here you go. He's taking you.",
+       "Louder and higher. Let him hear what a girl you are.",
+       "Your dream is fucking you right now. Thank it."
       ],
       "trans girl - she is a trans girl now; not a costume, not pretend, it is her; she says it out loud and is proud of it": [
        "You're a trans girl now. You're not pretending. You simply are one.",
