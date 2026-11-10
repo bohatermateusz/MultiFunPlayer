@@ -154,12 +154,6 @@
                            FontWeight="Bold"
                            Text="HISMITH S2"
                            Typography.Capitals="AllSmallCaps"/>
-                <TextBlock Margin="0 0 8 0" VerticalAlignment="Center" Text="Auto"/>
-                <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
-                              IsChecked="{Binding HismithManualMode}"
-                              IsEnabled="{Binding HismithControlsEnabled}"
-                              ToolTip="Off: auto, the machine strokes on its own (speed and preset modes). On: manual, it follows the position axis."/>
-                <TextBlock Margin="8 0 25 0" VerticalAlignment="Center" Text="Manual"/>
                 <TextBlock Margin="0 0 8 0" VerticalAlignment="Center" Text="Preset mode:"/>
                 <ComboBox Width="60"
                           ItemsSource="{Binding HismithPresetModes}"
@@ -293,7 +287,7 @@
                             Padding="8 0"
                             Command="{s:Action OnHismithModeButton}" CommandParameter="9"
                             Content="A"
-                            ToolTip="Mode A: fastest, full depth, smallest stroke"/>
+                            ToolTip="Mode A: fastest, smallest stroke"/>
                     <TextBlock HorizontalAlignment="Center"
                                FontSize="10"
                                Opacity="0.7"
@@ -305,7 +299,7 @@
                             Padding="8 0"
                             Command="{s:Action OnHismithModeButton}" CommandParameter="10"
                             Content="B"
-                            ToolTip="Mode B: slowest, full depth, smallest stroke"/>
+                            ToolTip="Mode B: slowest, smallest stroke"/>
                     <TextBlock HorizontalAlignment="Center"
                                FontSize="10"
                                Opacity="0.7"

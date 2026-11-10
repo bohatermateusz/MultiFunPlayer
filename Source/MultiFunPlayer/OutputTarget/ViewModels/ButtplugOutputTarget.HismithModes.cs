@@ -7,7 +7,7 @@ using Stylet;
 namespace MultiFunPlayer.OutputTarget.ViewModels;
 
 // HISMITH S2: "boost" of the funscript (faster/slower/deeper/shallower on top of the script values),
-// the built-in modes 1-8 plus the two custom modes A (fastest, full depth, smallest stroke) and
+// the built-in modes 1-8 plus the two custom modes A (fastest, smallest stroke, at the depth of the built-in modes) and
 // B (the same, slowest), and the way back to the funscripts. The actuators are found by their
 // description (see the Buttplug fork), so only a machine that has them is affected.
 internal sealed partial class ButtplugOutputTarget
@@ -122,6 +122,28 @@ internal sealed partial class ButtplugOutputTarget
                                          && device.TryGetActuator(s.ActuatorIndex, s.ActuatorType, out var actuator)
                                          && actuator is ButtplugDeviceScalarActuator scalar
                                          && scalar.FeatureDescriptor?.StartsWith(descriptionPrefix, StringComparison.OrdinalIgnoreCase) == true);
+
+    // The value the script (its axis mapped to this actuator on a device of the current side) gives now, 0-100, or
+    // the fallback when nothing drives it. Without a film the axis gives its default value, as at the start.
+    private int ScriptWindowValue(string descriptionPrefix, int fallback)
+    {
+        var row = DeviceSettings.ToList().FirstOrDefault(s => s.ActuatorType == ActuatorType.Position
+                                         && GetDeviceFromSettings(s) is { } device && InSideScope(device)
+                                         && device.TryGetActuator(s.ActuatorIndex, s.ActuatorType, out var actuator)
+                                         && actuator is ButtplugDeviceScalarActuator scalar
+                                         && scalar.FeatureDescriptor?.StartsWith(descriptionPrefix, StringComparison.OrdinalIgnoreCase) == true);
+        return row == null ? fallback : (int)Math.Round(Math.Clamp(GetValue(row.SourceAxis), 0, 1) * 100);
+    }
+
+    // A built-in mode strokes inside the window the machine has at that moment: after A / B (smallest stroke at full
+    // depth) or a wind-down that would be the wrong one. Put back the script's window (as at the start) first.
+    private async Task RestoreScriptWindowAsync(HismithSideState state)
+    {
+        await SendQuickActuatorsAsync(WidthDescription, ScriptWindowValue(WidthDescription, _hismithScriptWidth), 100);
+        state.Depth = Math.Clamp(ScriptWindowValue(DepthDescription, 50) + state.DepthBoost, 0, 100);   // "deeper" said before stays
+        NotifyOfPropertyChange(nameof(HismithDepth));
+        await SendQuickActuatorsAsync(DepthDescription, state.Depth, 100);
+    }
 
     // The funscript value for a speed or depth actuator plus the boost of the device's side; any other actuator is
     // left alone.
@@ -498,12 +520,10 @@ internal sealed partial class ButtplugOutputTarget
                     await Task.Delay(150);
                 }
 
-                if (HasDirectPositionActuator)
-                {
-                    _hismithManualMode = true;
-                    NotifyOfPropertyChange(nameof(HismithManualMode));
-                    await SendQuickActuatorsAsync(RunModeDescription, 1, 1);
-                }
+                // back to the scripts in auto mode (they drive speed, width and depth); no manual mode any more
+                _hismithManualMode = false;
+                NotifyOfPropertyChange(nameof(HismithManualMode));
+                await SendQuickActuatorsAsync(RunModeDescription, 0, 1);
 
                 _hismithPresetMode = 0;
                 NotifyOfPropertyChange(nameof(HismithPresetMode));
@@ -536,6 +556,7 @@ internal sealed partial class ButtplugOutputTarget
 
             if (mode <= PresetModeMax)
             {
+                await RestoreScriptWindowAsync(state);
                 _hismithPresetMode = mode;
                 NotifyOfPropertyChange(nameof(HismithPresetMode));
                 await SendPresetModeAsync(mode);
@@ -551,11 +572,12 @@ internal sealed partial class ButtplugOutputTarget
             }
             else
             {
-                // A and B: the smallest stroke at full depth, A at full speed, B as slow as possible
+                // A and B: the smallest stroke at the depth the built-in modes get (the script's, as at the start),
+                // A at full speed, B as slow as possible
                 await SendQuickActuatorsAsync(WidthDescription, SmallestStrokeWidth, 100);
-                state.Depth = 100;
+                state.Depth = Math.Clamp(ScriptWindowValue(DepthDescription, 50) + state.DepthBoost, 0, 100);
                 NotifyOfPropertyChange(nameof(HismithDepth));
-                await SendQuickActuatorsAsync(DepthDescription, 100, 100);
+                await SendQuickActuatorsAsync(DepthDescription, state.Depth, 100);
                 await SetSpeedAbsoluteAsync(mode == ModeA ? 100 : _hismithSlowestSpeed);
             }
 

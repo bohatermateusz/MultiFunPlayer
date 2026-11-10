@@ -86,8 +86,15 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
                 return;
             }
 
-            if (SetAndNotify(ref _hismithManualMode, value))
-                _ = SendQuickActuatorsAsync(RunModeDescription, value ? 1 : 0, 1);
+            // the manual run mode is gone: the scripts drive the machine's auto mode (speed, width and depth
+            // tracks), so the machine is always kept in auto
+            if (value)
+            {
+                Logger.Info("Manual run mode is not used any more, the machine stays in auto mode");
+                Execute.PostToUIThread(() => NotifyOfPropertyChange(nameof(HismithManualMode)));
+            }
+            _hismithManualMode = false;
+            _ = SendQuickActuatorsAsync(RunModeDescription, 0, 1);
         }
     }
 
@@ -433,8 +440,8 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
             if (HismithSequenceActive)
                 return;
 
-            // a previous sequence is still switching the machine back to manual mode: start after that,
-            // otherwise its manual-mode command would arrive after our auto-mode command
+            // a previous sequence is still switching the machine back to the scripts: start after that,
+            // otherwise its commands would arrive after ours
             if (_hismithSequenceExiting)
             {
                 if (!_hismithStartPending)
@@ -476,11 +483,11 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
                 return;
 
             _hismithSequenceHeld = false;
-            _hismithManualMode = HasDirectPositionActuator;
+            _hismithManualMode = false;
             _hismithPresetMode = 0;
 
-            // back to the funscripts: manual mode first, then the current script values again. The script
-            // output for the machine stays paused (_hismithSequenceExiting) until the manual mode command
+            // back to the funscripts: auto mode first, then the current script values again. The script
+            // output for the machine stays paused (_hismithSequenceExiting) until the auto mode command
             // has been sent. _forceResend is set before suppression is lifted, so the update loop
             // cannot clear it in between.
             if (sendToDevice)
@@ -507,8 +514,7 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
         try
         {
             await Task.Delay(300);
-            if (HasDirectPositionActuator)
-                await SendQuickActuatorsAsync(RunModeDescription, 1, 1);
+            await SendQuickActuatorsAsync(RunModeDescription, 0, 1);
 
             // a speed command ends the built-in mode, and the server drops a command identical to the last
             // one: go through 0 so that the script's speed is surely sent
@@ -570,6 +576,7 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
             _hismithManualMode = false;
             NotifyOfPropertyChange(nameof(HismithManualMode));
             await SendQuickActuatorsAsync(RunModeDescription, 0, 1);
+            await RestoreScriptWindowAsync(Cur);
             await Task.Delay(300, token);
 
             while (!token.IsCancellationRequested)
@@ -685,6 +692,14 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
 
             RebindByName(device);
             AvailableDevices.Add(device);
+
+            // the scripts drive the machine's auto mode: put it there on connect (its switch is not read back)
+            if (device.ScalarActuators.Any(a => a.ActuatorType == ActuatorType.Position
+                                             && a.FeatureDescriptor?.StartsWith(RunModeDescription, StringComparison.OrdinalIgnoreCase) == true))
+            {
+                _hismithManualMode = false;
+                _ = SendQuickActuatorsAsync(RunModeDescription, 0, 1);
+            }
 
             var syncAxes = GetSettingsForDevice(device)
                                 .GroupBy(s => s.SourceAxis)
