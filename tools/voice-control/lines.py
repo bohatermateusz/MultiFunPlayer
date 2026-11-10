@@ -66,10 +66,11 @@ class LinePool:
         self.said = []                        # every line ever spoken, oldest first
         self.last_error = None
         self._load()
-        if not self.pool and seed:
-            # the first run: start from the hand-written lines (nothing said before them is possible)
+        missing = {t: v for t, v in (seed or {}).items() if t not in self.pool}
+        if missing:
+            # the first run, or a theme added since: start it from the hand-written lines (minus anything already said)
             with self._lock:
-                for theme, lines in seed.items():
+                for theme, lines in missing.items():
                     self.pool[theme] = self._fresh(theme, [str(x) for x in lines])
                 self._save_pool()
 

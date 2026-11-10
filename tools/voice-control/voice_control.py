@@ -45,7 +45,7 @@ def load_config(path):
     return cfg, intents
 
 
-STT_HINT_INTENTS = ("faster", "slower", "deeper", "shallower", "halt", "lock", "lube_fire")
+STT_HINT_INTENTS = ("faster", "slower", "deeper", "shallower", "halt", "lock", "lube_fire", "cooldown")
 
 
 def stt_prompt(intents, wake_words=None):

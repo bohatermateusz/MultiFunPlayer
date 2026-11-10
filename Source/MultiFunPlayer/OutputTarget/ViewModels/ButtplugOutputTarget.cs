@@ -683,6 +683,7 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
         {
             Logger.Info($"Device added: \"{device.Name}\"");
 
+            RebindByName(device);
             AvailableDevices.Add(device);
 
             var syncAxes = GetSettingsForDevice(device)
@@ -840,6 +841,42 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
                     Logger.Debug(exception, "Buttplug device exception");
             }
         }, token);
+    }
+
+    // The server numbers devices in the order they connect, so after a restart a device often comes back with another
+    // index and its map rows (bound by name + index) would stay red. A device whose name + index has no rows takes over
+    // the rows (and the Rear/Front role) saved for the same name under an index no connected device has, as long as
+    // they all point at one old index (two same-named devices with rows on different indices stay as they are).
+    private void RebindByName(ButtplugDevice device)
+    {
+        var connected = AvailableDevices.ToList();
+        bool SameName(string name) => string.Equals(name, device.Name, StringComparison.OrdinalIgnoreCase);
+        bool Free(uint index) => !connected.Any(d => SameName(d.Name) && d.Index == index);
+
+        if (!GetSettingsForDevice(device).Any())
+        {
+            var stale = DeviceSettings.Where(s => SameName(s.DeviceName) && Free(s.DeviceIndex)).ToList();
+            var oldIndices = stale.Select(s => s.DeviceIndex).Distinct().ToList();
+            if (oldIndices.Count == 1)
+            {
+                foreach (var s in stale)
+                    s.DeviceIndex = device.Index;
+                Logger.Info("Device \"{0}\" came back as #{1} (was #{2}), its {3} map row(s) follow it", device.Name, device.Index, oldIndices[0], stale.Count);
+            }
+        }
+
+        var newKey = DeviceKey(device);
+        if (_deviceRoles.ContainsKey(newKey))
+            return;
+
+        var staleRoles = _deviceRoles.Keys.Where(k => k.StartsWith(device.Name + "#", StringComparison.OrdinalIgnoreCase)
+                                                    && uint.TryParse(k[(device.Name.Length + 1)..], out var i) && Free(i))
+                                          .ToList();
+        if (staleRoles.Count == 1 && _deviceRoles.TryRemove(staleRoles[0], out var role))
+        {
+            _deviceRoles[newKey] = role;
+            Logger.Info("Device \"{0}\" keeps its {1} role (was {2})", newKey, role, staleRoles[0]);
+        }
     }
 
     private ButtplugDevice GetDeviceFromSettings(ButtplugDeviceSettings settings)

@@ -35,6 +35,12 @@ Komendy się sumują (dwa razy „szybciej" = dwa kroki). „Normalnie" zdejmuje
 
 Powtórzenie liczy 5 minut od nowa.
 
+## Tryb uspokajania (koniec sesji, 5 minut)
+
+| Powiedz | Co się stanie |
+|---|---|
+| **pomidor uspakajający** – samo hasło, **bez „kochanie"**, w każdej chwili (jak „trąbka"); po angielsku także **calming tomato** | przez 5 minut obie maszyny płynnie zwalniają do minimum, wchodzą na pełną głębokość, a skok zwęża się do 10 % – na końcu tylko wolne, jednostajne mikroruchy po prostacie, aż do innej komendy. W losowym momencie **jeden** strzał lube: przód, tył albo oba naraz. **Bez kości** – Pani tylko czule to komentuje, potem mówi już tylko łagodnie, jej program się kończy. Samo hasło (bez części ciała) wycisza **wszystkie** maszyny, nawet jeśli wcześniej mówiłaś tylko o jednej; „pomidor uspakajający od tyłu" / „… do ust" = tylko ta maszyna. Zwykłe „uspokój mnie", „wycisz" to tylko rozmowa z Panią – ona decyduje. Szybciej / głębiej / tryb przerywa wyciszanie, „trąbka" zatrzymuje wszystko. Klawisz **Scroll Lock**. |
+
 ## Tryby maszyny (zastępują film, aż wrócisz)
 
 | Powiedz | Co się stanie |
@@ -99,7 +105,8 @@ a z Twoich skryptów ASMR m.in. "sama się zgłosiłaś", "wymazana", "zaprogram
 "rajstopy", "złam mnie", "bez granic", "puść się", "prostata", "klub" (część dosłownie, część przerobiona, resztę dogenerowuje model).
 Świat jest w VR: Pani nigdy nie mówi o maszynie, dildo czy launcherze - mówi "on", "oni", "ten, który cię bierze", "jego rytm",
 "jego sperma"; sprzęt to ich ciała. Do tego **polecenia**: co jakiś czas zamiast komentarza pada rozkaz fizyczny (ściskaj, oddychaj, klipsy, dildo do ust, "powtórz: jestem
-posłuszną sissi"), łagodniejszy na początku, ostrzejszy później, nigdy ten sam dwa razy w sesji.
+posłuszną sissi", pozycje: "wypnij dupcię wyżej", "głowa w dół, dupcia do góry", "kolana szerzej", "rozchyl pośladki",
+"nadziewaj się sama"), łagodniejszy na początku, ostrzejszy później, nigdy ten sam dwa razy w sesji.
 
 ## Dwie maszyny i dwa Lube Launchery: przód i tył
 
@@ -156,7 +163,7 @@ Program nie woła modelu - nic nie kosztuje.
 ## Rozmowa z Panią
 
 Pani odpowiada Ci na głos i to **ona** decyduje o wszystkim, co robi maszyna i film. Przez nią przechodzi **wszystko
-oprócz dwóch rzeczy**: **"trąbka"** (słowo bezpieczeństwa) i **"utrzymaj to"** (blokada 5 minut) - te działają od razu.
+oprócz trzech rzeczy**: **"trąbka"** (słowo bezpieczeństwa), **"utrzymaj to"** (blokada 5 minut) i **"pomidor uspakajający"** (wyciszanie) - te działają od razu.
 Reszta - także "dość", "wolniej", "płycej", tryby, "wróć do filmu", pauza, pętla, lube, "pieprz mnie", "zaskocz mnie" -
 to prośby: ona może się zgodzić albo odmówić ("Nie. Jeszcze nie skończyłam."). Łagodne prośby (dość, wolniej, płycej,
 pauza) dostają zgodę częściej (50 % za pierwszym razem). Klawisze działają zawsze od razu, bez Pani.
@@ -174,7 +181,7 @@ większą szansę. A czasem, bez pytania, sama Cię zleje lubem (od drugiego eta
 
 Grzeczność się liczy: prośba bez "proszę"/"Pani" ma gorsze szanse, a zignorowanie jej żądania jeszcze gorsze. Otwarta odmowa
 ("nie chcę", "nie powiem", "nie będę prosić") kasuje Twoje prośby i przez 90 s nic nie dostajesz - do czasu "przepraszam, Pani".
-"trąbka" i "utrzymaj to" działają zawsze, bez kary. Przy odmowie potrafi dręczyć: zwolnić, spłycić, włączyć najwolniejszy tryb.
+"trąbka", "utrzymaj to" i "pomidor uspakajający" działają zawsze, bez kary. Przy odmowie potrafi dręczyć: zwolnić, spłycić, włączyć najwolniejszy tryb.
 
 Co jej wolno: mówić, dawać i odbierać tempo, głębokość, tryby, jeden strzał z lube na raz. Czego nie wolno nigdy:
 zatrzymać maszyny samej z siebie ("trąbka" to Twoje słowo), włączyć blokady, zaskoczyć sama z siebie. **"Trąbka" i klawisz End
@@ -223,4 +230,4 @@ Przykłady tego, co możesz mówić: "proszę, Pani" · "błagam" · "jestem Two
 
 Num 1–8 tryby · Num 9 = A · Num 0 = B · Num . = normalnie · Num + / − szybciej / wolniej ·
 Num * / / głębiej / płycej · F8 lube · Insert niespodzianka · Del coś innego · Home dość ·
-PgUp utrzymaj · **End trąbka (stop)** · Pause nasłuch wł./wył.
+PgUp utrzymaj · Scroll Lock pomidor uspakajający · **End trąbka (stop)** · Pause nasłuch wł./wył.

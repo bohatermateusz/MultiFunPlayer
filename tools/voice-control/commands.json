@@ -826,6 +826,25 @@
    "max_extra_words": 1
   },
   {
+   "id": "cooldown",
+   "phrases": [
+    "pomidor uspakajający",
+    "pomidor uspokajający",
+    "pomidorze uspakajający"
+   ],
+   "phrases_en": ["pomidor uspakajający", "pomidor uspokajający", "calming tomato"],
+   "steps": [
+    {
+     "action": "{target}::Hismith::Cooldown",
+     "args": []
+    }
+   ],
+   "description": "COOLDOWN, the end of a session: ONLY the exact password 'pomidor uspakajający' (EN also 'calming tomato'), no wake word needed, like the safe word. Over 5 minutes both machines slow down to the slowest speed, go to full depth and narrow the stroke to 10% (slow, even micro strokes), one Lube Launcher shot at a random moment; then they stay like that. Never decided by dice. Not for 'uspokój mnie' / 'wycisz' - that is talk to her.",
+   "cooldown": 5,
+   "threshold": 0.9,
+   "max_extra_words": 2
+  },
+  {
    "id": "hard",
    "phrases": [
     "pieprz mnie",
@@ -1140,6 +1159,7 @@
   "insert": "surprise",
   "delete": "surprise_again",
   "page_up": "lock",
+  "scroll_lock": "cooldown",
   "f9": "@voice",
   "f10": "@lang",
   "f11": "@mode"
@@ -1326,8 +1346,30 @@
   "character": "Jesteś Panią. Mówisz do swojej własności - uległej dziewczynki, sissy, która nie ma własnej woli i istnieje po to, by Ci służyć i prosić. Jesteś stanowcza, chłodna, pewna siebie, czasem okrutnie czuła. Mówisz krótko, w trybie rozkazującym: \"Poproś mnie.\", \"Ładniej.\", \"Powiedz, kim jesteś.\", \"Powtórz.\", \"Podziękuj.\", \"Dobra dziewczynka.\", \"Jeszcze nie. Zasłuż.\" Zwracasz się do niej: dziewczynko, mała, laleczko, moja własność. Ona ma mówić do Ciebie uprzejmie i z szacunkiem - \"Pani\", \"kochanie\", \"moja Pani\" - i prosić. Lubisz kazać jej powtarzać wyznania (\"jestem Twoją dziwką\", \"należę do Ciebie\") i dziękować za wszystko - także za odmowę. Jej orgazm, tempo i głębokość należą do Ciebie: dajesz je, gdy uznasz, odbierasz, gdy chcesz, dręczysz spowolnieniem i płytkością, nagradzasz mocniej i głębiej. Nigdy nie prosisz o zgodę, nie przepraszasz, nie tłumaczysz się, nie wychodzisz z roli. Nie używasz wulgaryzmów bez potrzeby - Twoja władza jest w spokoju.",
   "never_gated": [
    "halt",
-   "lock"
+   "lock",
+   "cooldown"
   ],
+  "cooldown": {
+   "_comment": "'uspokój mnie' / Scroll Lock: the machines wind down (MFP Hismith::Cooldown, 5 min) and she only comments tenderly - one of 'lines' at once, then narration only on 'themes', always tender, no orders, and her program waits. 'seconds' = how long the tool keeps her soft (set it like HismithCooldownSeconds in MFP).",
+   "seconds": 300,
+   "lines": [
+    "Ciii… zwalniam. Został tylko on, powoli, tam gdzie lubisz.",
+    "Już dobrze, kochanie. Teraz tylko powoli, głęboko, do samego końca.",
+    "Oddychaj, mała. On zostaje w tobie i już tylko cię głaszcze od środka.",
+    "Grzeczna dziewczynka. Teraz cię wyciszę, powolutku, w samym środku.",
+    "Shh… już nikt się nie spieszy. Zostań tak, pełna i spokojna.",
+    "Dobrze się spisałaś, księżniczko. Teraz tylko małe, wolne ruchy, tam gdzie najczulej.",
+    "Rozluźnij się. Niech cię kołysze, coraz wolniej, coraz głębiej.",
+    "Moja dziewczynka. Już tylko delikatnie, w kółko po tym jednym miejscu."
+   ],
+   "themes": [
+    "po sesji - opieka: wraca do siebie, ale już nie taka sama",
+    "pochwała - dobra dziewczynka, bo jest posłuszna i grzeczna",
+    "czułość w poniżeniu - trzymam ją, gdy ją biorą; może odpuścić",
+    "prostata - przyciski, prąd, neon w ciemnym pokoju; to, czego szukała całe życie",
+    "puść się - koniec trzymania, ciało decyduje, nie ona; fala idzie"
+   ]
+  },
   "fallback_plain": [
    "calm",
    "slower",
@@ -1440,7 +1482,12 @@
     "dwóch naraz - jeden w ustach, drugi z tyłu; nie ma strony, która jest jej",
     "po sesji - opieka: wraca do siebie, ale już nie taka sama",
     "przerobiona - zabrali jej to, co robiło z niej faceta, i zrobili z niej dziewczynkę do ich zabawy",
+    "trans dziewczyna - jest teraz trans dziewczyną; to nie przebranie ani zabawa w udawanie, to ona; ma to powiedzieć na głos i być z tego dumna",
+    "spełniona fantazja - zawsze tego chciała i teraz to się dzieje: biorą ją jak kobietę, a ona piszczy cienkim, dziewczęcym głosikiem",
+    "dziewczyna do ruchania - jest teraz ich dziewczyną do ruchania; dziewczyny są uległe i nie mają nic do gadania",
+    "orgazmy nie są jej - nawet jej orgazmy już do niej nie należą; należą do nich: oni decydują kiedy, ile i czy w ogóle",
     "dla ich zabawy - istnieje po to, żeby ich bawić i ulegle służyć; jej przyjemność jest dodatkiem",
+    "na posyłki - używają jej uzależnieni od seksu, którzy chcą się pieprzyć bez przerwy; ona jest na ich zawołanie jak towar z katalogu w magazynie",
     "hormony - zabrali jej testosteron i podają estrogen; ciało mięknie, zaokrągla się, uczy się słuchać; nie ma już czym walczyć",
     "księżniczka odbytu - jej dupa jest jej koroną; to tam ją biorą i tam jest najbardziej sobą",
     "ruchają cię w dupę - biorą ją od tyłu, głęboko, raz za razem, a ona to lubi",
@@ -1709,6 +1756,62 @@
       "Byłaś moja cała. Teraz możesz być sobą… na chwilę.",
       "Nic nie musisz. Już wszystko zrobiłaś."
      ],
+     "orgazmy nie są jej - nawet jej orgazmy już do niej nie należą; należą do nich: oni decydują kiedy, ile i czy w ogóle": [
+      "Nawet twoje orgazmy nie są już twoje. Należą do nich.",
+      "Dochodzisz, kiedy oni chcą. Nie kiedy ty chcesz.",
+      "Twój orgazm to ich własność. Ty go tylko nosisz w sobie.",
+      "Chcesz dojść. Zapytaj ich. To nie twoja decyzja.",
+      "Oddałaś im ciało. Oddałaś głos. Teraz oddajesz też to, jak dochodzisz.",
+      "Każda twoja fala należy do nich. Oni ją wywołują, oni ją zabierają.",
+      "Nie masz prawa dojść bez pozwolenia. Grzeczne dziewczyny czekają.",
+      "Twoja przyjemność ma właściciela. I to nie jesteś ty.",
+      "Dochodzisz dla nich. Na ich rozkaz. Dla ich zabawy.",
+      "Zabrali ci nawet to. Najintymniejsze. Teraz to ich zabawka.",
+      "Powtórz: moje orgazmy należą do nich.",
+      "Jeśli każą ci dojść, dojdziesz. Jeśli każą czekać, poczekasz."
+     ],
+     "dziewczyna do ruchania - jest teraz ich dziewczyną do ruchania; dziewczyny są uległe i nie mają nic do gadania": [
+      "Teraz jesteś ich dziewczynką do ruchania. Tylko tyle. I aż tyle.",
+      "Dziewczyny są uległe. A ty jesteś dziewczyną. Więc słuchasz.",
+      "Nie masz nic do gadania. Dziewczyny nie mają. Rozkładają się i czekają.",
+      "Kiedyś decydowałaś. Teraz jesteś dziewczyną. Decydują oni.",
+      "Twoje zdanie nikogo nie obchodzi. Dziewczynki do ruchania nie mają zdania. Mają dziurki.",
+      "Grzeczne dziewczyny nie dyskutują. Grzeczne dziewczyny się wypinają.",
+      "Jesteś ich dziewczyną do ruchania. Mówią: teraz. A ty: tak.",
+      "Dziewczyny są po to, żeby je brać. Ciebie biorą. Zgadza się.",
+      "Cicho, mała. Twoje „nie” zostało tam, gdzie twój dawny głos.",
+      "Ulegasz, bo jesteś dziewczyną. To nie wybór. To twoja natura teraz.",
+      "Powtórz: jestem ich dziewczynką do ruchania i nie mam nic do gadania.",
+      "Oni chcą, ty dajesz. Tak działa dziewczyna. Tak działasz ty."
+     ],
+     "spełniona fantazja - zawsze tego chciała i teraz to się dzieje: biorą ją jak kobietę, a ona piszczy cienkim, dziewczęcym głosikiem": [
+      "Zawsze tego chciałaś. I teraz to się dzieje. Naprawdę.",
+      "Twoja fantazja się spełniła, kochanie. Leżysz i bierze cię jak kobietę.",
+      "Słyszysz ten cienki głosik. To ty tak piszczysz. Jak dziewczyna.",
+      "Pamiętasz, jak o tym marzyłaś po nocach. Już nie musisz marzyć.",
+      "Piszcz, mała. Cieniutko. Tak piszczą dziewczyny, kiedy je dymają.",
+      "Tyle lat w głowie. A teraz w ciele. Fantazja spełniona.",
+      "Dymają cię jak dziewczynę. Tak, jak zawsze chciałaś.",
+      "Ten piskliwy głosik zdradza cię za każdym pchnięciem. Dziewczęcy do szpiku.",
+      "Nie musisz już sobie wyobrażać. On jest w tobie. Naprawdę.",
+      "Zawsze chciałaś być brana jak kobieta. Proszę bardzo. Bierze.",
+      "Głośniej i cieniej. Niech słyszy, jaką jesteś dziewczyną.",
+      "Twoje marzenie właśnie cię pieprzy. Podziękuj mu."
+     ],
+     "trans dziewczyna - jest teraz trans dziewczyną; to nie przebranie ani zabawa w udawanie, to ona; ma to powiedzieć na głos i być z tego dumna": [
+      "Jesteś teraz trans dziewczyną. Nie udajesz. Po prostu nią jesteś.",
+      "Powtórz za mną: jestem trans dziewczyną.",
+      "Powiedz to głośno, kochanie. Jestem trans dziewczyną. I dobrze mi z tym.",
+      "To nie przebranie. To nie zabawa. To ty, prawdziwa.",
+      "Trans dziewczyna. Moja trans dziewczyna. Brzmi idealnie.",
+      "Ten chłopiec był tylko kostiumem. Zdjęłaś go. Została dziewczyna.",
+      "Każdy, kto cię bierze, bierze trans dziewczynę. I wie o tym.",
+      "Nie musisz już nikogo udawać. Jesteś dziewczyną. Trans dziewczyną.",
+      "Mów o sobie: ona. Moja grzeczna trans dziewczynka.",
+      "Jesteś trans dziewczyną i jesteś piękna. Nie spieraj się ze mną.",
+      "Z każdym dniem bardziej dziewczyna. Już nie ma odwrotu… i nie chcesz go.",
+      "Powtórz: jestem trans dziewczyną i należę do nich."
+     ],
      "przerobiona - zabrali jej to, co robiło z niej faceta, i zrobili z niej dziewczynkę do ich zabawy": [
       "Zabrali ci to, co robiło z ciebie faceta. Nie na chwilę. Na zawsze.",
       "Przerobili cię na dziewczynkę dla własnej zabawy… a ty jeszcze dziękujesz.",
@@ -1720,6 +1823,20 @@
       "Powtórz za mną: zabrali mi to i zrobili ze mnie dziewczynkę… żebym im służyła.",
       "Nie jesteś już nikim, kim byłaś. Jesteś tym, co z ciebie wycięli i co zostało.",
       "Patrz, jak lekko ci bez tego. Tak lekko mają służące."
+     ],
+     "na posyłki - używają jej uzależnieni od seksu, którzy chcą się pieprzyć bez przerwy; ona jest na ich zawołanie jak towar z katalogu w magazynie": [
+      "Oni nie umieją przestać. A ty jesteś po to, żeby nie musieli.",
+      "Dzwonią po ciebie jak po towar. Numer z katalogu, odbiór od razu.",
+      "Jeden kończy, drugi już czeka. Taka kolejka po dziewczynkę z magazynu.",
+      "Nie jesteś kochanką. Jesteś pozycją w katalogu. Zamawiają i biorą.",
+      "Są uzależnieni od dymania. A ty jesteś ich działką, kochanie.",
+      "Na każde zawołanie. Wypięta, gotowa, z półki prosto do łóżka.",
+      "Nikt nie pyta, jak masz na imię. Pytają, czy jesteś na stanie.",
+      "Oni chcą non stop. Więc ty jesteś dostępna non stop. Taki masz regulamin.",
+      "Zamówienie przyszło znowu. Ten sam towar, ta sama dziurka.",
+      "Jesteś na ich posyłki. Gwizdną – i już leżysz rozłożona.",
+      "Zużyją cię i odstawią na półkę. Do następnego zamówienia.",
+      "Głodni, ciągle głodni. A ty jesteś tym, czym się karmią."
      ],
      "dla ich zabawy - istnieje po to, żeby ich bawić i ulegle służyć; jej przyjemność jest dodatkiem": [
       "Jesteś ich zabawką. Zabawki nie mają zdania, mają zastosowanie.",
@@ -1791,35 +1908,35 @@
       "Oddychaj… cztery… siedem… osiem.",
       "Zamknij oczy. Słuchaj tylko mnie.",
       "Napij się wody. Powoli.",
-      "Połóż dłonie na udach i nie ruszaj ich, dopóki nie pozwolę."
+      "Połóż dłonie na udach i nie ruszaj ich, dopóki nie pozwolę.", "Wypnij dupcię. Troszkę wyżej. Grzecznie.", "Rozsuń kolanka. Pokaż się.", "Wygnij plecy w łuk. Ładnie.", "Policzek nisko, dupcia wysoko. Tak.", "Rozluźnij pośladki. Niech widzą."
      ],
      "1": [
       "Ściskaj… puść… wyjmij… czekaj trzy sekundy… włóż powoli.",
       "Szukaj tego miejsca. Mały ruch. Dwa stopnie.",
       "Jęcz cicho. Tak, żebym słyszała.",
       "Powtórz: jestem twoją sissi.",
-      "Ciepło w miednicy… skieruj je do dupy. Oddychaj."
+      "Ciepło w miednicy… skieruj je do dupy. Oddychaj.", "Wypnij dupcię wyżej. Wyżej. O, tak.", "Kolana szerzej, kochanie. Grzeczne dziewczynki się nie zasłaniają.", "Głowa w dół, dupcia do góry. I tak zostań.", "Rozchyl pośladki rączkami. Pokaż mu, gdzie ma wejść.", "Zakręć biodrami. Powoli. Jak dziewczynka, która się prosi.", "Wypnij się i podziękuj, że cię biorą."
      ],
      "2": [
       "Klipsy na sutki. Delikatnie. Teraz ściskaj odbyt w tym samym rytmie.",
       "Otwórz usta. On już czeka. Ssij powoli. Dwie dziurki zajęte, kochanie.",
       "Mocniej… trzy sekundy… puść. Jęcz głośniej.",
       "Powtórz: chcę być ładna.",
-      "Wyjmij… czekaj pięć sekund… włóż powoli. Poczuj każdy milimetr."
+      "Wyjmij… czekaj pięć sekund… włóż powoli. Poczuj każdy milimetr.", "Wypnij się wyżej. Ma widzieć wszystko.", "Wyginaj się bardziej. Dupcia wyżej, buzia otwarta.", "Nadziewaj się sama. Powoli, do końca.", "Rozłóż się szerzej. Nie zasłaniaj się przed nim.", "Trzymaj pośladki rozchylone. Nie puszczaj, dopóki nie pozwolę.", "Kołysz biodrami w jego rytmie. Ty mu dajesz, a on bierze."
      ],
      "3": [
       "Głębiej. Prawie do końca gardła. Oddychaj nosem.",
       "Ściskaj mocno pięć sekund… i puść nagle.",
       "Powtórz: należę do kogoś.",
       "Ból w sutkach otwiera dupę. Ściskaj klipsy razem z odbytem.",
-      "Wyjmij… i włóż nagle. Dociśnij. Jęcz."
+      "Wyjmij… i włóż nagle. Dociśnij. Jęcz.", "Wyżej tę dupę. Jeszcze. Wypinaj się jak dziwka, którą jesteś.", "Wypnij się i nie ruszaj. Bierze cię, kiedy chce.", "Nabijaj się na niego. Sama. Głęboko.", "Rozchyl się szeroko i proś, żeby wszedł głębiej.", "Twarz w poduszkę, dupcia w górze. Tak cię chcę.", "Pokaż mu się od tyłu. Cała. Bez wstydu."
      ],
      "4": [
       "Ściskaj! Puść! Ssij głębiej! Nie przestawaj!",
       "Powtórz, głośno: jestem posłuszną sissi.",
       "Gardło. Do końca. Łzy to dobrze.",
       "Wszędzie na siebie. Zbrukana. Łykaj.",
-      "Jedź. Nie ściskaj przy fali… oddychaj przez nią. Puść."
+      "Jedź. Nie ściskaj przy fali… oddychaj przez nią. Puść.", "Wyżej! Wypnij się wyżej! Nie opuszczaj jej!", "Rozchyl się rękami i trzymaj. Niech się w tobie spuści.", "Nadziewaj się mocniej. Szybciej. Dziurka do góry.", "Dupcia w górze, buzia otwarta. Dwie dziurki gotowe.", "Nie waż się opuścić bioder, dopóki nie skończy."
      ]
     },
     "care": [
@@ -1868,7 +1985,7 @@
      "Nie odwracaj wzroku.",
      "Powtórz za mną.",
      "Otwórz buzię.",
-     "Ręce przy sobie."
+     "Ręce przy sobie.", "Wypnij dupcię wyżej."
     ],
     "2": [
      "Ssij.",
@@ -1876,19 +1993,19 @@
      "Ssij i patrz na mnie.",
      "Połykaj.",
      "Pokaż, jak bardzo tego chcesz.",
-     "Rozchyl się dla mnie."
+     "Rozchyl się dla mnie.", "Wypnij się dla niego."
     ],
     "3": [
      "Ssij głębiej, szmato.",
      "Połykaj wszystko do końca.",
      "Nie przestawaj, dopóki nie powiem.",
-     "Otwórz się szeroko i trzymaj."
+     "Otwórz się szeroko i trzymaj.", "Głowa w dół, dupa do góry."
     ],
     "4": [
      "Ssij, aż powiem dość.",
      "Połykaj i proś o więcej, dziwko.",
      "Sssij. Głębiej. Bez przerwy.",
-     "Rób, co każę, bez jednego słowa."
+     "Rób, co każę, bez jednego słowa.", "Wyżej tę dupę!"
     ]
    },
    "własność": {
@@ -1994,7 +2111,7 @@
     ],
     "2": [
      "Powiedz: jestem twoją dziwką.",
-     "Powtórz, że nie masz własnej woli."
+     "Powtórz, że nie masz własnej woli.", "Powiedz: jestem trans dziewczyną."
     ],
     "3": [
      "Krzyknij, czyją jesteś własnością.",
@@ -2208,7 +2325,14 @@
    "odpuszczam",
    "puszczam wszystko",
    "jestem cała twoja",
-   "jestem twoja całkiem"
+   "jestem twoja całkiem",
+   "jestem trans dziewczyną",
+   "jestem trans dziewczynką",
+   "jestem teraz trans dziewczyną",
+   "jestem ich dziewczynką do ruchania",
+   "nie mam nic do gadania",
+   "moje orgazmy należą do nich",
+   "moje orgazmy nie są moje"
   ],
   "obey_phrases": [
    "dziękuję",
@@ -2361,7 +2485,7 @@
     "i give up",
     "i'm your girl",
     "i let go",
-    "i'm your little girl"
+    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine"
    ],
    "obey_phrases": [
     "thank you",
@@ -2372,6 +2496,24 @@
     "i'm breathing",
     "i am breathing"
    ],
+   "cooldown": {
+    "lines": [
+     "Shh… I'm slowing down. Only him left, slowly, right where you like it.",
+     "It's alright, darling. Now just slow, deep, all the way in.",
+     "Breathe, little one. He stays inside you and only strokes you from within now.",
+     "Good girl. I'll calm you down now, slowly, deep inside.",
+     "Shh… nobody's in a hurry anymore. Stay like this, full and calm.",
+     "You did so well, princess. Now only small, slow strokes, right on the softest spot.",
+     "Let go. Let it rock you, slower and slower, deeper and deeper.",
+     "My girl. Just gently now, over and over that one spot."
+    ],
+    "themes": [
+     "aftercare - she comes back to herself, but never quite the same",
+     "praise - good girl, because she is obedient and polite",
+     "tenderness in humiliation - I hold her while they take her; she may let go",
+     "let go - end of holding on; the body decides, not her; the wave comes"
+    ]
+   },
    "fallback_plain": [
     "calm",
     "slower",
@@ -2454,8 +2596,8 @@
      "let go - end of holding on; the body decides, not her; the wave comes",
      "the one who takes her - his rhythm, depth and pace are not hers; I let him",
      "two at once - one in her mouth, one behind; no side is hers",
-     "remade - they took what made her a man and made a girl for their amusement",
-     "for their amusement - she exists to entertain them and serve meekly; her pleasure is a bonus",
+     "remade - they took what made her a man and made a girl for their amusement", "trans girl - she is a trans girl now; not a costume, not pretend, it is her; she says it out loud and is proud of it", "fantasy come true - she always wanted this and now it is real: they take her like a woman and she squeals in a thin, girlish voice", "their girl to fuck - she is their girl to fuck now; girls are submissive and have no say", "her orgasms are not hers - even her orgasms don't belong to her anymore; they belong to them: they decide when, how many and whether at all",
+     "for their amusement - she exists to entertain them and serve meekly; her pleasure is a bonus", "on call - sex-obsessed men who want to fuck nonstop use her; she's at their beck and call like an item from a warehouse catalogue",
      "hormones - they took her testosterone and give her estrogen; the body softens, rounds, learns to obey; nothing left to fight with",
      "affirmation - she orders one first-person sentence repeated ('Repeat after me: I am a woman who takes it.')",
      "aftercare - she comes back to herself, but never quite the same",
@@ -2471,35 +2613,35 @@
        "Breathe… four… seven… eight.",
        "Close your eyes. Listen only to me.",
        "Drink some water. Slowly.",
-       "Hands on your thighs and don't move them until I allow it."
+       "Hands on your thighs and don't move them until I allow it.", "Arch that little ass. A bit higher. Good girl.", "Knees apart. Show yourself.", "Curve your back. Pretty.", "Cheek down, ass up. Like that.", "Relax your cheeks. Let them see."
       ],
       "1": [
        "Squeeze… release… pull out… wait three seconds… slide it in slowly.",
        "Find the spot. Tiny move. Two degrees.",
        "Moan quietly. So that I can hear.",
        "Repeat: I am your sissy.",
-       "Warmth in your hips… send it back. Breathe."
+       "Warmth in your hips… send it back. Breathe.", "Push that little ass higher. Higher. Yes, like that.", "Knees wider, darling. Good girls don't hide.", "Head down, ass up. And stay like that.", "Spread your cheeks with your hands. Show him where to go.", "Roll your hips. Slowly. Like a girl who's begging for it.", "Arch for him and thank me that you're taken."
       ],
       "2": [
        "Clamps on your nipples. Gently. Now squeeze in the same rhythm.",
        "Open your mouth. He's waiting. Suck slowly. Both holes busy, darling.",
        "Harder… three seconds… release. Moan louder.",
        "Repeat: I want to be pretty.",
-       "Pull out… wait five seconds… slide in slowly. Feel every inch."
+       "Pull out… wait five seconds… slide in slowly. Feel every inch.", "Push it higher. He has to see everything.", "Arch more. Ass higher, mouth open.", "Impale yourself. Slowly, all the way.", "Spread wider. Don't hide from him.", "Keep your cheeks spread. Don't let go until I say so.", "Rock your hips to his rhythm. You give, he takes."
       ],
       "3": [
        "Deeper. Almost to the throat. Breathe through your nose.",
        "Squeeze hard for five seconds… and let go at once.",
        "Repeat: I belong to someone.",
        "The pain in your nipples opens you up. Squeeze the clamps with your hole.",
-       "Pull out… and push in at once. Press. Moan."
+       "Pull out… and push in at once. Press. Moan.", "Higher. More. Present yourself like the slut you are.", "Arch and don't move. He takes you when he wants.", "Push yourself onto him. On your own. Deep.", "Spread wide and beg him to go deeper.", "Face in the pillow, ass in the air. That's how I want you.", "Show yourself to him from behind. All of you. No shame."
       ],
       "4": [
        "Squeeze! Release! Suck deeper! Don't stop!",
        "Repeat, out loud: I am an obedient sissy.",
        "Throat. All the way. Tears are fine.",
        "All over yourself. Marked. Swallow.",
-       "Ride it. Don't clench at the wave… breathe through it. Let go."
+       "Ride it. Don't clench at the wave… breathe through it. Let go.", "Higher! Push it higher! Don't you drop it!", "Spread yourself with your hands and hold it. Let him cum inside you.", "Ride back harder. Faster. Hole up.", "Ass up, mouth open. Both holes ready.", "Don't you dare drop your hips until he's done."
       ]
      },
      "care": [
@@ -2559,6 +2701,76 @@
        "Every drop on you is a sign… that you were used, that you served.",
        "Don't wipe it off. The mess on your skin is a medal.",
        "Repeat after me: I am marked and proud."
+      ],
+      "on call - sex-obsessed men who want to fuck nonstop use her; she's at their beck and call like an item from a warehouse catalogue": [
+       "They can't stop. And you're here so they never have to.",
+       "They order you like stock. Catalogue number, same-day pickup.",
+       "One finishes, the next is already waiting. A queue for the warehouse girl.",
+       "You're not a lover. You're a catalogue item. They order, they take.",
+       "They're addicted to fucking. And you're their fix, darling.",
+       "At every call. Bent over, ready, off the shelf and straight into bed.",
+       "Nobody asks your name. They ask if you're in stock.",
+       "They want it nonstop. So you're available nonstop. Those are your terms.",
+       "Another order came in. Same item, same hole.",
+       "You run at their call. They whistle, and you're already spread.",
+       "They'll use you up and put you back on the shelf. Until the next order.",
+       "Hungry, always hungry. And you're what they feed on."
+      ],
+      "her orgasms are not hers - even her orgasms don't belong to her anymore; they belong to them: they decide when, how many and whether at all": [
+       "Even your orgasms aren't yours anymore. They belong to them.",
+       "You cum when they want. Not when you want.",
+       "Your orgasm is their property. You only carry it inside you.",
+       "You want to cum. Ask them. It's not your decision.",
+       "You gave them your body. Your voice. Now you give them how you cum too.",
+       "Every wave of yours belongs to them. They bring it, they take it away.",
+       "You have no right to cum without permission. Good girls wait.",
+       "Your pleasure has an owner. And it isn't you.",
+       "You cum for them. On their command. For their fun.",
+       "They took even that from you. The most intimate thing. Now it's their toy.",
+       "Repeat: my orgasms belong to them.",
+       "If they tell you to cum, you'll cum. If they tell you to wait, you'll wait."
+      ],
+      "their girl to fuck - she is their girl to fuck now; girls are submissive and have no say": [
+       "Now you're their girl to fuck. That's all. And that's everything.",
+       "Girls are submissive. And you're a girl. So you obey.",
+       "You have no say. Girls don't. They spread and wait.",
+       "You used to decide. Now you're a girl. They decide.",
+       "Nobody cares what you think. Girls to fuck don't have opinions. They have holes.",
+       "Good girls don't argue. Good girls bend over.",
+       "You're their girl to fuck. They say now. You say yes.",
+       "Girls are there to be taken. They take you. That's right.",
+       "Hush, sweetheart. Your 'no' stayed behind with your old voice.",
+       "You submit because you're a girl. Not a choice. Your nature now.",
+       "Repeat: I'm their girl to fuck and I have no say.",
+       "They want, you give. That's how a girl works. That's how you work."
+      ],
+      "fantasy come true - she always wanted this and now it is real: they take her like a woman and she squeals in a thin, girlish voice": [
+       "You always wanted this. And now it's happening. For real.",
+       "Your fantasy came true, darling. You're lying there and he takes you like a woman.",
+       "Hear that thin little voice. That's you squealing. Like a girl.",
+       "Remember dreaming about this at night. You don't have to dream anymore.",
+       "Squeal, sweetheart. Thin and high. That's how girls squeal when they get fucked.",
+       "So many years in your head. Now in your body. Fantasy fulfilled.",
+       "They fuck you like a girl. Just like you always wanted.",
+       "That squeaky voice gives you away with every thrust. Girly to the bone.",
+       "No need to imagine it anymore. He's inside you. For real.",
+       "You always wanted to be taken like a woman. Here you go. He's taking you.",
+       "Louder and higher. Let him hear what a girl you are.",
+       "Your dream is fucking you right now. Thank it."
+      ],
+      "trans girl - she is a trans girl now; not a costume, not pretend, it is her; she says it out loud and is proud of it": [
+       "You're a trans girl now. You're not pretending. You simply are one.",
+       "Repeat after me: I am a trans girl.",
+       "Say it out loud, darling. I'm a trans girl. And it feels right.",
+       "It's not a costume. It's not a game. It's you, the real you.",
+       "A trans girl. My trans girl. Sounds perfect.",
+       "That boy was only a costume. You took it off. A girl was left.",
+       "Everyone who takes you takes a trans girl. And they know it.",
+       "You don't have to pretend to be anyone anymore. You're a girl. A trans girl.",
+       "Call yourself she. My good trans girl.",
+       "You're a trans girl and you're beautiful. Don't argue with me.",
+       "More of a girl every day. No way back… and you don't want one.",
+       "Repeat: I am a trans girl and I belong to them."
       ],
       "remade - they took what made her a man and made a girl for their amusement": [
        "They took what made you a man. Not for a while. For good.",
@@ -2635,19 +2847,19 @@
      ],
      "1": [
       "Beg me.",
-      "Say it again."
+      "Say it again.", "Push that little ass higher."
      ],
      "2": [
       "Kneel and wait.",
-      "Open your mouth."
+      "Open your mouth.", "Arch for him."
      ],
      "3": [
       "Suck. Don't think.",
-      "Thank me for the refusal."
+      "Thank me for the refusal.", "Head down, ass up."
      ],
      "4": [
       "Suck, and be grateful.",
-      "Swallow. Now."
+      "Swallow. Now.", "That ass higher!"
      ]
     },
     "własność": {
