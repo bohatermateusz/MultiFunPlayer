@@ -119,6 +119,9 @@ internal abstract class AbstractOutputTarget : Screen, IOutputTarget
         }
     }
 
+    protected double? SecondsUntilAbove(DeviceAxis axis, double threshold, double horizonSeconds)
+        => _valueProvider.SecondsUntilAbove(axis, threshold, horizonSeconds);
+
     protected double GetValue(DeviceAxis axis)
     {
         var value = _valueProvider.GetValue(axis);

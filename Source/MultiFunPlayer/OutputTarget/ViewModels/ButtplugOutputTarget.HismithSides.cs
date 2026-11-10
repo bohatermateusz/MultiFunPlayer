@@ -23,6 +23,8 @@ internal sealed class HismithSideState
     public int DepthBoost;
     public int Depth = 50;
     public int Speed = 50;
+    public bool MaxDepthAB;
+    public int CalmLevel;               // how many times "enough" was said in a row (index into CalmSpeeds)             // A / B started as "max": at MaxDepthAB depth instead of the script's
     public CancellationTokenSource LubeBurst;
     public CancellationTokenSource Cooldown;    // the running wind-down of this side
     public double CooldownRemaining;            // seconds left of it (0 = done or none)
@@ -159,18 +161,19 @@ internal sealed partial class ButtplugOutputTarget
             var p = $"{Identifier}::Hismith::{side}";
             var sd = side;
             s.RegisterAction<int>($"{p}::Mode::Set", x => x.WithLabel($"{sd}: mode (0 = funscript, 1-8, 9 = A, 10 = B, 11 = stop, 12 = calm)"), mode => InSide(sd, () => SetHismithModeCore(mode, fromSurprise: false)));
+            s.RegisterAction<int>($"{p}::Mode::SetMax", x => x.WithLabel($"{sd}: mode A (9) / B (10) at 80% depth"), mode => InSide(sd, () => SetHismithModeCore(mode, fromSurprise: false, maxDepth: true)));
             s.RegisterAction($"{p}::Mode::Script", () => InSide(sd, () => SetHismithModeCore(0, fromSurprise: false)));
             s.RegisterAction($"{p}::Mode::Random", () => InSide(sd, HismithModeRandomCore));
             s.RegisterAction($"{p}::Halt", () => InSide(sd, () => SetHismithModeCore(ModeHalt, fromSurprise: false)));
             s.RegisterAction($"{p}::Calm", () => InSide(sd, () => SetHismithModeCore(ModeCalm, fromSurprise: false)));
             s.RegisterAction($"{p}::Cooldown", () => StartCooldown(sd));
-            s.RegisterAction($"{p}::Speed::Faster", () => InSide(sd, () => ChangeSpeed(HismithSpeedStep)));
-            s.RegisterAction($"{p}::Speed::Slower", () => InSide(sd, () => ChangeSpeed(-HismithSpeedStep)));
-            s.RegisterAction($"{p}::Depth::Deeper", () => InSide(sd, () => ChangeDepth(HismithDepthStep)));
-            s.RegisterAction($"{p}::Depth::Shallower", () => InSide(sd, () => ChangeDepth(-HismithDepthStep)));
+            s.RegisterAction($"{p}::Speed::Faster", () => InSide(sd, () => ChangeSpeed(1)));
+            s.RegisterAction($"{p}::Speed::Slower", () => InSide(sd, () => ChangeSpeed(-1)));
+            s.RegisterAction($"{p}::Depth::Deeper", () => InSide(sd, () => ChangeDepth(1)));
+            s.RegisterAction($"{p}::Depth::Shallower", () => InSide(sd, () => ChangeDepth(-1)));
             s.RegisterAction($"{p}::Boost::Reset", () => InSide(sd, BoostResetCore));
             s.RegisterAction<int>($"{p}::Speed::Set", x => x.WithLabel($"{sd}: speed (0-100)"), speed => InSide(sd, () => HismithSpeed = speed));
-            s.RegisterAction($"{p}::LubeLauncher::Fire", () => InSide(sd, () => _ = FireLubeLauncherAsync()));
+            s.RegisterAction($"{p}::LubeLauncher::Fire", () => InSide(sd, () => _ = FireLubeLauncherManyAsync(1)));
             s.RegisterAction<int>($"{p}::LubeLauncher::FireMany", x => x.WithLabel($"{sd}: Lube Launcher shots (1-5)"), count => InSide(sd, () => _ = FireLubeLauncherManyAsync(Math.Clamp(count, 1, 5))));
         }
     }
@@ -181,7 +184,7 @@ internal sealed partial class ButtplugOutputTarget
         foreach (var side in new[] { HismithSide.Rear, HismithSide.Front })
         {
             var p = $"{Identifier}::Hismith::{side}";
-            foreach (var name in new[] { "Mode::Set", "Mode::Script", "Mode::Random", "Halt", "Calm", "Cooldown", "Speed::Faster", "Speed::Slower",
+            foreach (var name in new[] { "Mode::Set", "Mode::SetMax", "Mode::Script", "Mode::Random", "Halt", "Calm", "Cooldown", "Speed::Faster", "Speed::Slower",
                                          "Depth::Deeper", "Depth::Shallower", "Boost::Reset", "Speed::Set", "LubeLauncher::Fire", "LubeLauncher::FireMany" })
                 s.UnregisterAction($"{p}::{name}");
         }
@@ -206,13 +209,13 @@ internal sealed partial class ButtplugOutputTarget
         var mode = st.Mode switch
         {
             0 => "funscript",
-            ModeA => "A",
-            ModeB => "B",
+            ModeA => st.MaxDepthAB ? "A max" : "A",
+            ModeB => st.MaxDepthAB ? "B max" : "B",
             ModeHalt => "STOPPED",
             ModeCalm => "CALM",
             ModeCooldown => st.CooldownRemaining > 0 ? $"COOLDOWN {TimeSpan.FromSeconds(Math.Ceiling(st.CooldownRemaining)):m\\:ss} left" : "COOLDOWN done (micro strokes)",
             _ => $"mode {st.Mode}"
         };
-        return st.Mode == 0 ? $"{mode} (boost {st.SpeedBoost:+0;-0;0}/{st.DepthBoost:+0;-0;0})" : $"{mode} (speed {st.Speed}, depth {st.Depth})";
+        return st.Mode == 0 ? $"{mode} (speed x{Math.Pow(1 + HismithSpeedStep / 100d, st.SpeedBoost):0.00}, depth {DepthBoostOffset(st.DepthBoost):+0;-0;0})" : $"{mode} (speed {st.Speed}, depth {st.Depth})";
     }
 }

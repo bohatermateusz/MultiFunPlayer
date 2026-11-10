@@ -154,26 +154,16 @@
                            FontWeight="Bold"
                            Text="HISMITH S2"
                            Typography.Capitals="AllSmallCaps"/>
-                <TextBlock Margin="0 0 8 0" VerticalAlignment="Center" Text="Preset mode:"/>
-                <ComboBox Width="60"
-                          ItemsSource="{Binding HismithPresetModes}"
-                          SelectedItem="{Binding HismithPresetMode}"
-                          IsEnabled="{Binding HismithControlsEnabled}"
-                          ToolTip="Built-in modes 1-8 (0 = none). Only used in auto mode."/>
-                <TextBlock Margin="25 0 8 0" VerticalAlignment="Center" Text="Sequence"/>
+                <TextBlock Margin="0 0 8 0" VerticalAlignment="Center" Text="Modes 1-8 in turn"/>
                 <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
                               IsChecked="{Binding HismithSequenceActive}"
-                              ToolTip="Run the built-in modes 1-8 in turn and pause the funscripts for this machine"/>
+                              ToolTip="The machine plays its built-in modes 1, 2, ... 8 one after another (each for the seconds on the right) instead of following the film. The video itself keeps playing. Script or any mode ends it; Hold freezes it on the current mode."/>
+                <TextBlock Margin="12 0 4 0" VerticalAlignment="Center" Text="each"/>
                 <TextBox Width="40"
-                         Margin="8 0 0 0"
                          VerticalAlignment="Center"
                          Text="{Binding HismithSequenceSeconds, UpdateSourceTrigger=LostFocus}"
                          ToolTip="Seconds per mode"/>
-                <TextBlock Margin="4 0 8 0" VerticalAlignment="Center" Text="s"/>
-                <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
-                              IsChecked="{Binding HismithSequenceHeld}"
-                              ToolTip="Hold the current mode"/>
-                <TextBlock Margin="4 0 8 0" VerticalAlignment="Center" Text="Hold"/>
+                <TextBlock Margin="4 0 12 0" VerticalAlignment="Center" Text="s"/>
                 <TextBlock VerticalAlignment="Center" Text="{Binding HismithSequenceStatus}"/>
             </StackPanel>
 
@@ -321,60 +311,39 @@
                     <Button Style="{StaticResource MaterialDesignOutlinedButton}"
                             MinWidth="44"
                             Padding="8 0"
-                            Click="{s:Action HismithSurprise}"
+                            Click="{s:Action HismithSurpriseButton}"
                             Content="Surprise"
-                            ToolTip="Surprise: maybe a random mode (1-8, A, B), and nothing / one shot / three shots from the Lube Launcher - at least one of them happens"/>
+                            ToolTip="First press: a surprise now - maybe a random mode (1-8, A, B) and nothing / one / three Lube Launcher shots (at least one of them). Pressed again while a surprise runs: the next one comes after the seconds on the right."/>
                     <TextBlock HorizontalAlignment="Center"
                                FontSize="10"
                                Opacity="0.7"
-                               Text="Insert"/>
-                </StackPanel>
-                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
-                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
-                            MinWidth="44"
-                            Padding="8 0"
-                            Click="{s:Action HismithSurpriseAgain}"
-                            Content="Again"
-                            ToolTip="Something else: the NEXT surprise is drawn and put into effect after the number of seconds on the right; the current one stays until then. Shots that have not been fired yet are dropped at once."/>
-                    <TextBlock HorizontalAlignment="Center"
-                               FontSize="10"
-                               Opacity="0.7"
-                               Text="Del"/>
+                               Text="Insert / Del"/>
                 </StackPanel>
                 <TextBox Width="40"
-                         Margin="0 0 8 6"
+                         Margin="0 0 4 6"
                          VerticalAlignment="Center"
                          Text="{Binding HismithSurpriseDelaySeconds, UpdateSourceTrigger=LostFocus}"
-                         ToolTip="Seconds from 'Again' to the next surprise (default 120)"/>
+                         ToolTip="Seconds until the next surprise when Surprise is pressed again (default 120)"/>
+                <TextBlock Margin="0 0 8 6" VerticalAlignment="Center" Text="s"/>
                 <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
                     <Button Style="{StaticResource MaterialDesignOutlinedButton}"
                             MinWidth="44"
                             Padding="8 0"
                             Click="{s:Action HismithLockDefault}"
                             Content="Hold"
-                            ToolTip="Keep the machine exactly as it is for the minutes on the right: all its controls are ignored; only Stop (End) ends it early. Lube Launcher still works. While the funscript runs the machine, the last seconds of it (second box) loop."/>
+                            ToolTip="Freeze the machine as it is for 5 minutes: all its controls are ignored, only Stop (End) ends it early. With the film running, the last 20 s of it go round. A running 'Modes 1-8 in turn' stays on its mode. The Lube Launcher still works."/>
                     <TextBlock HorizontalAlignment="Center"
                                FontSize="10"
                                Opacity="0.7"
                                Text="PgUp"/>
                 </StackPanel>
-                <TextBox Width="32"
-                         Margin="0 0 8 6"
-                         VerticalAlignment="Center"
-                         Text="{Binding HismithLockMinutes, UpdateSourceTrigger=LostFocus}"
-                         ToolTip="Minutes of the hold (default 5)"/>
-                <TextBox Width="32"
-                         Margin="0 0 8 6"
-                         VerticalAlignment="Center"
-                         Text="{Binding HismithHoldLoopSeconds, UpdateSourceTrigger=LostFocus}"
-                         ToolTip="Seconds of the script that go round during a hold while the funscript runs the machine (default 20)"/>
                 <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
                     <Button Style="{StaticResource MaterialDesignOutlinedButton}"
                             MinWidth="44"
                             Padding="8 0"
                             Command="{s:Action OnHismithModeButton}" CommandParameter="12"
                             Content="Calm"
-                            ToolTip="Calm: the slowest speed at medium depth (the machine keeps going)"/>
+                            ToolTip="Calm: medium speed at medium depth; pressed again, slower each time (40, 25, 12, slowest). The machine keeps going."/>
                     <TextBlock HorizontalAlignment="Center"
                                FontSize="10"
                                Opacity="0.7"
@@ -409,7 +378,7 @@
                             Padding="8 0"
                             Click="{s:Action HismithFaster}"
                             Content="Faster"
-                            ToolTip="Speed up (on top of the funscript)"/>
+                            ToolTip="Faster: with the film, its speed x1.2 per press, compounding (never above 80); in a mode, +20"/>
                     <TextBlock HorizontalAlignment="Center"
                                FontSize="10"
                                Opacity="0.7"
@@ -421,7 +390,7 @@
                             Padding="8 0"
                             Click="{s:Action HismithSlower}"
                             Content="Slower"
-                            ToolTip="Slow down"/>
+                            ToolTip="Slower: with the film, its speed /1.2 per press, compounding; in a mode, -20"/>
                     <TextBlock HorizontalAlignment="Center"
                                FontSize="10"
                                Opacity="0.7"
@@ -445,7 +414,7 @@
                             Padding="8 0"
                             Click="{s:Action HismithDeeper}"
                             Content="Deeper"
-                            ToolTip="Go deeper"/>
+                            ToolTip="Deeper: with the film, +10, then +15, +22 ... (each press 1.5x the last); in a mode, +15"/>
                     <TextBlock HorizontalAlignment="Center"
                                FontSize="10"
                                Opacity="0.7"
@@ -457,7 +426,7 @@
                             Padding="8 0"
                             Click="{s:Action HismithShallower}"
                             Content="Shallower"
-                            ToolTip="Go shallower"/>
+                            ToolTip="Shallower: with the film, -10, then -15, -22 ...; in a mode, -15"/>
                     <TextBlock HorizontalAlignment="Center"
                                FontSize="10"
                                Opacity="0.7"
@@ -469,24 +438,14 @@
                             Padding="8 0"
                             Click="{s:Action HismithBoostReset}"
                             Content="Reset"
-                            ToolTip="Remove the boost"/>
+                            ToolTip="Back to exactly the film (removes Faster/Slower/Deeper/Shallower)"/>
                     <TextBlock HorizontalAlignment="Center"
                                FontSize="10"
                                Opacity="0.7"
                                Text="Num ."/>
                 </StackPanel>
-                <TextBlock Margin="8 0 4 6" VerticalAlignment="Center" Text="Step speed"/>
-                <TextBox Width="36"
-                         Margin="0 0 8 6"
-                         VerticalAlignment="Center"
-                         Text="{Binding HismithSpeedStep, UpdateSourceTrigger=LostFocus}"
-                         ToolTip="Percentage points per Faster/Slower"/>
-                <TextBlock Margin="0 0 4 6" VerticalAlignment="Center" Text="depth"/>
-                <TextBox Width="36"
-                         Margin="0 0 12 6"
-                         VerticalAlignment="Center"
-                         Text="{Binding HismithDepthStep, UpdateSourceTrigger=LostFocus}"
-                         ToolTip="Percentage points per Deeper/Shallower"/>
+                <TextBlock Margin="8 0 12 6" VerticalAlignment="Center" Opacity="0.7"
+                           Text="(film: speed x1.2 per press, depth +10, +25, +47 ...)"/>
                 <TextBlock Margin="0 0 0 6" VerticalAlignment="Center" Text="{Binding HismithModeStatus}"/>
             </WrapPanel>
 

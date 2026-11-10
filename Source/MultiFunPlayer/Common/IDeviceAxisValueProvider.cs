@@ -10,6 +10,10 @@ internal interface IDeviceAxisValueProvider
 {
     public double GetValue(DeviceAxis axis);
 
+    // seconds until the playing script of the axis first goes above the threshold within the horizon (the next Lube
+    // Launcher shot of its track), or null: not playing, no script, already above, or nothing that soon
+    public double? SecondsUntilAbove(DeviceAxis axis, double threshold, double horizonSeconds) => null;
+
     public void BeginEventPolling(object context);
     public void EndEventPolling(object context);
 

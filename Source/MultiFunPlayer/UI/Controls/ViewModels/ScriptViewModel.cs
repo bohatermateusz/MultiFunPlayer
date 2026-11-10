@@ -831,6 +831,29 @@ internal sealed class ScriptViewModel : Screen, IDeviceAxisValueProvider, IDispo
     }
     public double GetValue(DeviceAxis axis) => MathUtils.Clamp01(AxisStates[axis].Value);
 
+    public double? SecondsUntilAbove(DeviceAxis axis, double threshold, double horizonSeconds)
+    {
+        if (!IsPlaying || !AxisKeyframes.TryGetValue(axis, out var keyframes) || keyframes == null || keyframes.Count == 0)
+            return null;
+        if (AxisStates[axis].Value > threshold)
+            return null;
+
+        var speed = Math.Max(PlaybackSpeed, 0.1);
+        var position = GetAxisPosition(axis);
+        var horizon = position + horizonSeconds * speed;
+        foreach (var keyframe in keyframes)
+        {
+            if (keyframe.Position <= position)
+                continue;
+            if (keyframe.Position > horizon)
+                break;
+            if (keyframe.Value > threshold)
+                return (keyframe.Position - position) / speed;
+        }
+
+        return null;
+    }
+
     public void BeginEventPolling(object context)
     {
         foreach (var (_, state) in AxisStates)

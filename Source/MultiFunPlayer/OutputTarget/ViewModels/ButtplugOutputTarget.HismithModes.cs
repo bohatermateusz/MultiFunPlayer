@@ -21,11 +21,16 @@ internal sealed partial class ButtplugOutputTarget
     private const int ModeHalt = 11;               // speed 0, the script is held back for the machine until another mode
     private const int ModeCooldown = 13;           // the wind-down: slower, deeper, a narrower stroke, then micro strokes
     private const int SmallestStrokeWidth = 10;
+    private const int MaxDepthAB = 80;             // "max tryb A / B": A or B at this depth
+    private static readonly int[] CalmSpeeds = [40, 25, 12, 1];   // calm, said again and again: medium down to slowest
     private const double SurpriseModeChance = 0.7;   // chance that the surprise also changes the machine's mode
 
     // mode, boosts, depth and speed live in the side state (Cur: the side of the current command, see HismithSides)
-    private int _hismithSpeedStep = 20;
-    private int _hismithDepthStep = 15;
+    private int _hismithSpeedStep = 20;          // no longer in the panel: the boost grows exponentially on its own
+    private int _hismithDepthStep = 10;
+    private const int BoostMaxLevel = 10;          // faster/slower (deeper/shallower) said this many times at most
+    private const int BoostMaxSpeed = 80;          // the auto mode jerks above this (calibration 2026-11-10)
+    private const double DepthBoostGrowth = 1.5;   // each further "deeper" moves 1.5x as far as the one before
     private int _hismithSlowestSpeed = 1;
     private int _hismithScriptWidth = 40;        // stroke width the scripts run with (the machine's default window)
     private readonly SemaphoreSlim _modeGate = new(1, 1);
@@ -45,7 +50,10 @@ internal sealed partial class ButtplugOutputTarget
         set => SetAndNotify(ref _hismithDepthStep, Math.Clamp(value, 1, 100));
     }
 
-    // Boost: added to the script's value (-100..100 percentage points). Changing it re-sends the machine's values.
+    // Boost while a script plays: the number of "faster" (+) / "slower" (-) and "deeper" / "shallower" said so far
+    // (-BoostMaxLevel..BoostMaxLevel). It scales what the film does now and grows exponentially with every command:
+    // the speed is multiplied by (1 + step%)^level, the depth moves by step, 2.5 step, 4.75 step, ... (each next
+    // command 1.5x the one before). Changing it re-sends the machine's values.
     public int HismithSpeedBoost
     {
         get => Cur.SpeedBoost;
@@ -53,7 +61,7 @@ internal sealed partial class ButtplugOutputTarget
         {
             if (RejectedByLock("the speed boost"))
                 return;
-            if (SetAndNotify(ref Cur.SpeedBoost, Math.Clamp(value, -100, 100)))
+            if (SetAndNotify(ref Cur.SpeedBoost, Math.Clamp(value, -BoostMaxLevel, BoostMaxLevel)))
             {
                 _forceResend = true;
                 NotifyOfPropertyChange(nameof(HismithModeStatus));
@@ -68,7 +76,7 @@ internal sealed partial class ButtplugOutputTarget
         {
             if (RejectedByLock("the depth boost"))
                 return;
-            if (SetAndNotify(ref Cur.DepthBoost, Math.Clamp(value, -100, 100)))
+            if (SetAndNotify(ref Cur.DepthBoost, Math.Clamp(value, -BoostMaxLevel, BoostMaxLevel)))
             {
                 _forceResend = true;
                 NotifyOfPropertyChange(nameof(HismithModeStatus));
@@ -140,7 +148,7 @@ internal sealed partial class ButtplugOutputTarget
     private async Task RestoreScriptWindowAsync(HismithSideState state)
     {
         await SendQuickActuatorsAsync(WidthDescription, ScriptWindowValue(WidthDescription, _hismithScriptWidth), 100);
-        state.Depth = Math.Clamp(ScriptWindowValue(DepthDescription, 50) + state.DepthBoost, 0, 100);   // "deeper" said before stays
+        state.Depth = Math.Clamp(ScriptWindowValue(DepthDescription, 50) + (int)Math.Round(DepthBoostOffset(state.DepthBoost)), 0, 100);   // "deeper" said before stays
         NotifyOfPropertyChange(nameof(HismithDepth));
         await SendQuickActuatorsAsync(DepthDescription, state.Depth, 100);
     }
@@ -155,39 +163,53 @@ internal sealed partial class ButtplugOutputTarget
         var state = StateOf(GetDeviceFromSettings(settings));
         if (state.SpeedBoost != 0 && scalar.ActuatorType == ActuatorType.Oscillate
          && scalar.FeatureDescriptor.StartsWith(SpeedDescription, StringComparison.OrdinalIgnoreCase))
-            return Math.Clamp(value + state.SpeedBoost / 100d, 0, 1);
+            return BoostedSpeed(value, state.SpeedBoost);
 
         if (state.DepthBoost != 0 && scalar.ActuatorType == ActuatorType.Position
          && scalar.FeatureDescriptor.StartsWith(DepthDescription, StringComparison.OrdinalIgnoreCase))
-            return Math.Clamp(value + state.DepthBoost / 100d, 0, 1);
+            return Math.Clamp(value + DepthBoostOffset(state.DepthBoost) / 100d, 0, 1);
 
         return value;
     }
 
-    // "faster" etc.: on top of the script when an axis drives that actuator and no built-in mode runs,
-    // otherwise an absolute value (the machine has no script to boost).
-    public void HismithFaster() => ForEachSide(() => ChangeSpeed(HismithSpeedStep));
-    public void HismithSlower() => ForEachSide(() => ChangeSpeed(-HismithSpeedStep));
-    public void HismithDeeper() => ForEachSide(() => ChangeDepth(HismithDepthStep));
-    public void HismithShallower() => ForEachSide(() => ChangeDepth(-HismithDepthStep));
+    // The film's speed scaled by the boost level: standing stays standing (pause, a scene without this machine), and
+    // it never goes above BoostMaxSpeed when boosted up (the film itself is never cut).
+    private double BoostedSpeed(double value, int level)
+    {
+        if (value <= 0)
+            return value;
+        var boosted = value * Math.Pow(1 + HismithSpeedStep / 100d, level);
+        return level > 0 ? Math.Max(value, Math.Min(boosted, BoostMaxSpeed / 100d)) : Math.Clamp(boosted, 0.01, 1);
+    }
 
-    private void ChangeSpeed(int delta)
+    // Depth points added by the boost level: step, 2.5 step, 4.75 step, ... (each command 1.5x the one before).
+    private double DepthBoostOffset(int level)
+        => level == 0 ? 0 : Math.Sign(level) * HismithDepthStep * (Math.Pow(DepthBoostGrowth, Math.Abs(level)) - 1) / (DepthBoostGrowth - 1);
+
+    // "faster" etc.: while a script plays (an axis drives that actuator, no built-in mode) one more boost level on top
+    // of the film; in a built-in mode an absolute step (the machine has no film to scale).
+    public void HismithFaster() => ForEachSide(() => ChangeSpeed(1));
+    public void HismithSlower() => ForEachSide(() => ChangeSpeed(-1));
+    public void HismithDeeper() => ForEachSide(() => ChangeDepth(1));
+    public void HismithShallower() => ForEachSide(() => ChangeDepth(-1));
+
+    private void ChangeSpeed(int direction)
     {
         CancelCooldown(Cur);       // faster / deeper while winding down: the ramp stops here, the change stays
         if (Cur.Mode == 0 && IsActuatorMapped(SpeedDescription, ActuatorType.Oscillate))
-            HismithSpeedBoost += delta;
+            HismithSpeedBoost += direction;
         else
-            HismithSpeed += delta;
+            HismithSpeed += direction * HismithSpeedStep;
         NotifyOfPropertyChange(nameof(HismithModeStatus));
     }
 
-    private void ChangeDepth(int delta)
+    private void ChangeDepth(int direction)
     {
         CancelCooldown(Cur);       // faster / deeper while winding down: the ramp stops here, the change stays
         if (Cur.Mode == 0 && IsActuatorMapped(DepthDescription, ActuatorType.Position))
-            HismithDepthBoost += delta;
+            HismithDepthBoost += direction;
         else
-            HismithDepth += delta;
+            HismithDepth += direction * Math.Max(HismithDepthStep, 15);
         NotifyOfPropertyChange(nameof(HismithModeStatus));
     }
 
@@ -217,6 +239,7 @@ internal sealed partial class ButtplugOutputTarget
         Interlocked.Exchange(ref state.LubeBurst, source)?.Cancel();
         try
         {
+            await PreShotRampAsync(count, source.Token);   // sometimes the front machine speeds up first (5 s)
             for (var i = 0; i < count && !source.IsCancellationRequested; i++)
             {
                 await FireLubeLauncherAsync();
@@ -305,6 +328,15 @@ internal sealed partial class ButtplugOutputTarget
     public bool HismithLocked => _lockRemaining > 0;
 
     public void HismithLockDefault() => HismithLockStart(_lockMinutes);
+
+    // the one Surprise button: a surprise now, or - pressed while one runs - the next one after the delay ("Again")
+    public void HismithSurpriseButton()
+    {
+        if (_surpriseActive)
+            HismithSurpriseAgain();
+        else
+            HismithSurprise();
+    }
 
     public void HismithLockStart(int minutes)
     {
@@ -458,7 +490,10 @@ internal sealed partial class ButtplugOutputTarget
 
     public void SetHismithMode(int mode) => ForEachSide(() => SetHismithModeCore(mode, fromSurprise: false));
 
-    private void SetHismithModeCore(int mode, bool fromSurprise)
+    // "max tryb A / B": mode A or B at MaxDepthAB depth; plain A / B (Mode::Set) stays at the script's depth
+    public void SetHismithModeMax(int mode) => ForEachSide(() => SetHismithModeCore(mode, fromSurprise: false, maxDepth: true));
+
+    private void SetHismithModeCore(int mode, bool fromSurprise, bool maxDepth = false)
     {
         mode = Math.Clamp(mode, 0, ModeCalm);
         if (mode == ModeHalt)
@@ -485,6 +520,7 @@ internal sealed partial class ButtplugOutputTarget
             return;
         }
 
+        Cur.MaxDepthAB = maxDepth && (mode == ModeA || mode == ModeB);
         _ = ApplyHismithModeAsync(mode);
     }
 
@@ -563,19 +599,23 @@ internal sealed partial class ButtplugOutputTarget
             }
             else if (mode == ModeCalm)
             {
-                // calm: the slowest speed, the normal stroke width, a medium depth
+                // calm ("dość", "wystarczy"): a medium speed first, and every further "enough" one step slower, down to
+                // the slowest; the normal stroke width, a medium depth. The machine keeps going.
+                state.CalmLevel = previous == ModeCalm ? Math.Min(state.CalmLevel + 1, CalmSpeeds.Length - 1) : 0;
                 await SendQuickActuatorsAsync(WidthDescription, _hismithScriptWidth, 100);
                 state.Depth = 50;
                 NotifyOfPropertyChange(nameof(HismithDepth));
                 await SendQuickActuatorsAsync(DepthDescription, 50, 100);
-                await SetSpeedAbsoluteAsync(_hismithSlowestSpeed);
+                await SetSpeedAbsoluteAsync(Math.Max(CalmSpeeds[state.CalmLevel], _hismithSlowestSpeed));
             }
             else
             {
                 // A and B: the smallest stroke at the depth the built-in modes get (the script's, as at the start),
                 // A at full speed, B as slow as possible
                 await SendQuickActuatorsAsync(WidthDescription, SmallestStrokeWidth, 100);
-                state.Depth = Math.Clamp(ScriptWindowValue(DepthDescription, 50) + state.DepthBoost, 0, 100);
+                state.Depth = state.MaxDepthAB
+                    ? MaxDepthAB
+                    : Math.Clamp(ScriptWindowValue(DepthDescription, 50) + (int)Math.Round(DepthBoostOffset(state.DepthBoost)), 0, 100);
                 NotifyOfPropertyChange(nameof(HismithDepth));
                 await SendQuickActuatorsAsync(DepthDescription, state.Depth, 100);
                 await SetSpeedAbsoluteAsync(mode == ModeA ? 100 : _hismithSlowestSpeed);
@@ -596,6 +636,7 @@ internal sealed partial class ButtplugOutputTarget
     private void RegisterHismithModeActions(IShortcutManager s)
     {
         s.RegisterAction<int>($"{Identifier}::Hismith::Mode::Set", s => s.WithLabel("Mode (0 = funscript, 1-8 built-in, 9 = A, 10 = B, 11 = stop, 12 = calm)"), SetHismithMode);
+        s.RegisterAction<int>($"{Identifier}::Hismith::Mode::SetMax", s => s.WithLabel("Mode A (9) / B (10) at 80% depth"), SetHismithModeMax);
         s.RegisterAction($"{Identifier}::Hismith::Mode::Script", HismithModeScript);
         s.RegisterAction($"{Identifier}::Hismith::Mode::Random", HismithModeRandom);
         s.RegisterAction($"{Identifier}::Hismith::Surprise", HismithSurprise);
@@ -616,6 +657,7 @@ internal sealed partial class ButtplugOutputTarget
     private void UnregisterHismithModeActions(IShortcutManager s)
     {
         s.UnregisterAction($"{Identifier}::Hismith::Mode::Set");
+        s.UnregisterAction($"{Identifier}::Hismith::Mode::SetMax");
         s.UnregisterAction($"{Identifier}::Hismith::Mode::Script");
         s.UnregisterAction($"{Identifier}::Hismith::Mode::Random");
         s.UnregisterAction($"{Identifier}::Hismith::Surprise");
@@ -635,8 +677,6 @@ internal sealed partial class ButtplugOutputTarget
 
     private void SaveHismithModeSettings(JObject settings)
     {
-        settings[nameof(HismithSpeedStep)] = HismithSpeedStep;
-        settings[nameof(HismithDepthStep)] = HismithDepthStep;
         settings[nameof(HismithSlowestSpeed)] = HismithSlowestSpeed;
         settings[nameof(HismithSurpriseDelaySeconds)] = HismithSurpriseDelaySeconds;
         settings[nameof(HismithLockMinutes)] = HismithLockMinutes;
@@ -647,10 +687,7 @@ internal sealed partial class ButtplugOutputTarget
 
     private void LoadHismithModeSettings(JObject settings)
     {
-        if (settings.TryGetValue<int>(nameof(HismithSpeedStep), out var speedStep))
-            HismithSpeedStep = speedStep;
-        if (settings.TryGetValue<int>(nameof(HismithDepthStep), out var depthStep))
-            HismithDepthStep = depthStep;
+        // HismithSpeedStep / HismithDepthStep are fixed now (x1.2 and +10 growing 1.5x); old saved values are ignored
         if (settings.TryGetValue<int>(nameof(HismithSlowestSpeed), out var slowest))
             HismithSlowestSpeed = slowest;
         if (settings.TryGetValue<int>(nameof(HismithSurpriseDelaySeconds), out var surpriseDelay))
@@ -743,7 +780,8 @@ internal sealed partial class ButtplugOutputTarget
             {
                 StopHismithSequence(sendToDevice: false);
                 var previous = state.Mode;
-                startSpeed = previous is >= 1 and <= ModeCalm and not ModeHalt ? state.Speed : 60;
+                // after a stop ("trąbka" heard first in the live mode) it starts from the slowest, never jumps up again
+                startSpeed = previous == ModeHalt ? _hismithSlowestSpeed : previous is >= 1 and <= ModeCalm ? state.Speed : 60;
                 startDepth = state.Depth;
                 state.Mode = ModeCooldown;      // the script output to this side's machine is suppressed from here on
                 NotifyModeChanged();

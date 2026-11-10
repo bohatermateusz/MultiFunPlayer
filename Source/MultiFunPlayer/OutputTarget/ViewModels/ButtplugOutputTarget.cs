@@ -184,7 +184,7 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
     }
 
     public void FireLubeLauncher()
-        => _ = FireLubeLauncherAsync();
+        => _ = FireLubeLauncherManyAsync(1);
 
     // The server drops a command that is identical to the last one sent to the same feature, so a
     // second "1" would never reach the launcher. "1" squirts, "0" does nothing but resets that state.
@@ -807,6 +807,7 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
         {
             Logger.Trace("Begin FixedUpdate [Elapsed: {0}]", elapsed);
             GetValues(currentValues, x => x < 0.005 ? 0 : x);
+            ApplyPreShotRamp(currentValues);
 
             foreach (var orphanedDevice in lastSentValuesPerDevice.Keys.Except(AvailableDevices))
                 lastSentValuesPerDevice.Remove(orphanedDevice);
