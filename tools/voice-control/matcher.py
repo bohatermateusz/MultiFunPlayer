@@ -12,6 +12,9 @@ DIGITS = {"1": "jeden", "2": "dwa", "3": "trzy", "4": "cztery", "5": "piec", "6"
 TOKEN_MIN = 0.70      # every phrase word must have a transcript word at least this similar
 AMBIGUITY_MARGIN = 0.05
 MAX_TRANSCRIPT_WORDS = 8
+# polite words around a command of 2+ words ("proszę bardzo, wróćmy do filmu") are not extra words of it; a one-word
+# command must still be said alone
+POLITE = {"prosze", "bardzo", "blagam", "ladnie", "grzecznie", "please", "pretty"}
 
 
 def normalize(text: str) -> str:
@@ -103,7 +106,9 @@ def match(transcript: str, intents: list):
     for intent in intents:
         if not intent.phrases:           # reachable only through the LLM (e.g. "improvise")
             continue
-        best = max(((phrase_score(tokens, pt, intent.max_extra_words), p) for pt, p in zip(intent._tokens, intent.phrases)),
+        plain = [t for t in tokens if t not in POLITE] or tokens
+        best = max(((max(phrase_score(tokens, pt, intent.max_extra_words), phrase_score(plain, pt, intent.max_extra_words) if len(pt) > 1 else 0.0), p)
+                    for pt, p in zip(intent._tokens, intent.phrases)),
                    key=lambda x: x[0])
         if best[0] >= intent.threshold:
             scored.append(Match(intent, best[0], best[1]))

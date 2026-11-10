@@ -53,8 +53,8 @@ when `"wake": {"required": false}`). The tool is silent by default; the result i
 | faster / slower (clearly: +/- 20 points) | szybciej, prędzej, przyspiesz, mocniej, dawaj, więcej / wolniej, zwolnij, spokojniej, delikatniej, mniej, powoli | Num + / Num - |
 | deeper / shallower (+/- 15 points) | głębiej, głęboko, do końca, w głąb / płycej, płytko, nie tak głęboko, wyjdź trochę | Num * / Num / |
 | built-in modes 1-8 | tryb jeden ... tryb osiem (also "tryb pierwszy", "tryb 3", "program trzy", "trójka") | Num 1 ... Num 8 |
-| mode A: fastest, full depth, smallest stroke | tryb a, na maksa, najszybciej, maksymalnie | Num 9 |
-| mode B: slowest, full depth, smallest stroke | tryb b, najwolniej, na minimum | Num 0 |
+| mode A: fastest, smallest stroke, depth as in modes 1-8 | tryb a, na maksa, najszybciej, maksymalnie | Num 9 |
+| mode B: slowest, smallest stroke, depth as in modes 1-8 | tryb b, najwolniej, na minimum | Num 0 |
 | **surprise**: two separate draws. Machine: 70 % a random mode 1-8 / A / B (never the one that runs), else unchanged. Lube Launcher: nothing / one shot / three shots, 1/3 each. At least one of them always happens | zaskocz mnie, niespodzianka, wybierz za mnie, losowo, zdaj się na los | Insert |
 | **again**: the NEXT draw (mode + Lube Launcher, as above) is made and put into effect **120 s after the command**; the current surprise stays until then, shots that have not been fired yet are dropped at once; saying it again restarts the 120 s; choosing a mode / Script / Calm / Stop cancels it; **while mode A runs there is no waiting: the next draw is made at once** | nieee coś innego, zmień, inaczej, jeszcze raz, losuj ponownie, nie to | Del |
 | **hold**: the machine keeps exactly what it does now for **5 minutes**; everything else (modes, boosts, surprise, scenes, calm, sequence, keys) is ignored. Only the **Lube Launcher** and the safe word **"trąbka" (End)** still work; nothing else ends it early | utrzymaj to, rób tak dalej, tak trzymaj, zostaw tak, nie zmieniaj, tak ma być, **jeszcze, nie przestawaj, właśnie tak** | PgUp |
@@ -229,7 +229,7 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   for what she demanded. Whisper's hallucinations (walls of "tryb pięć, tryb pięć...") are dropped (`listen.max_words`),
   the recognition prompt is short, a dropped connection is retried once. A repetition with a misheard word counts as
   obedience; the model's "defiance" counts only when you actually said no.
-* **Conversation modes, F11** (`conversation.mode`, `--mode`): **classic** is the old loop (record the whole utterance,
+* **Conversation modes, F7** (`conversation.mode`, `--mode`): **classic** is the old loop (record the whole utterance,
   transcribe, answer, speak: ~2-4 s of silence before her first word). **live** streams everything: OpenAI Realtime
   transcription as you speak (`gpt-4o-mini-transcribe`, server VAD, `silence_ms` 500), the safe word and plain commands
   run from the *partial* transcript, a request to her starts her thinking early (speculative; used when the final
@@ -244,7 +244,7 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   also caught locally from the agent's transcripts. Setup: create an agent in the ElevenLabs dashboard (Polish, a
   female voice, "v3 Conversational" for turn-taking, LLM = Custom LLM), expose the proxy (`cloudflared tunnel --url
   http://localhost:8787`) and put `https://<tunnel>/v1` as the Custom LLM server URL, then `conversation.agents.agent_id`
-  in the config. Without an `agent_id` the mode is skipped. F11 cycles the available modes; she confirms
+  in the config. Without an `agent_id` the mode is skipped. F7 cycles the available modes; she confirms
   ("Teraz na żywo." / "Klasycznie.").
 * **How she reads a line** (`persona.tts.delivery`): a delivery preset per line - `whisper`, `tender`, `tease`, `sharp`,
   `afterglow` - picked by the kind of line (`by_kind`: an order -> sharp, a "powtórz za mną" affirmation -> whisper,

@@ -1,4 +1,4 @@
-"""The conversation modes and the switch between them (F11).
+"""The conversation modes and the switch between them (F7).
 
 classic - what the tool always did: an utterance is recorded whole, transcribed, answered, spoken.
 live    - speech recognition as you speak (OpenAI Realtime), the safe word and plain commands run from the partial

@@ -46,7 +46,7 @@ Powtórzenie liczy 5 minut od nowa.
 | Powiedz | Co się stanie |
 |---|---|
 | tryb jeden … tryb osiem · jedynka … ósemka · włącz trójkę · program pięć | wbudowany tryb maszyny 1–8 |
-| **na maksa** · najszybciej · tryb a | tryb A: najszybciej, pełna głębokość, minimalny skok |
+| **na maksa** · najszybciej · tryb a | tryb A: najszybciej, minimalny skok, głębokość jak w trybach 1-8 |
 | **najwolniej** · na minimum · tryb b | tryb B: jak A, ale najwolniej |
 | **dość** · wystarczy · starczy · stop · chwila · za mocno · za szybko · nie dam rady · ulituj się | spokojnie: najwolniej, średnio głęboko. Maszyna **nie staje**. Klawisz **Home**. |
 | **wróć do filmu** · do filmu · wyłącz tryb · koniec trybu | z powrotem na skrypt filmu (zmiany z „szybciej" zostają) |
@@ -117,9 +117,9 @@ wybiera z kontekstu, a gdy nie wie - tę stronę, której używaliście ostatnio
 
 Co 10 minut zmienia się głos - nowa Pani przejmuje Cię kwestią w stylu "Teraz ja się tobą zajmę, misiaczku."
 
-## F11: rozmowa bez przerw
+## F7: rozmowa bez przerw
 
-Trzy tryby rozmowy, F11 przełącza w locie (Pani potwierdza): **klasyczny** - jak dotąd (nagranie, rozpoznanie, odpowiedź, głos:
+Trzy tryby rozmowy, F7 przełącza w locie (Pani potwierdza): **klasyczny** - jak dotąd (nagranie, rozpoznanie, odpowiedź, głos:
 2-4 s ciszy); **na żywo** - rozpoznawanie w trakcie mówienia, "trąbka" i proste komendy działają już z częściowego tekstu,
 prośba do Pani rusza jej myślenie zanim skończysz, a odpowiedź płynie zdanie po zdaniu (pierwsze słowo ok. 1-1,5 s po Twoim
 ostatnim); gdy zaczynasz mówić, ona milknie; **agents** (eksperyment, płatny za minutę) - jedna ciągła rozmowa przez ElevenLabs,

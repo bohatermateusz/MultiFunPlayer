@@ -9,6 +9,7 @@
     python voice_control.py wav nagranie.wav         # cloud transcription of a recording + matching
 """
 import argparse
+import collections
 import json
 import os
 import re
@@ -46,6 +47,8 @@ def load_config(path):
 
 
 STT_HINT_INTENTS = ("faster", "slower", "deeper", "shallower", "halt", "lock", "lube_fire", "cooldown")
+# short answers that count even when said while she is still speaking (unless she is saying them herself)
+OVER_HER_WORDS = ("proszę", "błagam", "przepraszam", "dziękuję", "tak", "please", "sorry", "yes")
 
 
 def stt_prompt(intents, wake_words=None):
@@ -156,7 +159,7 @@ def build_pool(args, pc, persona, log_path, lang="pl"):
 
 
 def build_conversation(args, cfg, controller, stt, voice, speakers, muted, gate, headphones, barge_in, process, rate):
-    """the conversation modes (classic / live / agents) and the F11 switch between them"""
+    """the conversation modes (classic / live / agents) and the F7 switch between them"""
     from audio import listen_segments, play_stream
     from conversation import ClassicLoop, ConversationManager, LiveLoop
     a, lis = cfg.get("audio", {}), cfg.get("listen", {})
@@ -389,15 +392,27 @@ def main():
             print("  speech-to-text failed:", e)
             beep("error")
             return
-        from stt import is_hallucination
-        if is_hallucination(text, lis.get("max_words", 25)):
+        from stt import echoes_prompt, is_hallucination
+        if is_hallucination(text, lis.get("max_words", 25)) or echoes_prompt(text, stt.prompt):
             print(f'  "{text[:60]}..." -> ignored (speech-to-text hallucination)')
+            return
+        # with headphones the microphone stays on while she speaks, and the headset's open speakers leak her voice into
+        # it ("Dobra dziewczynka" came back as "dobra, dziewczyny"): what started while she was talking counts only
+        # when it holds the safe word, starts with the wake word ("kochanie, ...") or is a short answer like "proszę"
+        # that she is not saying herself
+        her_lines = [line for at, line in recent_lines if time.monotonic() - at < 30]
+        over_her_ok = (controller.mentions_safe_word(text) or controller.addressed_to_her(text)
+                       or controller.short_answer_over_her(text, her_lines, lis.get("over_her_words", OVER_HER_WORDS)))
+        if heard_over_her["value"] and not over_her_ok:
+            print(f'  "{text[:60]}" -> ignored (started while she was speaking: her own voice)')
             return
         outcome = controller.handle(text)
         report(outcome, text)
         beep({"executed": "ok", "dry-run": "ok", "confirm": "confirm"}.get(outcome.status, "ignored"))
 
     muted = {"value": False}
+    heard_over_her = {"value": False}   # the utterance being recorded started while she was speaking
+    recent_lines = collections.deque(maxlen=6)   # (time, line) of her last lines, to tell her echo from an answer
 
     # the persona speaks (ElevenLabs, streamed; OpenAI as a fallback). With headphones the microphone stays on and
     # your voice cuts her off, so the safe word is always heard; with speakers it is deaf while she speaks.
@@ -559,6 +574,7 @@ def main():
     def speak(line, stage=0, meta=None):
         pcm = controller.audio_cache.get(line) if (controller.audio_cache is not None and meta and meta.get("kind") == "narration") else None
         print(f"  Pani [{stage}{' cache' if pcm else ''}]: {line}")
+        recent_lines.append((time.monotonic(), line))
         voice.say(line, stage, meta, pcm=pcm)
         if pcm and controller.pool is not None:
             controller.audio_cache.warm(controller.pool, controller.persona_cfg.get("narration", {}).get("themes", []))
@@ -588,6 +604,7 @@ def main():
     controller.busy = lambda: muted["value"] or voice.speaking() or gate.speaking()
 
     def barge_in():
+        heard_over_her["value"] = headphones and lis.get("echo_filter", True) and (gate.speaking() or voice.speaking())
         # your voice cuts her off only with listen.barge_in "always"; by default ("safe_word") only the safe word does
         if headphones and lis.get("barge_in", "safe_word") == "always":
             voice.interrupt()

@@ -162,7 +162,7 @@ Wynik przy każdym teście: ✅ działa / ❌ nie działa (zapisz co widać) / �
 | 6.83 | live: 'kochanie, szybciej' | jej pierwsze słowo ok. 1-1,5 s po Twoim ostatnim (zegarek); w logu `streamed: true` albo `speculative: true` |
 | 6.84 | live: zacznij mówić, gdy ona mówi (słuchawki) | milknie od razu |
 | 6.85 | live: wyłącz sieć na chwilę / błąd Realtime | w konsoli `realtime stt: ... reconnecting`; komendy dalej działają (lokalny detektor + Whisper); po powrocie znów na żywo |
-| 6.86 | F11 | classic -> live -> (agents) -> classic bez restartu; Pani potwierdza; klawisze i 'koniec' działają w każdym trybie |
+| 6.86 | F7 | classic -> live -> (agents) -> classic bez restartu; Pani potwierdza; klawisze i 'koniec' działają w każdym trybie |
 | 6.87 | agents (po konfiguracji agenta i tunelu) | rozmowa ciągła; 'kochanie, szybciej' wykonuje się (proxy), narracja co jakiś czas; 'stop'/'koniec' z transkrypcji agenta zatrzymuje |
 | 6.89 | Classic: ona mówi dłuższą kwestię, Ty zaczynasz prosić w trakcie | jej kwestia kończy się do końca; Twoja prośba jest rozpoznana i obsłużona po niej |
 | 6.90 | Classic: 'koniec' (albo 'koniec szybciej') w trakcie jej kwestii | urywa ją natychmiast i zatrzymuje maszynę |

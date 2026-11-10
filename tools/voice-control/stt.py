@@ -31,6 +31,14 @@ def is_hallucination(text, max_words=25, max_repeats=3):
     return False
 
 
+def echoes_prompt(text, prompt, min_words=5):
+    """on silence or noise the model writes out its own prompt ("spuść się na mnie, szybciej, wolniej, ..."): at least
+    min_words words that stand in the prompt in the same order -> True (a short real command is never caught)"""
+    words = re.sub(r"[^\w\s]", " ", (text or "").lower()).split()
+    hint = " " + " ".join(re.sub(r"[^\w\s]", " ", (prompt or "").lower()).split()) + " "
+    return len(words) >= min_words and f" {' '.join(words)} " in hint
+
+
 def pcm_to_wav(pcm: bytes, sample_rate: int = 16000) -> bytes:
     buf = io.BytesIO()
     with wave.open(buf, "wb") as w:

@@ -1,5 +1,5 @@
 """The live mode: streamed answers, partial transcripts, the websocket voice, realtime recognition, the agents loop
-and its LLM proxy, the F11 switch - all against fakes, no network."""
+and its LLM proxy, the F7 switch - all against fakes, no network."""
 import json
 import os
 import queue
@@ -490,7 +490,7 @@ class Agents(ChatBase):
 
 class Config(unittest.TestCase):
     def test_keys_and_conversation_block(self):
-        self.assertEqual(CFG["keys"]["f11"], "@mode")
+        self.assertEqual(CFG["keys"]["f7"], "@mode")
         self.assertEqual(CFG["conversation"]["mode"], "classic")
         self.assertIn("live", CFG["conversation"])
         self.assertIn("agents", CFG["conversation"])

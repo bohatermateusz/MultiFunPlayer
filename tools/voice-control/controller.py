@@ -351,6 +351,32 @@ class Controller:
             return bool(target) and similar(transcript, target) >= 0.55
         return False
 
+    def mentions_safe_word(self, transcript) -> bool:
+        """the safe word anywhere in the utterance (fuzzy): an utterance heard while she speaks counts only with it"""
+        halt = next((i for i in self.intents if i.id == "halt"), None)
+        if halt is None:
+            return False
+        singles = {normalize(p) for p in halt.phrases if len(normalize(p).split()) == 1}
+        return any(_sim(w, t) >= 0.8 for t in normalize(transcript).split() for w in singles)
+
+    def addressed_to_her(self, transcript) -> bool:
+        """starts with the wake word ("kochanie, ...", "Pani, ..."): said to her on purpose, not her echo"""
+        tokens = normalize(transcript).split()[:2]
+        return any(_sim(w, t) >= self.wake_min_similarity for t in tokens for w in self.wake_words)
+
+    def short_answer_over_her(self, transcript, her_lines, words) -> bool:
+        """a short answer said while she speaks ("proszę", "błagam", "przepraszam"): it holds one of `words` and is not
+        an echo of what she is saying (her recent lines) -> True"""
+        tokens = normalize(transcript).split()
+        answer = {normalize(w) for w in words if normalize(w)}
+        if not tokens or len(tokens) > 6 or not any(t in answer for t in tokens):
+            return False
+        for line in her_lines:
+            said = set(normalize(line).split())
+            if similar(transcript, line) >= 0.6 or all(t in said for t in tokens):
+                return False                   # she said these words herself: her own voice
+        return True
+
     def _safe_word_first(self, transcript):
         """-> a Match of the safe word when the utterance starts with it (after the wake word, if any)"""
         halt = next((i for i in self.intents if i.id == "halt"), None)

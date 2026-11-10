@@ -21,7 +21,7 @@ echo Installing packages...
 python -m pip install --user -r requirements.txt
 if errorlevel 1 ( echo pip install failed. & pause & exit /b 1 )
 python -c "import websocket" >nul 2>nul
-if errorlevel 1 ( echo websocket-client missing: the live mode ^(F11^) will not be available. & echo Run: python -m pip install --user websocket-client )
+if errorlevel 1 ( echo websocket-client missing: the live mode ^(F7^) will not be available. & echo Run: python -m pip install --user websocket-client )
 
 if "%OPENAI_API_KEY%"=="" (
   echo.
@@ -61,5 +61,5 @@ echo  1. MultiFunPlayer ^> Buttplug.io output ^> switch on "Remote commands" ^(p
 echo     Buttplug server may run on another machine ^(e.g. Linux^): use ws://IP:12345 in MFP.
 echo  2. Set your headset microphone as the default recording device in Windows.
 echo  3. run.bat           ^(dry run: say "kochanie, ..." - shows what it would do; her voice is chosen automatically^)
-echo  4. run.bat live      ^(for real, conversation without pauses; F9 voice, F10 language, F11 conversation mode^)
+echo  4. run.bat live      ^(for real, conversation without pauses; F9 voice, F10 language, F7 conversation mode^)
 pause

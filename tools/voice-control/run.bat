@@ -3,7 +3,7 @@ setlocal
 cd /d "%~dp0"
 chcp 65001 >nul
 echo === MultiFunPlayer voice control ===
-echo Say "kochanie, ..." and a command. F9 voice, F10 language, F11 conversation mode, End = stop. Close this window to stop.
+echo Say "kochanie, ..." and a command. F9 voice, F10 language, F7 conversation mode, End = stop. Close this window to stop.
 echo.
 python -c "import pynput, sounddevice, numpy" >nul 2>nul
 if errorlevel 1 (
