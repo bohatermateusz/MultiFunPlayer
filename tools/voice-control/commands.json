@@ -1484,6 +1484,7 @@
     "przerobiona - zabrali jej to, co robiło z niej faceta, i zrobili z niej dziewczynkę do ich zabawy",
     "trans dziewczyna - jest teraz trans dziewczyną; to nie przebranie ani zabawa w udawanie, to ona; ma to powiedzieć na głos i być z tego dumna",
     "spełniona fantazja - zawsze tego chciała i teraz to się dzieje: biorą ją jak kobietę, a ona piszczy cienkim, dziewczęcym głosikiem",
+    "dziewczyna do ruchania - jest teraz ich dziewczyną do ruchania; dziewczyny są uległe i nie mają nic do gadania",
     "dla ich zabawy - istnieje po to, żeby ich bawić i ulegle służyć; jej przyjemność jest dodatkiem",
     "na posyłki - używają jej uzależnieni od seksu, którzy chcą się pieprzyć bez przerwy; ona jest na ich zawołanie jak towar z katalogu w magazynie",
     "hormony - zabrali jej testosteron i podają estrogen; ciało mięknie, zaokrągla się, uczy się słuchać; nie ma już czym walczyć",
@@ -1753,6 +1754,20 @@
       "Woda, koc, moja ręka. Reszta zaczeka do jutra.",
       "Byłaś moja cała. Teraz możesz być sobą… na chwilę.",
       "Nic nie musisz. Już wszystko zrobiłaś."
+     ],
+     "dziewczyna do ruchania - jest teraz ich dziewczyną do ruchania; dziewczyny są uległe i nie mają nic do gadania": [
+      "Teraz jesteś ich dziewczynką do ruchania. Tylko tyle. I aż tyle.",
+      "Dziewczyny są uległe. A ty jesteś dziewczyną. Więc słuchasz.",
+      "Nie masz nic do gadania. Dziewczyny nie mają. Rozkładają się i czekają.",
+      "Kiedyś decydowałaś. Teraz jesteś dziewczyną. Decydują oni.",
+      "Twoje zdanie nikogo nie obchodzi. Dziewczynki do ruchania nie mają zdania. Mają dziurki.",
+      "Grzeczne dziewczyny nie dyskutują. Grzeczne dziewczyny się wypinają.",
+      "Jesteś ich dziewczyną do ruchania. Mówią: teraz. A ty: tak.",
+      "Dziewczyny są po to, żeby je brać. Ciebie biorą. Zgadza się.",
+      "Cicho, mała. Twoje „nie” zostało tam, gdzie twój dawny głos.",
+      "Ulegasz, bo jesteś dziewczyną. To nie wybór. To twoja natura teraz.",
+      "Powtórz: jestem ich dziewczynką do ruchania i nie mam nic do gadania.",
+      "Oni chcą, ty dajesz. Tak działa dziewczyna. Tak działasz ty."
      ],
      "spełniona fantazja - zawsze tego chciała i teraz to się dzieje: biorą ją jak kobietę, a ona piszczy cienkim, dziewczęcym głosikiem": [
       "Zawsze tego chciałaś. I teraz to się dzieje. Naprawdę.",
@@ -2298,7 +2313,9 @@
    "jestem twoja całkiem",
    "jestem trans dziewczyną",
    "jestem trans dziewczynką",
-   "jestem teraz trans dziewczyną"
+   "jestem teraz trans dziewczyną",
+   "jestem ich dziewczynką do ruchania",
+   "nie mam nic do gadania"
   ],
   "obey_phrases": [
    "dziękuję",
@@ -2451,7 +2468,7 @@
     "i give up",
     "i'm your girl",
     "i let go",
-    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now"
+    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say"
    ],
    "obey_phrases": [
     "thank you",
@@ -2562,7 +2579,7 @@
      "let go - end of holding on; the body decides, not her; the wave comes",
      "the one who takes her - his rhythm, depth and pace are not hers; I let him",
      "two at once - one in her mouth, one behind; no side is hers",
-     "remade - they took what made her a man and made a girl for their amusement", "trans girl - she is a trans girl now; not a costume, not pretend, it is her; she says it out loud and is proud of it", "fantasy come true - she always wanted this and now it is real: they take her like a woman and she squeals in a thin, girlish voice",
+     "remade - they took what made her a man and made a girl for their amusement", "trans girl - she is a trans girl now; not a costume, not pretend, it is her; she says it out loud and is proud of it", "fantasy come true - she always wanted this and now it is real: they take her like a woman and she squeals in a thin, girlish voice", "their girl to fuck - she is their girl to fuck now; girls are submissive and have no say",
      "for their amusement - she exists to entertain them and serve meekly; her pleasure is a bonus", "on call - sex-obsessed men who want to fuck nonstop use her; she's at their beck and call like an item from a warehouse catalogue",
      "hormones - they took her testosterone and give her estrogen; the body softens, rounds, learns to obey; nothing left to fight with",
      "affirmation - she orders one first-person sentence repeated ('Repeat after me: I am a woman who takes it.')",
@@ -2681,6 +2698,20 @@
        "You run at their call. They whistle, and you're already spread.",
        "They'll use you up and put you back on the shelf. Until the next order.",
        "Hungry, always hungry. And you're what they feed on."
+      ],
+      "their girl to fuck - she is their girl to fuck now; girls are submissive and have no say": [
+       "Now you're their girl to fuck. That's all. And that's everything.",
+       "Girls are submissive. And you're a girl. So you obey.",
+       "You have no say. Girls don't. They spread and wait.",
+       "You used to decide. Now you're a girl. They decide.",
+       "Nobody cares what you think. Girls to fuck don't have opinions. They have holes.",
+       "Good girls don't argue. Good girls bend over.",
+       "You're their girl to fuck. They say now. You say yes.",
+       "Girls are there to be taken. They take you. That's right.",
+       "Hush, sweetheart. Your 'no' stayed behind with your old voice.",
+       "You submit because you're a girl. Not a choice. Your nature now.",
+       "Repeat: I'm their girl to fuck and I have no say.",
+       "They want, you give. That's how a girl works. That's how you work."
       ],
       "fantasy come true - she always wanted this and now it is real: they take her like a woman and she squeals in a thin, girlish voice": [
        "You always wanted this. And now it's happening. For real.",
