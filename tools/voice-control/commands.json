@@ -1485,6 +1485,7 @@
     "trans dziewczyna - jest teraz trans dziewczyną; to nie przebranie ani zabawa w udawanie, to ona; ma to powiedzieć na głos i być z tego dumna",
     "spełniona fantazja - zawsze tego chciała i teraz to się dzieje: biorą ją jak kobietę, a ona piszczy cienkim, dziewczęcym głosikiem",
     "dziewczyna do ruchania - jest teraz ich dziewczyną do ruchania; dziewczyny są uległe i nie mają nic do gadania",
+    "orgazmy nie są jej - nawet jej orgazmy już do niej nie należą; należą do nich: oni decydują kiedy, ile i czy w ogóle",
     "dla ich zabawy - istnieje po to, żeby ich bawić i ulegle służyć; jej przyjemność jest dodatkiem",
     "na posyłki - używają jej uzależnieni od seksu, którzy chcą się pieprzyć bez przerwy; ona jest na ich zawołanie jak towar z katalogu w magazynie",
     "hormony - zabrali jej testosteron i podają estrogen; ciało mięknie, zaokrągla się, uczy się słuchać; nie ma już czym walczyć",
@@ -1754,6 +1755,20 @@
       "Woda, koc, moja ręka. Reszta zaczeka do jutra.",
       "Byłaś moja cała. Teraz możesz być sobą… na chwilę.",
       "Nic nie musisz. Już wszystko zrobiłaś."
+     ],
+     "orgazmy nie są jej - nawet jej orgazmy już do niej nie należą; należą do nich: oni decydują kiedy, ile i czy w ogóle": [
+      "Nawet twoje orgazmy nie są już twoje. Należą do nich.",
+      "Dochodzisz, kiedy oni chcą. Nie kiedy ty chcesz.",
+      "Twój orgazm to ich własność. Ty go tylko nosisz w sobie.",
+      "Chcesz dojść. Zapytaj ich. To nie twoja decyzja.",
+      "Oddałaś im ciało. Oddałaś głos. Teraz oddajesz też to, jak dochodzisz.",
+      "Każda twoja fala należy do nich. Oni ją wywołują, oni ją zabierają.",
+      "Nie masz prawa dojść bez pozwolenia. Grzeczne dziewczyny czekają.",
+      "Twoja przyjemność ma właściciela. I to nie jesteś ty.",
+      "Dochodzisz dla nich. Na ich rozkaz. Dla ich zabawy.",
+      "Zabrali ci nawet to. Najintymniejsze. Teraz to ich zabawka.",
+      "Powtórz: moje orgazmy należą do nich.",
+      "Jeśli każą ci dojść, dojdziesz. Jeśli każą czekać, poczekasz."
      ],
      "dziewczyna do ruchania - jest teraz ich dziewczyną do ruchania; dziewczyny są uległe i nie mają nic do gadania": [
       "Teraz jesteś ich dziewczynką do ruchania. Tylko tyle. I aż tyle.",
@@ -2315,7 +2330,9 @@
    "jestem trans dziewczynką",
    "jestem teraz trans dziewczyną",
    "jestem ich dziewczynką do ruchania",
-   "nie mam nic do gadania"
+   "nie mam nic do gadania",
+   "moje orgazmy należą do nich",
+   "moje orgazmy nie są moje"
   ],
   "obey_phrases": [
    "dziękuję",
@@ -2468,7 +2485,7 @@
     "i give up",
     "i'm your girl",
     "i let go",
-    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say"
+    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine"
    ],
    "obey_phrases": [
     "thank you",
@@ -2579,7 +2596,7 @@
      "let go - end of holding on; the body decides, not her; the wave comes",
      "the one who takes her - his rhythm, depth and pace are not hers; I let him",
      "two at once - one in her mouth, one behind; no side is hers",
-     "remade - they took what made her a man and made a girl for their amusement", "trans girl - she is a trans girl now; not a costume, not pretend, it is her; she says it out loud and is proud of it", "fantasy come true - she always wanted this and now it is real: they take her like a woman and she squeals in a thin, girlish voice", "their girl to fuck - she is their girl to fuck now; girls are submissive and have no say",
+     "remade - they took what made her a man and made a girl for their amusement", "trans girl - she is a trans girl now; not a costume, not pretend, it is her; she says it out loud and is proud of it", "fantasy come true - she always wanted this and now it is real: they take her like a woman and she squeals in a thin, girlish voice", "their girl to fuck - she is their girl to fuck now; girls are submissive and have no say", "her orgasms are not hers - even her orgasms don't belong to her anymore; they belong to them: they decide when, how many and whether at all",
      "for their amusement - she exists to entertain them and serve meekly; her pleasure is a bonus", "on call - sex-obsessed men who want to fuck nonstop use her; she's at their beck and call like an item from a warehouse catalogue",
      "hormones - they took her testosterone and give her estrogen; the body softens, rounds, learns to obey; nothing left to fight with",
      "affirmation - she orders one first-person sentence repeated ('Repeat after me: I am a woman who takes it.')",
@@ -2698,6 +2715,20 @@
        "You run at their call. They whistle, and you're already spread.",
        "They'll use you up and put you back on the shelf. Until the next order.",
        "Hungry, always hungry. And you're what they feed on."
+      ],
+      "her orgasms are not hers - even her orgasms don't belong to her anymore; they belong to them: they decide when, how many and whether at all": [
+       "Even your orgasms aren't yours anymore. They belong to them.",
+       "You cum when they want. Not when you want.",
+       "Your orgasm is their property. You only carry it inside you.",
+       "You want to cum. Ask them. It's not your decision.",
+       "You gave them your body. Your voice. Now you give them how you cum too.",
+       "Every wave of yours belongs to them. They bring it, they take it away.",
+       "You have no right to cum without permission. Good girls wait.",
+       "Your pleasure has an owner. And it isn't you.",
+       "You cum for them. On their command. For their fun.",
+       "They took even that from you. The most intimate thing. Now it's their toy.",
+       "Repeat: my orgasms belong to them.",
+       "If they tell you to cum, you'll cum. If they tell you to wait, you'll wait."
       ],
       "their girl to fuck - she is their girl to fuck now; girls are submissive and have no say": [
        "Now you're their girl to fuck. That's all. And that's everything.",
