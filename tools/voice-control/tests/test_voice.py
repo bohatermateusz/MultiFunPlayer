@@ -46,8 +46,8 @@ class MatchPositive(unittest.TestCase):
     def test_others(self):
         cases = {"Stop.": "calm", "pauza": "pause", "Graj": "play", "zapętl": "loop_on", "Zapętl to!": "loop_on",
                  "koniec pętli": "loop_off", "włącz sekwencję": "sequence_start", "wróć do skryptu": "script", "koniec sekwencji": "sequence_stop",
-                 "wstrzymaj tryb": "sequence_hold", "wznów sekwencję": "sequence_release", "tryb ręczny": "manual_mode",
-                 "tryb automatyczny": "auto_mode", "szybciej": "faster", "wolniej": "slower"}
+                 "wstrzymaj tryb": "sequence_hold", "wznów sekwencję": "sequence_release",
+                 "szybciej": "faster", "wolniej": "slower"}
         for text, intent in cases.items():
             self.assertEqual(best(text)[0], intent, text)
 

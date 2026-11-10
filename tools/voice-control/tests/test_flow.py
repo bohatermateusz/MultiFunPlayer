@@ -217,9 +217,9 @@ class LessLooping(Server):
         self.c.persona_cfg = dict(P, base_p=0.0, base_p_overrides={}, step_p_overrides={}, step_p=0.0,
                                   manners=dict(M, politeness_factor=1.0, ignore_demand_factor=1.0, beg_met_bonus=1.0))
         self.c.persona_cfg["last_second"]["enabled"] = False
-        o = self.say("kochanie, zalej mnie", request="lube_fire", demand="beg")
+        o = self.say("kochanie, zalej mnie", request="lube_many", demand="beg")
         self.assertEqual(o.status, "denied")
-        self.assertEqual(self.c._last_demand, ("lube_fire", "beg"))
+        self.assertEqual(self.c._last_demand, ("lube_many", "beg"))
         o = self.say("proszę bardzo ładnie", request="none")         # the model did not repeat the request: the ask goes on
         self.assertEqual(o.status, "executed")
         self.assertEqual(o.extra.get("demand_met"), "beg")

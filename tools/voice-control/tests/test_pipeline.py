@@ -83,8 +83,9 @@ class PipelineTests(unittest.TestCase):
 
     def test_normal_leaves_the_mode_and_resets_the_boost(self):
         self.assertEqual(self.heard("normalnie"), ["executed"])
-        msgs = self.mfp.wait(2)
-        self.assertEqual([m["action"].split("::")[-2:] for m in msgs], [["Mode", "Script"], ["Boost", "Reset"]])
+        msgs = self.mfp.wait(4)                     # one way back to the film: mode, sequence, boost, video
+        self.assertEqual([m["action"].split("::")[-2:] for m in msgs],
+                         [["Mode", "Script"], ["Sequence", "Stop"], ["Boost", "Reset"], ["PlayPause", "Set"]])
 
     def test_lube_several_times(self):
         self.assertEqual(self.heard("spuść się na mnie kilka razy"), ["executed"])
@@ -93,10 +94,11 @@ class PipelineTests(unittest.TestCase):
 
     def test_pause_play_and_loop(self):
         self.assertEqual(self.heard("pauza", "graj", "zapętl to", "koniec pętli"), ["executed"] * 4)
-        msgs = self.mfp.wait(4)
-        self.assertEqual([m["action"] for m in msgs],
-                         ["Media::PlayPause::Set", "Media::PlayPause::Set", "Script::Loop::Start", "Script::Loop::Clear"])
-        self.assertEqual([m["args"] for m in msgs[:2]], [[False], [True]])
+        msgs = self.mfp.wait(7)                     # "graj" is the way back to the film: mode, sequence, boost, video
+        self.assertEqual([m["action"].split("::", 1)[-1] if m["action"].startswith("Buttplug") else m["action"] for m in msgs],
+                         ["Media::PlayPause::Set", "Hismith::Mode::Script", "Hismith::Sequence::Stop", "Hismith::Boost::Reset",
+                          "Media::PlayPause::Set", "Script::Loop::Start", "Script::Loop::Clear"])
+        self.assertEqual([msgs[0]["args"], msgs[4]["args"]], [[False], [True]])
 
     def test_dialogue_and_hallucinations_send_nothing(self):
         statuses = self.heard("Dzięki za oglądanie!", "no dalej mocniej", "Napisy stworzone przez społeczność Amara.org", "")

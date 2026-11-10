@@ -72,6 +72,7 @@ def repeat_target(line):
 
 REFUSAL_MARKERS = re.compile(r"\b(nie|nigdy|spierdalaj|spadaj|odwal|odpierdol|pierdol\w*|won|głup\w*|idiot\w*|chuj\w*|"
                              r"no|never|won't|refuse|stupid|fuck\s+off)\b", re.I)
+MOOD_MINUTES = (6, 14)   # her mood shifts on its own after this many minutes (random in the range)
 SAFE_WORD_COMPOUNDS = {"pętli", "petli", "sekwencji", "trybu", "blokady", "filmu", "loop", "sequence", "mode", "the"}
 
 
@@ -198,6 +199,10 @@ class Controller:
         self._narration_due = 0.0         # when her next unprompted line is due (0 = not drawn yet)
         self.pool = None                  # LinePool of the current language (see pools / set_language)
         self._said_recent = []            # her last lines (any kind), handed to the model as "do not repeat"
+        # her mood now: drawn at the start, again whenever another woman takes over (new_mood from the voice rotation)
+        # and now and then on its own (MOOD_MINUTES), never one of the last few - so no two evenings sound alike
+        self.session_mood, self._moods_recent, self._mood_until = "", [], 0.0
+        self.new_mood()
         self._tasks_used = []             # physical orders already given this session (no repeats)
         self._consumed = {}               # live mode: turn id -> (intent, text) already run from a partial transcript
         self._speculated = {}             # live mode: turn id -> partial text handed to the persona ahead of time
@@ -315,6 +320,39 @@ class Controller:
         fresh = [o for o in options if not any(similar(o, t) >= 0.75 for t in recent)] or options
         return self.rng.choice(fresh) if fresh else None
 
+    def seed_said(self, lines):
+        """her lines from earlier sessions (the log): they count as said, so a new session does not open with the same
+        sentences - handed to the model as "nie_powtarzaj" and checked before she speaks"""
+        for line in lines[-40:]:
+            if line and line not in self._said_recent:
+                self._said_recent.append(line)
+        del self._said_recent[:-40]
+
+    def _fresh_line(self, line, outcome):
+        """the model copies its favourite sentence ("Dobra dziewczynka. Masz.") across turns and sessions: a grant or a
+        refusal too close to one of her last lines (this session or the ones before) is swapped for a variant from
+        manners.grants / manners.denials she has not said lately"""
+        from lines import similar
+        if not line or outcome.status not in ("executed", "dry-run", "denied") or outcome.via != "persona":
+            return line
+        if self.language != "pl" or outcome.intent in self.persona_cfg.get("never_gated", []):
+            return line                    # the variants are Polish; fixed lines (cooldown, safe word) stay as they are
+        recent = [t for r, t in self._history[-12:] if r == "assistant"] + self._said_recent[-40:]
+        opening = lambda t: " ".join(normalize(t).split()[:2])
+        same_start = sum(1 for t in recent[-8:] if opening(t) == opening(line))   # "Jeszcze nie, ..." again and again
+        if not any(similar(line, t) >= 0.75 for t in recent) and same_start < 1:
+            return line
+        manners = self.persona_cfg["manners"]
+        if outcome.status == "denied":
+            options = [o for v in (manners.get("denials") or {}).values() for o in v]
+        else:
+            options = list(manners.get("grants") or [])
+        fresh = [o for o in options if not any(similar(o, t) >= 0.75 for t in recent)]
+        if not fresh:
+            return line
+        outcome.extra["varied_from"] = line
+        return self.rng.choice(fresh)
+
     def _varied_denial(self, line, demand):
         """her refusal must not be the same sentence over and over: a line too close to one of her last ones is swapped
         for a variant from manners.denials[demand] that she has not said lately"""
@@ -387,7 +425,7 @@ class Controller:
         if tokens and self.wake_words and any(_sim(w, tokens[0]) >= self.wake_min_similarity for w in self.wake_words):
             tokens = tokens[1:]
         if tokens and tokens[0] in singles:
-            if len(tokens) > 1 and tokens[1] in SAFE_WORD_COMPOUNDS:
+            if len(tokens) > 1 and (tokens[1] in SAFE_WORD_COMPOUNDS or tokens[1].startswith(("uspak", "uspok"))):   # "trąbka uspakajająca"
                 return None                    # "koniec pętli", "koniec sekwencji", ... are commands of their own
             return Match(halt, 1.0, tokens[0])
         return None
@@ -470,8 +508,15 @@ class Controller:
         with self._lock:
             now = self.clock()
             if item in self._consumed:
-                return None
-            m = self._match_no_wake(text)
+                # "trąbka" stopped everything at once (safety first); when the words go on into the cooldown password
+                # "trąbka uspakajająca", the wind-down starts from there
+                if self._consumed[item][0] != "halt":
+                    return None
+                m = self._match_no_wake(text)
+                if m is None or m.intent.id != "cooldown":
+                    return None
+            else:
+                m = self._match_no_wake(text)
             if m is not None and (m.intent.id == "halt" or m.score >= 0.95):
                 self._consumed[item] = (m.intent.id, text)
                 words = self.side_of(text)
@@ -1059,10 +1104,12 @@ class Controller:
                 "nalezy_sie_po_wykonaniu_zadania": self._owed, "kara_sekundy": round(self.penalty_remaining()),
                 "blokada_5_min": self.lock_remaining() > 0, "wyciszanie": self.cooldown_active(),
                 "ostatnie_komendy": list(self._recent), "program_aktywny": self.program_summary(),
-                "nie_powtarzaj": list(self._said_recent[-20:]), "jezyk": self.language,
+                "nie_powtarzaj": list(self._said_recent[-30:]), "jezyk": self.language,
+                "nastroj_teraz": self.session_mood,
                 "regula_jezyka": self.persona_cfg.get("language_rule", "")}
 
     def _need_persona(self, transcript, plain=None):
+        self._last_plain = plain
         return _NeedPersona(transcript, self._persona_state(), list(self._history), plain)
 
     def _ask_persona(self, need: _NeedPersona):
@@ -1114,6 +1161,7 @@ class Controller:
         return steps, used
 
     def _finish_persona(self, transcript, turn) -> Outcome:
+        listed, self._last_plain = getattr(self, "_last_plain", None), None
         if isinstance(turn, tuple):
             error, plain = turn
             if plain is not None and plain.intent.id in self.persona_cfg["fallback_plain"]:
@@ -1122,6 +1170,10 @@ class Controller:
                 o.detail = f"persona unavailable ({error}), ran plain" + (f"; {o.detail}" if o.detail else "")
                 return o
             return Outcome("ignored", f"persona unavailable ({error})", via="persona")
+        # a clear command from the list ("zalej mnie" = several shots) is what he asked for, even if the model read it
+        # as a neighbour (one shot); the model still decides yes / no and what she says
+        if listed is not None and listed.score >= 0.95 and str(turn.request) not in ("none", "") and turn.request != listed.intent.id:
+            turn.request = listed.intent.id
         extra = {"persona_raw": turn.raw, "latency_ms": turn.latency_ms}
         if not turn.addressed:
             return Outcome("ignored", "persona: not said to her", via="persona", extra=extra)
@@ -1174,6 +1226,7 @@ class Controller:
         stage = self.stage()
 
         def spoken(line, outcome):
+            line = self._fresh_line(line, outcome)
             if outcome.status in ("executed", "dry-run") and outcome.via == "persona":
                 self._heat_up("granted")
             elif outcome.status == "denied":
@@ -1396,9 +1449,23 @@ class Controller:
             self._program = None
         return bool(kept)
 
+    def new_mood(self, reason="start"):
+        """another mood for her: a new woman took over, or the current one changed her mind after a while"""
+        moods = list((self.persona_cfg or {}).get("session_moods") or [""])
+        fresh = [m for m in moods if m not in self._moods_recent[-3:] and m != self.session_mood] or moods
+        self.session_mood = self.rng.choice(fresh)
+        self._moods_recent.append(self.session_mood)
+        del self._moods_recent[:-6]
+        lo, hi = MOOD_MINUTES
+        self._mood_until = self.clock() + self.rng.uniform(lo, hi) * 60
+        if reason != "start" and self.session_mood:
+            print(f"  mood ({reason}): {self.session_mood}")
+
     def tick(self):
         """Called about once a second by the main loop: runs her program when its time has come. A hold ("utrzymaj to")
         makes it wait, the safe word ends it. -> True when a step ran."""
+        if self.clock() >= self._mood_until:
+            self.new_mood("after a while")
         with self._lock:
             pr = self._program
             if pr is None:
@@ -1556,7 +1623,7 @@ class Controller:
                    for w in self.wake_words for t in tokens[:2 if len(w) >= 5 else 1])
 
     def _match_no_wake(self, text):
-        """the safe word or the cooldown password, said without the wake word ("pomidor uspakajający od tyłu" too)"""
+        """the safe word or the cooldown password, said without the wake word ("trąbka uspakajająca od tyłu" too)"""
         m, _ = match(text, self.intents)
         if m is None and self.sides_enabled:
             bare = strip_side_words(text)
@@ -1582,7 +1649,7 @@ class Controller:
             return self._run_match(safe, now)                # "trąbka ..." stops, whatever follows
         command = self.strip_wake_word(transcript)
         if command is None:
-            # the safe word and the cooldown password need no wake word, ever ("trąbka", "pomidor uspakajający")
+            # the safe word and the cooldown password need no wake word, ever ("trąbka", "trąbka uspakajająca")
             m = self._match_no_wake(transcript)
             if m is not None:
                 return self._run_match(m, now)

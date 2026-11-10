@@ -46,7 +46,8 @@ def load_config(path):
     return cfg, intents
 
 
-STT_HINT_INTENTS = ("faster", "slower", "deeper", "shallower", "halt", "lock", "lube_fire", "cooldown")
+# not "cooldown": its password starts with the safe word, and a hint must never make "trąbka" come out longer
+STT_HINT_INTENTS = ("faster", "slower", "deeper", "shallower", "halt", "lock", "lube_fire")
 # short answers that count even when said while she is still speaking (unless she is saying them herself)
 OVER_HER_WORDS = ("proszę", "błagam", "przepraszam", "dziękuję", "tak", "please", "sorry", "yes")
 
@@ -275,6 +276,22 @@ def build(args):
                             wake_words=wake_words, wake_min_similarity=wake.get("min_similarity", 0.8), llm=llm, llm_cfg=lc,
                             lock_cfg=cfg.get("lock"), persona=persona, persona_cfg=pc, wake_words_by_lang=by_lang)
     controller.speak = lambda line: print(f"  Pani: {line}")
+    if log_path and os.path.exists(log_path):
+        # her lines of the last sessions count as said: a new evening does not start with the same sentences
+        try:
+            with open(log_path, encoding="utf-8") as f:
+                tail = f.readlines()[-300:]
+            said = []
+            for row in tail:
+                try:
+                    line = json.loads(row).get("say")
+                except ValueError:
+                    continue
+                if line and line not in said[-40:]:
+                    said.append(line)
+            controller.seed_said(said)
+        except OSError:
+            pass
     controller.sides_enabled = bool(cfg.get("devices", {}).get("sides", True))
     from controller import deep_merge
     languages = ["pl"] + [k for k in (pc.get("languages") or {}) if k != "pl"]
@@ -524,6 +541,7 @@ def main():
             print(f"  voice: {lst[i].get('name')} could not be resolved")
             return
         print(f"  voice: {lst[i].get('name')} ({ids[i]})")
+        controller.new_mood("another woman")   # she comes with her own mood
         use_voice(lang, ids[i], handover_line(lang))
         rotation["last"] = time.monotonic()
 

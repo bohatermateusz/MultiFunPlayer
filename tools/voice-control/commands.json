@@ -87,18 +87,7 @@
   },
   {
    "id": "lube_many",
-   "phrases": [
-    "spuść się na mnie kilka razy",
-    "spuść się kilka razy",
-    "spuść się na mnie trzy razy",
-    "strzel kilka razy",
-    "strzel trzy razy",
-    "kilka razy na mnie",
-    "zalej mnie",
-    "obryzgaj mnie",
-    "zalej mnie kilka razy",
-    "obryzgaj mnie kilka razy"
-   ],
+   "phrases": ["spuść się na mnie kilka razy", "spuść się kilka razy", "spuść się na mnie trzy razy", "strzel kilka razy", "strzel trzy razy", "kilka razy na mnie", "zalej mnie", "obryzgaj mnie", "zalej mnie kilka razy", "obryzgaj mnie kilka razy", "wypełnij mnie", "napełnij mnie", "wypełnij mnie spermą", "wypełnij mnie całą"],
    "phrases_en": ["cum on me a few times", "cum several times", "flood me", "cover me", "shoot a few times", "three times on me", "drench me"],
    "steps": [
     {
@@ -111,7 +100,7 @@
    "threshold": 0.9,
    "cooldown": 15,
    "max_extra_words": 1,
-   "description": "Fire the Lube Launcher several times; set count to the number of shots said (default 3).",
+   "description": "Fire the Lube Launcher several times (default 3; the number said if any): 'zalej mnie', 'wypełnij mnie', 'napełnij mnie', 'spuść się kilka razy'.",
    "llm_min_confidence": 0.9
   },
   {
@@ -142,7 +131,7 @@
    "threshold": 0.9,
    "cooldown": 1,
    "max_extra_words": 1,
-   "description": "Make the machine clearly faster (speed up, harder, more).",
+   "description": "Faster: the machine speeds up ON TOP of what the film does now (x1.2 per command, each further one stronger; with a built-in mode +20). Also for 'mocniej', 'dawaj', 'więcej', 'nie przestawaj tylko szybciej', any wish for more tempo.",
    "repeatable": true,
    "improvise": true
   },
@@ -174,7 +163,7 @@
    "threshold": 0.9,
    "cooldown": 1,
    "max_extra_words": 1,
-   "description": "Make the machine slower (calmer, gentler, less).",
+   "description": "Slower: the machine slows down from what the film does now (/1.2 per command, compounding; in a mode -20). Also 'delikatniej', 'spokojniej', 'nie tak mocno', any wish for less tempo - but NOT 'dość / wystarczy' (that is calm).",
    "repeatable": true,
    "improvise": true
   },
@@ -202,7 +191,7 @@
    "threshold": 0.9,
    "cooldown": 1,
    "max_extra_words": 1,
-   "description": "Make the strokes deeper.",
+   "description": "Deeper: the strokes go deeper than the film's (+10, then each further command 1.5x further). Also 'do końca', 'cały', 'wsadź głębiej', 'chcę go poczuć całego'.",
    "repeatable": true,
    "improvise": true
   },
@@ -230,7 +219,7 @@
    "threshold": 0.9,
    "cooldown": 1,
    "max_extra_words": 1,
-   "description": "Make the strokes shallower.",
+   "description": "Shallower: the strokes stay less deep than the film's (-10, growing). Also 'nie tak głęboko', 'tylko końcówką', 'boli głęboko'.",
    "repeatable": true,
    "improvise": true
   },
@@ -245,18 +234,9 @@
     "jak w filmie"
    ],
    "phrases_en": ["normal", "reset", "back to normal", "default"],
-   "steps": [
-    {
-     "action": "{target}::Hismith::Mode::Script",
-     "args": []
-    },
-    {
-     "action": "{target}::Hismith::Boost::Reset",
-     "args": []
-    }
-   ],
+   "steps": [{"action": "{target}::Hismith::Mode::Script", "args": []}, {"action": "{target}::Hismith::Sequence::Stop", "args": []}, {"action": "{target}::Hismith::Boost::Reset", "args": []}, {"action": "Media::PlayPause::Set", "args": [true]}],
    "cooldown": 2,
-   "description": "Back to the film's own movement and remove all speed/depth changes (normally, reset).",
+   "description": "BACK TO THE FILM, one command for all of it: the machine leaves any mode / A / B / modes in turn, every faster/slower/deeper/shallower is removed, and a paused video plays again ('normalnie', 'jak w filmie', 'wróć(my) do filmu', 'koniec trybu', 'graj', 'wznów'). Pausing is 'pause'.",
    "improvise": true
   },
   {
@@ -269,7 +249,6 @@
     "wróć do skryptu",
     "wróć do skryptów",
     "koniec trybu",
-    "wyłącz tryb",
     "skrypt",
     "film",
     "do filmu",
@@ -279,18 +258,9 @@
     "według filmu"
    ],
    "phrases_en": ["back to the movie", "back to the script", "follow the movie", "end the mode", "turn off the mode"],
-   "steps": [
-    {
-     "action": "{target}::Hismith::Mode::Script",
-     "args": []
-    },
-    {
-     "action": "{target}::Hismith::Sequence::Stop",
-     "args": []
-    }
-   ],
+   "steps": [{"action": "{target}::Hismith::Mode::Script", "args": []}, {"action": "{target}::Hismith::Sequence::Stop", "args": []}, {"action": "{target}::Hismith::Boost::Reset", "args": []}, {"action": "Media::PlayPause::Set", "args": [true]}],
    "cooldown": 2,
-   "description": "The MACHINE leaves the built-in mode and follows the film's funscript again (wróć / wróćmy do filmu, koniec trybu). Any request to go back to the film means this, not 'play'.",
+   "description": "BACK TO THE FILM, one command for all of it: the machine leaves any mode / A / B / modes in turn, every faster/slower/deeper/shallower is removed, and a paused video plays again ('normalnie', 'jak w filmie', 'wróć(my) do filmu', 'koniec trybu', 'graj', 'wznów'). Pausing is 'pause'.",
    "improvise": true
   },
   {
@@ -530,7 +500,7 @@
     }
    ],
    "cooldown": 2,
-   "description": "Custom mode A: fastest, smallest stroke, the same depth as the built-in modes (max out).",
+   "description": "Mode A: the machine's fastest pace with the smallest, quick stroke, at the usual depth (as in modes 1-8). For 'na maksa', 'najszybciej', 'jak maszyna', 'szybciutko i krótko', a frantic finish.",
    "improvise": true
   },
   {
@@ -554,8 +524,40 @@
     }
    ],
    "cooldown": 2,
-   "description": "Custom mode B: slowest possible, smallest stroke, the same depth as the built-in modes.",
+   "description": "Mode B: the slowest possible pace with the smallest stroke, at the usual depth. For 'najwolniej', 'ledwo się ruszaj', 'powolutku', edging, keeping her on the edge without letting her come.",
    "improvise": true
+  },
+  {
+   "id": "mode_a_max",
+   "phrases": ["max tryb a", "maks tryb a", "maksymalny tryb a", "tryb a max", "tryb a na max", "tryb a maks"],
+   "phrases_en": ["max mode a", "mode a max"],
+   "steps": [{"action": "{target}::Hismith::Mode::SetMax", "args": [9]}],
+   "cooldown": 2,
+   "description": "MAX mode A: mode A (fastest, smallest stroke) at 80% depth. Said as 'max tryb A'. Runs at once, never decided by dice."
+  },
+  {
+   "id": "mode_b_max",
+   "phrases": ["max tryb b", "maks tryb b", "maksymalny tryb b", "tryb b max", "tryb b na max", "tryb b maks"],
+   "phrases_en": ["max mode b", "mode b max"],
+   "steps": [{"action": "{target}::Hismith::Mode::SetMax", "args": [10]}],
+   "cooldown": 2,
+   "description": "MAX mode B: mode B (slowest, smallest stroke) at 80% depth. Said as 'max tryb B'. Runs at once, never decided by dice."
+  },
+  {
+   "id": "mode_a_normal",
+   "phrases": ["normalny tryb a", "normalnie tryb a", "tryb a normalnie", "tryb a normalny", "zwykły tryb a"],
+   "phrases_en": ["normal mode a"],
+   "steps": [{"action": "{target}::Hismith::Mode::Set", "args": [9]}],
+   "cooldown": 2,
+   "description": "NORMAL mode A: mode A at the usual depth (as in modes 1-8), back from 'max tryb A'. Runs at once, never decided by dice."
+  },
+  {
+   "id": "mode_b_normal",
+   "phrases": ["normalny tryb b", "normalnie tryb b", "tryb b normalnie", "tryb b normalny", "zwykły tryb b"],
+   "phrases_en": ["normal mode b"],
+   "steps": [{"action": "{target}::Hismith::Mode::Set", "args": [10]}],
+   "cooldown": 2,
+   "description": "NORMAL mode B: mode B at the usual depth (as in modes 1-8), back from 'max tryb B'. Runs at once, never decided by dice."
   },
   {
    "id": "mode_random",
@@ -573,7 +575,7 @@
     }
    ],
    "cooldown": 2,
-   "description": "A random built-in mode 1-8 (different from the one running). Used by a program with random_modes.",
+   "description": "A random built-in mode 1-8, different from the one running: 'zmień tryb', 'inny tryb', 'jakiś tryb', 'zaskocz mnie trybem'.",
    "improvise": true
   },
   {
@@ -592,7 +594,7 @@
     }
    ],
    "cooldown": 3,
-   "description": "Start the sequence that plays the built-in modes 1-8 one after another."
+   "description": "Modes 1-8 in turn: the machine plays its built-in modes one after another (each some seconds) instead of following the film; the video keeps playing. 'tryby po kolei', 'pokaż mi wszystkie tryby', 'przejdź przez tryby'."
   },
   {
    "id": "sequence_stop",
@@ -609,7 +611,7 @@
     }
    ],
    "cooldown": 3,
-   "description": "Stop the sequence of built-in modes."
+   "description": "End 'modes 1-8 in turn' (the machine follows the film again)."
   },
   {
    "id": "sequence_hold",
@@ -628,7 +630,7 @@
     }
    ],
    "cooldown": 2,
-   "description": "Stay in the built-in mode that is running now (freeze the sequence)."
+   "description": "While 'modes 1-8 in turn' runs: stay in the mode that runs now ('zostań w tym trybie', 'ten mi się podoba')."
   },
   {
    "id": "sequence_release",
@@ -647,42 +649,7 @@
     }
    ],
    "cooldown": 2,
-   "description": "Let the frozen mode sequence go on."
-  },
-  {
-   "id": "manual_mode",
-   "phrases": [
-    "tryb ręczny"
-   ],
-   "phrases_en": ["manual mode", "manual"],
-   "steps": [
-    {
-     "action": "{target}::Hismith::ManualMode::Set",
-     "args": [
-      true
-     ]
-    }
-   ],
-   "cooldown": 2,
-   "description": "Switch the machine to manual run mode."
-  },
-  {
-   "id": "auto_mode",
-   "phrases": [
-    "tryb automatyczny",
-    "tryb auto"
-   ],
-   "phrases_en": ["automatic mode", "auto mode", "auto"],
-   "steps": [
-    {
-     "action": "{target}::Hismith::ManualMode::Set",
-     "args": [
-      false
-     ]
-    }
-   ],
-   "cooldown": 2,
-   "description": "Switch the machine to automatic run mode."
+   "description": "Let the frozen 'modes 1-8 in turn' go on to the next modes."
   },
   {
    "id": "pause",
@@ -719,16 +686,9 @@
     "odtwarzaj film"
    ],
    "phrases_en": ["play", "resume", "unpause", "continue the movie"],
-   "steps": [
-    {
-     "action": "Media::PlayPause::Set",
-     "args": [
-      true
-     ]
-    }
-   ],
+   "steps": [{"action": "{target}::Hismith::Mode::Script", "args": []}, {"action": "{target}::Hismith::Sequence::Stop", "args": []}, {"action": "{target}::Hismith::Boost::Reset", "args": []}, {"action": "Media::PlayPause::Set", "args": [true]}],
    "cooldown": 1,
-   "description": "Only un-pauses a paused VIDEO (graj, wznów). Does nothing to the machine; going back to the film from a mode is 'script'."
+   "description": "BACK TO THE FILM, one command for all of it: the machine leaves any mode / A / B / modes in turn, every faster/slower/deeper/shallower is removed, and a paused video plays again ('normalnie', 'jak w filmie', 'wróć(my) do filmu', 'koniec trybu', 'graj', 'wznów'). Pausing is 'pause'."
   },
   {
    "id": "loop_on",
@@ -822,7 +782,7 @@
      "args": []
     }
    ],
-   "description": "Enough / too much / stop for a moment (dość, wystarczy, stop, chwila, za mocno): switch to the slowest speed at medium depth - the machine KEEPS going, it does not stop. Not 'koniec' (that is the safe word).",
+   "description": "Enough / too much (dość, wystarczy, za mocno, chwila): the machine goes to a medium speed at medium depth; said again, one step slower each time (medium, slower, slow, slowest). It KEEPS going, it does not stop. Not 'trąbka' (that is the safe word).",
    "cooldown": 1,
    "llm_min_confidence": 0.6,
    "threshold": 0.9,
@@ -830,19 +790,15 @@
   },
   {
    "id": "cooldown",
-   "phrases": [
-    "pomidor uspakajający",
-    "pomidor uspokajający",
-    "pomidorze uspakajający"
-   ],
-   "phrases_en": ["pomidor uspakajający", "pomidor uspokajający", "calming tomato"],
+   "phrases": ["trąbka uspakajająca", "trąbka uspokajająca", "trąbko uspakajająca", "trąbka uspakajającą"],
+   "phrases_en": ["trąbka uspakajająca", "calming trumpet"],
    "steps": [
     {
      "action": "{target}::Hismith::Cooldown",
      "args": []
     }
    ],
-   "description": "COOLDOWN, the end of a session: ONLY the exact password 'pomidor uspakajający' (EN also 'calming tomato'), no wake word needed, like the safe word. Over 5 minutes both machines slow down to the slowest speed, go to full depth and narrow the stroke to 10% (slow, even micro strokes), one Lube Launcher shot at a random moment; then they stay like that. Never decided by dice. Not for 'uspokój mnie' / 'wycisz' - that is talk to her.",
+   "description": "COOLDOWN, the end of a session: ONLY the exact password 'trąbka uspakajająca' (EN also 'calming trumpet'), no wake word needed, like the safe word. Over 5 minutes both machines slow down to the slowest speed, go to full depth and narrow the stroke to 10% (slow, even micro strokes), one Lube Launcher shot at a random moment; then they stay like that. Never decided by dice. A bare 'trąbka' is the safe word (stop), not this. Not for 'uspokój mnie' / 'wycisz' - that is talk to her.",
    "cooldown": 5,
    "threshold": 0.9,
    "max_extra_words": 2
@@ -850,6 +806,16 @@
   {
    "id": "hard",
    "phrases": [
+    "ruchaj mnie",
+    "wyruchaj mnie",
+    "ruchaj mnie mocno",
+    "dymaj mnie",
+    "wydymaj mnie",
+    "dymaj mnie mocno",
+    "bzykaj mnie",
+    "pieprz mnie mocniej",
+    "rżnij mnie mocno",
+    "uruchaj mnie",
     "pieprz mnie",
     "zerżnij mnie",
     "rżnij mnie",
@@ -880,7 +846,7 @@
      "args": []
     }
    ],
-   "description": "Take me hard: clearly faster and deeper (sissy / begging for it rough).",
+   "description": "Take me hard: faster twice AND deeper at once (pieprz / ruchaj / dymaj / rżnij / bzykaj mnie, 'weź mnie ostro', 'jak sukę', 'zniszcz mnie'). Use it whenever she wants it rougher in tempo and depth together.",
    "cooldown": 2,
    "repeatable": true,
    "threshold": 0.93,
@@ -888,19 +854,7 @@
   },
   {
    "id": "fill",
-   "phrases": [
-    "rozepchaj mnie",
-    "wypełnij mnie",
-    "głęboko w dupcię",
-    "w dupcię",
-    "weź moją dupcię",
-    "do samego dna",
-    "wypełnij mnie cały",
-    "wejdź we mnie cały",
-    "napełnij mnie",
-    "wejdź we mnie",
-    "cały we mnie"
-   ],
+   "phrases": ["rozepchaj mnie", "głęboko w dupcię", "w dupcię", "weź moją dupcię", "do samego dna", "wejdź we mnie cały", "wejdź we mnie", "cały we mnie"],
    "phrases_en": ["stretch me", "fill me", "fill me up", "stuff me", "all of it"],
    "steps": [
     {
@@ -912,7 +866,7 @@
      "args": []
     }
    ],
-   "description": "Fill me / go deep into my ass: deeper, twice.",
+   "description": "Go deep into my ass: deeper, twice ('rozepchaj mnie', 'w dupcię', 'cały we mnie', 'do samego końca'). Not 'wypełnij mnie' - that is several shots (lube_many).",
    "cooldown": 2,
    "repeatable": true,
    "threshold": 0.93,
@@ -949,7 +903,7 @@
      "args": []
     }
    ],
-   "description": "Tease me / be tender and slow: slower and shallower.",
+   "description": "Tease me / be tender and slow: slower and shallower at once ('drażnij mnie', 'pieść', 'zmysłowo', 'powoli i płytko').",
    "cooldown": 2,
    "repeatable": true,
    "threshold": 0.93,
@@ -1199,7 +1153,21 @@
   "enabled": true,
   "_comment": "'Pani': answers aloud and decides (dice) whether a request is granted. Everything except 'never_gated' (trąbka = halt, utrzymaj = lock) goes through her when said by voice; keys never do. 'fallback_plain' = soft commands that run plainly when she is unreachable (no key / network). 'base_p_overrides' = a friendlier first-ask chance for mild requests. 'tease_allowed' = steps she may run when she denies. reply_window = seconds after her line in which you answer without the wake word. 'output': 'headphones' (the microphone stays on while she speaks and your voice cuts her off, so the safe word is always heard) or 'speakers' (deaf while she speaks; then the safe word is the End key). escalation: the tool counts 'heat' and passes the stage to the model; stages[] describe the tone; tts.stage_settings = ElevenLabs voice settings per stage. initiative: she speaks when you are silent. address: titles = how SHE may address you (Pani, kochanie, ...; any is accepted), names = what you call HER (varied). vocabulary: phrases per category and stage that the tool samples (3 per turn, no repeats lately) and gives to the model as inspiration; confession_phrases / obey_phrases: recognised locally (fuzzy), so a confession or obedience counts for the dice even if the model misses it. tone: the tool rolls tender (czuły) or sharp (ostry) for every turn (sharp_p per stage, never more than max_sharp_run in a row, a twist now and then); tts.stage_settings has 10 entries: 0-4 tender by stage, 5-9 sharp by stage. spontaneous: unrequested moves (after a talk turn / when she speaks first); the Lube Launcher only from lube_min_stage with lube_chance. difficulty scales every chance (1.0 = as configured). manners: being polite pays. Asking without a polite word ('proszę', 'błagam', 'Pani') has politeness_factor of the chance; asking again while a demand of hers is unmet has ignore_demand_factor; an open refusal ('nie chcę', 'nie powiem', 'nie będę prosić', or the model's 'defiance') wipes the progress of your asks and punishes: for penalty_seconds nothing is granted until you apologise ('przepraszam, Pani').",
   "model": "gpt-4.1-mini",
-  "temperature": 0.8,
+  "temperature": 0.95,
+  "session_moods": [
+    "Teraz jesteś rozbawiona i drwiąca: wszystko cię śmieszy, droczysz się i kpisz z jej potrzeb.",
+    "Teraz jesteś chłodna i wymagająca: mało słów, krótkie rozkazy, pochwała rzadko i drogo.",
+    "Teraz jesteś czuła i zaborcza: dużo 'moja', opiekuńczo, ale nie odpuszczasz ani na chwilę.",
+    "Teraz jesteś niecierpliwa: chcesz szybko i mocno, poganiasz ją, denerwuje cię jej wahanie.",
+    "Teraz jesteś leniwa i kapryśna: zmieniasz zdanie, każesz czekać, nagradzasz z kaprysu.",
+    "Teraz jesteś dumna z niej: chwalisz ją, ale każda pochwała ma swoją cenę.",
+    "Teraz jesteś surowa jak nauczycielka: zasady, kary, każesz powtarzać i liczyć.",
+    "Teraz jesteś zmysłowa i powolna: szepczesz, opisujesz, przeciągasz każdą chwilę.",
+    "Teraz jesteś zazdrosna o jej przyjemność: przypominasz, że wszystko, co czuje, należy do ciebie.",
+    "Teraz jesteś okrutnie słodka: czułe słowa, ale treść bezlitosna.",
+    "Teraz jesteś ciekawska: wypytujesz ją, każesz opowiadać, co czuje i czego chce.",
+    "Teraz jesteś zwycięska: świętujesz, że ją masz, triumfujesz nad każdą jej prośbą."
+  ],
   "timeout": 8,
   "history_turns": 8,
   "reply_window": 60,
@@ -1234,8 +1202,6 @@
    "sequence_stop",
    "sequence_hold",
    "sequence_release",
-   "manual_mode",
-   "auto_mode",
    "pause",
    "play",
    "loop_on",
@@ -1339,7 +1305,11 @@
   "never_gated": [
    "halt",
    "lock",
-   "cooldown"
+   "cooldown",
+   "mode_a_max",
+   "mode_b_max",
+   "mode_a_normal",
+   "mode_b_normal"
   ],
   "cooldown": {
    "_comment": "'uspokój mnie' / Scroll Lock: the machines wind down (MFP Hismith::Cooldown, 5 min) and she only comments tenderly - one of 'lines' at once, then narration only on 'themes', always tender, no orders, and her program waits. 'seconds' = how long the tool keeps her soft (set it like HismithCooldownSeconds in MFP).",
@@ -2988,7 +2958,8 @@
   "manners": {
    "plain_lines": ["Mhm… mów dalej, mała.", "Słucham cię. Uważnie.", "Grzecznie. Tak lubię.", "Jestem tu. Patrzę na ciebie.", "Dobrze. Oddychaj i czekaj.", "Wiem, mała. Wiem."],
    "beg_met_bonus": 0.35,
-   "denials": {"beg": ["Ładniej. Tak, żebym uwierzyła.", "Mało. Postaraj się bardziej.", "Słyszę cię… ale nie przekonujesz.", "Prawie. Jeszcze raz, z serca.", "Mów, jakbyś naprawdę tego potrzebowała.", "Za cicho. Błagaj.", "Grzecznie, mała. Od początku.", "Może. Jeśli poprosisz jak dziewczynka."], "confess": ["Najpierw powiedz, kim jesteś.", "Czyja jesteś? Głośno.", "Przyznaj się. Potem pogadamy.", "Chcę usłyszeć, kim dla mnie jesteś."], "thank": ["Podziękuj. Za to, że w ogóle słucham.", "Gdzie dziękuję?", "Dziękuj, zanim cokolwiek dostaniesz.", "Najpierw wdzięczność."], "repeat": ["Powtórz. Wyraźnie.", "Jeszcze raz, tym razem z przekonaniem.", "Słowo w słowo. Dasz radę.", "Powtórz, aż w to uwierzysz."]},
+   "grants": ["Masz. Grzeczna.", "No proszę, jak ładnie błagasz. Dostajesz.", "Niech ci będzie, mała.", "Teraz tak, jak chciałaś. Dziękuj.", "Widzisz? Wystarczyło poprosić.", "Dostajesz, bo dziś jesteś posłuszna.", "Dobrze. Ale pamiętaj, czyja to łaska.", "Bierz. I ani słowa skargi.", "Zasłużyłaś. Tym razem.", "Tak lubię. Masz swoje.", "Ładnie prosiłaś, więc dostajesz.", "Proszę bardzo, moja mała. Czuj.", "Zgoda. Tylko nie zapomnij podziękować.", "Niech będzie po twojemu… na chwilę.", "Moja grzeczna laleczka. Masz.", "Skoro tak ładnie… dostaniesz.", "Tak. Teraz oddychaj i bierz.", "Pozwalam. Ale to ja decyduję, jak długo.", "Mhm. Tego właśnie chciałaś, prawda?", "Dobrze, kochanie. Rozluźnij się i bierz.", "Wiedziałam, że w końcu poprosisz jak trzeba.", "Masz, czego chciałaś. Pokaż mi, że to doceniasz.", "Za to błaganie - nagroda.", "Teraz mi się podobasz. Dostajesz."],
+   "denials": {"beg": ["Ładniej. Tak, żebym uwierzyła.", "Mało. Postaraj się bardziej.", "Słyszę cię… ale nie przekonujesz.", "Prawie. Jeszcze raz, z serca.", "Mów, jakbyś naprawdę tego potrzebowała.", "Za cicho. Błagaj.", "Grzecznie, mała. Od początku.", "Może. Jeśli poprosisz jak dziewczynka.", "Nie tak szybko, kochanie. Najpierw mnie przekonaj.", "Hm. To miała być prośba?", "Poczekasz. Lubię, jak czekasz.", "Nie dziś. Chyba że mnie zaskoczysz.", "Za łatwo by ci poszło.", "Prosisz jak ktoś, kto na to nie zasłużył.", "Nie słyszę w tym błagania.", "Najpierw pokaż, że umiesz być grzeczna.", "Oj, mała. Tak się nie prosi.", "Chcesz? To się postaraj.", "Zwolnij. To ja tu ustalam tempo.", "Nie. I nie dąsaj się."], "confess": ["Najpierw powiedz, kim jesteś.", "Czyja jesteś? Głośno.", "Przyznaj się. Potem pogadamy.", "Chcę usłyszeć, kim dla mnie jesteś."], "thank": ["Podziękuj. Za to, że w ogóle słucham.", "Gdzie dziękuję?", "Dziękuj, zanim cokolwiek dostaniesz.", "Najpierw wdzięczność."], "repeat": ["Powtórz. Wyraźnie.", "Jeszcze raz, tym razem z przekonaniem.", "Słowo w słowo. Dasz radę.", "Powtórz, aż w to uwierzysz."]},
    "politeness_factor": 0.6,
    "polite_markers": [
     "proszę",

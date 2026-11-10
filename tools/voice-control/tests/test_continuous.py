@@ -86,7 +86,7 @@ class Synonyms(unittest.TestCase):
         self.check("mode_b", ["tryb b", "najwolniej", "na minimum", "tryb minimalny"])
 
     def test_back_to_the_script_and_lube(self):
-        self.check("script", ["wróć do filmu", "wróć do skryptu", "wyłącz tryb"])
+        self.check("script", ["wróć do filmu", "wróć do skryptu", "koniec trybu"])
         self.check("normal", ["normalnie", "zresetuj", "bez zmian"])
         self.check("lube_fire", ["spuść się", "spuść się na mnie", "dojdź na mnie"])
         self.check("lube_many", ["spuść się na mnie kilka razy", "strzel kilka razy"])

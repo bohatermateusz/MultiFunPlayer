@@ -116,6 +116,14 @@ def match(transcript: str, intents: list):
     if not scored:
         return None, "no phrase close enough"
     scored.sort(key=lambda m: -m.score)
+    # "max tryb a" holds the shorter command "tryb a": of two close matches the one whose phrase contains the other's
+    # words (and more) wins
+    if len(scored) > 1 and scored[0].score - scored[1].score < AMBIGUITY_MARGIN:
+        a, b = (set(normalize(m.phrase).split()) for m in scored[:2])
+        if a > b:
+            scored = [scored[0]]
+        elif b > a:
+            scored = [scored[1]]
     if len(scored) > 1 and scored[0].score - scored[1].score < AMBIGUITY_MARGIN:
         return None, f"ambiguous: {scored[0].intent.id} / {scored[1].intent.id}"
     return scored[0], "ok"
