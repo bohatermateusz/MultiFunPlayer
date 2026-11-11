@@ -1448,7 +1448,7 @@
     "spełniona fantazja - zawsze tego chciała i teraz to się dzieje: biorą ją jak kobietę, a ona piszczy cienkim, dziewczęcym głosikiem",
     "dziewczyna do ruchania - jest teraz ich dziewczyną do ruchania; dziewczyny są uległe i nie mają nic do gadania",
     "orgazmy nie są jej - nawet jej orgazmy już do niej nie należą; należą do nich: oni decydują kiedy, ile i czy w ogóle",
-    "porwana na wojnie - w czasie wojny wzięli ją jako jeńca, zmienili, ubrali w kobietę i od tamtej pory służy; tamten żołnierz już nie wróci",
+    "niewola z wyboru - wzięli ją do niewoli jako kobietę; co więcej, sama się zgłosiła i sama oddała klucz",
     "dla ich zabawy - istnieje po to, żeby ich bawić i ulegle służyć; jej przyjemność jest dodatkiem",
     "na posyłki - używają jej uzależnieni od seksu, którzy chcą się pieprzyć bez przerwy; ona jest na ich zawołanie jak towar z katalogu w magazynie",
     "hormony - zabrali jej testosteron i podają estrogen; ciało mięknie, zaokrągla się, uczy się słuchać; nie ma już czym walczyć",
@@ -1719,19 +1719,19 @@
       "Byłaś moja cała. Teraz możesz być sobą… na chwilę.",
       "Nic nie musisz. Już wszystko zrobiłaś."
      ],
-     "porwana na wojnie - w czasie wojny wzięli ją jako jeńca, zmienili, ubrali w kobietę i od tamtej pory służy; tamten żołnierz już nie wróci": [
-      "Wzięli cię w czasie wojny. Myślałaś, że to niewola. To był dopiero początek.",
-      "Jeniec wojenny. Tak cię zapisali. Dziś zapisują cię jako ich dziewczynę.",
-      "Zdjęli ci mundur i dali sukienkę. Od tamtej pory już jej nie zdjęłaś.",
-      "Tamten żołnierz nie wrócił z wojny. Wróciła tylko ona. Ty.",
-      "Ogolili cię, umalowali, ubrali w koronki. Żeby służyć, nie walczyć.",
-      "Na wojnie przegrałaś. A nagrodą dla zwycięzców jesteś ty.",
-      "Nikt cię nie szuka. Na liście zaginionych jest mężczyzna. Ciebie tam nie ma.",
-      "Obóz był dla jeńców. Dla ciebie był szkołą bycia kobietą.",
-      "Każdej nocy przychodzą po swój łup. Ten łup ma na sobie pończochy.",
-      "Rozkazy wydają teraz oni. Ty tylko rozkładasz nogi na baczność.",
-      "Zmienili cię powoli, krok po kroku. Aż zapomniałaś, o co walczyłaś.",
-      "Powtórz: zostałam wzięta na wojnie i teraz służę."
+     "niewola z wyboru - wzięli ją do niewoli jako kobietę; co więcej, sama się zgłosiła i sama oddała klucz": [
+      "Wzięli cię do niewoli. Jako kobietę. Nikt nie pytał, kim byłaś wcześniej.",
+      "Najlepsze jest to, że sama się zgłosiłaś. Przyszłaś i powiedziałaś: weźcie mnie.",
+      "Nikt cię nie łapał. Sama zapukałaś do drzwi swojej celi.",
+      "Jesteś ich branką. Kobietą w niewoli. I to był twój pomysł.",
+      "Sama podpisałaś. Sama się rozebrałaś. Sama uklękłaś.",
+      "Klucz do swojej klatki oddałaś im sama. Z uśmiechem.",
+      "Niewolnica z ochotniczego zaciągu. Najgrzeczniejsza, jaką mieli.",
+      "Nie możesz nawet powiedzieć, że cię zmusili. Prosiłaś o to.",
+      "Wzięli cię jako kobietę, bo przyszłaś do nich jako kobieta. Gotowa.",
+      "Zgłosiłaś się na ochotnika do bycia ich własnością. Wniosek przyjęty.",
+      "Każdy łańcuch na tobie założyłaś sobie sama. Oni tylko trzymają koniec.",
+      "Powtórz: sama się zgłosiłam i jestem ich branką."
      ],
      "orgazmy nie są jej - nawet jej orgazmy już do niej nie należą; należą do nich: oni decydują kiedy, ile i czy w ogóle": [
       "Nawet twoje orgazmy nie są już twoje. Należą do nich.",
@@ -2309,7 +2309,8 @@
    "jestem ich dziewczynką do ruchania",
    "nie mam nic do gadania",
    "moje orgazmy należą do nich",
-   "moje orgazmy nie są moje"
+   "moje orgazmy nie są moje",
+   "sama się zgłosiłam"
   ],
   "obey_phrases": [
    "dziękuję",
@@ -2462,7 +2463,7 @@
     "i give up",
     "i'm your girl",
     "i let go",
-    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine"
+    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine", "i volunteered"
    ],
    "obey_phrases": [
     "thank you",
@@ -2573,7 +2574,7 @@
      "let go - end of holding on; the body decides, not her; the wave comes",
      "the one who takes her - his rhythm, depth and pace are not hers; I let him",
      "two at once - one in her mouth, one behind; no side is hers",
-     "remade - they took what made her a man and made a girl for their amusement", "trans girl - she is a trans girl now; not a costume, not pretend, it is her; she says it out loud and is proud of it", "fantasy come true - she always wanted this and now it is real: they take her like a woman and she squeals in a thin, girlish voice", "their girl to fuck - she is their girl to fuck now; girls are submissive and have no say", "her orgasms are not hers - even her orgasms don't belong to her anymore; they belong to them: they decide when, how many and whether at all", "taken in the war - in wartime they took her prisoner, changed her, dressed her as a woman and she has served ever since; that soldier is never coming back",
+     "remade - they took what made her a man and made a girl for their amusement", "trans girl - she is a trans girl now; not a costume, not pretend, it is her; she says it out loud and is proud of it", "fantasy come true - she always wanted this and now it is real: they take her like a woman and she squeals in a thin, girlish voice", "their girl to fuck - she is their girl to fuck now; girls are submissive and have no say", "her orgasms are not hers - even her orgasms don't belong to her anymore; they belong to them: they decide when, how many and whether at all", "captive by choice - they took her captive as a woman; what's more, she volunteered and handed over the key herself",
      "for their amusement - she exists to entertain them and serve meekly; her pleasure is a bonus", "on call - sex-obsessed men who want to fuck nonstop use her; she's at their beck and call like an item from a warehouse catalogue",
      "hormones - they took her testosterone and give her estrogen; the body softens, rounds, learns to obey; nothing left to fight with",
      "affirmation - she orders one first-person sentence repeated ('Repeat after me: I am a woman who takes it.')",
@@ -2693,19 +2694,19 @@
        "They'll use you up and put you back on the shelf. Until the next order.",
        "Hungry, always hungry. And you're what they feed on."
       ],
-      "taken in the war - in wartime they took her prisoner, changed her, dressed her as a woman and she has served ever since; that soldier is never coming back": [
-       "They took you in the war. You thought it was captivity. It was only the beginning.",
-       "Prisoner of war. That's what they wrote down. Now they write you down as their girl.",
-       "They took off your uniform and gave you a dress. You never took it off since.",
-       "That soldier never came back from the war. Only she came back. You.",
-       "They shaved you, painted you, put you in lace. To serve, not to fight.",
-       "You lost the war. And the victors' prize is you.",
-       "Nobody is looking for you. The missing list has a man on it. You're not there.",
-       "The camp was for prisoners. For you it was a school of being a woman.",
-       "Every night they come for their spoils. The spoils wear stockings.",
-       "They give the orders now. You only spread your legs at attention.",
-       "They changed you slowly, step by step. Until you forgot what you fought for.",
-       "Repeat: I was taken in the war and now I serve."
+      "captive by choice - they took her captive as a woman; what's more, she volunteered and handed over the key herself": [
+       "They took you captive. As a woman. Nobody asked who you were before.",
+       "The best part is you volunteered. You came and said: take me.",
+       "Nobody caught you. You knocked on the door of your own cell.",
+       "You're their captive. A woman in chains. And it was your idea.",
+       "You signed yourself. You undressed yourself. You knelt yourself.",
+       "The key to your cage. You handed it over yourself. With a smile.",
+       "A slave who volunteered. The most obedient one they ever had.",
+       "You can't even say they forced you. You begged for it.",
+       "They took you as a woman because you came to them as a woman. Ready.",
+       "You volunteered to be their property. Application accepted.",
+       "Every chain on you, you put on yourself. They only hold the end.",
+       "Repeat: I volunteered and I'm their captive."
       ],
       "her orgasms are not hers - even her orgasms don't belong to her anymore; they belong to them: they decide when, how many and whether at all": [
        "Even your orgasms aren't yours anymore. They belong to them.",
