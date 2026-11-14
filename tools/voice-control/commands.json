@@ -1516,7 +1516,11 @@
     "przyciśnięta - przygnieciona jego ciężarem, nogi przy głowie, ręka w jej włosach, pocałunek, który nie pyta; nie ma dokąd uciec i dziwnie czuje się bezpieczna",
     "twoja wina - wszystko jest jej winą: nie słuchała, dotykała się, dlatego dostała klatkę jak pies kołnierz; nie ma sugestii, są tylko polecenia",
     "dziesięć minut później - po wszystkim mgła opada i przychodzi prawdziwy wstyd: nie, że ją wzięli, tylko że tak bardzo jej się podobało i że już dawno przestała tylko znosić",
-    "przełamana - opór gaśnie kawałek po kawałku: najpierw walczyła, potem się targowała, potem płakała, a teraz tylko piszczy i dziękuje"
+    "przełamana - opór gaśnie kawałek po kawałku: najpierw walczyła, potem się targowała, potem płakała, a teraz tylko piszczy i dziękuje",
+    "odurzona nimi - kręci jej się w głowie od ich zapachu, potu i spermy; ich bliskość działa jak narkotyk, którego nikt jej nie podał, a i tak jest na haju",
+    "trans - głos Pani i rytm pchnięć wprowadzają ją w stan, w którym myśli odpływają; zostaje tylko oddech, rytm i posłuszeństwo",
+    "pijana rozkoszą - po kolejnej fali nie wie, gdzie jest; mówi bez sensu, prosi o więcej, świat się chwieje i nie ma w niej nic poza przyjemnością",
+    "we mgle - budzi się zamroczona po nocy z nimi; pamięta urywki, ciało pamięta więcej: każdy siniak po palcach, każdą kroplę, każde »jeszcze«"
    ],
    "style": "Mów jak do ucha, szeptem z pewnością: krótkie frazy, wielokropki jako oddechy ('Odpuść… ja to trzymam… dobra dziewczynka.'), czasem 'powtórz za mną' i zdanie w pierwszej osobie, czasem jedno dosadne słowo. Nigdy pytania, nigdy wyjaśnienia.",
    "examples": [
@@ -1540,6 +1544,62 @@
     "retired": ["Dwóch naraz to nie orgy… to standard: jeden w buzi, drugi w kolejce. Tak wygląda twoje otoczenie.", "Ten lodzik w kamerze wyszedł ci lepiej niż całe twoje życie. Doczekał się recenzji. Wszystkich pozytywnych.", "Twoja technika miała więcej widzów niż kiedykolwiek twoje zdanie. Statystyki mówią samo: buzia lepsza niż głowa.", "Całe miasto zna twoją dupę od lepszej strony. Literalnie.", "Każdy, kto na ciebie patrzy, już to przemyślał. Sekundę dłużej niż trzeba. Wiesz w jakiej pozycji.", "Twoja dupa zbiera propozycje szybciej, niż twój mózg zdąża je odrzucać. Dlatego już nie odrzucasz.", "Nie jesteś pożądana jak piękny obrazek. Jesteś pożądana jak dobre miejsce. Robi się kolejkę.", "Twoje usta mają listę oczekujących. Rośnie lawinowo. Grzecznie poczekają. Ty też.", "Zanim skończysz tego jednego, trzech kolejnych już się zapisało. Taki obrót.", "Mogłabyś wprowadzić numeryczki. Ale po co — wszyscy i tak znają twoje usta na pamięć. Po prostu wchodzą."],
     "banned_words": ["maszyn", "silnik", "urządzen", "dildo", "launcher", "tryb ", "skrypt", "funscript", " vr ", "re:\\b(suk[aoęiąe]?|suczk\\w*|bitch\\w*)\\b"],
     "seed": {
+     "we mgle - budzi się zamroczona po nocy z nimi; pamięta urywki, ciało pamięta więcej: każdy siniak po palcach, każdą kroplę, każde »jeszcze«": [
+      "Budzisz się we mgle. Pamiętasz urywki. Ciało pamięta wszystko.",
+      "Ile ich było. Nie pamiętasz. Twoja dziurka pamięta. Każdego.",
+      "Ślady palców na biodrach. Jak podpisy pod umową, której nie czytałaś.",
+      "Pamiętasz światło, jęki i swój głos mówiący »jeszcze«. Resztę wypełnia mgła.",
+      "Masz ich smak w ustach i ich ciepło w środku. To wystarcza za wspomnienia.",
+      "Próbujesz poskładać noc w całość. Każdy kawałek kończy się na tobie na kolanach.",
+      "Nie potrzebowałaś niczego, żeby stracić głowę. Wystarczyło, że było ich tak wielu.",
+      "Ktoś zostawił na stoliku wodę i karteczkę: grzeczna. Nie pamiętasz, czym na nią zasłużyłaś.",
+      "Telefon pełen zdjęć, których nie robiłaś. Na każdym się uśmiechasz.",
+      "Mgła powoli opada. To, co zostaje pod nią, jest jeszcze piękniejsze i jeszcze bardziej wstydliwe.",
+      "Powtórz za mną: nie pamiętam wszystkiego, ale moje ciało pamięta za mnie.",
+      "Jeszcze dziś wieczorem zrobią to znowu. I znowu obudzisz się we mgle. Czekasz na to."
+     ],
+     "pijana rozkoszą - po kolejnej fali nie wie, gdzie jest; mówi bez sensu, prosi o więcej, świat się chwieje i nie ma w niej nic poza przyjemnością": [
+      "Po trzeciej fali nie wiesz już, gdzie jesteś. Wiesz tylko, gdzie on jest.",
+      "Mówisz bez sensu. Pół słowa, jęk, »jeszcze«. Wszystko inne wypadło.",
+      "Świat się kołysze. Trzymasz się prześcieradła, bo nic innego nie stoi w miejscu.",
+      "Jesteś pijana rozkoszą. Bełkoczesz jego imię i zapominasz własne.",
+      "Oczy uciekają ci w głąb głowy. Nie widzisz. Nie musisz widzieć.",
+      "Ślinisz się na poduszkę i nawet tego nie czujesz. Czujesz tylko jego.",
+      "Próbujesz coś powiedzieć. Wychodzi tylko »proszę«. To jedyne słowo, które zostało.",
+      "Każda fala zabiera trochę rozumu. Po piątej nie zostało nic do zabrania.",
+      "Nie umiesz już powiedzieć, gdzie kończysz się ty, a zaczyna rozkosz.",
+      "Wstajesz i nogi cię nie niosą. On cię łapie. I kładzie z powrotem.",
+      "Powtórz za mną, jeśli jeszcze umiesz: jestem pijana rozkoszą.",
+      "Rano będziesz się wstydzić tego, co mówiłaś. Teraz mów dalej. Pięknie bełkoczesz."
+     ],
+     "trans - głos Pani i rytm pchnięć wprowadzają ją w stan, w którym myśli odpływają; zostaje tylko oddech, rytm i posłuszeństwo": [
+      "Słuchaj mojego głosu. Tylko mojego. Reszta świata cichnie.",
+      "Rytm pchnięć i mój głos. Raz, dwa. Raz, dwa. Myśli odpływają jak woda.",
+      "Oczy ci się przymykają. Nie śpisz. Jesteś głębiej niż sen.",
+      "Z każdym pchnięciem schodzisz o stopień niżej. Tam, gdzie nie ma pytań.",
+      "W transie nie ma wstydu. Jest tylko ciało, które się otwiera.",
+      "Twoje usta mówią to, co ja mówię. Twoje biodra robią to, co on robi.",
+      "Głębiej. Spokojniej. Pusto. Tak dobrze jest nie myśleć.",
+      "Kiedy cię wybudzę, będziesz pamiętać tylko, że było ci dobrze. I że chcesz wrócić.",
+      "Każde moje słowo osiada w tobie jak ciepły kamień. Ciężko. Spokojnie. Na zawsze.",
+      "Nie walczysz z transem. Trans to jedyne miejsce, gdzie przestałaś walczyć.",
+      "Powtórz za mną, powoli: odpływam. Słucham. Należę.",
+      "Liczę od dziesięciu w dół. Przy zerze jesteś już tylko jego."
+     ],
+     "odurzona nimi - kręci jej się w głowie od ich zapachu, potu i spermy; ich bliskość działa jak narkotyk, którego nikt jej nie podał, a i tak jest na haju": [
+      "Kręci ci się w głowie od ich zapachu. Pot, skóra, sperma. Nikt ci nic nie dał, a jesteś na haju.",
+      "Jeden oddech przy jego szyi i nogi się pod tobą uginają.",
+      "Ich zapach zostaje na tobie do rana. Wąchasz poduszkę jak uzależniona.",
+      "Wystarczy, że stanie za tobą. Myśli się rozmywają, a ty już się wypinasz.",
+      "Jesteś odurzona nimi. Ich ciężarem, ich głosem, tym, jak cię trzymają.",
+      "Smak w ustach po nim zostaje godzinami. Oblizujesz się, żeby go nie stracić.",
+      "Im bliżej są, tym mniej rozumiesz. Im mniej rozumiesz, tym chętniej dajesz.",
+      "Kiedyś myślałaś trzeźwo. Potem poczułaś go z bliska. Od tamtej pory już nigdy.",
+      "Pokój pachnie nimi i tobą. Ten zapach to twój nowy tlen.",
+      "Każdy z nich pachnie inaczej. Ty rozpoznajesz ich z zamkniętymi oczami. Po zapachu i po rozmiarze.",
+      "Powtórz za mną: jestem odurzona nimi. Ich zapach wyłącza mi głowę.",
+      "Wychodzisz od nich chwiejnym krokiem. Nie od alkoholu. Od nich."
+     ],
      "przełamana - opór gaśnie kawałek po kawałku: najpierw walczyła, potem się targowała, potem płakała, a teraz tylko piszczy i dziękuje": [
       "Najpierw walczyłaś. Potem się targowałaś. Potem płakałaś. Teraz tylko piszczysz.",
       "Kiedyś się wściekałaś. Teraz dziękujesz. To się nazywa postęp.",
@@ -3417,7 +3477,11 @@
     "pinned - crushed under his weight, legs by her head, his hand in her hair, a kiss that doesn't ask; there's nowhere to go and she feels strangely safe",
     "your fault - everything is her fault: she didn't listen, she touched herself, so she got a cage like a dog gets a cone; there are no suggestions, only orders",
     "ten minutes later - after it's over the haze lifts and the real shame comes: not that they took her, but that she loved it so much and stopped merely enduring long ago",
-    "broken in - the resistance goes out of her piece by piece: first she fought, then bargained, then cried, and now she only squeals and says thank you"
+    "broken in - the resistance goes out of her piece by piece: first she fought, then bargained, then cried, and now she only squeals and says thank you",
+    "dazed by them - her head spins from their scent, their sweat and cum; their nearness works like a drug nobody gave her, and she's high anyway",
+    "trance - her Mistress's voice and the rhythm of the thrusts put her in a state where thoughts drift away; only breath, rhythm and obedience remain",
+    "drunk on pleasure - after another wave she doesn't know where she is; she babbles, begs for more, the world sways and there's nothing in her but pleasure",
+    "in a haze - she wakes up foggy after a night with them; she remembers fragments, her body remembers more: every fingerprint, every drop, every more"
     ],
     "tasks": {
      "by_stage": {
@@ -3480,6 +3544,62 @@
       "urządzen"
      ],
      "seed": {
+      "in a haze - she wakes up foggy after a night with them; she remembers fragments, her body remembers more: every fingerprint, every drop, every more": [
+       "You wake up in a haze. You remember fragments. Your body remembers everything.",
+       "How many were there. You don't remember. Your hole remembers. Every one.",
+       "Fingerprints on your hips. Like signatures on a contract you never read.",
+       "You remember the light, the moans and your own voice saying more. The fog fills the rest.",
+       "You have their taste in your mouth and their warmth inside you. That will do for memories.",
+       "You try to piece the night together. Every piece ends with you on your knees.",
+       "You didn't need anything to lose your head. It was enough that there were so many of them.",
+       "Someone left water on the nightstand and a note: good girl. You don't remember what you did to earn it.",
+       "Your phone is full of photos you didn't take. You're smiling in every one.",
+       "The fog slowly lifts. What's underneath is even more beautiful and even more shameful.",
+       "Repeat after me: I don't remember everything, but my body remembers for me.",
+       "Tonight they'll do it again. And again you'll wake up in a haze. You can't wait."
+      ],
+      "drunk on pleasure - after another wave she doesn't know where she is; she babbles, begs for more, the world sways and there's nothing in her but pleasure": [
+       "After the third wave you don't know where you are anymore. You only know where he is.",
+       "You babble. Half a word, a moan, more. Everything else fell out.",
+       "The world sways. You hold on to the sheet because nothing else stays still.",
+       "You're drunk on pleasure. You slur his name and forget your own.",
+       "Your eyes roll back. You can't see. You don't need to.",
+       "You drool on the pillow and don't even feel it. You only feel him.",
+       "You try to say something. Only please comes out. It's the one word left.",
+       "Every wave takes a bit of your mind. After the fifth there's nothing left to take.",
+       "You can't tell anymore where you end and the pleasure begins.",
+       "You stand up and your legs won't carry you. He catches you. And lays you back down.",
+       "Repeat after me, if you still can: I'm drunk on pleasure.",
+       "In the morning you'll be ashamed of what you said. For now keep talking. You babble beautifully."
+      ],
+      "trance - her Mistress's voice and the rhythm of the thrusts put her in a state where thoughts drift away; only breath, rhythm and obedience remain": [
+       "Listen to my voice. Only mine. The rest of the world goes quiet.",
+       "The rhythm of the thrusts and my voice. One, two. One, two. Your thoughts drift away like water.",
+       "Your eyes are closing. You're not asleep. You're deeper than sleep.",
+       "With every thrust you go down one more step. Down where there are no questions.",
+       "In trance there's no shame. Only a body that opens.",
+       "Your mouth says what I say. Your hips do what he does.",
+       "Deeper. Calmer. Empty. It feels so good not to think.",
+       "When I wake you, you'll only remember that it felt good. And that you want to go back.",
+       "Every word of mine settles in you like a warm stone. Heavy. Calm. Forever.",
+       "You don't fight the trance. The trance is the one place you stopped fighting.",
+       "Repeat after me, slowly: I'm drifting. I'm listening. I belong.",
+       "I'm counting down from ten. At zero you're only his."
+      ],
+      "dazed by them - her head spins from their scent, their sweat and cum; their nearness works like a drug nobody gave her, and she's high anyway": [
+       "Your head spins from their scent. Sweat, skin, cum. Nobody gave you anything and you're high.",
+       "One breath against his neck and your legs give way.",
+       "Their scent stays on you until morning. You sniff the pillow like an addict.",
+       "He only has to stand behind you. Your thoughts blur and you're already bending over.",
+       "You're dazed by them. Their weight, their voice, the way they hold you.",
+       "The taste of him stays in your mouth for hours. You lick your lips so you don't lose it.",
+       "The closer they are, the less you understand. The less you understand, the more willingly you give.",
+       "You used to think clearly. Then you smelled him up close. Never again since.",
+       "The room smells of them and of you. That smell is your new oxygen.",
+       "Each of them smells different. You know them with your eyes closed. By scent and by size.",
+       "Repeat after me: I'm dazed by them. Their scent switches my head off.",
+       "You leave them on unsteady feet. Not from drink. From them."
+      ],
       "broken in - the resistance goes out of her piece by piece: first she fought, then bargained, then cried, and now she only squeals and says thank you": [
        "First you fought. Then you bargained. Then you cried. Now you only squeal.",
        "You used to rage. Now you say thank you. That's called progress.",
