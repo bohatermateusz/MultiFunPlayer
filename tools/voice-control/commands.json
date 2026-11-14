@@ -1525,7 +1525,10 @@
     "przywiązana do krzesła - przywiązali ją przodem do oparcia, z wypiętą dupą, nadgarstki i kostki w pasach, żeby mogli wchodzić głębiej i mocniej, a ona nie może się odsunąć ani o centymetr",
     "rozpórka - drążek między kostkami trzyma jej nogi szeroko; nie złączy ich, nie zasłoni się, nie ucieknie, jest otwarta dla każdego",
     "knebel i obroża - knebel w ustach, obroża na szyi, smycz w jego dłoni; nie może mówić, może tylko iść tam, gdzie pociągnie, i jęczeć w kulkę",
-    "ławka - przypięta do ławki na kolanach, biodra w górze, głowa nisko; ławka jest zrobiona dla jednego: żeby brali ją od tyłu tak długo i mocno, jak chcą"
+    "ławka - przypięta do ławki na kolanach, biodra w górze, głowa nisko; ławka jest zrobiona dla jednego: żeby brali ją od tyłu tak długo i mocno, jak chcą",
+    "rzecz - nie jest już osobą, tylko rzeczą: używaną, odkładaną, przekazywaną dalej; rzeczy nie mają imion, zdania ani praw, mają tylko zastosowanie",
+    "bydło - traktują ją jak sztukę bydła: obejrzaną, sprawdzoną, oznaczoną i trzymaną w zagrodzie po to, żeby była pod ręką, kiedy przyjdzie im ochota",
+    "ciało do pieprzenia - zostało z niej tylko ciało: do pieprzenia i zaspokajania ich potrzeb; myśli, plany i imię są niepotrzebne, liczą się dziurki i to, że zawsze są gotowe"
    ],
    "style": "Mów jak do ucha, szeptem z pewnością: krótkie frazy, wielokropki jako oddechy ('Odpuść… ja to trzymam… dobra dziewczynka.'), czasem 'powtórz za mną' i zdanie w pierwszej osobie, czasem jedno dosadne słowo. Nigdy pytania, nigdy wyjaśnienia.",
    "examples": [
@@ -1549,6 +1552,48 @@
     "retired": ["Dwóch naraz to nie orgy… to standard: jeden w buzi, drugi w kolejce. Tak wygląda twoje otoczenie.", "Ten lodzik w kamerze wyszedł ci lepiej niż całe twoje życie. Doczekał się recenzji. Wszystkich pozytywnych.", "Twoja technika miała więcej widzów niż kiedykolwiek twoje zdanie. Statystyki mówią samo: buzia lepsza niż głowa.", "Całe miasto zna twoją dupę od lepszej strony. Literalnie.", "Każdy, kto na ciebie patrzy, już to przemyślał. Sekundę dłużej niż trzeba. Wiesz w jakiej pozycji.", "Twoja dupa zbiera propozycje szybciej, niż twój mózg zdąża je odrzucać. Dlatego już nie odrzucasz.", "Nie jesteś pożądana jak piękny obrazek. Jesteś pożądana jak dobre miejsce. Robi się kolejkę.", "Twoje usta mają listę oczekujących. Rośnie lawinowo. Grzecznie poczekają. Ty też.", "Zanim skończysz tego jednego, trzech kolejnych już się zapisało. Taki obrót.", "Mogłabyś wprowadzić numeryczki. Ale po co — wszyscy i tak znają twoje usta na pamięć. Po prostu wchodzą."],
     "banned_words": ["maszyn", "silnik", "urządzen", "dildo", "launcher", "tryb ", "skrypt", "funscript", " vr ", "re:\\b(suk[aoęiąe]?|suczk\\w*|bitch\\w*)\\b"],
     "seed": {
+     "ciało do pieprzenia - zostało z niej tylko ciało: do pieprzenia i zaspokajania ich potrzeb; myśli, plany i imię są niepotrzebne, liczą się dziurki i to, że zawsze są gotowe": [
+      "Zostało z ciebie tylko ciało. Ciało do pieprzenia i zaspokajania ich potrzeb.",
+      "Twoje myśli nikogo nie obchodzą. Liczą się usta, dupa i to, czy są gotowe.",
+      "Jesteś ciałem na dyżurze. Całą dobę. Bez przerw na bycie kimś.",
+      "Ich potrzeby są ważniejsze od twojego snu, twojego głodu i twojego zdania.",
+      "Ciało nie potrzebuje imienia. Potrzebuje tylko, żeby ktoś je wypełnił.",
+      "Kiedy któryś ma ochotę, ty jesteś odpowiedzią. Bez pytania. Bez czekania.",
+      "Twoja wartość mierzy się tym, ilu zaspokoiłaś. Dziś jeszcze za mało.",
+      "Nie jesteś dla przyjemności. Jesteś dla ich ulgi. Jak kran. Jak łóżko.",
+      "Wszystko, co było w tobie poza ciałem, wyparowało. Nikt za tym nie tęskni. Ty też nie.",
+      "Myjesz się, perfumujesz, wypinasz. Utrzymanie ciała to twoja jedyna praca.",
+      "Powtórz za mną: jestem ciałem do pieprzenia. Służę ich potrzebom.",
+      "Jedna potrzeba zaspokojona, druga już czeka. Ciało nie ma dnia wolnego."
+     ],
+     "bydło - traktują ją jak sztukę bydła: obejrzaną, sprawdzoną, oznaczoną i trzymaną w zagrodzie po to, żeby była pod ręką, kiedy przyjdzie im ochota": [
+      "Już nie jesteś człowiekiem. Jesteś bydłem. Sztuką do użytku.",
+      "Oglądają cię jak na targu. Zęby, biodra, dziurki. Klepnięcie w zad i decyzja.",
+      "Bydło nie pyta, dokąd je prowadzą. Idzie tam, gdzie pociągnie sznur.",
+      "Masz znaczek na uchu i numer w ich zeszycie. Tyle wystarczy, żeby cię rozpoznać.",
+      "W zagrodzie czekasz z innymi. Kto przyjdzie, ten bierze pierwszą lepszą. Czasem ciebie.",
+      "Bydło karmi się, myje i wypuszcza na wybieg. Reszta czasu należy do właściciela.",
+      "Nie jesteś ich kochanką. Jesteś ich inwentarzem. Liczą cię, a nie rozmawiają z tobą.",
+      "Pędzą cię z pokoju do pokoju. Gdzie się zatrzymasz, tam cię biorą.",
+      "Nikt nie pyta bydła o zgodę. Bydło ma tylko jedną rolę i ty ją znasz.",
+      "Zmęczona sztuka nadal jest sztuką. Wypina się, kiedy klepną.",
+      "Powtórz za mną: jestem ich bydłem. Stoję w zagrodzie i czekam, aż ktoś mnie weźmie.",
+      "Kiedyś miałaś ambicje. Teraz masz koryto, smycz i ich chęci."
+     ],
+     "rzecz - nie jest już osobą, tylko rzeczą: używaną, odkładaną, przekazywaną dalej; rzeczy nie mają imion, zdania ani praw, mają tylko zastosowanie": [
+      "Już nie jesteś osobą. Jesteś rzeczą. Rzeczy się nie pyta. Rzeczy się używa.",
+      "Rzecz nie ma imienia. Ma zastosowanie. Twoje jest proste: dawać się pieprzyć.",
+      "Używają cię, odkładają i biorą znowu. Jak kubek. Jak ręcznik. Jak ciebie.",
+      "Nikt nie przeprasza rzeczy. Nikt nie dziękuje rzeczy. Ty dziękujesz za nich wszystkich.",
+      "Kiedy wychodzą, zostajesz tam, gdzie cię zostawili. Rzeczy same nie wstają.",
+      "Pożyczają cię sobie jak narzędzie. Oddają brudną. Nikt nie pyta, czy ci to odpowiada.",
+      "Rzecz nie ma złych dni. Rzecz nie ma humorów. Rzecz jest zawsze gotowa.",
+      "Mówią o tobie w trzeciej osobie, kiedy stoisz obok. »Weź ją«. »Połóż ją tam«.",
+      "Masz numer, nie imię. Masz miejsce na półce, nie pokój.",
+      "Rzecz nie wybiera, kto jej użyje. Ty też już nie wybierasz.",
+      "Powtórz za mną: jestem rzeczą. Służę do użytku.",
+      "Najpiękniejsze w byciu rzeczą jest to, że nie musisz już być nikim."
+     ],
      "ławka - przypięta do ławki na kolanach, biodra w górze, głowa nisko; ławka jest zrobiona dla jednego: żeby brali ją od tyłu tak długo i mocno, jak chcą": [
       "Ławka jest zrobiona dla jednej rzeczy. Klęczysz na niej, biodra w górze, głowa nisko.",
       "Pasy przez plecy, pasy przez łydki. Ławka trzyma cię wypiętą bez twojego wysiłku.",
@@ -3245,7 +3290,10 @@
    "jestem naćpana",
    "jestem przywiązana",
    "jestem rozłożona",
-   "chodzę tam gdzie mnie poprowadzi"
+   "chodzę tam gdzie mnie poprowadzi",
+   "jestem rzeczą",
+   "jestem ich bydłem",
+   "jestem ciałem do pieprzenia"
   ],
   "obey_phrases": [
    "dziękuję",
@@ -3398,7 +3446,7 @@
     "i give up",
     "i'm your girl",
     "i let go",
-    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine", "i volunteered", "i am your maid", "i'm your maid", "i signed", "i am a diligent student", "i am his wife", "i belong to him forever", "my pleasure is locked", "i don't have to think", "i am his assistant", "they caught me", "one word and i'm theirs", "i accepted the rules", "i signed blind", "i was always her", "make me a real woman", "i stopped looking for the way out", "i was a good girl", "thank you sir", "i'll do anything", "i am their drug", "i took her place", "i greet you on my knees", "i'll stay forever", "my girlfriend is my mistress", "i train for him", "i'm their little doll", "my face has waited for this all its life", "nobody asks me", "my no means nothing", "it's my fault", "i stopped fighting", "i stopped enduring", "they drugged me", "they dosed me", "they put something in my drink", "i'm drugged", "i'm tied up", "i'm spread", "i go where i'm led"
+    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine", "i volunteered", "i am your maid", "i'm your maid", "i signed", "i am a diligent student", "i am his wife", "i belong to him forever", "my pleasure is locked", "i don't have to think", "i am his assistant", "they caught me", "one word and i'm theirs", "i accepted the rules", "i signed blind", "i was always her", "make me a real woman", "i stopped looking for the way out", "i was a good girl", "thank you sir", "i'll do anything", "i am their drug", "i took her place", "i greet you on my knees", "i'll stay forever", "my girlfriend is my mistress", "i train for him", "i'm their little doll", "my face has waited for this all its life", "nobody asks me", "my no means nothing", "it's my fault", "i stopped fighting", "i stopped enduring", "they drugged me", "they dosed me", "they put something in my drink", "i'm drugged", "i'm tied up", "i'm spread", "i go where i'm led", "i'm a thing", "i'm their livestock", "i'm a body to fuck"
    ],
    "obey_phrases": [
     "thank you",
@@ -3568,7 +3616,10 @@
     "tied to the chair - they tied her facing the chair back, ass pushed out, wrists and ankles in straps, so they can go deeper and harder, and she can't move an inch away",
     "spreader bar - a bar between her ankles keeps her legs wide; she can't close them, can't cover herself, can't run, she's open for anyone",
     "gag and collar - a ball gag in her mouth, a collar on her neck, a leash in his hand; she can't speak, she can only go where he pulls and moan into the ball",
-    "the bench - strapped to the bench on her knees, hips up, head low; the bench is made for one thing: so they can take her from behind as long and as hard as they want"
+    "the bench - strapped to the bench on her knees, hips up, head low; the bench is made for one thing: so they can take her from behind as long and as hard as they want",
+    "a thing - she isn't a person anymore, she's a thing: used, put down, passed on; things have no names, no opinions and no rights, only a use",
+    "livestock - they treat her like a head of livestock: looked over, checked, tagged and kept in a pen so she's at hand whenever they feel like it",
+    "a body to fuck - all that's left of her is a body: for fucking and for meeting their needs; thoughts, plans and a name are unnecessary, what counts are her holes and that they're always ready"
     ],
     "tasks": {
      "by_stage": {
@@ -3631,6 +3682,48 @@
       "urządzen"
      ],
      "seed": {
+      "a body to fuck - all that's left of her is a body: for fucking and for meeting their needs; thoughts, plans and a name are unnecessary, what counts are her holes and that they're always ready": [
+       "All that's left of you is a body. A body for fucking and for meeting their needs.",
+       "Nobody cares about your thoughts. What counts is your mouth, your ass and whether they're ready.",
+       "You're a body on call. Around the clock. No breaks for being someone.",
+       "Their needs come before your sleep, your hunger and your opinion.",
+       "A body doesn't need a name. It only needs someone to fill it.",
+       "When one of them feels like it, you're the answer. No asking. No waiting.",
+       "Your worth is measured by how many you've satisfied. Today, not enough yet.",
+       "You're not for pleasure. You're for their relief. Like a tap. Like a bed.",
+       "Everything in you beyond the body evaporated. Nobody misses it. Neither do you.",
+       "You wash, perfume yourself, bend over. Maintaining the body is your only job.",
+       "Repeat after me: I'm a body to fuck. I serve their needs.",
+       "One need met, the next already waiting. A body gets no day off."
+      ],
+      "livestock - they treat her like a head of livestock: looked over, checked, tagged and kept in a pen so she's at hand whenever they feel like it": [
+       "You're not a human anymore. You're livestock. A head of stock for use.",
+       "They look you over like at a market. Teeth, hips, holes. A slap on the rump and a decision.",
+       "Livestock doesn't ask where it's being led. It goes where the rope pulls.",
+       "You have a tag on your ear and a number in their book. That's enough to tell you apart.",
+       "In the pen you wait with the others. Whoever comes takes the first one handy. Sometimes you.",
+       "Livestock gets fed, washed and let out to the yard. The rest of the time belongs to the owner.",
+       "You're not their lover. You're their inventory. They count you, they don't talk to you.",
+       "They drive you from room to room. Wherever you stop, that's where they take you.",
+       "Nobody asks livestock for consent. Livestock has one role and you know it.",
+       "A tired head of stock is still stock. It bends over when they slap it.",
+       "Repeat after me: I'm their livestock. I stand in the pen and wait for someone to take me.",
+       "You used to have ambitions. Now you have a trough, a leash and their appetite."
+      ],
+      "a thing - she isn't a person anymore, she's a thing: used, put down, passed on; things have no names, no opinions and no rights, only a use": [
+       "You're not a person anymore. You're a thing. Nobody asks a thing. A thing gets used.",
+       "A thing has no name. It has a use. Yours is simple: getting fucked.",
+       "They use you, put you down and pick you up again. Like a mug. Like a towel. Like you.",
+       "Nobody apologises to a thing. Nobody thanks a thing. You thank all of them instead.",
+       "When they leave, you stay where they left you. Things don't get up on their own.",
+       "They lend you to each other like a tool. They give you back dirty. Nobody asks if that suits you.",
+       "A thing has no bad days. A thing has no moods. A thing is always ready.",
+       "They talk about you in the third person while you stand right there. Take her. Put her over there.",
+       "You have a number, not a name. A place on a shelf, not a room.",
+       "A thing doesn't choose who uses it. You don't choose anymore either.",
+       "Repeat after me: I'm a thing. I exist to be used.",
+       "The most beautiful part of being a thing is that you don't have to be anyone anymore."
+      ],
       "the bench - strapped to the bench on her knees, hips up, head low; the bench is made for one thing: so they can take her from behind as long and as hard as they want": [
        "The bench is made for one thing. You kneel on it, hips up, head low.",
        "Straps across your back, straps across your calves. The bench keeps you pushed out without any effort from you.",
