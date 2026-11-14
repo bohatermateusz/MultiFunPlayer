@@ -1232,12 +1232,12 @@
     "Słyszysz nowy głos, {name}? Teraz to ja decyduję.",
     "Przekazała mi cię z uśmiechem, {name}. Zobaczymy, ile wytrzymasz.",
     "Teraz ja, {name}. Nie bój się… albo bój się trochę.",
-    "Ona cię only rozgrzała, {name}. Ja cię wykończę.",
+    "Ona cię tylko rozgrzała, {name}. Ja cię wykończę.",
     "Zostawiła cię mokrą i niedokończoną, {name}. Nieładnie z jej strony. Naprawiam.",
     "Nowa właścicielka, {name}. Ta dziurka między twoimi nogami właśnie zmieniła dzierżawcę.",
     "Nowy głos, {name}. Te same zasady: ty masz dziurki, ja mam cierpliwość.",
     "Ona cię oddała, {name}. Nie na odpoczynek. Na dokończenie.",
-    "Wpuszczam cię głębiej, {name}. Stąd już nikt nie odbiera.",
+    "Zabieram cię głębiej, {name}. Stąd już nikt cię nie odbierze.",
     "Słyszysz mnie głębiej, {name}? Dobrze. On też zaraz wejdzie głębiej."
    ],
    "voices": [
@@ -1332,11 +1332,10 @@
     "Moja dziewczynka. Już tylko delikatnie, w kółko po tym jednym miejscu.",
     "Nie ruszaj się. On jest w tobie po jajka i właśnie tam zostaje, aż powiem dość.",
     "Ciii, dziwko. On zostaje w tobie, dopóki twoja dziurka nie nauczy się dziękować za każdy cal.",
-    "Zwoliłam, bo mogłam. Nie dlatego, że zasłużyłaś. Grzeczne dziewczynki znają różnicę.",
+    "Zwolniłam, bo mogłam. Nie dlatego, że zasłużyłaś. Grzeczne dziewczynki znają różnicę.",
     "Wolno, głęboko. Nie kończymy orgazmem. Kończymy zostaniem w tobie.",
     "Czujesz, jak pulsuje w tobie? To twoje jedyne myślenie na dziś. Zostaje.",
-    "Dobra robota, szmato. Teraz on odpoczywa w twojej dupie, a ty dziękujesz w ciszy.",
-    "ROZ… Rozluźnij się. Niech cię kołysze, coraz wolniej, coraz głębiej."
+    "Dobra robota, szmato. Teraz on odpoczywa w twojej dupie, a ty dziękujesz w ciszy."
    ],
    "themes": [
     "po sesji - opieka: wraca do siebie, ale już nie taka sama",
@@ -1496,33 +1495,34 @@
     "batch": 30,
     "max_said": 5000,
     "similarity": 0.8,
+    "retired": ["Dwóch naraz to nie orgy… to standard: jeden w buzi, drugi w kolejce. Tak wygląda twoje otoczenie.", "Ten lodzik w kamerze wyszedł ci lepiej niż całe twoje życie. Doczekał się recenzji. Wszystkich pozytywnych.", "Twoja technika miała więcej widzów niż kiedykolwiek twoje zdanie. Statystyki mówią samo: buzia lepsza niż głowa.", "Całe miasto zna twoją dupę od lepszej strony. Literalnie.", "Każdy, kto na ciebie patrzy, już to przemyślał. Sekundę dłużej niż trzeba. Wiesz w jakiej pozycji.", "Twoja dupa zbiera propozycje szybciej, niż twój mózg zdąża je odrzucać. Dlatego już nie odrzucasz.", "Nie jesteś pożądana jak piękny obrazek. Jesteś pożądana jak dobre miejsce. Robi się kolejkę.", "Twoje usta mają listę oczekujących. Rośnie lawinowo. Grzecznie poczekają. Ty też.", "Zanim skończysz tego jednego, trzech kolejnych już się zapisało. Taki obrót.", "Mogłabyś wprowadzić numeryczki. Ale po co — wszyscy i tak znają twoje usta na pamięć. Po prostu wchodzą."],
     "banned_words": ["maszyn", "silnik", "urządzen", "dildo", "launcher", "tryb ", "skrypt", "funscript", " vr ", "re:\\b(suk[aoęiąe]?|suczk\\w*|bitch\\w*)\\b"],
     "seed": {
      "kolejka na usta - do jej buzi stoi kolejka; jeden odchodzi syty, drugi już się ustawia": [
-      "Twoje usta mają listę oczekujących. Rośnie lawinowo. Grzecznie poczekają. Ty też.",
+      "Twoje usta mają listę oczekujących. Rośnie lawinowo. Oni grzecznie poczekają. Ty też.",
       "Powtórz za mną: mam kolejkę do buzi, nie czas na gadanie.",
-      "Zanim skończysz tego jednego, trzech kolejnych już się zapisało. Taki obrót.",
+      "Zanim skończysz z jednym, trzech kolejnych już się zapisało. Taki masz obrót.",
       "Kolejka do twojego gardła jest dłuższa niż do jakiejkolwiek innej. I nikt się nie wścieka na czekanie. Wiedzą, że warto.",
       "Jeden odchodzi syty, drugi już się ustawia. Jesteś stałym punktem programu. Jedynym punktem.",
       "Twoja buzia pracuje lepiej niż cały twój życiorys. Kolejka to potwierdza.",
       "Kolejka jest cierpliwa. Nie spieszy się nigdzie. Czeka na ciebie od dawna — ty też na nią, tylko o tym nie wiedziałaś.",
-      "Mogłabyś wprowadzić numeryczki. Ale po co — wszyscy i tak znają twoje usta na pamięć. Po prostu wchodzą.",
-      "Dwóch naraz to nie orgy… to standard: jeden w buzi, drugi w kolejce. Tak wygląda twoje otoczenie."
+      "Mogłabyś rozdawać numerki. Ale po co — wszyscy i tak znają twoje usta na pamięć. Po prostu wchodzą.",
+      "Dwóch naraz to nie orgia, to standard: jeden w buzi, drugi w kolejce. Tak wygląda twoje otoczenie."
      ],
      "wszyscy cię chcą wyruchać - każdy, kto na nią patrzy, już to przemyślał; nie pytają czy, pytają kiedy": [
       "Nie pytają »czy«. Pytają »kiedy«. Całe miasto wiedziało to od dawna — ty dowiadujesz się teraz.",
-      "Każdy, kto na ciebie patrzy, już to przemyślał. Sekundę dłużej niż trzeba. Wiesz w jakiej pozycji.",
+      "Każdy, kto na ciebie patrzy, już to sobie wyobraził. Sekundę dłużej, niż trzeba. Wiesz, w jakiej pozycji.",
       "Powtórz za mną: wszyscy mnie chcą. Wszyscy. Od pierwszego dnia.",
       "Gadasz z kimś, a jego oczy wędrują na twój tył. On nie jest niegrzeczny. On po prostu wie, co dalej.",
-      "Twoja dupa zbiera propozycje szybciej, niż twój mózg zdąża je odrzucać. Dlatego już nie odrzucasz.",
+      "Twoja dupa zbiera propozycje szybciej, niż twój mózg zdąży je odrzucić. Dlatego już nie odrzucasz.",
       "Uśmiechasz się, a ktoś już planuje, jak cię wyruchać. Uśmiechaj się dalej. Właśnie o to chodzi.",
-      "Nie jesteś pożądana jak piękny obrazek. Jesteś pożądana jak dobre miejsce. Robi się kolejkę.",
+      "Nie jesteś pożądana jak piękny obrazek. Jesteś pożądana jak dobre miejsce. Ustawia się kolejka.",
       "Świat nie jest miły dla takich jak ty. Ale jest bardzo chętny."
      ],
      "lody na pokaz - jej loda widzieli wszyscy; jej usta są publiczne i pracują na opinię": [
-      "Ten lodzik w kamerze wyszedł ci lepiej niż całe twoje życie. Doczekał się recenzji. Wszystkich pozytywnych.",
+      "Ten lodzik przed kamerą wyszedł ci lepiej niż całe twoje życie. Doczekał się recenzji. Samych pozytywnych.",
       "Kamera pokazała dwie rzeczy: jak gładko bierzesz do buzi i jak bardzo ci to smakuje.",
-      "Twoja technika miała więcej widzów niż kiedykolwiek twoje zdanie. Statystyki mówią samo: buzia lepsza niż głowa.",
+      "Twoja technika miała więcej widzów niż kiedykolwiek twoje zdanie. Statystyki mówią same za siebie: buzia lepsza niż głowa.",
       "Na filmie widać, że robiąc loda, nie myślisz o niczym. Ta mina jest teraz twoją wizytówką.",
       "Powtórz za mną: moje usta są publiczne. Każdy widział. Każdy wie. Pracują na opinię.",
       "Ktoś może cię kiedyś zapytać o autograf. Podpiszesz buzią. Wszyscy zrozumieją."
@@ -1539,7 +1539,7 @@
      "wystawiona na publiczność - jej filmy krążą, klikają je wszyscy; nie jest już osobą prywatną, jest treścią": [
       "Ten film ma już więcej wyświetleń niż wszystko, co kiedykolwiek opowiadałaś o sobie. I to on jest prawdziwszy.",
       "Nie musisz się nikomu przyznawać. Link sam znalazł drogę. Klikali. Klikają. Klęczysz w cudzych telefonach.",
-      "Całe miasto zna twoją dupę od lepszej strony. Literalnie.",
+      "Całe miasto zna twoją dupę od lepszej strony. Dosłownie.",
       "Zanim zdążyłaś wyjść z domu, twoja dupa wyszła już na cały świat. I wróciła z lepszymi opiniami niż ty.",
       "Nikt już cię nie pyta »kim jesteś«. Wszyscy wiedzą, »co robisz«. Robisz loda. Świetnie ci to wychodzi — i widzieli.",
       "Powtórz za mną: jestem publiczna. Każdy może obejrzeć, jak go biorę do buzi.",
@@ -1972,7 +1972,7 @@
       "Mocniej… trzy sekundy… puść. Jęcz głośniej.",
       "Powtórz: chcę być ładna.",
       "Wyjmij… czekaj pięć sekund… włóż powoli. Poczuj każdy milimetr.", "Wypnij się wyżej. Ma widzieć wszystko.", "Wyginaj się bardziej. Dupcia wyżej, buzia otwarta.", "Nadziewaj się sama. Powoli, do końca.", "Rozłóż się szerzej. Nie zasłaniaj się przed nim.", "Trzymaj pośladki rozchylone. Nie puszczaj, dopóki nie pozwolę.", "Kołysz biodrami w jego rytmie. Ty mu dajesz, a on bierze.",
-      "Pochłoń go o centymetr więcej. Nie ruszaj się przez trzy oddechy. Teraz jeszcze jeden centymetr."
+      "Weź go o centymetr głębiej. Nie ruszaj się przez trzy oddechy. Teraz jeszcze jeden centymetr."
      ],
      "3": [
       "Głębiej. Prawie do końca gardła. Oddychaj nosem.",
@@ -2046,7 +2046,7 @@
      "Powtórz za mną.",
      "Otwórz buzię.",
      "Ręce przy sobie.", "Wypnij dupcię wyżej.",
-     "Otwórz buzię i poklep nią po jego końcówce. Powoli. Tak witają się grzeczne dziewczynki.",
+     "Otwórz buzię i pocałuj jego końcówkę. Powoli. Tak witają się grzeczne dziewczynki.",
      "Wypnij dupę w jego stronę i pochyl głowę na poduszkę. Teraz jesteś tylko dziurką do użytku.",
      "Zakręć biodrami. Powoli. Jak dziewczynka, która się prosi."
     ],
@@ -2066,8 +2066,8 @@
      "Połykaj wszystko do końca.",
      "Nie przestawaj, dopóki nie powiem.",
      "Otwórz się szeroko i trzymaj.", "Głowa w dół, dupa do góry.",
-     "Gardło, dziwko. Całe. Bez odruchu. Nauczę cię tego powtórkami.",
-     "Rozchyl pośladki rękoma. On wchodzi głębiej, kiedy widzi cel.",
+     "Gardło, dziwko. Całe. Bez odruchu wymiotnego. Nauczę cię tego, powtarzając do skutku.",
+     "Rozchyl pośladki rękami. On wchodzi głębiej, kiedy widzi cel.",
      "Nabijaj się na niego. Sama. Głęboko."
     ],
     "4": [
@@ -2090,7 +2090,7 @@
      "Należysz do mnie.",
      "Jesteś moją własnością.",
      "Wszystko w tobie jest moje.",
-     "Nie jesteś nawet osobą. Jesteś cząstką, którą zabrałam."
+     "Nie jesteś nawet osobą. Jesteś czymś, co sobie wzięłam."
     ],
     "2": [
      "Twoje ciało należy do mnie.",
@@ -2151,7 +2151,7 @@
     "2": [
      "Błagaj głośniej, szmato.",
      "Mało. Jeszcze.",
-     "Twoje biodra mówią za ciebie i mówią lepiej. Zamilcz im.",
+     "Twoje biodra mówią za ciebie i mówią lepiej. Ty możesz już milczeć.",
      "Piszcz, dziwko. I tak to twoja dziurka mnie wzywa, nie odwrotnie."
     ],
     "3": [
@@ -2180,7 +2180,7 @@
     "2": [
      "Ślicznie ci to wychodzi.",
      "Tak się to robi.",
-     "Ślicznie wyjęta i jeszcze śliczniej wypełniona. Dobra dziewczynka.",
+     "Ślicznie wypięta i jeszcze śliczniej wypełniona. Dobra dziewczynka.",
      "Tak trzymają się dziewczynki, które już rozumieją."
     ],
     "3": [
@@ -2381,7 +2381,7 @@
      "Nie jesteś nawet dziewczyną. Jesteś miejscem. Wilgotnym, dostępnym, zapisanym w kalendarzu cudzego wytrysku.",
      "Przerwy mają osoby. Ty tylko zmieniasz dziurkę.",
      "Błagałaś o bycie kimś. Dostałaś bycie czyjąś. Sprawdziłaś się w tym lepiej niż we wszystkim innym.",
-     "Twoja przepustka do człowieczeństwa została skonsumowana pierwszą nocą. Od tej pory żyjesz jako dostęp."
+     "Twoją przepustkę do człowieczeństwa zużyli pierwszej nocy. Od tej pory żyjesz jako dostęp."
     ]
    },
    "pochwały_ostre": {
@@ -3120,7 +3120,7 @@
    "plain_lines": ["Mhm… mów dalej, mała.", "Słucham cię. Uważnie.", "Grzecznie. Tak lubię.", "Jestem tu. Patrzę na ciebie.", "Dobrze. Oddychaj i czekaj.", "Wiem, mała. Wiem."],
    "beg_met_bonus": 0.35,
    "grants": ["Masz. Grzeczna.", "No proszę, jak ładnie błagasz. Dostajesz.", "Niech ci będzie, mała.", "Teraz tak, jak chciałaś. Dziękuj.", "Widzisz? Wystarczyło poprosić.", "Dostajesz, bo dziś jesteś posłuszna.", "Dobrze. Ale pamiętaj, czyja to łaska.", "Bierz. I ani słowa skargi.", "Zasłużyłaś. Tym razem.", "Tak lubię. Masz swoje.", "Ładnie prosiłaś, więc dostajesz.", "Proszę bardzo, moja mała. Czuj.", "Zgoda. Tylko nie zapomnij podziękować.", "Niech będzie po twojemu… na chwilę.", "Moja grzeczna laleczka. Masz.", "Skoro tak ładnie… dostaniesz.", "Tak. Teraz oddychaj i bierz.", "Pozwalam. Ale to ja decyduję, jak długo.", "Mhm. Tego właśnie chciałaś, prawda?", "Dobrze, kochanie. Rozluźnij się i bierz.", "Wiedziałam, że w końcu poprosisz jak trzeba.", "Masz, czego chciałaś. Pokaż mi, że to doceniasz.", "Za to błaganie - nagroda.", "Teraz mi się podobasz. Dostajesz.", "Błagałaś tak ładnie, że aż twoja dziurka zacisnęła się z dumy. Dostajesz. Głęboko.", "Dostajesz. I nie waż się dojść, zanim nie podziękujesz.", "Zgoda. Ale to ja decyduję, jak długo.", "Uzasadniłaś to ustami. Teraz uzasadnij to gardłem."],
-   "denials": {"beg": ["Ładniej. Tak, żebym uwierzyła.", "Mało. Postaraj się bardziej.", "Słyszę cię… ale nie przekonujesz.", "Prawie. Jeszcze raz, z serca.", "Mów, jakbyś naprawdę tego potrzebowała.", "Za cicho. Błagaj.", "Grzecznie, mała. Od początku.", "Może. Jeśli poprosisz jak dziewczynka.", "Nie tak szybko, kochanie. Najpierw mnie przekonaj.", "Hm. To miała być prośba?", "Poczekasz. Lubię, jak czekasz.", "Nie dziś. Chyba że mnie zaskoczysz.", "Za łatwo by ci poszło.", "Prosisz jak ktoś, kto na to nie zasłużył.", "Nie słyszę w tym błagania.", "Najpierw pokaż, że umiesz być grzeczna.", "Oj, mała. Tak się nie prosi.", "Chcesz? To się postaraj.", "Zwolnij. To ja tu ustalam tempo.", "Nie. I nie dąsaj się.", "Czuję twoją dziurkę na odległość. Jest bardziej przekonująca niż twoje słowa. Niech to ona poprosi.", "Więcej jęku, mniej słów. To błaganie ma wyjść z brzucha, nie z mózgu.", "Prawie cię polubiłam. Potem otworzyłaś buzię szerzej niż argument. Jeszcze raz."], "confess": ["Najpierw powiedz, kim jesteś.", "Czyja jesteś? Głośno.", "Przyznaj się. Potem pogadamy.", "Chcę usłyszeć, kim dla mnie jesteś.", "Powiedz, czym jesteś. Całym zdaniem. I nie waż się wymienić »dziewczyny« zamiast »dziwki«. Znam różnicę."], "thank": ["Podziękuj. Za to, że w ogóle słucham.", "Gdzie dziękuję?", "Dziękuj, zanim cokolwiek dostaniesz.", "Najpierw wdzięczność.", "Podziękuj głośno, żeby on słyszał.", "Dziękuj za każdy cal, który w tobie siedzi."], "repeat": ["Powtórz. Wyraźnie.", "Jeszcze raz, tym razem z przekonaniem.", "Słowo w słowo. Dasz radę.", "Powtórz, aż w to uwierzysz.", "Powtórz to gardłem, nie głową. Jeszcze raz. Głębiej.", "Powtórz z zamkniętymi oczami. Chcę, żeby to usłyszało też twoje ciało."]},
+   "denials": {"beg": ["Ładniej. Tak, żebym uwierzyła.", "Mało. Postaraj się bardziej.", "Słyszę cię… ale nie przekonujesz.", "Prawie. Jeszcze raz, z serca.", "Mów, jakbyś naprawdę tego potrzebowała.", "Za cicho. Błagaj.", "Grzecznie, mała. Od początku.", "Może. Jeśli poprosisz jak dziewczynka.", "Nie tak szybko, kochanie. Najpierw mnie przekonaj.", "Hm. To miała być prośba?", "Poczekasz. Lubię, jak czekasz.", "Nie dziś. Chyba że mnie zaskoczysz.", "Za łatwo by ci poszło.", "Prosisz jak ktoś, kto na to nie zasłużył.", "Nie słyszę w tym błagania.", "Najpierw pokaż, że umiesz być grzeczna.", "Oj, mała. Tak się nie prosi.", "Chcesz? To się postaraj.", "Zwolnij. To ja tu ustalam tempo.", "Nie. I nie dąsaj się.", "Czuję twoją dziurkę na odległość. Jest bardziej przekonująca niż twoje słowa. Niech to ona poprosi.", "Więcej jęku, mniej słów. To błaganie ma wyjść z brzucha, nie z mózgu.", "Prawie cię polubiłam. Potem otworzyłaś buzię, zamiast ją wypełnić. Jeszcze raz."], "confess": ["Najpierw powiedz, kim jesteś.", "Czyja jesteś? Głośno.", "Przyznaj się. Potem pogadamy.", "Chcę usłyszeć, kim dla mnie jesteś.", "Powiedz, czym jesteś. Całym zdaniem. I nie waż się powiedzieć »dziewczyna« zamiast »dziwka«. Znam różnicę."], "thank": ["Podziękuj. Za to, że w ogóle słucham.", "Gdzie dziękuję?", "Dziękuj, zanim cokolwiek dostaniesz.", "Najpierw wdzięczność.", "Podziękuj głośno, żeby on słyszał.", "Dziękuj za każdy cal, który w tobie siedzi."], "repeat": ["Powtórz. Wyraźnie.", "Jeszcze raz, tym razem z przekonaniem.", "Słowo w słowo. Dasz radę.", "Powtórz, aż w to uwierzysz.", "Powtórz to gardłem, nie głową. Jeszcze raz. Głębiej.", "Powtórz z zamkniętymi oczami. Chcę, żeby to usłyszało też twoje ciało."]},
    "politeness_factor": 0.6,
    "polite_markers": [
     "proszę",

@@ -155,7 +155,8 @@ def build_pool(args, pc, persona, log_path, lang="pl"):
                     pool_path=None if args.no_log else os.path.join(folder, "lines_pool.json" if lang == "pl" else f"lines_pool.{lang}.json"),
                     said_path=None if args.no_log else os.path.join(folder, "said.jsonl"),
                     min_pool=p.get("min_pool", 8), batch=p.get("batch", 20), max_said=p.get("max_said", 2000),
-                    similarity=p.get("similarity", 0.8), max_words=max_words, seed=p.get("seed"), banned_words=p.get("banned_words"))
+                    similarity=p.get("similarity", 0.8), max_words=max_words, seed=p.get("seed"), banned_words=p.get("banned_words"),
+                    retired=p.get("retired"))
     return pool
 
 

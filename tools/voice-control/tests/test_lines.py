@@ -113,6 +113,13 @@ class Pool(unittest.TestCase):
         self.assertEqual(p2.pool["A"].count("Dwa razy."), 1)                # nothing doubled
         self.assertNotIn("Jedna.", p2.pool["A"])                            # already said: not again
 
+    def test_a_rewritten_line_replaces_the_old_one_in_the_pool(self):
+        LinePool(self.generate, self.pool_path, self.said_path, background=False, seed={"A": ["Robi się kolejkę.", "Dwa razy."]})
+        p = LinePool(self.generate, self.pool_path, self.said_path, background=False,
+                     seed={"A": ["Ustawia się kolejka.", "Dwa razy."]}, retired=["Robi się kolejkę."])
+        self.assertNotIn("Robi się kolejkę.", p.pool["A"])
+        self.assertIn("Ustawia się kolejka.", p.pool["A"])
+
     def test_banned_words_never_enter_the_pool(self):
         p = LinePool(lambda t, a, c: ["Maszyna cię bierze.", "On cię bierze.", "Włącz silnik.", "Oni czekają."],
                      self.pool_path, self.said_path, background=False, banned_words=["maszyn", "silnik"])

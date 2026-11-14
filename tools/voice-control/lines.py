@@ -53,7 +53,8 @@ def is_banned_line(line, banned_words):
 
 class LinePool:
     def __init__(self, generate, pool_path=None, said_path=None, min_pool=8, batch=20, max_said=2000, similarity=0.8,
-                 max_words=16, avoid_recent=40, clock=time.time, background=True, seed=None, banned_words=None):
+                 max_words=16, avoid_recent=40, clock=time.time, background=True, seed=None, banned_words=None,
+                 retired=None):
         self.generate = generate              # generate(theme, avoid: [str], count) -> [str]
         self.pool_path, self.said_path = pool_path, said_path
         self.min_pool, self.batch, self.max_said = int(min_pool), int(batch), int(max_said)
@@ -66,6 +67,11 @@ class LinePool:
         self.said = []                        # every line ever spoken, oldest first
         self.last_error = None
         self._load()
+        gone = {" ".join(str(x).split()) for x in (retired or [])}
+        if gone and any(x in gone for v in self.pool.values() for x in v):
+            # lines rewritten or withdrawn in commands.json (narration.pool.retired) leave the saved pool
+            self.pool = {t: [x for x in v if x not in gone] for t, v in self.pool.items()}
+            self._save_pool()
         if seed:
             # the hand-written lines: the first run fills the pool with them; later a theme added since, or a line added
             # to a theme's seed, joins the pool - minus anything already said or already waiting there
