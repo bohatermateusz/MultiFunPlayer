@@ -1474,7 +1474,11 @@
     "publiczna dupodajka - jej dupa jest bardziej rozpoznawalna niż twarz; wszyscy wiedzą i czują się zaproszeni",
     "lody na pokaz - jej loda widzieli wszyscy; jej usta są publiczne i pracują na opinię",
     "wszyscy cię chcą wyruchać - każdy, kto na nią patrzy, już to przemyślał; nie pytają czy, pytają kiedy",
-    "kolejka na usta - do jej buzi stoi kolejka; jeden odchodzi syty, drugi już się ustawia"
+    "kolejka na usta - do jej buzi stoi kolejka; jeden odchodzi syty, drugi już się ustawia",
+    "uzależniona od nich - przyzwyczaili ją do siebie tak, że bez nich nie wytrzymuje; teraz sama przychodzi prosić o seks",
+    "zamówiona - jest kolejka chętnych, a ona została zamówiona: wybrana, dostarczona, gotowa do użycia",
+    "wypatrzona - wypatrzyli ją już dawno; obserwowali, czekali, a teraz chcą ją mieć na własność",
+    "gwiazda porno - została gwiazdą porno; jej filmy znają wszyscy, a każda scena to kolejna rola uległej dziewczyny"
    ],
    "style": "Mów jak do ucha, szeptem z pewnością: krótkie frazy, wielokropki jako oddechy ('Odpuść… ja to trzymam… dobra dziewczynka.'), czasem 'powtórz za mną' i zdanie w pierwszej osobie, czasem jedno dosadne słowo. Nigdy pytania, nigdy wyjaśnienia.",
    "examples": [
@@ -1498,6 +1502,62 @@
     "retired": ["Dwóch naraz to nie orgy… to standard: jeden w buzi, drugi w kolejce. Tak wygląda twoje otoczenie.", "Ten lodzik w kamerze wyszedł ci lepiej niż całe twoje życie. Doczekał się recenzji. Wszystkich pozytywnych.", "Twoja technika miała więcej widzów niż kiedykolwiek twoje zdanie. Statystyki mówią samo: buzia lepsza niż głowa.", "Całe miasto zna twoją dupę od lepszej strony. Literalnie.", "Każdy, kto na ciebie patrzy, już to przemyślał. Sekundę dłużej niż trzeba. Wiesz w jakiej pozycji.", "Twoja dupa zbiera propozycje szybciej, niż twój mózg zdąża je odrzucać. Dlatego już nie odrzucasz.", "Nie jesteś pożądana jak piękny obrazek. Jesteś pożądana jak dobre miejsce. Robi się kolejkę.", "Twoje usta mają listę oczekujących. Rośnie lawinowo. Grzecznie poczekają. Ty też.", "Zanim skończysz tego jednego, trzech kolejnych już się zapisało. Taki obrót.", "Mogłabyś wprowadzić numeryczki. Ale po co — wszyscy i tak znają twoje usta na pamięć. Po prostu wchodzą."],
     "banned_words": ["maszyn", "silnik", "urządzen", "dildo", "launcher", "tryb ", "skrypt", "funscript", " vr ", "re:\\b(suk[aoęiąe]?|suczk\\w*|bitch\\w*)\\b"],
     "seed": {
+     "gwiazda porno - została gwiazdą porno; jej filmy znają wszyscy, a każda scena to kolejna rola uległej dziewczyny": [
+      "Zostałaś gwiazdą porno, kochanie. Twoje imię zna pół internetu.",
+      "Światła, kamera, dziurka. Tak zaczyna się każdy twój dzień zdjęciowy.",
+      "Reżyser mówi »akcja«, a ty już klęczysz. Profesjonalistka.",
+      "Twoja filmografia jest dłuższa niż twoje dawne CV. I dużo ciekawsza.",
+      "Grasz zawsze tę samą rolę: grzeczną dziewczynę, którą biorą. Grasz ją idealnie.",
+      "Fani czekają na nową scenę. Wypnij się ładnie do kamery.",
+      "Masz nagrody za najlepszą scenę analną. Zasłużone, każdym centymetrem.",
+      "Na planie nikt nie pyta o twoje zdanie. Pyta tylko o kąt kamery.",
+      "Dubel niepotrzebny. Za pierwszym razem jęczysz najładniej.",
+      "Gwiazda porno nie ma prywatności. Ma tylko kolejne ujęcia.",
+      "Powtórz: jestem gwiazdą porno i kocham, jak mnie biorą przed kamerą.",
+      "Twój najlepszy film jeszcze przed tobą. Kręcimy go teraz."
+     ],
+     "wypatrzona - wypatrzyli ją już dawno; obserwowali, czekali, a teraz chcą ją mieć na własność": [
+      "Wypatrzyli cię dawno temu. Ty jeszcze nic nie wiedziałaś.",
+      "Patrzyli, jak chodzisz. Jak się schylasz. Już wtedy wiedzieli, co z tobą zrobią.",
+      "Czekali cierpliwie. Aż sama dojrzejesz. Dojrzałaś.",
+      "Każdy twój krok był notowany. Każde wypięcie zapamiętane.",
+      "Nie trafiłaś tu przypadkiem. Wybrali cię na długo przed tym, jak przyszłaś.",
+      "Teraz już nie chcą tylko patrzeć. Chcą cię mieć. Na własność.",
+      "Mieli cię na oku od miesięcy. Teraz mają cię w rękach.",
+      "Ich lista była krótka. Twoje imię było na samej górze.",
+      "Myślałaś, że to ty ich znalazłaś. Oni znaleźli ciebie pierwsi.",
+      "Obserwowali, jak się zmieniasz. Czekali, aż będziesz gotowa. Jesteś.",
+      "Powtórz: wypatrzyli mnie i teraz jestem ich.",
+      "Polowali na ciebie cierpliwie. Złapana. Wreszcie ich."
+     ],
+     "zamówiona - jest kolejka chętnych, a ona została zamówiona: wybrana, dostarczona, gotowa do użycia": [
+      "Była kolejka chętnych. Wygrał ten, kto zamówił pierwszy. Ciebie.",
+      "Zostałaś zamówiona, kochanie. Dostarczona pod wskazany adres. Rozpakowana.",
+      "Wybrali cię z listy. Zdjęcie, wymiary, rozmiar ust. Wystarczyło.",
+      "Twoje zamówienie jest już zrealizowane. Leżysz u klienta.",
+      "Nikt nie pytał, czy jesteś wolna. Zapytali tylko, kiedy możesz być na miejscu.",
+      "Zamówiona na całą noc. Bez zwrotów. Bez reklamacji.",
+      "Czekało dziesięciu. Dostał cię ten, kto zapłacił najwięcej. Reszta czeka na swoją kolej.",
+      "Dostarczyli cię w pończochach i z kokardką. Prezent dla tego, kto zamówił.",
+      "Jesteś pozycją numer jeden na liście życzeń. I właśnie cię odebrał.",
+      "Twoja dostępność została potwierdzona. On już idzie.",
+      "Powtórz: zostałam zamówiona i jestem gotowa do użycia.",
+      "Kolejka chętnych jest długa. Ty jesteś tylko następnym zamówieniem."
+     ],
+     "uzależniona od nich - przyzwyczaili ją do siebie tak, że bez nich nie wytrzymuje; teraz sama przychodzi prosić o seks": [
+      "Przyzwyczaili cię do siebie. Teraz bez nich nie wytrzymujesz nawet dnia.",
+      "Nikt cię już nie musi wołać. Sama przychodzisz i prosisz.",
+      "Na początku to oni chcieli ciebie. Teraz ty nie umiesz bez nich żyć.",
+      "Twoje ciało pamięta ich lepiej niż twoja głowa. I domaga się więcej.",
+      "Wystarczy jeden dzień bez nich i już się trzęsiesz. Głodna.",
+      "Pukasz do ich drzwi pierwsza. Wypięta, zanim ktokolwiek otworzy.",
+      "Jesteś uzależniona od bycia braną. Jedyna dawka, jaką znasz, to on w tobie.",
+      "Prosisz o więcej, zanim skończą. Tak wygląda głód, kochanie.",
+      "Sama ustawiasz się w kolejce do własnego zniewolenia. I dziękujesz.",
+      "Odstawili cię na tydzień. Wróciłaś na kolanach, błagając.",
+      "Powtórz: nie umiem bez nich. Sama przychodzę prosić.",
+      "Kiedyś mówiłaś »może«. Teraz mówisz tylko »jeszcze«."
+     ],
      "kolejka na usta - do jej buzi stoi kolejka; jeden odchodzi syty, drugi już się ustawia": [
       "Twoje usta mają listę oczekujących. Rośnie lawinowo. Oni grzecznie poczekają. Ty też.",
       "Powtórz za mną: mam kolejkę do buzi, nie czas na gadanie.",
@@ -2713,7 +2773,11 @@
      "anal princess - her ass is her crown; that is where they take her and where she is most herself",
      "fucked in the ass - they take her from behind, deep, again and again, and she likes it",
      "they cum in her ass - her hole is full of them; she has to keep it",
-     "her ass is not hers - it belongs to me and to them; she only carries it"
+     "her ass is not hers - it belongs to me and to them; she only carries it",
+    "addicted to them - they got her so used to them that she can't last without them; now she comes to beg for sex herself",
+    "ordered - there's a queue of takers and she was ordered: chosen, delivered, ready to use",
+    "spotted - they spotted her long ago; they watched and waited, and now they want to own her",
+    "porn star - she became a porn star; everyone knows her films and every scene is another role as a submissive girl"
     ],
     "tasks": {
      "by_stage": {
@@ -2776,6 +2840,62 @@
       "urządzen"
      ],
      "seed": {
+      "porn star - she became a porn star; everyone knows her films and every scene is another role as a submissive girl": [
+       "You became a porn star, darling. Half the internet knows your name.",
+       "Lights, camera, hole. That's how every shooting day of yours begins.",
+       "The director says action and you're already on your knees. A professional.",
+       "Your filmography is longer than your old CV. And far more interesting.",
+       "You always play the same role: the good girl who gets taken. You play it perfectly.",
+       "The fans are waiting for a new scene. Bend over nicely for the camera.",
+       "You have awards for best anal scene. Earned, every inch.",
+       "On set nobody asks your opinion. Only the camera angle.",
+       "No second take needed. You moan prettiest the first time.",
+       "A porn star has no privacy. Only the next shot.",
+       "Repeat: I'm a porn star and I love being taken on camera.",
+       "Your best film is still ahead of you. We're shooting it now."
+      ],
+      "spotted - they spotted her long ago; they watched and waited, and now they want to own her": [
+       "They spotted you long ago. You didn't know a thing.",
+       "They watched how you walk. How you bend over. They knew then what they'd do with you.",
+       "They waited patiently. Until you ripened. You did.",
+       "Every step you took was noted. Every time you bent over, remembered.",
+       "You're not here by accident. They chose you long before you came.",
+       "Now they don't just want to watch. They want to own you.",
+       "They had their eye on you for months. Now they have you in their hands.",
+       "Their list was short. Your name was at the very top.",
+       "You thought you found them. They found you first.",
+       "They watched you change. Waited until you were ready. You are.",
+       "Repeat: they spotted me and now I'm theirs.",
+       "They hunted you patiently. Caught. Theirs at last."
+      ],
+      "ordered - there's a queue of takers and she was ordered: chosen, delivered, ready to use": [
+       "There was a queue of takers. The one who ordered first won. You.",
+       "You've been ordered, darling. Delivered to the address. Unwrapped.",
+       "They picked you from a list. Photo, measurements, mouth size. That was enough.",
+       "Your order has been fulfilled. You're lying at the customer's place.",
+       "Nobody asked if you were free. They only asked when you could be there.",
+       "Ordered for the whole night. No returns. No complaints.",
+       "Ten were waiting. The one who paid the most got you. The rest wait their turn.",
+       "They delivered you in stockings with a bow. A gift for whoever ordered.",
+       "You're number one on the wish list. And he just picked you up.",
+       "Your availability has been confirmed. He's on his way.",
+       "Repeat: I was ordered and I'm ready to be used.",
+       "The queue of takers is long. You're just the next order."
+      ],
+      "addicted to them - they got her so used to them that she can't last without them; now she comes to beg for sex herself": [
+       "They got you used to them. Now you can't last a day without them.",
+       "Nobody has to call you anymore. You come and beg on your own.",
+       "At first they wanted you. Now you can't live without them.",
+       "Your body remembers them better than your head. And it wants more.",
+       "One day without them and you're already shaking. Hungry.",
+       "You knock on their door first. Bent over before anyone opens.",
+       "You're addicted to being taken. The only dose you know is him inside you.",
+       "You beg for more before they're done. That's what hunger looks like, darling.",
+       "You queue up for your own slavery. And you say thank you.",
+       "They left you alone for a week. You came back on your knees, begging.",
+       "Repeat: I can't be without them. I come to beg on my own.",
+       "You used to say maybe. Now you only say more."
+      ],
       "the sham - orgasms and pleasure were only the bait; it was always about owning her": [
        "The orgasms were a sham. It was only ever about you stopping being your own.",
        "I gave you pleasure like bait. You swallowed it hook and all.",
