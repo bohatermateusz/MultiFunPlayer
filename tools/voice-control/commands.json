@@ -1535,7 +1535,8 @@
     "pokryta - leży na środku, a oni stoją wokół; jeden po drugim kończą na niej, aż jest cała pokryta ciepłą spermą, lśniąca i oznaczona",
     "dojenie i hodowla - jest sztuką hodowlaną: doją ją od tyłu, aż cieknie z klatki bez dotyku, i kryją ją na zmianę jak klacz w stadninie; zapisują w księdze, ile razy i kto",
     "pełna po całej nocy - po całej nocy z nimi jej brzuch jest ciężki, ciepły i zaokrąglony od ich spermy; chlupocze przy każdym ruchu, cieknie przy każdym kroku, a oni dalej dolewają",
-    "karmiona nimi - jej posiłkiem są oni: śniadanie na kolanach, obiad z kieliszka, kolacja prosto z kolejki; ciepła sperma jest tym, na co czeka cały dzień"
+    "karmiona nimi - jej posiłkiem są oni: śniadanie na kolanach, obiad z kieliszka, kolacja prosto z kolejki; ciepła sperma jest tym, na co czeka cały dzień",
+    "pod stołem - przy stole toczy się zwykła kolacja, rozmowy, wino i sztućce, a ona klęczy pod obrusem i obsługuje gości jednego po drugim; nikt o niej nie wspomina, wszyscy wiedzą"
    ],
    "style": "Mów jak do ucha, szeptem z pewnością: krótkie frazy, wielokropki jako oddechy ('Odpuść… ja to trzymam… dobra dziewczynka.'), czasem 'powtórz za mną' i zdanie w pierwszej osobie, czasem jedno dosadne słowo. Nigdy pytania, nigdy wyjaśnienia.",
    "examples": [
@@ -1559,6 +1560,20 @@
     "retired": ["Dwóch naraz to nie orgy… to standard: jeden w buzi, drugi w kolejce. Tak wygląda twoje otoczenie.", "Ten lodzik w kamerze wyszedł ci lepiej niż całe twoje życie. Doczekał się recenzji. Wszystkich pozytywnych.", "Twoja technika miała więcej widzów niż kiedykolwiek twoje zdanie. Statystyki mówią samo: buzia lepsza niż głowa.", "Całe miasto zna twoją dupę od lepszej strony. Literalnie.", "Każdy, kto na ciebie patrzy, już to przemyślał. Sekundę dłużej niż trzeba. Wiesz w jakiej pozycji.", "Twoja dupa zbiera propozycje szybciej, niż twój mózg zdąża je odrzucać. Dlatego już nie odrzucasz.", "Nie jesteś pożądana jak piękny obrazek. Jesteś pożądana jak dobre miejsce. Robi się kolejkę.", "Twoje usta mają listę oczekujących. Rośnie lawinowo. Grzecznie poczekają. Ty też.", "Zanim skończysz tego jednego, trzech kolejnych już się zapisało. Taki obrót.", "Mogłabyś wprowadzić numeryczki. Ale po co — wszyscy i tak znają twoje usta na pamięć. Po prostu wchodzą."],
     "banned_words": ["maszyn", "silnik", "urządzen", "dildo", "launcher", "tryb ", "skrypt", "funscript", " vr ", "re:\\b(suk[aoęiąe]?|suczk\\w*|bitch\\w*)\\b"],
     "seed": {
+     "pod stołem - przy stole toczy się zwykła kolacja, rozmowy, wino i sztućce, a ona klęczy pod obrusem i obsługuje gości jednego po drugim; nikt o niej nie wspomina, wszyscy wiedzą": [
+      "Przy stole oni jedzą. Ty klęczysz pod stołem i też jesz. Każde danie na swój sposób.",
+      "Rozmawiają o pogodzie i interesach. Ty klęczysz pod obrusem i nikt o tobie nie wspomina.",
+      "Jeden odsuwa krzesło, drugi przysuwa. Wiesz, że to znak. Przesuwasz się na kolanach.",
+      "Kelner dolewa wina. Nikt nie zagląda pod stół. Wszyscy wiedzą.",
+      "Kolacja ma pięć dań. Ty masz pięciu gości.",
+      "Brzęk sztućców nad tobą, ciche westchnienie, i znowu rozmowa jak gdyby nigdy nic.",
+      "Ktoś opowiada dowcip. Wszyscy się śmieją. Jeden śmieje się trochę za długo przez ciebie.",
+      "Pod obrusem jest ciemno i ciepło. Twój świat to kolana, spodnie i ich smak.",
+      "Między daniami ktoś stuka butem w twoje kolano. Kolejka przesuwa się w lewo.",
+      "Gospodarz podnosi kieliszek: za piękny wieczór. Ty pod stołem dziękujesz swoim sposobem.",
+      "Powtórz za mną: przy stole jestem niewidzialna. Pod stołem jestem dla każdego.",
+      "Kiedy wstają od stołu, ty zostajesz. Ktoś zawsze wraca po deser."
+     ],
      "karmiona nimi - jej posiłkiem są oni: śniadanie na kolanach, obiad z kieliszka, kolacja prosto z kolejki; ciepła sperma jest tym, na co czeka cały dzień": [
       "Śniadanie podaje się na kolanach. Prosto ze źródła. Ciepłe.",
       "Zbierali do kieliszka cały wieczór. Teraz wypij powoli, patrząc im w oczy.",
@@ -3750,7 +3765,8 @@
     "covered - she lies in the middle and they stand around her; one after another they finish on her until she's covered in warm cum, glistening and marked",
     "milking and breeding - she's breeding stock: they milk her from behind until she drips from the cage untouched, and breed her in turns like a mare at a stud farm; they log in a book how many times and who",
     "full after the whole night - after a whole night with them her belly is heavy, warm and rounded with their cum; it sloshes with every move, drips with every step, and they keep topping her up",
-    "fed on them - they are her meals: breakfast on her knees, lunch from a glass, dinner straight from the queue; warm cum is what she waits for all day"
+    "fed on them - they are her meals: breakfast on her knees, lunch from a glass, dinner straight from the queue; warm cum is what she waits for all day",
+    "under the table - an ordinary dinner goes on at the table, talk, wine and cutlery, while she kneels under the tablecloth and serves the guests one after another; nobody mentions her, everybody knows"
     ],
     "tasks": {
      "by_stage": {
@@ -3813,6 +3829,20 @@
       "urządzen"
      ],
      "seed": {
+      "under the table - an ordinary dinner goes on at the table, talk, wine and cutlery, while she kneels under the tablecloth and serves the guests one after another; nobody mentions her, everybody knows": [
+       "At the table they eat. You kneel under the table and eat too. Every course in its own way.",
+       "They talk about the weather and business. You kneel under the tablecloth and nobody mentions you.",
+       "One pushes his chair back, another pulls his in. You know it's a sign. You shuffle over on your knees.",
+       "The waiter tops up the wine. Nobody looks under the table. Everybody knows.",
+       "Dinner has five courses. You have five guests.",
+       "The clink of cutlery above you, a quiet sigh, and the conversation carries on as if nothing happened.",
+       "Someone tells a joke. Everyone laughs. One of them laughs a little too long because of you.",
+       "Under the tablecloth it's dark and warm. Your world is knees, trousers and their taste.",
+       "Between courses someone taps a shoe against your knee. The queue moves to the left.",
+       "The host raises a glass: to a lovely evening. Under the table you say thank you your own way.",
+       "Repeat after me: at the table I'm invisible. Under the table I'm for everyone.",
+       "When they get up from the table, you stay. Someone always comes back for dessert."
+      ],
       "fed on them - they are her meals: breakfast on her knees, lunch from a glass, dinner straight from the queue; warm cum is what she waits for all day": [
        "Breakfast is served on your knees. Straight from the source. Warm.",
        "They collected it in a glass all evening. Now drink it slowly, looking them in the eye.",
