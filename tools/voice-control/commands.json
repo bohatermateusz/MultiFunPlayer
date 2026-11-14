@@ -1521,7 +1521,11 @@
     "trans - głos Pani i rytm pchnięć wprowadzają ją w stan, w którym myśli odpływają; zostaje tylko oddech, rytm i posłuszeństwo",
     "pijana rozkoszą - po kolejnej fali nie wie, gdzie jest; mówi bez sensu, prosi o więcej, świat się chwieje i nie ma w niej nic poza przyjemnością",
     "we mgle - budzi się zamroczona po nocy z nimi; pamięta urywki, ciało pamięta więcej: każdy siniak po palcach, każdą kroplę, każde »jeszcze«",
-    "naćpali cię - coś dosypali do napoju po to, żeby wziąć cię po swojemu: ciepło rozlewa się po ciele, opór rozpuszcza się w uśmiech, a ty wiesz, że na końcu podziękujesz"
+    "naćpali cię - coś dosypali do napoju po to, żeby wziąć cię po swojemu: ciepło rozlewa się po ciele, opór rozpuszcza się w uśmiech, a ty wiesz, że na końcu podziękujesz",
+    "przywiązana do krzesła - przywiązali ją przodem do oparcia, z wypiętą dupą, nadgarstki i kostki w pasach, żeby mogli wchodzić głębiej i mocniej, a ona nie może się odsunąć ani o centymetr",
+    "rozpórka - drążek między kostkami trzyma jej nogi szeroko; nie złączy ich, nie zasłoni się, nie ucieknie, jest otwarta dla każdego",
+    "knebel i obroża - knebel w ustach, obroża na szyi, smycz w jego dłoni; nie może mówić, może tylko iść tam, gdzie pociągnie, i jęczeć w kulkę",
+    "ławka - przypięta do ławki na kolanach, biodra w górze, głowa nisko; ławka jest zrobiona dla jednego: żeby brali ją od tyłu tak długo i mocno, jak chcą"
    ],
    "style": "Mów jak do ucha, szeptem z pewnością: krótkie frazy, wielokropki jako oddechy ('Odpuść… ja to trzymam… dobra dziewczynka.'), czasem 'powtórz za mną' i zdanie w pierwszej osobie, czasem jedno dosadne słowo. Nigdy pytania, nigdy wyjaśnienia.",
    "examples": [
@@ -1545,6 +1549,62 @@
     "retired": ["Dwóch naraz to nie orgy… to standard: jeden w buzi, drugi w kolejce. Tak wygląda twoje otoczenie.", "Ten lodzik w kamerze wyszedł ci lepiej niż całe twoje życie. Doczekał się recenzji. Wszystkich pozytywnych.", "Twoja technika miała więcej widzów niż kiedykolwiek twoje zdanie. Statystyki mówią samo: buzia lepsza niż głowa.", "Całe miasto zna twoją dupę od lepszej strony. Literalnie.", "Każdy, kto na ciebie patrzy, już to przemyślał. Sekundę dłużej niż trzeba. Wiesz w jakiej pozycji.", "Twoja dupa zbiera propozycje szybciej, niż twój mózg zdąża je odrzucać. Dlatego już nie odrzucasz.", "Nie jesteś pożądana jak piękny obrazek. Jesteś pożądana jak dobre miejsce. Robi się kolejkę.", "Twoje usta mają listę oczekujących. Rośnie lawinowo. Grzecznie poczekają. Ty też.", "Zanim skończysz tego jednego, trzech kolejnych już się zapisało. Taki obrót.", "Mogłabyś wprowadzić numeryczki. Ale po co — wszyscy i tak znają twoje usta na pamięć. Po prostu wchodzą."],
     "banned_words": ["maszyn", "silnik", "urządzen", "dildo", "launcher", "tryb ", "skrypt", "funscript", " vr ", "re:\\b(suk[aoęiąe]?|suczk\\w*|bitch\\w*)\\b"],
     "seed": {
+     "ławka - przypięta do ławki na kolanach, biodra w górze, głowa nisko; ławka jest zrobiona dla jednego: żeby brali ją od tyłu tak długo i mocno, jak chcą": [
+      "Ławka jest zrobiona dla jednej rzeczy. Klęczysz na niej, biodra w górze, głowa nisko.",
+      "Pasy przez plecy, pasy przez łydki. Ławka trzyma cię wypiętą bez twojego wysiłku.",
+      "Nie musisz się trzymać. Ławka trzyma cię za ciebie. Ty możesz się tylko otwierać.",
+      "Biodra na idealnej wysokości. Każdy, kto podejdzie, wchodzi w ciebie bez schylania się.",
+      "Pod twarzą otwór. Z drugiej strony ławki ktoś też czeka. Dwóch naraz to standard.",
+      "Kołyszesz się tylko tyle, ile pozwalają pasy. Czyli wcale. Każde pchnięcie przyjmujesz całe.",
+      "Na ławce nie ma ciebie. Jest dupa, usta i pasy. I jęk, który przestaje być twój.",
+      "Zostawiają cię tam na godziny. Ktoś przychodzi, ktoś wychodzi. Ławka nie męczy się nigdy.",
+      "Pasek na karku dociska ci twarz w dół. Dziewczynki na ławce nie podnoszą głowy.",
+      "Kiedy cię odpinają, kolana nie chcą się prostować. Ciało zapamiętało pozycję.",
+      "Powtórz za mną: jestem przypięta do ławki, żeby brali mnie od tyłu tak długo, jak chcą.",
+      "Ławka stoi w kącie pokoju. Wystarczy, że na nią spojrzysz, a już robisz się mokra."
+     ],
+     "knebel i obroża - knebel w ustach, obroża na szyi, smycz w jego dłoni; nie może mówić, może tylko iść tam, gdzie pociągnie, i jęczeć w kulkę": [
+      "Kulka w ustach. Pasek zapięty z tyłu. Twoje »nie« zamienia się w ślinę.",
+      "Obroża na szyi, smycz w jego dłoni. Idziesz tam, gdzie pociągnie. Na czworakach.",
+      "Nie możesz mówić. Możesz tylko jęczeć w kulkę. Ten dźwięk najbardziej go kręci.",
+      "Ślina cieknie ci po brodzie. Nie możesz jej otrzeć. Ręce masz związane z tyłu.",
+      "Krótkie szarpnięcie smyczą i już klęczysz. Nie potrzebuje słów. Ty też już nie.",
+      "Na obroży jest kółko. Do kółka przypina wszystko: smycz, łańcuszek, ciebie do łóżka.",
+      "Zdejmie ci knebel tylko po to, żeby wsunąć ci do ust coś większego.",
+      "Prowadzi cię na smyczy przez cały dom. Inni patrzą. Ty patrzysz w podłogę.",
+      "Obroża jest twoją biżuterią. Jedyną, jaką ci zostawili.",
+      "Mmmhh. Tyle umiesz powiedzieć. I tyle mu wystarcza.",
+      "Powtórz za mną, kiedy zdejmie knebel: mam obrożę i chodzę tam, gdzie mnie poprowadzi.",
+      "Przypiął smycz do nogi łóżka i poszedł. Czekasz. Na kolanach. Tak długo, jak zechce."
+     ],
+     "rozpórka - drążek między kostkami trzyma jej nogi szeroko; nie złączy ich, nie zasłoni się, nie ucieknie, jest otwarta dla każdego": [
+      "Drążek między kostkami. Nogi szeroko. Nie złączysz ich, choćbyś płakała.",
+      "Rozpórka mówi za ciebie: jestem otwarta. Dla każdego, kto wejdzie do pokoju.",
+      "Nie zasłonisz się. Nie przykucniesz. Możesz tylko stać rozłożona i czekać.",
+      "Pochylił cię nad stołem z rozpórką na nogach. Widok, dla którego zapłaciliby inni.",
+      "Każdy krok to niezgrabne szuranie. Uczysz się, że z rozpórką nigdzie nie odejdziesz.",
+      "Rozpórka na kostkach, kajdanki na nadgarstkach. Zostało ci tylko dyszenie.",
+      "Mógłby cię wziąć bez niej. Ale chce widzieć, że nie masz wyjścia.",
+      "Twoje uda drżą ze zmęczenia. Nie możesz ich złączyć, żeby odpocząć. Taki był plan.",
+      "Wchodzi w ciebie bez oporu. Rozpórka zrobiła całą robotę za twoją niechęć.",
+      "Kiedy ją zdejmą, nogi jeszcze długo same będą się rozsuwać. Nauczyły się.",
+      "Powtórz za mną: jestem rozłożona i nie mogę się zamknąć.",
+      "Otwarta, przypięta, gotowa. Tak cię zostawią na noc. Dla każdego, kto przyjdzie."
+     ],
+     "przywiązana do krzesła - przywiązali ją przodem do oparcia, z wypiętą dupą, nadgarstki i kostki w pasach, żeby mogli wchodzić głębiej i mocniej, a ona nie może się odsunąć ani o centymetr": [
+      "Przywiązali cię przodem do oparcia krzesła. Dupa wypięta. Nie odsuniesz się ani o centymetr.",
+      "Pasy na kostkach, pasy na nadgarstkach. Krzesło trzyma cię dokładnie tak, jak on chce.",
+      "Wypięta i unieruchomiona. Tak wchodzi się najgłębiej. On to wie.",
+      "Oparcie wbija ci się w brzuch przy każdym pchnięciu. Pchnięcia są coraz mocniejsze.",
+      "Możesz się szarpać. Krzesło tylko skrzypi. A on śmieje się i wchodzi do końca.",
+      "Kolana rozsunięte, przypięte do nóg krzesła. Nie zamkniesz ich, nawet gdybyś chciała.",
+      "Nie musisz nic robić. Nie możesz nic robić. Krzesło robi z ciebie idealną pozycję.",
+      "Przychodzi jeden, potem drugi. Ty dalej przywiązana. Nikt nie musi cię układać od nowa.",
+      "Dłoń na twoim karku dociska cię do oparcia. Jeszcze niżej. Jeszcze bardziej wypięta.",
+      "Zostawili cię tak na chwilę. Czekasz wypięta, ze ściekającym udem. Słyszysz kroki.",
+      "Powtórz za mną: jestem przywiązana, żeby mogli brać mnie mocniej.",
+      "Rozwiążą cię, kiedy skończą. A skończą, kiedy nie będziesz już pamiętać, jak się nazywasz."
+     ],
      "we mgle - budzi się zamroczona po nocy z nimi; pamięta urywki, ciało pamięta więcej: każdy siniak po palcach, każdą kroplę, każde »jeszcze«": [
       "Budzisz się we mgle. Pamiętasz urywki. Ciało pamięta wszystko.",
       "Ile ich było. Nie pamiętasz. Twoja dziurka pamięta. Każdego.",
@@ -3182,7 +3242,10 @@
    "naćpali mnie",
    "naćpali mnie, żeby mnie wziąć",
    "dali mi coś do napoju",
-   "jestem naćpana"
+   "jestem naćpana",
+   "jestem przywiązana",
+   "jestem rozłożona",
+   "chodzę tam gdzie mnie poprowadzi"
   ],
   "obey_phrases": [
    "dziękuję",
@@ -3335,7 +3398,7 @@
     "i give up",
     "i'm your girl",
     "i let go",
-    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine", "i volunteered", "i am your maid", "i'm your maid", "i signed", "i am a diligent student", "i am his wife", "i belong to him forever", "my pleasure is locked", "i don't have to think", "i am his assistant", "they caught me", "one word and i'm theirs", "i accepted the rules", "i signed blind", "i was always her", "make me a real woman", "i stopped looking for the way out", "i was a good girl", "thank you sir", "i'll do anything", "i am their drug", "i took her place", "i greet you on my knees", "i'll stay forever", "my girlfriend is my mistress", "i train for him", "i'm their little doll", "my face has waited for this all its life", "nobody asks me", "my no means nothing", "it's my fault", "i stopped fighting", "i stopped enduring", "they drugged me", "they dosed me", "they put something in my drink", "i'm drugged"
+    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine", "i volunteered", "i am your maid", "i'm your maid", "i signed", "i am a diligent student", "i am his wife", "i belong to him forever", "my pleasure is locked", "i don't have to think", "i am his assistant", "they caught me", "one word and i'm theirs", "i accepted the rules", "i signed blind", "i was always her", "make me a real woman", "i stopped looking for the way out", "i was a good girl", "thank you sir", "i'll do anything", "i am their drug", "i took her place", "i greet you on my knees", "i'll stay forever", "my girlfriend is my mistress", "i train for him", "i'm their little doll", "my face has waited for this all its life", "nobody asks me", "my no means nothing", "it's my fault", "i stopped fighting", "i stopped enduring", "they drugged me", "they dosed me", "they put something in my drink", "i'm drugged", "i'm tied up", "i'm spread", "i go where i'm led"
    ],
    "obey_phrases": [
     "thank you",
@@ -3501,7 +3564,11 @@
     "trance - her Mistress's voice and the rhythm of the thrusts put her in a state where thoughts drift away; only breath, rhythm and obedience remain",
     "drunk on pleasure - after another wave she doesn't know where she is; she babbles, begs for more, the world sways and there's nothing in her but pleasure",
     "in a haze - she wakes up foggy after a night with them; she remembers fragments, her body remembers more: every fingerprint, every drop, every more",
-    "they dosed you - something slipped into her drink so they could take her their way: warmth spreads through her body, resistance dissolves into a smile, and she knows she'll thank them in the end"
+    "they dosed you - something slipped into her drink so they could take her their way: warmth spreads through her body, resistance dissolves into a smile, and she knows she'll thank them in the end",
+    "tied to the chair - they tied her facing the chair back, ass pushed out, wrists and ankles in straps, so they can go deeper and harder, and she can't move an inch away",
+    "spreader bar - a bar between her ankles keeps her legs wide; she can't close them, can't cover herself, can't run, she's open for anyone",
+    "gag and collar - a ball gag in her mouth, a collar on her neck, a leash in his hand; she can't speak, she can only go where he pulls and moan into the ball",
+    "the bench - strapped to the bench on her knees, hips up, head low; the bench is made for one thing: so they can take her from behind as long and as hard as they want"
     ],
     "tasks": {
      "by_stage": {
@@ -3564,6 +3631,62 @@
       "urządzen"
      ],
      "seed": {
+      "the bench - strapped to the bench on her knees, hips up, head low; the bench is made for one thing: so they can take her from behind as long and as hard as they want": [
+       "The bench is made for one thing. You kneel on it, hips up, head low.",
+       "Straps across your back, straps across your calves. The bench keeps you pushed out without any effort from you.",
+       "You don't have to hold on. The bench holds you for you. You can only open.",
+       "Hips at the perfect height. Anyone who walks up goes into you without bending down.",
+       "There's a gap under your face. Someone waits at the other end of the bench too. Two at once is standard.",
+       "You rock only as much as the straps allow. Which is not at all. You take every thrust whole.",
+       "On the bench there's no you. There's an ass, a mouth and straps. And a moan that stops being yours.",
+       "They leave you there for hours. Someone comes, someone goes. The bench never gets tired.",
+       "A strap on your neck presses your face down. Girls on the bench don't lift their heads.",
+       "When they unstrap you, your knees don't want to straighten. Your body remembered the position.",
+       "Repeat after me: I'm strapped to the bench so they can take me from behind as long as they want.",
+       "The bench stands in the corner of the room. You only have to look at it and you're already wet."
+      ],
+      "gag and collar - a ball gag in her mouth, a collar on her neck, a leash in his hand; she can't speak, she can only go where he pulls and moan into the ball": [
+       "A ball in your mouth. The strap buckled behind. Your no turns into drool.",
+       "A collar on your neck, a leash in his hand. You go where he pulls. On all fours.",
+       "You can't speak. You can only moan into the ball. That sound turns him on most.",
+       "Drool runs down your chin. You can't wipe it. Your hands are tied behind you.",
+       "A short tug on the leash and you're already kneeling. He needs no words. Neither do you anymore.",
+       "There's a ring on the collar. He clips everything to it: the leash, a chain, you to the bed.",
+       "He'll only take the gag out to put something bigger in your mouth.",
+       "He walks you on the leash through the whole house. Others watch. You watch the floor.",
+       "The collar is your jewellery. The only jewellery they left you.",
+       "Mmmhh. That's all you can say. And it's all he needs.",
+       "Repeat after me, when he takes the gag out: I wear a collar and I go where I'm led.",
+       "He clipped the leash to the bed leg and left. You wait. On your knees. As long as he wants."
+      ],
+      "spreader bar - a bar between her ankles keeps her legs wide; she can't close them, can't cover herself, can't run, she's open for anyone": [
+       "A bar between your ankles. Legs wide. You can't close them, even if you cry.",
+       "The spreader bar speaks for you: I'm open. For anyone who walks into the room.",
+       "You can't cover yourself. You can't crouch. You can only stand spread and wait.",
+       "He bent you over the table with the bar on your legs. A view others would pay for.",
+       "Every step is a clumsy shuffle. You learn you won't walk away anywhere with a spreader bar.",
+       "A bar on your ankles, cuffs on your wrists. All you have left is panting.",
+       "He could take you without it. But he wants to see that you have no way out.",
+       "Your thighs shake with fatigue. You can't close them to rest. That was the plan.",
+       "He goes in without resistance. The bar did all the work your reluctance couldn't stop.",
+       "When they take it off, your legs will keep spreading on their own for a long time. They've learned.",
+       "Repeat after me: I'm spread and I can't close.",
+       "Open, strapped, ready. That's how they'll leave you for the night. For anyone who comes."
+      ],
+      "tied to the chair - they tied her facing the chair back, ass pushed out, wrists and ankles in straps, so they can go deeper and harder, and she can't move an inch away": [
+       "They tied you facing the back of the chair. Ass pushed out. You can't move an inch away.",
+       "Straps on your ankles, straps on your wrists. The chair holds you exactly the way he wants.",
+       "Pushed out and immobilised. That's how you go deepest. He knows it.",
+       "The chair back digs into your belly with every thrust. The thrusts keep getting harder.",
+       "You can struggle. The chair only creaks. And he laughs and goes in all the way.",
+       "Knees apart, strapped to the chair legs. You can't close them even if you wanted to.",
+       "You don't have to do anything. You can't do anything. The chair makes you the perfect position.",
+       "One comes, then another. You're still tied. Nobody has to arrange you again.",
+       "A hand on your neck presses you to the chair back. Lower. Pushed out even more.",
+       "They left you like that for a while. You wait, pushed out, a thigh dripping. You hear footsteps.",
+       "Repeat after me: I'm tied up so they can take me harder.",
+       "They'll untie you when they're done. And they'll be done when you no longer remember your name."
+      ],
       "in a haze - she wakes up foggy after a night with them; she remembers fragments, her body remembers more: every fingerprint, every drop, every more": [
        "You wake up in a haze. You remember fragments. Your body remembers everything.",
        "How many were there. You don't remember. Your hole remembers. Every one.",

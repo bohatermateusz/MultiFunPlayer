@@ -134,6 +134,18 @@ class LinePool:
         return line
 
     def _fresh(self, theme, candidates, hand_written=False):
+        if hand_written:
+            # her written lines are chosen on purpose: they are only kept from repeating what she already said, and
+            # never two identical ones - comparing each of them with all the others made the first start take minutes
+            seen = list(self.said[-self.max_said:])
+            have = {x for v in self.pool.values() for x in v}
+            out = []
+            for c in candidates:
+                line = self._acceptable(str(c), seen, hand_written)
+                if line and line not in have:
+                    out.append(line)
+                    have.add(line)
+            return out
         seen = list(self.said[-self.max_said:]) + [x for v in self.pool.values() for x in v]
         out = []
         for c in candidates:
