@@ -1510,7 +1510,13 @@
     "pokojówki w posiadłości - w posiadłości mieszka kilka takich jak ona; schylają się w biodrach, halki unoszą się i pokazują pończochy, podwiązki i zatyczki; zatyczka stale przypomina, że on jest w środku, a podniecenie dawno przeszło z przodu do brzucha",
     "dziewczyna została Panią - jego dziewczyna dostała pieniądze, żeby pomagać przy jej przemianie; uczą ją być Panią, a ona dyga przed nią i wie, że kiedyś to dziewczyna wejdzie w nią",
     "trener - wybrał ją, kiedy była zagubiona, i obiecał zrobić z niej silnego mężczyznę; dał plan ćwiczeń: przysiady, pośladki, biodra, nic na ramiona; widział w niej tylko to, co chciał z niej zrobić",
-    "lalka zamiast tyrana - kiedyś groźny, krzyczał i rządził; dziś otwiera drzwi w falbankach, kokardach, na sześciocalowych szpilkach, z tapetą makijażu i piskliwym głosikiem, i błaga, żeby ładnie wyglądał"
+    "lalka zamiast tyrana - kiedyś groźny, krzyczał i rządził; dziś otwiera drzwi w falbankach, kokardach, na sześciocalowych szpilkach, z tapetą makijażu i piskliwym głosikiem, i błaga, żeby ładnie wyglądał",
+    "nikt nie pytał - nie pytają o zgodę; biorą, kiedy chcą, gdzie chcą i jak chcą, a jej zdanie nikogo nie interesuje",
+    "ciało zdradza - jej »nie« nic nie znaczy, bo ciało i tak odpowiada; przyjemność dzieje się jej, nie ona nią rządzi, a wstyd i rozkosz mieszają się w jedno",
+    "przyciśnięta - przygnieciona jego ciężarem, nogi przy głowie, ręka w jej włosach, pocałunek, który nie pyta; nie ma dokąd uciec i dziwnie czuje się bezpieczna",
+    "twoja wina - wszystko jest jej winą: nie słuchała, dotykała się, dlatego dostała klatkę jak pies kołnierz; nie ma sugestii, są tylko polecenia",
+    "dziesięć minut później - po wszystkim mgła opada i przychodzi prawdziwy wstyd: nie, że ją wzięli, tylko że tak bardzo jej się podobało i że już dawno przestała tylko znosić",
+    "przełamana - opór gaśnie kawałek po kawałku: najpierw walczyła, potem się targowała, potem płakała, a teraz tylko piszczy i dziękuje"
    ],
    "style": "Mów jak do ucha, szeptem z pewnością: krótkie frazy, wielokropki jako oddechy ('Odpuść… ja to trzymam… dobra dziewczynka.'), czasem 'powtórz za mną' i zdanie w pierwszej osobie, czasem jedno dosadne słowo. Nigdy pytania, nigdy wyjaśnienia.",
    "examples": [
@@ -1534,6 +1540,90 @@
     "retired": ["Dwóch naraz to nie orgy… to standard: jeden w buzi, drugi w kolejce. Tak wygląda twoje otoczenie.", "Ten lodzik w kamerze wyszedł ci lepiej niż całe twoje życie. Doczekał się recenzji. Wszystkich pozytywnych.", "Twoja technika miała więcej widzów niż kiedykolwiek twoje zdanie. Statystyki mówią samo: buzia lepsza niż głowa.", "Całe miasto zna twoją dupę od lepszej strony. Literalnie.", "Każdy, kto na ciebie patrzy, już to przemyślał. Sekundę dłużej niż trzeba. Wiesz w jakiej pozycji.", "Twoja dupa zbiera propozycje szybciej, niż twój mózg zdąża je odrzucać. Dlatego już nie odrzucasz.", "Nie jesteś pożądana jak piękny obrazek. Jesteś pożądana jak dobre miejsce. Robi się kolejkę.", "Twoje usta mają listę oczekujących. Rośnie lawinowo. Grzecznie poczekają. Ty też.", "Zanim skończysz tego jednego, trzech kolejnych już się zapisało. Taki obrót.", "Mogłabyś wprowadzić numeryczki. Ale po co — wszyscy i tak znają twoje usta na pamięć. Po prostu wchodzą."],
     "banned_words": ["maszyn", "silnik", "urządzen", "dildo", "launcher", "tryb ", "skrypt", "funscript", " vr ", "re:\\b(suk[aoęiąe]?|suczk\\w*|bitch\\w*)\\b"],
     "seed": {
+     "przełamana - opór gaśnie kawałek po kawałku: najpierw walczyła, potem się targowała, potem płakała, a teraz tylko piszczy i dziękuje": [
+      "Najpierw walczyłaś. Potem się targowałaś. Potem płakałaś. Teraz tylko piszczysz.",
+      "Kiedyś się wściekałaś. Teraz dziękujesz. To się nazywa postęp.",
+      "Każdy dzień zabierał ci trochę oporu. Aż nie zostało nic, czym mogłabyś się zaprzeć.",
+      "Nie złamali cię naraz. Łamali cię cierpliwie, pęknięcie po pęknięciu.",
+      "Przestałaś pytać »dlaczego«. Zaczęłaś pytać »jak głęboko«.",
+      "Twoje pięści rozluźniły się same. Teraz twoje dłonie umieją tylko trzymać się prześcieradła.",
+      "Przestałaś szukać klamki. Klamka i tak była tylko po ich stronie.",
+      "Kiedy wchodzi, twoje ciało już się nie spina. Rozkłada się samo, jak wyuczone.",
+      "Zostało w tobie tyle oporu, ile trzeba, żeby było co łamać. Dla ich zabawy.",
+      "Przełamana nie znaczy zepsuta. Znaczy gotowa. Do użytku.",
+      "Powtórz za mną: przestałam walczyć. Teraz tylko biorę i dziękuję.",
+      "Ostatni kawałek oporu oddałaś sama. Z uśmiechem. Tego najbardziej się wstydzisz."
+     ],
+     "dziesięć minut później - po wszystkim mgła opada i przychodzi prawdziwy wstyd: nie, że ją wzięli, tylko że tak bardzo jej się podobało i że już dawno przestała tylko znosić": [
+      "Dziesięć minut po wszystkim mgła opada. Przychodzi wstyd. Prawdziwy, nie ten gorący.",
+      "Nie wstydzisz się, że cię wzięli. Wstydzisz się, jak bardzo tego chciałaś.",
+      "Kiedyś to znosiłaś. Zaciskałaś zęby i czekałaś. Teraz sama się nadstawiasz.",
+      "Leżysz w mokrej pościeli i wiesz, że jutro zrobisz to samo. I pojutrze.",
+      "Twoje dawne ja by cię pobiło. Na szczęście twojego dawnego ja już nie ma.",
+      "Wstyd przychodzi zawsze po. Nigdy w trakcie. W trakcie nie ma miejsca na nic poza nim.",
+      "Ktoś wymieni pościel. Ty tylko masz nadzieję, że to będzie ta, której nie lubisz.",
+      "Pokorna duma, że go zadowoliłaś. A pod nią coś, czego nie śmiesz obejrzeć z bliska.",
+      "Uciekałaś przed tym w myślach całe życie. Teraz to jest jedyne miejsce, gdzie nie myślisz.",
+      "Wstyd i tak nie zatrzyma cię przed niczym. Tylko sprawi, że zapamiętasz to dokładniej.",
+      "Powtórz za mną: przestałam znosić. Teraz chcę.",
+      "Mgła opada, wstyd przychodzi, a ty i tak liczysz godziny do następnego razu."
+     ],
+     "twoja wina - wszystko jest jej winą: nie słuchała, dotykała się, dlatego dostała klatkę jak pies kołnierz; nie ma sugestii, są tylko polecenia": [
+      "To twoja wina. Nie słuchałaś. Dlatego teraz musisz słuchać jeszcze bardziej.",
+      "Dotykałaś się, chociaż zabronił. Teraz masz klatkę. Jak pies kołnierz, żeby się nie drapał.",
+      "Klik. Zamknięte. Pamiętasz ten dźwięk. On też go zapamiętał. Z przyjemnością.",
+      "Nie ma sugestii. Są tylko polecenia. Kiedy o tym zapominasz, dzieją się złe rzeczy.",
+      "Przepraszasz dwanaście razy. Odpisuje raz: jutro, ta sama godzina. Śpisz spokojnie dopiero wtedy.",
+      "Zrób to tutaj. W szatni. Chcę widzieć, że zakładasz ją dobrze.",
+      "Każda zmiana w twoim ciele to skutek twojego nieposłuszeństwa. Tak mówi. Wierzysz mu.",
+      "Masz szczęście, że jeszcze chce się tobą zajmować. Nie zmarnuj tego.",
+      "Krzyczy na ciebie z góry, a ty kurczysz się do jego rozmiaru. Małego.",
+      "To dla twojego dobra. Wszystko, co ci zabiera, jest dla twojego dobra.",
+      "Powtórz za mną: to moja wina. Teraz będę słuchać we wszystkim.",
+      "Pytasz, co się z tobą dzieje. Odpowiada: to, na co zasłużyłaś. I ma rację."
+     ],
+     "przyciśnięta - przygnieciona jego ciężarem, nogi przy głowie, ręka w jej włosach, pocałunek, który nie pyta; nie ma dokąd uciec i dziwnie czuje się bezpieczna": [
+      "Złożył cię w pół. Kolana przy twojej głowie. Jego ciężar na tobie. Nie ma dokąd uciec.",
+      "Ręka w twoich włosach trzyma głowę w miejscu. Usta na twoich ustach. Nie pyta.",
+      "Każdy twój jęk ginie w jego pocałunku. Połyka twoje dźwięki jak swoje.",
+      "Nadgarstki nad głową, w jednej jego dłoni. Druga robi, co chce.",
+      "Jesteś pod nim cała. Nie zostało nic, czym mogłabyś się odsunąć.",
+      "I dziwne: właśnie tam, przygnieciona, czujesz się najbezpieczniej na świecie.",
+      "On nigdy nie ma wątpliwości. Dlatego ty nie musisz już mieć żadnych.",
+      "Kiedyś byłaś od niego wyższa. Dziś leżysz pod nim i nie pamiętasz, jak to było.",
+      "Wbijasz mu paznokcie w plecy. On nawet nie drgnie. Co to dla niego trochę bólu.",
+      "Nie całuje cię jak równej. Całuje cię jak swoją. To różnica, którą czujesz całym ciałem.",
+      "Powtórz za mną: jestem przyciśnięta i nie chcę, żeby puścił.",
+      "Puszcza cię tylko po to, żeby powiedzieć: klęknij. A ty już klęczysz."
+     ],
+     "ciało zdradza - jej »nie« nic nie znaczy, bo ciało i tak odpowiada; przyjemność dzieje się jej, nie ona nią rządzi, a wstyd i rozkosz mieszają się w jedno": [
+      "Mówisz nie, a twoja dziurka zaciska się na nim. Komu mam wierzyć.",
+      "Przyjemność już nie jest twoja. Dzieje się tobie. Jak pogoda.",
+      "Wstydzisz się, że ci dobrze. I od tego wstydu robi ci się jeszcze lepiej.",
+      "Wstyd i rozkosz splotły się tak mocno, że nie wiesz już, gdzie kończy się jedno.",
+      "Płaczesz i dochodzisz w tym samym oddechu. Twoje ciało nie widzi w tym sprzeczności.",
+      "Mięśnie, które miały cię bronić, nauczyły się go trzymać w środku.",
+      "Twoja klatka kapie, chociaż przysięgałaś, że tego nie chcesz. Klatka nie umie kłamać.",
+      "Bronisz się słowami. Ciało już dawno przestało cię słuchać.",
+      "Im bardziej się opierasz, tym mocniej dochodzisz. On to wie. Ty też.",
+      "Trzecia fala z rzędu, a ty dalej mówisz »proszę, nie«. Nikt już tego nie traktuje poważnie.",
+      "Powtórz za mną: moje »nie« nic nie znaczy. Moje ciało mówi »tak«.",
+      "Twoja zgoda nie jest potrzebna. Twoje ciało podpisało za ciebie."
+     ],
+     "nikt nie pytał - nie pytają o zgodę; biorą, kiedy chcą, gdzie chcą i jak chcą, a jej zdanie nikogo nie interesuje": [
+      "Nikt cię nie pytał. Nikt nie zapyta. Biorą, kiedy mają ochotę.",
+      "Odwrócił cię twarzą do ściany, zanim zdążyłaś się przywitać. Nie musiał nic mówić.",
+      "Twoje »nie teraz« trwało pół sekundy. Potem już byłaś pochylona.",
+      "Nie pukają. Wchodzą. Do pokoju i do ciebie.",
+      "Śpisz, a oni decydują, że już nie śpisz. Tak zaczyna się wiele twoich nocy.",
+      "Złapał cię za biodra w kuchni, kiedy myłaś kubek. Kubek dalej jest w twojej dłoni.",
+      "Pytanie o zgodę to coś dla równych. Ty nie jesteś równa. Ty jesteś do brania.",
+      "Mówisz: poczekaj. On słyszy: teraz. Zawsze tak słyszy.",
+      "Nie ma umówionych godzin. Każda godzina jest jego godziną.",
+      "Podnosi ci spódniczkę jak klapę skrzynki na listy. Coś wkłada i idzie dalej.",
+      "Powtórz za mną: nikt mnie nie pyta. Biorą, kiedy chcą.",
+      "Najgorsze, że czekasz na to. Na moment, kiedy znowu nikt nie zapyta."
+     ],
      "lalka zamiast tyrana - kiedyś groźny, krzyczał i rządził; dziś otwiera drzwi w falbankach, kokardach, na sześciocalowych szpilkach, z tapetą makijażu i piskliwym głosikiem, i błaga, żeby ładnie wyglądał": [
       "Kiedyś wszyscy się ciebie bali. Dziś otwierasz drzwi w falbankach i piszczysz z radości.",
       "Kokardy, falbanki, perły jak cukierki. Przerysowana lalka. I tak się czujesz najlepiej.",
@@ -3008,7 +3098,12 @@
    "moja dziewczyna jest moją panią",
    "ćwiczę dla niego",
    "jestem ich laleczką",
-   "moja twarz czekała na to całe życie"
+   "moja twarz czekała na to całe życie",
+   "nikt mnie nie pyta",
+   "moje nie nic nie znaczy",
+   "to moja wina",
+   "przestałam walczyć",
+   "przestałam znosić"
   ],
   "obey_phrases": [
    "dziękuję",
@@ -3161,7 +3256,7 @@
     "i give up",
     "i'm your girl",
     "i let go",
-    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine", "i volunteered", "i am your maid", "i'm your maid", "i signed", "i am a diligent student", "i am his wife", "i belong to him forever", "my pleasure is locked", "i don't have to think", "i am his assistant", "they caught me", "one word and i'm theirs", "i accepted the rules", "i signed blind", "i was always her", "make me a real woman", "i stopped looking for the way out", "i was a good girl", "thank you sir", "i'll do anything", "i am their drug", "i took her place", "i greet you on my knees", "i'll stay forever", "my girlfriend is my mistress", "i train for him", "i'm their little doll", "my face has waited for this all its life"
+    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine", "i volunteered", "i am your maid", "i'm your maid", "i signed", "i am a diligent student", "i am his wife", "i belong to him forever", "my pleasure is locked", "i don't have to think", "i am his assistant", "they caught me", "one word and i'm theirs", "i accepted the rules", "i signed blind", "i was always her", "make me a real woman", "i stopped looking for the way out", "i was a good girl", "thank you sir", "i'll do anything", "i am their drug", "i took her place", "i greet you on my knees", "i'll stay forever", "my girlfriend is my mistress", "i train for him", "i'm their little doll", "my face has waited for this all its life", "nobody asks me", "my no means nothing", "it's my fault", "i stopped fighting", "i stopped enduring"
    ],
    "obey_phrases": [
     "thank you",
@@ -3316,7 +3411,13 @@
     "the maids of the estate - several girls like her live on the estate; they bend at the hips, petticoats lift and show stockings, garters and plugs; the plug keeps reminding her he's inside, and the arousal moved long ago from the front to her belly",
     "the girlfriend became the Mistress - his girlfriend was paid to help with her change; they train her to be a Mistress, and she curtsies to her knowing one day the girlfriend will be the one inside her",
     "the trainer - he picked her when she was lost and promised to make her a strong man; he gave her a plan: squats, glutes, hips, nothing for the arms; he only ever saw what he wanted to make of her",
-    "a doll instead of a tyrant - once menacing, shouting and ruling; today she opens the door in ruffles, bows, six-inch heels, a mask of makeup and a squeaky voice, and begs to look pretty"
+    "a doll instead of a tyrant - once menacing, shouting and ruling; today she opens the door in ruffles, bows, six-inch heels, a mask of makeup and a squeaky voice, and begs to look pretty",
+    "nobody asked - they don't ask for consent; they take when they want, where they want and how they want, and nobody cares what she thinks",
+    "the body betrays her - her no means nothing because her body answers anyway; pleasure happens to her, she doesn't control it, and shame and pleasure blend into one",
+    "pinned - crushed under his weight, legs by her head, his hand in her hair, a kiss that doesn't ask; there's nowhere to go and she feels strangely safe",
+    "your fault - everything is her fault: she didn't listen, she touched herself, so she got a cage like a dog gets a cone; there are no suggestions, only orders",
+    "ten minutes later - after it's over the haze lifts and the real shame comes: not that they took her, but that she loved it so much and stopped merely enduring long ago",
+    "broken in - the resistance goes out of her piece by piece: first she fought, then bargained, then cried, and now she only squeals and says thank you"
     ],
     "tasks": {
      "by_stage": {
@@ -3379,6 +3480,90 @@
       "urządzen"
      ],
      "seed": {
+      "broken in - the resistance goes out of her piece by piece: first she fought, then bargained, then cried, and now she only squeals and says thank you": [
+       "First you fought. Then you bargained. Then you cried. Now you only squeal.",
+       "You used to rage. Now you say thank you. That's called progress.",
+       "Every day took a little resistance from you. Until there was nothing left to brace against.",
+       "They didn't break you all at once. They broke you patiently, crack by crack.",
+       "You stopped asking why. You started asking how deep.",
+       "Your fists unclenched on their own. Now your hands only know how to hold on to the sheet.",
+       "You stopped looking for the door handle. The handle was only ever on their side.",
+       "When he comes in, your body no longer tenses. It spreads by itself, as it was taught.",
+       "There's just enough resistance left in you for there to be something to break. For their fun.",
+       "Broken in doesn't mean broken. It means ready. For use.",
+       "Repeat after me: I stopped fighting. Now I only take it and say thank you.",
+       "You gave up the last piece of resistance yourself. With a smile. That's what you're most ashamed of."
+      ],
+      "ten minutes later - after it's over the haze lifts and the real shame comes: not that they took her, but that she loved it so much and stopped merely enduring long ago": [
+       "Ten minutes after it's over the haze lifts. The shame comes. The real kind, not the hot kind.",
+       "You're not ashamed that they took you. You're ashamed of how much you wanted it.",
+       "You used to endure it. Clench your teeth and wait. Now you offer yourself.",
+       "You lie in the wet sheets and know you'll do the same tomorrow. And the day after.",
+       "Your old self would have beaten you up. Luckily your old self is gone.",
+       "The shame always comes after. Never during. During, there's no room for anything but him.",
+       "Someone will change the sheets. You only hope it's the one you don't like.",
+       "A humble pride that you pleased him. And under it something you don't dare look at closely.",
+       "You ran from this in your head your whole life. Now it's the only place you don't think.",
+       "The shame won't stop you from anything anyway. It only makes you remember it more clearly.",
+       "Repeat after me: I stopped enduring. Now I want it.",
+       "The haze lifts, the shame comes, and you still count the hours to the next time."
+      ],
+      "your fault - everything is her fault: she didn't listen, she touched herself, so she got a cage like a dog gets a cone; there are no suggestions, only orders": [
+       "It's your fault. You didn't listen. That's why now you have to listen even more.",
+       "You touched yourself though he forbade it. Now you have a cage. Like a dog's cone, so it won't scratch.",
+       "Click. Locked. You remember that sound. So does he. With pleasure.",
+       "There are no suggestions. Only orders. When you forget that, bad things happen.",
+       "You apologise twelve times. He answers once: tomorrow, same time. Only then do you sleep.",
+       "Do it here. In the locker room. I want to see you put it on properly.",
+       "Every change in your body is the result of your disobedience. That's what he says. You believe him.",
+       "You're lucky he still wants to take care of you. Don't waste it.",
+       "He shouts at you from above, and you shrink to his idea of your size. Small.",
+       "It's for your own good. Everything he takes from you is for your own good.",
+       "Repeat after me: it's my fault. From now on I'll obey in everything.",
+       "You ask what's happening to you. He answers: what you deserve. And he's right."
+      ],
+      "pinned - crushed under his weight, legs by her head, his hand in her hair, a kiss that doesn't ask; there's nowhere to go and she feels strangely safe": [
+       "He folded you in half. Knees by your head. His weight on you. Nowhere to go.",
+       "A hand in your hair holds your head in place. His mouth on yours. He doesn't ask.",
+       "Every moan of yours vanishes into his kiss. He swallows your sounds like his own.",
+       "Wrists above your head, in one of his hands. The other does what it likes.",
+       "All of you is under him. Nothing's left that you could pull away with.",
+       "And strangely: right there, pinned down, you feel safer than anywhere in the world.",
+       "He never has doubts. That's why you don't have to have any anymore.",
+       "You used to be taller than him. Today you lie under him and can't remember what that was like.",
+       "You dig your nails into his back. He doesn't even flinch. What's a little pain to him.",
+       "He doesn't kiss you like an equal. He kisses you like his. You feel the difference with your whole body.",
+       "Repeat after me: I'm pinned down and I don't want him to let go.",
+       "He only lets go to say: kneel. And you're already kneeling."
+      ],
+      "the body betrays her - her no means nothing because her body answers anyway; pleasure happens to her, she doesn't control it, and shame and pleasure blend into one": [
+       "You say no, and your hole clenches around him. Which one should I believe.",
+       "The pleasure isn't yours anymore. It happens to you. Like weather.",
+       "You're ashamed that it feels good. And the shame makes it feel even better.",
+       "Shame and pleasure are so tangled that you can't tell where one ends anymore.",
+       "You cry and cum in the same breath. Your body sees no contradiction in that.",
+       "The muscles that were meant to defend you learned to hold him inside.",
+       "Your cage is dripping, though you swore you didn't want this. A cage can't lie.",
+       "You defend yourself with words. Your body stopped listening to you long ago.",
+       "The more you resist, the harder you cum. He knows it. So do you.",
+       "The third wave in a row, and you still say please, no. Nobody takes that seriously anymore.",
+       "Repeat after me: my no means nothing. My body says yes.",
+       "Your consent isn't needed. Your body signed for you."
+      ],
+      "nobody asked - they don't ask for consent; they take when they want, where they want and how they want, and nobody cares what she thinks": [
+       "Nobody asked you. Nobody will. They take when they feel like it.",
+       "He turned you to face the wall before you could say hello. He didn't need to say a word.",
+       "Your not now lasted half a second. Then you were already bent over.",
+       "They don't knock. They come in. Into the room and into you.",
+       "You're asleep, and they decide you're not asleep anymore. That's how many of your nights begin.",
+       "He grabbed your hips in the kitchen while you were washing a mug. The mug is still in your hand.",
+       "Asking for consent is for equals. You're not an equal. You're for taking.",
+       "You say: wait. He hears: now. He always hears that.",
+       "There are no appointments. Every hour is his hour.",
+       "He lifts your skirt like the flap of a letterbox. Puts something in and walks on.",
+       "Repeat after me: nobody asks me. They take when they want.",
+       "The worst part is you wait for it. For the moment nobody asks again."
+      ],
       "a doll instead of a tyrant - once menacing, shouting and ruling; today she opens the door in ruffles, bows, six-inch heels, a mask of makeup and a squeaky voice, and begs to look pretty": [
        "Everyone used to be afraid of you. Today you open the door in ruffles and squeal with joy.",
        "Bows, ruffles, pearls like sweets. An overdone doll. And that's when you feel best.",
