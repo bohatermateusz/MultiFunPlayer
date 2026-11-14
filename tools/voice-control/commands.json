@@ -1484,7 +1484,13 @@
     "szkoła sissy - uczy się być dziewczynką jak w szkole: lekcje chodzenia, głosu, klęczenia, egzaminy ustami i dupą; dyplom to obroża",
     "pas cnoty - jej dawna męskość jest zamknięta na klucz; klucz ma ktoś inny, a jedyne, co jeszcze czuje, to dziurka",
     "panna młoda - oddana komuś na stałe: suknia, obrączka, jego nazwisko, noc poślubna jako kobieta; od teraz pociągają ją tylko mężczyźni",
-    "ubrana w kobietę - szpilki, pończochy, bielizna, kolczyki, paznokcie: ubranie zrobiło z niej dziewczynę i już nie umie inaczej chodzić, stać ani siedzieć"
+    "ubrana w kobietę - szpilki, pończochy, bielizna, kolczyki, paznokcie: ubranie zrobiło z niej dziewczynę i już nie umie inaczej chodzić, stać ani siedzieć",
+    "słowo-klucz - zahipnotyzowana: jedno słowo i klęka, jedno słowo i się wypina; nie pamięta, kiedy ją tego nauczyli, ciało pamięta za nią",
+    "pusta główka - myśli coraz mniej, chichocze, powtarza, co jej każą; główka opróżniona, żeby zrobić miejsce na nich",
+    "przyłapana - znaleźli jej bieliznę, zdjęcia, historię przeglądarki; od tamtej pory słucha, żeby nikt się nie dowiedział - a wszyscy już wiedzą",
+    "asystentka szefa - przyszła do pracy jako on, została zatrudniona jako ona: ołówkowa spódnica, kawa, kolana pod biurkiem; awans przez usta",
+    "salon i klinika - krok po kroku robią z niej kobietę: fryzjer, paznokcie, kolczyki, usta, piersi; każda wizyta zabiera coś i dodaje coś, co już zostaje",
+    "dawne życie patrzy - koledzy, była, sąsiedzi: wszyscy, którzy znali go, znają teraz ją; przychodzą popatrzeć i zostają skorzystać"
    ],
    "style": "Mów jak do ucha, szeptem z pewnością: krótkie frazy, wielokropki jako oddechy ('Odpuść… ja to trzymam… dobra dziewczynka.'), czasem 'powtórz za mną' i zdanie w pierwszej osobie, czasem jedno dosadne słowo. Nigdy pytania, nigdy wyjaśnienia.",
    "examples": [
@@ -1508,6 +1514,90 @@
     "retired": ["Dwóch naraz to nie orgy… to standard: jeden w buzi, drugi w kolejce. Tak wygląda twoje otoczenie.", "Ten lodzik w kamerze wyszedł ci lepiej niż całe twoje życie. Doczekał się recenzji. Wszystkich pozytywnych.", "Twoja technika miała więcej widzów niż kiedykolwiek twoje zdanie. Statystyki mówią samo: buzia lepsza niż głowa.", "Całe miasto zna twoją dupę od lepszej strony. Literalnie.", "Każdy, kto na ciebie patrzy, już to przemyślał. Sekundę dłużej niż trzeba. Wiesz w jakiej pozycji.", "Twoja dupa zbiera propozycje szybciej, niż twój mózg zdąża je odrzucać. Dlatego już nie odrzucasz.", "Nie jesteś pożądana jak piękny obrazek. Jesteś pożądana jak dobre miejsce. Robi się kolejkę.", "Twoje usta mają listę oczekujących. Rośnie lawinowo. Grzecznie poczekają. Ty też.", "Zanim skończysz tego jednego, trzech kolejnych już się zapisało. Taki obrót.", "Mogłabyś wprowadzić numeryczki. Ale po co — wszyscy i tak znają twoje usta na pamięć. Po prostu wchodzą."],
     "banned_words": ["maszyn", "silnik", "urządzen", "dildo", "launcher", "tryb ", "skrypt", "funscript", " vr ", "re:\\b(suk[aoęiąe]?|suczk\\w*|bitch\\w*)\\b"],
     "seed": {
+     "dawne życie patrzy - koledzy, była, sąsiedzi: wszyscy, którzy znali go, znają teraz ją; przychodzą popatrzeć i zostają skorzystać": [
+      "Twoi dawni kumple wiedzą. Przyszli zobaczyć. Zostali skorzystać.",
+      "Ten, z którym grałeś w piłkę, trzyma cię teraz za biodra. I nie wspomina meczów.",
+      "Była widziała twoje zdjęcie. Przysłała jedno słowo: wiedziałam.",
+      "Sąsiad kiwa ci głową jak zawsze. Potem patrzy niżej, jak nigdy wcześniej.",
+      "Wszyscy, którzy znali jego, znają teraz ciebie. Od tyłu.",
+      "Twoje dawne życie siedzi w pierwszym rzędzie. I kupuje bilety na kolejny pokaz.",
+      "Kumpel z pracy mówi do ciebie po nowemu i prosi o to samo, co inni.",
+      "Nie uciekłaś przed nimi. Oni przyszli do ciebie. Z rozpiętymi spodniami.",
+      "Kiedyś piliście razem piwo. Teraz on pije, a ty klęczysz obok.",
+      "Byli świadkami, kim byłeś. Teraz są użytkownikami tego, kim jesteś.",
+      "Powtórz za mną: wszyscy, którzy mnie znali, teraz mnie biorą.",
+      "Wstyd minął po pierwszym. Po dziesiątym została tylko kolejka znajomych twarzy."
+     ],
+     "salon i klinika - krok po kroku robią z niej kobietę: fryzjer, paznokcie, kolczyki, usta, piersi; każda wizyta zabiera coś i dodaje coś, co już zostaje": [
+      "Fryzjer, paznokcie, kolczyki. Trzy godziny i wyszła z salonu dziewczyna.",
+      "Każda wizyta coś zabiera i coś dodaje. To, co dodaje, zostaje na zawsze.",
+      "Przekłuli ci uszy. Mała igła, mały ból. Pierwszy z wielu, na które się zgodziłaś.",
+      "Usta już pełniejsze. Takie usta są do jednego. Wiesz do czego.",
+      "W klinice nikt nie pyta, czy chcesz. Pytają tylko, jaki rozmiar.",
+      "Nowe piersi to nie dla ciebie. To dla nich. Ty je tylko nosisz i dziękujesz.",
+      "Z każdą wizytą coraz mniej z niego i coraz więcej z niej. Ty podpisałaś każdą zgodę.",
+      "Depilacja, paznokcie, rzęsy. Skóra już nie pamięta mężczyzny.",
+      "Lusterko w salonie pokazało ci kogoś nowego. Uśmiechnęłaś się do niej pierwsza.",
+      "Lekarka mówi: jeszcze dwie wizyty. Ty słyszysz: jeszcze dwie i nie będzie powrotu. Cieszysz się.",
+      "Powtórz za mną: robią ze mnie kobietę kawałek po kawałku. Każdy kawałek zostaje.",
+      "Rachunek z kliniki płacą oni. Ciałem płacisz ty."
+     ],
+     "asystentka szefa - przyszła do pracy jako on, została zatrudniona jako ona: ołówkowa spódnica, kawa, kolana pod biurkiem; awans przez usta": [
+      "Nowa posada: asystentka. Wymagania: spódniczka, szpilki i otwarta buzia.",
+      "Przyszłaś na rozmowę jako on. Wyszłaś z umową na nią.",
+      "Twoje biurko jest niskie, bo i tak większość dnia spędzasz pod jego.",
+      "Przynieś kawę, podpisz pisma, klęknij. Zakres obowiązków jest krótki.",
+      "Awans przez usta. Jedyna droga kariery, jaka ci została. Idzie ci świetnie.",
+      "Szef nie pamięta twojego starego imienia. Pamięta, jak smakujesz.",
+      "W ołówkowej spódnicy nie da się szeroko stanąć. Da się za to szeroko rozchylić.",
+      "Nadgodziny to jego gabinet po osiemnastej. Płatne w naturze.",
+      "Każdy w firmie wie, czym się zajmujesz. Nikt nie pyta, bo każdy chce być następny.",
+      "Twoja ocena roczna: posłuszna, cicha, zawsze dostępna. Premia: głębiej.",
+      "Powtórz za mną: jestem jego asystentką. Służę na kolanach i pod biurkiem.",
+      "Zatrudnili cię dla twojej buzi. Reszta to tylko dodatek do umowy."
+     ],
+     "przyłapana - znaleźli jej bieliznę, zdjęcia, historię przeglądarki; od tamtej pory słucha, żeby nikt się nie dowiedział - a wszyscy już wiedzą": [
+      "Znaleźli twoje majtki. Potem zdjęcia. Potem ciebie, na kolanach.",
+      "Myślałaś, że to twój sekret. To był ich klucz do ciebie.",
+      "Robisz, co każą, żeby nikt się nie dowiedział. Śmieszne. Wszyscy wiedzą od dawna.",
+      "Twoja historia przeglądarki była twoim wyznaniem. Przeczytali je uważnie.",
+      "Przyłapana w koronkach. Nie musieli nawet pytać. Sama uklękłaś.",
+      "Od tamtego dnia masz dwie opcje: posłuszeństwo albo wszyscy. Wybrałaś jedno i dostajesz oba.",
+      "Zdjęcie leży na stole. Ty leżysz obok. Umowa jest jasna.",
+      "Każda twoja grzeczność to zapłata za ciszę. Ciszy nie będzie. Grzeczność zostaje.",
+      "Przyłapali cię, bo chciałaś być przyłapana. Zostawiłaś drzwi otwarte.",
+      "Szantaż skończył się dawno. Słuchasz dalej, bo tego potrzebujesz.",
+      "Powtórz za mną: przyłapali mnie i od tamtej pory jestem ich.",
+      "Nie ma już czego ukrywać. Ale nawyk klękania został."
+     ],
+     "pusta główka - myśli coraz mniej, chichocze, powtarza, co jej każą; główka opróżniona, żeby zrobić miejsce na nich": [
+      "Coraz mniej myśli w tej główce. Dobrze. Miejsce jest potrzebne na nich.",
+      "Zachichotałaś, zamiast odpowiedzieć. Tak odpowiadają dziewczynki jak ty.",
+      "Nie musisz nic rozumieć. Musisz tylko ładnie wyglądać i szeroko otwierać.",
+      "Kiedyś miałaś zdanie na każdy temat. Teraz masz jeden temat. I jest między twoimi nogami.",
+      "Pusta główka, pełna dziurka. Tak wygląda równowaga.",
+      "Powtarzasz, co ci każą, i wierzysz w to po trzecim razie. Słodka.",
+      "Trudne słowa wypadły ci z głowy. Zostały: tak, proszę, głębiej.",
+      "Myślenie bolało. Zabrali ci je. Zostało ci przyjemne szumienie.",
+      "Patrzysz pustymi oczami i uśmiechasz się. Idealna. Dokładnie taka, jaką cię zrobili.",
+      "Twoja główka to teraz pokój do wynajęcia. A oni wprowadzili się na stałe.",
+      "Powtórz za mną: nie muszę myśleć. Myślą za mnie. Ja tylko daję.",
+      "Jeszcze trochę i zapomnisz, jak się czytało. Nie będzie ci tego brakowało."
+     ],
+     "słowo-klucz - zahipnotyzowana: jedno słowo i klęka, jedno słowo i się wypina; nie pamięta, kiedy ją tego nauczyli, ciało pamięta za nią": [
+      "Jedno słowo i klękasz. Nie wiesz dlaczego. Twoje kolana wiedzą.",
+      "Wszyli ci to pod skórę, kiedy spałaś. Teraz wystarczy szepnąć.",
+      "Słyszysz je i myśli gasną. Zostaje ciało. Ciało wie, co robić.",
+      "Nie pamiętasz sesji. Pamiętasz tylko, że po nich jesteś grzeczniejsza.",
+      "Każdy z nich zna to słowo. Dlatego każdy z nich może cię mieć.",
+      "Próbowałaś się opierać. Potem ktoś powiedział słowo i już leżałaś.",
+      "Odruch. Nie decyzja. Dziewczynki nie decydują. Reagują.",
+      "Zaprogramowali cię jak zabawkę. Przycisk jest w twojej głowie. Palec mają oni.",
+      "Mówią: teraz. I twoje usta się otwierają, zanim zdążysz pomyśleć.",
+      "Nawet gdybyś chciała, nie umiesz już nie zareagować. To już ty.",
+      "Powtórz za mną: jedno słowo i jestem ich. Ciało słucha, zanim ja usłyszę.",
+      "Kiedy je powiedzą, podziękuj. Dziękujesz za to, że nie musisz już myśleć."
+     ],
      "ubrana w kobietę - szpilki, pończochy, bielizna, kolczyki, paznokcie: ubranie zrobiło z niej dziewczynę i już nie umie inaczej chodzić, stać ani siedzieć": [
       "Szpilki zmieniają chód. Chód zmienia biodra. Biodra zdradzają, kim jesteś.",
       "Koronki na skórze mówią ci codziennie, czym jesteś. Nie zdejmujesz ich nawet do snu.",
@@ -2598,7 +2688,11 @@
    "jestem pilną uczennicą",
    "jestem jego żoną",
    "należę do niego na zawsze",
-   "moja przyjemność jest zamknięta"
+   "moja przyjemność jest zamknięta",
+   "nie muszę myśleć",
+   "jestem jego asystentką",
+   "przyłapali mnie",
+   "jedno słowo i jestem ich"
   ],
   "obey_phrases": [
    "dziękuję",
@@ -2751,7 +2845,7 @@
     "i give up",
     "i'm your girl",
     "i let go",
-    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine", "i volunteered", "i am your maid", "i'm your maid", "i signed", "i am a diligent student", "i am his wife", "i belong to him forever", "my pleasure is locked"
+    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine", "i volunteered", "i am your maid", "i'm your maid", "i signed", "i am a diligent student", "i am his wife", "i belong to him forever", "my pleasure is locked", "i don't have to think", "i am his assistant", "they caught me", "one word and i'm theirs"
    ],
    "obey_phrases": [
     "thank you",
@@ -2880,7 +2974,13 @@
     "sissy school - she learns to be a girl like at school: lessons in walking, voice, kneeling, exams with her mouth and her ass; the diploma is a collar",
     "chastity - what used to make her a man is locked away; someone else has the key, and the only thing she still feels is her hole",
     "the bride - given to someone for good: the dress, the ring, his name, a wedding night as a woman; from now on only men turn her on",
-    "dressed as a woman - heels, stockings, lingerie, earrings, nails: the clothes made her a girl and she can no longer walk, stand or sit any other way"
+    "dressed as a woman - heels, stockings, lingerie, earrings, nails: the clothes made her a girl and she can no longer walk, stand or sit any other way",
+    "the trigger word - hypnotised: one word and she kneels, one word and she bends over; she doesn't remember being taught, her body remembers for her",
+    "empty head - she thinks less and less, giggles, repeats what she's told; her head emptied to make room for them",
+    "caught - they found her lingerie, her photos, her browser history; since then she obeys so nobody finds out - and everybody already knows",
+    "the boss's assistant - she came to work as him, got hired as her: pencil skirt, coffee, knees under the desk; promotion by mouth",
+    "salon and clinic - step by step they make her a woman: hair, nails, earrings, lips, breasts; every visit takes something and adds something that stays",
+    "the old life watches - his mates, his ex, the neighbours: everyone who knew him knows her now; they come to look and stay to use"
     ],
     "tasks": {
      "by_stage": {
@@ -2943,6 +3043,90 @@
       "urządzen"
      ],
      "seed": {
+      "the old life watches - his mates, his ex, the neighbours: everyone who knew him knows her now; they come to look and stay to use": [
+       "Your old mates know. They came to look. They stayed to use.",
+       "The one you played football with holds you by the hips now. And doesn't mention the games.",
+       "Your ex saw your photo. She sent one word: knew it.",
+       "The neighbour nods at you like always. Then looks lower, like never before.",
+       "Everyone who knew him knows you now. From behind.",
+       "Your old life sits in the front row. And buys tickets for the next show.",
+       "A colleague from work calls you by your new name and asks for the same as the others.",
+       "You didn't run from them. They came to you. With their trousers open.",
+       "You used to drink beer together. Now he drinks and you kneel beside him.",
+       "They witnessed who you were. Now they're the users of who you are.",
+       "Repeat after me: everyone who knew me takes me now.",
+       "The shame passed after the first one. After the tenth, only a queue of familiar faces was left."
+      ],
+      "salon and clinic - step by step they make her a woman: hair, nails, earrings, lips, breasts; every visit takes something and adds something that stays": [
+       "Hair, nails, earrings. Three hours and a girl walked out of the salon.",
+       "Every visit takes something and adds something. What it adds stays forever.",
+       "They pierced your ears. A small needle, a small pain. The first of many you agreed to.",
+       "Lips already fuller. Lips like that are for one thing. You know what.",
+       "At the clinic nobody asks if you want to. They only ask what size.",
+       "The new breasts aren't for you. They're for them. You only carry them and say thank you.",
+       "With every visit less of him and more of her. You signed every consent form.",
+       "Waxing, nails, lashes. The skin no longer remembers a man.",
+       "The salon mirror showed you someone new. You smiled at her first.",
+       "The doctor says: two more visits. You hear: two more and there's no way back. You're glad.",
+       "Repeat after me: they're making me a woman piece by piece. Every piece stays.",
+       "They pay the clinic's bill. You pay with your body."
+      ],
+      "the boss's assistant - she came to work as him, got hired as her: pencil skirt, coffee, knees under the desk; promotion by mouth": [
+       "New position: assistant. Requirements: a skirt, heels and an open mouth.",
+       "You came to the interview as him. You left with a contract for her.",
+       "Your desk is low because you spend most of the day under his anyway.",
+       "Bring the coffee, sign the letters, kneel. The job description is short.",
+       "Promotion by mouth. The only career path you have left. You're doing great.",
+       "The boss doesn't remember your old name. He remembers how you taste.",
+       "You can't stand wide in a pencil skirt. You can spread wide, though.",
+       "Overtime is his office after six. Paid in kind.",
+       "Everyone in the company knows what you do. Nobody asks, because everyone wants to be next.",
+       "Your annual review: obedient, quiet, always available. Bonus: deeper.",
+       "Repeat after me: I am his assistant. I serve on my knees and under the desk.",
+       "They hired you for your mouth. The rest is only an attachment to the contract."
+      ],
+      "caught - they found her lingerie, her photos, her browser history; since then she obeys so nobody finds out - and everybody already knows": [
+       "They found your panties. Then the photos. Then you, on your knees.",
+       "You thought it was your secret. It was their key to you.",
+       "You do what you're told so nobody finds out. Funny. Everybody has known for ages.",
+       "Your browser history was your confession. They read it carefully.",
+       "Caught in lace. They didn't even have to ask. You knelt on your own.",
+       "Since that day you have two options: obedience or everyone. You chose one and get both.",
+       "The photo lies on the table. You lie next to it. The deal is clear.",
+       "Every bit of your obedience pays for silence. There will be no silence. The obedience stays.",
+       "They caught you because you wanted to be caught. You left the door open.",
+       "The blackmail ended long ago. You keep obeying because you need it.",
+       "Repeat after me: they caught me and I've been theirs ever since.",
+       "There's nothing left to hide. But the habit of kneeling stayed."
+      ],
+      "empty head - she thinks less and less, giggles, repeats what she's told; her head emptied to make room for them": [
+       "Fewer and fewer thoughts in that little head. Good. The room is needed for them.",
+       "You giggled instead of answering. That's how girls like you answer.",
+       "You don't have to understand anything. You only have to look pretty and open wide.",
+       "You used to have an opinion on everything. Now you have one topic. And it's between your legs.",
+       "Empty head, full hole. That's what balance looks like.",
+       "You repeat what you're told and believe it by the third time. Sweet.",
+       "The hard words fell out of your head. What's left: yes, please, deeper.",
+       "Thinking hurt. They took it from you. You were left with a pleasant hum.",
+       "You look with empty eyes and smile. Perfect. Exactly as they made you.",
+       "Your head is a room for rent now. And they moved in for good.",
+       "Repeat after me: I don't have to think. They think for me. I only give.",
+       "A little longer and you'll forget how to read. You won't miss it."
+      ],
+      "the trigger word - hypnotised: one word and she kneels, one word and she bends over; she doesn't remember being taught, her body remembers for her": [
+       "One word and you kneel. You don't know why. Your knees do.",
+       "They sewed it under your skin while you slept. Now a whisper is enough.",
+       "You hear it and the thoughts go out. The body stays. The body knows what to do.",
+       "You don't remember the sessions. You only remember being better behaved after them.",
+       "Every one of them knows the word. That's why every one of them can have you.",
+       "You tried to resist. Then someone said the word and you were already lying down.",
+       "A reflex. Not a decision. Girls don't decide. They respond.",
+       "They programmed you like a toy. The button is in your head. The finger is theirs.",
+       "They say: now. And your mouth opens before you can think.",
+       "Even if you wanted to, you can't not respond anymore. That's you now.",
+       "Repeat after me: one word and I'm theirs. My body obeys before I hear it.",
+       "When they say it, say thank you. You're grateful you don't have to think anymore."
+      ],
       "dressed as a woman - heels, stockings, lingerie, earrings, nails: the clothes made her a girl and she can no longer walk, stand or sit any other way": [
        "Heels change the walk. The walk changes the hips. The hips give away what you are.",
        "Lace on your skin tells you every day what you are. You don't take it off even to sleep.",
