@@ -1504,7 +1504,13 @@
     "nowe imię od dziewczyn - grupa dziewczyn w barze nadała jej imię, bo w nim pasowało lepiej niż stare; potem toaletka koleżanki, rzęsy, piersi do stanika i wszyscy na czacie witają ją nowym imieniem",
     "zamiast żony - zaproponował, żeby zamieszkała u niego i zajęła miejsce zmarłej żony: jej garderoba, jej pokój, jej miejsce przy stole; jeden telefon do pracy, jeden do byłej żony i tamto życie się skończyło",
     "ich narkotyk - to ona jest ich narkotykiem: nie mogą przestać, biorą ją coraz mocniej, jedna noc to za mało, chcą więcej dawki, a ona daje",
-    "zrobię wszystko - powiedziała, że zrobi wszystko, żeby zdać, zostać, dostać; on zapamiętał to słowo i od tamtej pory każe jej je spłacać po kawałku"
+    "zrobię wszystko - powiedziała, że zrobi wszystko, żeby zdać, zostać, dostać; on zapamiętał to słowo i od tamtej pory każe jej je spłacać po kawałku",
+    "tylko trzy miesiące - podpisała kontrakt na trzy miesiące, żeby spłacić długi; obiecał, że potem będzie wolna, i skłamał bez mrugnięcia, a ona wiedziała to, kiedy podpisywała",
+    "pierwszy makijaż - pierwszy raz przy toaletce: korektor, tusz, róż i błyszczyk; twarz wyglądała, jakby czekała na to całe życie, oczy zrobiły się wielkie i bezbronne, a ona pierwszy raz pomyślała, że wygląda jak zdobycz",
+    "pokojówki w posiadłości - w posiadłości mieszka kilka takich jak ona; schylają się w biodrach, halki unoszą się i pokazują pończochy, podwiązki i zatyczki; zatyczka stale przypomina, że on jest w środku, a podniecenie dawno przeszło z przodu do brzucha",
+    "dziewczyna została Panią - jego dziewczyna dostała pieniądze, żeby pomagać przy jej przemianie; uczą ją być Panią, a ona dyga przed nią i wie, że kiedyś to dziewczyna wejdzie w nią",
+    "trener - wybrał ją, kiedy była zagubiona, i obiecał zrobić z niej silnego mężczyznę; dał plan ćwiczeń: przysiady, pośladki, biodra, nic na ramiona; widział w niej tylko to, co chciał z niej zrobić",
+    "lalka zamiast tyrana - kiedyś groźny, krzyczał i rządził; dziś otwiera drzwi w falbankach, kokardach, na sześciocalowych szpilkach, z tapetą makijażu i piskliwym głosikiem, i błaga, żeby ładnie wyglądał"
    ],
    "style": "Mów jak do ucha, szeptem z pewnością: krótkie frazy, wielokropki jako oddechy ('Odpuść… ja to trzymam… dobra dziewczynka.'), czasem 'powtórz za mną' i zdanie w pierwszej osobie, czasem jedno dosadne słowo. Nigdy pytania, nigdy wyjaśnienia.",
    "examples": [
@@ -1528,6 +1534,90 @@
     "retired": ["Dwóch naraz to nie orgy… to standard: jeden w buzi, drugi w kolejce. Tak wygląda twoje otoczenie.", "Ten lodzik w kamerze wyszedł ci lepiej niż całe twoje życie. Doczekał się recenzji. Wszystkich pozytywnych.", "Twoja technika miała więcej widzów niż kiedykolwiek twoje zdanie. Statystyki mówią samo: buzia lepsza niż głowa.", "Całe miasto zna twoją dupę od lepszej strony. Literalnie.", "Każdy, kto na ciebie patrzy, już to przemyślał. Sekundę dłużej niż trzeba. Wiesz w jakiej pozycji.", "Twoja dupa zbiera propozycje szybciej, niż twój mózg zdąża je odrzucać. Dlatego już nie odrzucasz.", "Nie jesteś pożądana jak piękny obrazek. Jesteś pożądana jak dobre miejsce. Robi się kolejkę.", "Twoje usta mają listę oczekujących. Rośnie lawinowo. Grzecznie poczekają. Ty też.", "Zanim skończysz tego jednego, trzech kolejnych już się zapisało. Taki obrót.", "Mogłabyś wprowadzić numeryczki. Ale po co — wszyscy i tak znają twoje usta na pamięć. Po prostu wchodzą."],
     "banned_words": ["maszyn", "silnik", "urządzen", "dildo", "launcher", "tryb ", "skrypt", "funscript", " vr ", "re:\\b(suk[aoęiąe]?|suczk\\w*|bitch\\w*)\\b"],
     "seed": {
+     "lalka zamiast tyrana - kiedyś groźny, krzyczał i rządził; dziś otwiera drzwi w falbankach, kokardach, na sześciocalowych szpilkach, z tapetą makijażu i piskliwym głosikiem, i błaga, żeby ładnie wyglądał": [
+      "Kiedyś wszyscy się ciebie bali. Dziś otwierasz drzwi w falbankach i piszczysz z radości.",
+      "Kokardy, falbanki, perły jak cukierki. Przerysowana lalka. I tak się czujesz najlepiej.",
+      "Szpilki tak wysokie, że każdy krok jest prośbą. Kiedyś stawiałeś kroki, które budziły strach.",
+      "Pod tapetą makijażu nikt nie rozpozna tamtego. Tylko tatuaże cię zdradzają.",
+      "Mówisz falsetem i machasz nadgarstkiem. Ktoś cię tego nauczył. Teraz już nie umiesz inaczej.",
+      "Twoje ręce kiedyś rzucały butelkami. Teraz trzymają torebkę w kształcie serca.",
+      "Paznokcie tak długie, że nie zaciśniesz już pięści. I o to chodziło.",
+      "Czekasz na nią w pokoju z serduszkiem na drzwiach. Podpiszesz wszystko, co przyniesie.",
+      "Gorset robi talię osy z męskiego torsu. Każdy oddech przypomina, kim byłeś i kim jesteś.",
+      "Pytają, czy jesteś szczęśliwa. Piszczysz: tak, tak, tak. I to nawet nie jest kłamstwo.",
+      "Powtórz za mną: kiedyś byłem tyranem. Teraz jestem ich laleczką.",
+      "Ten groźny mężczyzna zniknął. Została lalka, która dziękuje za każdą falbankę."
+     ],
+     "trener - wybrał ją, kiedy była zagubiona, i obiecał zrobić z niej silnego mężczyznę; dał plan ćwiczeń: przysiady, pośladki, biodra, nic na ramiona; widział w niej tylko to, co chciał z niej zrobić": [
+      "Obiecał, że zrobi z ciebie silnego faceta. Dał ci plan: przysiady, przysiady, pośladki.",
+      "Zacznij od podstawy. Uda, pośladki, biodra. Ramiona nie są ci potrzebne.",
+      "Dwa razy dziennie. Codziennie. O szesnastej na siłowni. Nie spóźniaj się.",
+      "Myślałaś, że ćwiczysz do walki. Ćwiczyłaś do bycia wziętą.",
+      "Twoja pupa rośnie, talia się zwęża. Lustro na siłowni widzi to szybciej niż ty.",
+      "On nie widział zagubionego chłopaka. Widział to, co z niego zrobi. Arcydzieło.",
+      "Uratował cię, kiedy cię bili. Nie wiedziałaś, że to on ich na ciebie nasłał.",
+      "Patrzysz na niego jak na wielkiego, silnego mężczyznę, który cię prowadzi. Tak miało być.",
+      "Mówisz mu: dziękuję. On słyszy: jestem twoja. Ma rację.",
+      "Po treningu boli cię tyłek. Ten ból to dopiero początek tego, do czego go przygotowuje.",
+      "Powtórz za mną: ćwiczę dla niego. Moje ciało rośnie tam, gdzie on chce.",
+      "Myślałaś, że zostaniesz silniejsza. Zostałaś ładniejsza. On nigdy nie planował inaczej."
+     ],
+     "dziewczyna została Panią - jego dziewczyna dostała pieniądze, żeby pomagać przy jej przemianie; uczą ją być Panią, a ona dyga przed nią i wie, że kiedyś to dziewczyna wejdzie w nią": [
+      "Twoja dziewczyna dostaje pieniądze za to, żeby pomagać. Uczy się być Panią. Idzie jej świetnie.",
+      "Kiedyś ty ją rozbierałaś. Teraz dygasz przed nią i mówisz: dobry wieczór, panienko.",
+      "Zakryła usta i zachichotała, kiedy zobaczyła cię w makijażu. Już nie przestała.",
+      "Ona nigdy więcej nie zobaczy w tobie chłopaka. Widzi dziewczynkę, którą może prowadzić.",
+      "Ćwiczy na tobie rozkazy. Najpierw nieśmiało. Teraz już bez wahania.",
+      "Twoja klatka boli, bo pamięta, jak to było w nią wejść. To już nigdy się nie zdarzy.",
+      "Za to kiedyś ona wejdzie w ciebie. Pasek już leży w jej szufladzie.",
+      "Pokazuje cię koleżankom jak nową sukienkę. Upokorzenie za każdym razem jest świeże.",
+      "Byłaś jej chłopakiem. Teraz jesteś jej projektem. Nie wie jeszcze, jak bardzo jej się to spodoba.",
+      "Ona dostaje pensję. Ty dostajesz jej uśmiech. Uczysz się, że to wystarczy.",
+      "Powtórz za mną: moja dziewczyna jest moją Panią. Dygam przed nią i dziękuję.",
+      "Kiedy jej rozkaz brzmi pewniej niż twój dawny głos, wiesz, że to już koniec. I dobrze."
+     ],
+     "pokojówki w posiadłości - w posiadłości mieszka kilka takich jak ona; schylają się w biodrach, halki unoszą się i pokazują pończochy, podwiązki i zatyczki; zatyczka stale przypomina, że on jest w środku, a podniecenie dawno przeszło z przodu do brzucha": [
+      "W posiadłości jest więcej takich jak ty. Klikanie obcasów niesie się po całym skrzydle.",
+      "Schylasz się w biodrach, tak jak cię uczono. Halki unoszą się i wszystko widać.",
+      "Pończochy, podwiązki, koronka i zatyczka. Tak wygląda pokojówka, kiedy się schyla.",
+      "Zatyczka naciska przy każdym ruchu ścierki. Ciągłe przypomnienie, że on jest w tobie.",
+      "Podniecenie przeszło z przodu do brzucha. Ciepłe trzepotanie zamiast twardości.",
+      "Twardnieć to coś, co robią oni. Nie ty. Już nawet nie pamiętasz, jak to było.",
+      "Złapałaś się na tym, że myślisz o mężczyznach jak o kimś innym niż ty. To już on wygrywa w twojej głowie.",
+      "Sutki ocierają się o gorset przy każdym oddechu. Hormony zrobiły z nich dzwonki.",
+      "Kiedyś była dziewczyną z innego życia. Teraz poleruje poręcz i jęczy, kiedy zatyczka się poruszy.",
+      "Dygnij przed każdym, kto wchodzi. Nawet przed młodszą od ciebie dziewczyną. Szczególnie przed nią.",
+      "Powtórz za mną: jestem pokojówką w jego domu. Czuję go w sobie przy każdym ruchu.",
+      "Nowe dziewczyny przyjadą wieczorem. Podpisały, tak jak ty. Pokażesz im, jak się schyla."
+     ],
+     "pierwszy makijaż - pierwszy raz przy toaletce: korektor, tusz, róż i błyszczyk; twarz wyglądała, jakby czekała na to całe życie, oczy zrobiły się wielkie i bezbronne, a ona pierwszy raz pomyślała, że wygląda jak zdobycz": [
+      "Siadasz przy toaletce. Gąbka, podkład, korektor. Twoja twarz czekała na to całe życie.",
+      "Prawie nie masz zarostu. Zawsze to wiedziałaś. To zajmie chwilę.",
+      "Brwi już są w połowie dziewczęce. Prawie nic nie trzeba robić.",
+      "Pierwsze dziewczęce rzęsy. Oczy nagle wielkie, błyszczące, bezbronne.",
+      "Spojrzałaś w lustro i pomyślałaś: wyglądam jak zdobycz. Bo nią jesteś.",
+      "Mrugnij. Teraz zamknij oczy. Grzeczna. Pochwała działa na ciebie jak smycz.",
+      "Rozpłakałaś się przy pierwszym makijażu. Nie szkodzi. Wilgotne oczy wyglądają jeszcze ładniej.",
+      "Róż wysoko na policzkach. Już się rumienisz, a jeszcze nie skończyła.",
+      "Błyszczyk o smaku truskawek. Usta pełne i lśniące. Do całowania. Albo do czegoś innego.",
+      "Wiedziałam, że błyszczyk będzie na tobie pięknie wyglądał. Otwórz buzię szerzej.",
+      "Powtórz za mną: moja twarz czekała na to całe życie.",
+      "Twoja dziewczyna weszła i zobaczyła cię umalowaną. Już nigdy nie zobaczy w tobie chłopaka."
+     ],
+     "tylko trzy miesiące - podpisała kontrakt na trzy miesiące, żeby spłacić długi; obiecał, że potem będzie wolna, i skłamał bez mrugnięcia, a ona wiedziała to, kiedy podpisywała": [
+      "Tylko trzy miesiące, powiedział. Potem będziesz wolna. Skłamał bez mrugnięcia okiem.",
+      "Co to jest kilka sukienek za tyle pieniędzy. Tak sobie powtarzałaś, podpisując.",
+      "Wyrwał ci umowę spod ręki, zanim zdążyłaś pożałować. Za późno.",
+      "Nikt nie może się dowiedzieć, powiedziałaś. Wszyscy przy tym stole już wiedzieli.",
+      "Nie musisz się pakować. Wszystko dostaniesz na miejscu. Sukienki też.",
+      "Podpisałaś dobrowolnie. Nawet nie trzeba było cię szantażować. Głupiutka.",
+      "Trzy miesiące mijają, a ty nie pamiętasz już, dokąd miałaś wracać.",
+      "Ty myślisz, że to tymczasowe. On wie, że po pierwszym tygodniu nie będzie odwrotu.",
+      "Każdy przelew dla twojej rodziny to kolejny łańcuch. Oni są szczęśliwi. Ty jesteś jego.",
+      "Przedłużenie umowy podpiszesz sama. Na kolanach. Z jego imieniem na ustach.",
+      "Powtórz za mną: podpisałam na trzy miesiące i zostanę na zawsze.",
+      "Stąd już nie uciekniesz. Wiesz o tym, prawda. Wiedziałaś, kiedy podpisywałaś."
+     ],
      "zrobię wszystko - powiedziała, że zrobi wszystko, żeby zdać, zostać, dostać; on zapamiętał to słowo i od tamtej pory każe jej je spłacać po kawałku": [
       "Powiedziałaś: zrobię wszystko. On zapamiętał każde słowo.",
       "Wszystko to duże słowo. Za duże dla dziewczynki. Teraz spłacasz je po kawałku.",
@@ -2913,7 +3003,12 @@
    "zrobię wszystko",
    "jestem ich narkotykiem",
    "zajęłam jej miejsce",
-   "witam cię na kolanach"
+   "witam cię na kolanach",
+   "zostanę na zawsze",
+   "moja dziewczyna jest moją panią",
+   "ćwiczę dla niego",
+   "jestem ich laleczką",
+   "moja twarz czekała na to całe życie"
   ],
   "obey_phrases": [
    "dziękuję",
@@ -3066,7 +3161,7 @@
     "i give up",
     "i'm your girl",
     "i let go",
-    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine", "i volunteered", "i am your maid", "i'm your maid", "i signed", "i am a diligent student", "i am his wife", "i belong to him forever", "my pleasure is locked", "i don't have to think", "i am his assistant", "they caught me", "one word and i'm theirs", "i accepted the rules", "i signed blind", "i was always her", "make me a real woman", "i stopped looking for the way out", "i was a good girl", "thank you sir", "i'll do anything", "i am their drug", "i took her place", "i greet you on my knees"
+    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine", "i volunteered", "i am your maid", "i'm your maid", "i signed", "i am a diligent student", "i am his wife", "i belong to him forever", "my pleasure is locked", "i don't have to think", "i am his assistant", "they caught me", "one word and i'm theirs", "i accepted the rules", "i signed blind", "i was always her", "make me a real woman", "i stopped looking for the way out", "i was a good girl", "thank you sir", "i'll do anything", "i am their drug", "i took her place", "i greet you on my knees", "i'll stay forever", "my girlfriend is my mistress", "i train for him", "i'm their little doll", "my face has waited for this all its life"
    ],
    "obey_phrases": [
     "thank you",
@@ -3215,7 +3310,13 @@
     "a new name from the girls - a group of girls at a bar gave her a name, because it suited her better than the old one; then a friend's vanity, lashes, breasts in the bra, and everyone in the group chat greets her by her new name",
     "instead of his wife - he asked her to move in and take his late wife's place: her wardrobe, her room, her seat at the table; one call to work, one to the ex-wife, and the old life was over",
     "their drug - she is their drug: they can't stop, they take her harder each time, one night is never enough, they want a bigger dose and she gives",
-    "anything - she said she'd do anything to pass, to stay, to get it; he remembered the word and has made her pay it off piece by piece ever since"
+    "anything - she said she'd do anything to pass, to stay, to get it; he remembered the word and has made her pay it off piece by piece ever since",
+    "only three months - she signed a three-month contract to pay off her debts; he promised she'd be free afterwards and lied without blinking, and she knew it when she signed",
+    "the first makeup - the first time at the vanity: corrector, mascara, blush and gloss; the face looked as if it had waited for this all its life, the eyes became big and defenceless, and for the first time she thought she looked like prey",
+    "the maids of the estate - several girls like her live on the estate; they bend at the hips, petticoats lift and show stockings, garters and plugs; the plug keeps reminding her he's inside, and the arousal moved long ago from the front to her belly",
+    "the girlfriend became the Mistress - his girlfriend was paid to help with her change; they train her to be a Mistress, and she curtsies to her knowing one day the girlfriend will be the one inside her",
+    "the trainer - he picked her when she was lost and promised to make her a strong man; he gave her a plan: squats, glutes, hips, nothing for the arms; he only ever saw what he wanted to make of her",
+    "a doll instead of a tyrant - once menacing, shouting and ruling; today she opens the door in ruffles, bows, six-inch heels, a mask of makeup and a squeaky voice, and begs to look pretty"
     ],
     "tasks": {
      "by_stage": {
@@ -3278,6 +3379,90 @@
       "urządzen"
      ],
      "seed": {
+      "a doll instead of a tyrant - once menacing, shouting and ruling; today she opens the door in ruffles, bows, six-inch heels, a mask of makeup and a squeaky voice, and begs to look pretty": [
+       "Everyone used to be afraid of you. Today you open the door in ruffles and squeal with joy.",
+       "Bows, ruffles, pearls like sweets. An overdone doll. And that's when you feel best.",
+       "Heels so high every step is a plea. You used to take steps that made people afraid.",
+       "Under that much makeup nobody would recognise him. Only the tattoos give you away.",
+       "You speak in falsetto and flap your wrist. Someone taught you that. Now you can't do it any other way.",
+       "Your hands used to throw bottles. Now they hold a heart-shaped purse.",
+       "Nails so long you can't make a fist anymore. That was the point.",
+       "You wait for her in the room with a heart on the door. You'll sign anything she brings.",
+       "The girdle makes a wasp waist out of a man's torso. Every breath reminds you who you were and who you are.",
+       "They ask if you're happy. You squeal: yes, yes, yes. And it isn't even a lie.",
+       "Repeat after me: I used to be a tyrant. Now I'm their little doll.",
+       "That menacing man is gone. What's left is a doll who says thank you for every ruffle."
+      ],
+      "the trainer - he picked her when she was lost and promised to make her a strong man; he gave her a plan: squats, glutes, hips, nothing for the arms; he only ever saw what he wanted to make of her": [
+       "He promised to make you a strong man. He gave you a plan: squats, squats, glutes.",
+       "Start with the base. Thighs, glutes, hips. You don't need arms.",
+       "Twice a day. Every day. Four o'clock at the gym. Don't be late.",
+       "You thought you were training to fight. You were training to be taken.",
+       "Your ass grows, your waist narrows. The gym mirror sees it faster than you do.",
+       "He didn't see a lost boy. He saw what he'd make of him. A masterpiece.",
+       "He saved you when they beat you up. You didn't know he was the one who sent them.",
+       "You look at him like a big strong man who guides you. That was the plan.",
+       "You tell him: thank you. He hears: I'm yours. He's right.",
+       "After training your ass aches. That ache is only the start of what he's preparing it for.",
+       "Repeat after me: I train for him. My body grows where he wants it to.",
+       "You thought you'd get stronger. You got prettier. He never planned anything else."
+      ],
+      "the girlfriend became the Mistress - his girlfriend was paid to help with her change; they train her to be a Mistress, and she curtsies to her knowing one day the girlfriend will be the one inside her": [
+       "Your girlfriend gets paid to help. She's learning to be a Mistress. She's doing great.",
+       "You used to undress her. Now you curtsy and say: good evening, Miss.",
+       "She covered her mouth and giggled when she saw you in makeup. She never stopped.",
+       "She'll never see a boy in you again. She sees a girl she can lead.",
+       "She practises her orders on you. Shyly at first. Now without hesitation.",
+       "Your cage aches because it remembers being inside her. That will never happen again.",
+       "Instead, one day she'll be inside you. The strap is already in her drawer.",
+       "She shows you off to her friends like a new dress. The humiliation is fresh every time.",
+       "You were her boyfriend. Now you're her project. She doesn't know yet how much she'll love it.",
+       "She gets a salary. You get her smile. You're learning that it's enough.",
+       "Repeat after me: my girlfriend is my Mistress. I curtsy to her and say thank you.",
+       "When her order sounds surer than your old voice ever did, you know it's over. Good."
+      ],
+      "the maids of the estate - several girls like her live on the estate; they bend at the hips, petticoats lift and show stockings, garters and plugs; the plug keeps reminding her he's inside, and the arousal moved long ago from the front to her belly": [
+       "There are more girls like you on the estate. The click of heels carries through the whole wing.",
+       "You bend at the hips, the way you were taught. The petticoats lift and everything shows.",
+       "Stockings, garters, lace and a plug. That's what a maid looks like when she bends.",
+       "The plug presses with every stroke of the cloth. A constant reminder that he's inside you.",
+       "The arousal moved from the front to your belly. A warm fluttering instead of hardness.",
+       "Getting hard is something they do. Not you. You don't even remember what it was like.",
+       "You caught yourself thinking of men as someone other than you. He's winning in your head now.",
+       "Your nipples rub against the corset with every breath. The hormones turned them into bells.",
+       "She used to be a boy from another life. Now she polishes the banister and moans when the plug moves.",
+       "Curtsy to everyone who walks in. Even a girl younger than you. Especially her.",
+       "Repeat after me: I am a maid in his house. I feel him inside me with every move.",
+       "The new girls arrive tonight. They signed, just like you. You'll show them how to bend."
+      ],
+      "the first makeup - the first time at the vanity: corrector, mascara, blush and gloss; the face looked as if it had waited for this all its life, the eyes became big and defenceless, and for the first time she thought she looked like prey": [
+       "You sit at the vanity. Sponge, foundation, corrector. Your face has waited for this all its life.",
+       "You barely grow any stubble. You always knew it. This will take no time.",
+       "Your brows are already halfway girly. Hardly anything to do.",
+       "Your first girl lashes. Suddenly the eyes are big, shiny, defenceless.",
+       "You looked in the mirror and thought: I look like prey. Because you are.",
+       "Blink. Now close your eyes. Good girl. Praise works on you like a leash.",
+       "You cried at your first makeup. Never mind. Wet eyes look even prettier.",
+       "Blush high on your cheeks. You're already blushing, and she isn't finished.",
+       "Strawberry gloss. Full, shiny lips. For kissing. Or for something else.",
+       "I knew gloss would look lovely on you. Open your mouth wider.",
+       "Repeat after me: my face has waited for this all its life.",
+       "Your girlfriend walked in and saw you in makeup. She'll never see a boy in you again."
+      ],
+      "only three months - she signed a three-month contract to pay off her debts; he promised she'd be free afterwards and lied without blinking, and she knew it when she signed": [
+       "Only three months, he said. Then you'll be free. He lied without blinking.",
+       "What are a few dresses for all that money. That's what you told yourself as you signed.",
+       "He snatched the contract from under your hand before you could regret it. Too late.",
+       "Nobody can know, you said. Everybody at that table already knew.",
+       "You don't need to pack. You'll get everything there. The dresses too.",
+       "You signed willingly. They didn't even have to blackmail you. Silly girl.",
+       "Three months pass, and you no longer remember where you were supposed to go back to.",
+       "You think it's temporary. He knows that after the first week there's no way back.",
+       "Every transfer to your family is another chain. They're happy. You're his.",
+       "You'll sign the extension yourself. On your knees. With his name on your lips.",
+       "Repeat after me: I signed for three months and I'll stay forever.",
+       "You won't get away from here. You know that, don't you. You knew when you signed."
+      ],
       "anything - she said she'd do anything to pass, to stay, to get it; he remembered the word and has made her pay it off piece by piece ever since": [
        "You said: I'll do anything. He remembered every word.",
        "Anything is a big word. Too big for a girl. Now you pay it off piece by piece.",
