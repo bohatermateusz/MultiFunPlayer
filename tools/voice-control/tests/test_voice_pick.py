@@ -174,7 +174,8 @@ class Pick(unittest.TestCase):
         self.assertGreaterEqual(len(n["themes"]), 30)
         self.assertGreaterEqual(len(n["pool"]["seed"]), 15)
         self.assertTrue(all(th in n["themes"] for th in n["pool"]["seed"]))
-        self.assertTrue(all(len(x.split()) <= n["max_words"] + 2 and "?" not in x for v in n["pool"]["seed"].values() for x in v))
+        # hand-written seed lines keep their length (the pool limits only the generated ones), but stay speakable
+        self.assertTrue(all(len(x.split()) <= 30 and "?" not in x for v in n["pool"]["seed"].values() for x in v))
 
 
 if __name__ == "__main__":

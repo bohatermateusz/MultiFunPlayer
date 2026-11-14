@@ -66,13 +66,18 @@ class LinePool:
         self.said = []                        # every line ever spoken, oldest first
         self.last_error = None
         self._load()
-        missing = {t: v for t, v in (seed or {}).items() if t not in self.pool}
-        if missing:
-            # the first run, or a theme added since: start it from the hand-written lines (minus anything already said)
+        if seed:
+            # the hand-written lines: the first run fills the pool with them; later a theme added since, or a line added
+            # to a theme's seed, joins the pool - minus anything already said or already waiting there
+            added = False
             with self._lock:
-                for theme, lines in missing.items():
-                    self.pool[theme] = self._fresh(theme, [str(x) for x in lines])
-                self._save_pool()
+                for theme, lines in seed.items():
+                    fresh = self._fresh(theme, [str(x) for x in lines], hand_written=True)
+                    if fresh or theme not in self.pool:
+                        self.pool[theme] = self.pool.get(theme, []) + fresh
+                        added = True
+                if added:
+                    self._save_pool()
 
     # ---- persistence -----------------------------------------------------------------------------
     def _load(self):
@@ -104,19 +109,20 @@ class LinePool:
         os.replace(tmp, self.pool_path)
 
     # ---- filtering -------------------------------------------------------------------------------
-    def _acceptable(self, line, seen):
+    def _acceptable(self, line, seen, hand_written=False):
         line = " ".join(line.split())
-        if not line or "?" in line or len(line.split()) > self.max_words or self.banned(line):
+        too_long = len(line.split()) > self.max_words and not hand_written      # her own written lines keep their length
+        if not line or "?" in line or too_long or self.banned(line):
             return None
         if any(similar(line, s) >= self.similarity for s in seen):
             return None
         return line
 
-    def _fresh(self, theme, candidates):
+    def _fresh(self, theme, candidates, hand_written=False):
         seen = list(self.said[-self.max_said:]) + [x for v in self.pool.values() for x in v]
         out = []
         for c in candidates:
-            line = self._acceptable(str(c), seen)
+            line = self._acceptable(str(c), seen, hand_written)
             if line:
                 out.append(line)
                 seen.append(line)

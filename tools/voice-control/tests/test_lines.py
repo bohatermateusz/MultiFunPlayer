@@ -104,6 +104,15 @@ class Pool(unittest.TestCase):
         self.assertEqual(p2.pool["B"], ["Na posyłki.", "Z katalogu."])     # the new theme starts from its seed
         self.assertNotIn("Jedna.", p2.pool["A"])                           # the old one keeps its saved pool
 
+    def test_a_line_added_to_a_seed_joins_the_pool_and_keeps_its_length(self):
+        long = "Kolejka do twojego gardła jest dłuższa niż do jakiejkolwiek innej. I nikt się nie wścieka na czekanie. Wiedzą, że warto."
+        p = LinePool(self.generate, self.pool_path, self.said_path, background=False, seed={"A": ["Jedna.", "Dwa razy."]})
+        p.take("A")
+        p2 = LinePool(self.generate, self.pool_path, self.said_path, background=False, seed={"A": ["Jedna.", "Dwa razy.", long]})
+        self.assertIn(long, p2.pool["A"])                                   # longer than max_words: hand-written, kept
+        self.assertEqual(p2.pool["A"].count("Dwa razy."), 1)                # nothing doubled
+        self.assertNotIn("Jedna.", p2.pool["A"])                            # already said: not again
+
     def test_banned_words_never_enter_the_pool(self):
         p = LinePool(lambda t, a, c: ["Maszyna cię bierze.", "On cię bierze.", "Włącz silnik.", "Oni czekają."],
                      self.pool_path, self.said_path, background=False, banned_words=["maszyn", "silnik"])
