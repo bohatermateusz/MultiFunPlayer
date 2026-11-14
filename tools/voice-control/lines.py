@@ -16,8 +16,13 @@ def _norm(text):
     return re.sub(r"[^\w\s]", "", text.lower()).split()
 
 
-def similar(a, b):
-    return difflib.SequenceMatcher(None, " ".join(_norm(a)), " ".join(_norm(b))).ratio()
+def similar(a, b, floor=0.0):
+    """how alike two lines are (0-1). With a floor, two cheap upper bounds are tried first and 0.0 is returned as soon
+    as one of them says the real ratio cannot reach the floor - the exact ratio is costly and rarely needed."""
+    m = difflib.SequenceMatcher(None, " ".join(_norm(a)), " ".join(_norm(b)))
+    if floor and (m.real_quick_ratio() < floor or m.quick_ratio() < floor):
+        return 0.0
+    return m.ratio()
 
 
 SCRUB = [
@@ -77,8 +82,12 @@ class LinePool:
             # to a theme's seed, joins the pool - minus anything already said or already waiting there
             added = False
             with self._lock:
+                known = {x for v in self.pool.values() for x in v} | set(self.said) | gone
                 for theme, lines in seed.items():
-                    fresh = self._fresh(theme, [str(x) for x in lines], hand_written=True)
+                    # only lines not yet in the pool, said or withdrawn go through the (costly) similarity check
+                    new = [" ".join(str(x).split()) for x in lines]
+                    new = [x for x in new if x not in known]
+                    fresh = self._fresh(theme, new, hand_written=True) if new else []
                     if fresh or theme not in self.pool:
                         self.pool[theme] = self.pool.get(theme, []) + fresh
                         added = True
@@ -120,7 +129,7 @@ class LinePool:
         too_long = len(line.split()) > self.max_words and not hand_written      # her own written lines keep their length
         if not line or "?" in line or too_long or self.banned(line):
             return None
-        if any(similar(line, s) >= self.similarity for s in seen):
+        if any(similar(line, s, self.similarity) >= self.similarity for s in seen):
             return None
         return line
 

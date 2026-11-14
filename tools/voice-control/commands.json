@@ -1478,7 +1478,13 @@
     "uzależniona od nich - przyzwyczaili ją do siebie tak, że bez nich nie wytrzymuje; teraz sama przychodzi prosić o seks",
     "zamówiona - jest kolejka chętnych, a ona została zamówiona: wybrana, dostarczona, gotowa do użycia",
     "wypatrzona - wypatrzyli ją już dawno; obserwowali, czekali, a teraz chcą ją mieć na własność",
-    "gwiazda porno - została gwiazdą porno; jej filmy znają wszyscy, a każda scena to kolejna rola uległej dziewczyny"
+    "gwiazda porno - została gwiazdą porno; jej filmy znają wszyscy, a każda scena to kolejna rola uległej dziewczyny",
+    "pokojówka - jest ich pokojówką: uniform, fartuszek, obowiązki w domu, a między obowiązkami używana przez każdego, kto ma ochotę",
+    "kontrakt i dług - przegrała zakład, spłaca dług, podpisała kontrakt: każdy punkt oddaje im kolejny kawałek jej, a ona czyta i podpisuje dalej",
+    "szkoła sissy - uczy się być dziewczynką jak w szkole: lekcje chodzenia, głosu, klęczenia, egzaminy ustami i dupą; dyplom to obroża",
+    "pas cnoty - jej dawna męskość jest zamknięta na klucz; klucz ma ktoś inny, a jedyne, co jeszcze czuje, to dziurka",
+    "panna młoda - oddana komuś na stałe: suknia, obrączka, jego nazwisko, noc poślubna jako kobieta; od teraz pociągają ją tylko mężczyźni",
+    "ubrana w kobietę - szpilki, pończochy, bielizna, kolczyki, paznokcie: ubranie zrobiło z niej dziewczynę i już nie umie inaczej chodzić, stać ani siedzieć"
    ],
    "style": "Mów jak do ucha, szeptem z pewnością: krótkie frazy, wielokropki jako oddechy ('Odpuść… ja to trzymam… dobra dziewczynka.'), czasem 'powtórz za mną' i zdanie w pierwszej osobie, czasem jedno dosadne słowo. Nigdy pytania, nigdy wyjaśnienia.",
    "examples": [
@@ -1502,6 +1508,90 @@
     "retired": ["Dwóch naraz to nie orgy… to standard: jeden w buzi, drugi w kolejce. Tak wygląda twoje otoczenie.", "Ten lodzik w kamerze wyszedł ci lepiej niż całe twoje życie. Doczekał się recenzji. Wszystkich pozytywnych.", "Twoja technika miała więcej widzów niż kiedykolwiek twoje zdanie. Statystyki mówią samo: buzia lepsza niż głowa.", "Całe miasto zna twoją dupę od lepszej strony. Literalnie.", "Każdy, kto na ciebie patrzy, już to przemyślał. Sekundę dłużej niż trzeba. Wiesz w jakiej pozycji.", "Twoja dupa zbiera propozycje szybciej, niż twój mózg zdąża je odrzucać. Dlatego już nie odrzucasz.", "Nie jesteś pożądana jak piękny obrazek. Jesteś pożądana jak dobre miejsce. Robi się kolejkę.", "Twoje usta mają listę oczekujących. Rośnie lawinowo. Grzecznie poczekają. Ty też.", "Zanim skończysz tego jednego, trzech kolejnych już się zapisało. Taki obrót.", "Mogłabyś wprowadzić numeryczki. Ale po co — wszyscy i tak znają twoje usta na pamięć. Po prostu wchodzą."],
     "banned_words": ["maszyn", "silnik", "urządzen", "dildo", "launcher", "tryb ", "skrypt", "funscript", " vr ", "re:\\b(suk[aoęiąe]?|suczk\\w*|bitch\\w*)\\b"],
     "seed": {
+     "ubrana w kobietę - szpilki, pończochy, bielizna, kolczyki, paznokcie: ubranie zrobiło z niej dziewczynę i już nie umie inaczej chodzić, stać ani siedzieć": [
+      "Szpilki zmieniają chód. Chód zmienia biodra. Biodra zdradzają, kim jesteś.",
+      "Koronki na skórze mówią ci codziennie, czym jesteś. Nie zdejmujesz ich nawet do snu.",
+      "Przekłute uszy. Małe dziurki, które zostają na zawsze. Jak ta większa, niżej.",
+      "Długie paznokcie. Już nie zapniesz sobie sam niczego. Zapinają cię inni.",
+      "Pończochy sunęły po twoich nogach i coś w tobie powiedziało: wreszcie.",
+      "Majtki z koronki pod spodniami. Nikt nie widzi. Ty czujesz je całym dniem.",
+      "Gorset uczy cię oddychać płytko. Płytko oddychają dziewczynki, które czekają.",
+      "Siadasz z kolanami razem, bo tak każe spódniczka. Spódniczka ma rację.",
+      "Nie ty nosisz te ubrania. One noszą ciebie. I prowadzą cię na kolana.",
+      "Szminka na ustach. Teraz każdy widzi, do czego te usta są.",
+      "Powtórz za mną: ubrali mnie w kobietę. Zostałam w tym ubraniu na zawsze.",
+      "Spróbuj iść bez szpilek. Nie umiesz. Ciało zapamiętało kobietę."
+     ],
+     "panna młoda - oddana komuś na stałe: suknia, obrączka, jego nazwisko, noc poślubna jako kobieta; od teraz pociągają ją tylko mężczyźni": [
+      "Biała suknia, welon, obrączka. Dziś oddają cię na stałe. Dygnij i powiedz: tak.",
+      "Noc poślubna. Rozkładasz nogi jak żona. Bo jesteś żoną.",
+      "Nosisz jego nazwisko. Twoje stare zostało w urzędzie, przekreślone.",
+      "Obrączka jest mała i ciasna. Jak twoje nowe życie. Pasuje idealnie.",
+      "Przysięgałaś posłuszeństwo. Tylko to słowo z całej przysięgi było prawdziwe.",
+      "Kiedyś patrzyłaś na kobiety. Teraz patrzysz na mężczyzn. Twoje ciało samo zmieniło zdanie.",
+      "Kobiety już cię nie pociągają. Pociąga cię to, co twój mąż ma między nogami.",
+      "Jego żona. Jego własność. Jego dziurka na każdą noc. Tak wygląda miłość, kochanie.",
+      "Welon zdejmie on. Suknię zdejmie on. Ty tylko klęczysz i czekasz.",
+      "W łóżku małżeńskim nie masz zdania. Masz obowiązki. Wypełniasz je ustami.",
+      "Powtórz za mną: jestem jego żoną. Należę do niego na zawsze.",
+      "Pierwszy taniec, pierwsza noc, pierwszy raz, gdy weszło w ciebie dla zasady. Odtąd codziennie."
+     ],
+     "pas cnoty - jej dawna męskość jest zamknięta na klucz; klucz ma ktoś inny, a jedyne, co jeszcze czuje, to dziurka": [
+      "To, co było między twoimi nogami, jest teraz w klatce. Klucz ma ktoś inny.",
+      "Zamknięta. I dobrze. Przyjemność ma iść w jedno miejsce. W twoją dziurkę.",
+      "Nie dotykasz tego. Nie używasz tego. Zapominasz o tym. Masz inne wejście.",
+      "Klucz wisi na jego szyi. Patrzysz na niego, kiedy cię bierze. Nie dostaniesz go.",
+      "Każdy dzień w klatce to dzień, w którym twoja dupa uczy się czuć za dwoje.",
+      "Myślałaś, że to kara. To trening. Ciało znajduje drogę. Twoje znalazło ją od tyłu.",
+      "Mała, zamknięta, grzeczna. Tak wygląda dziewczynka, która już nie potrzebuje tego, co ma w klatce.",
+      "Dojdziesz z dziurki albo wcale. Ta zasada zrobiła z ciebie kobietę szybciej niż hormony.",
+      "Klatka jest ciasna, bo ty jesteś coraz mniejsza tam. Dokładnie tak miało być.",
+      "Powtórz za mną: moja przyjemność jest zamknięta. Otwarta jest tylko moja dziurka.",
+      "Nikt nie otworzy tej klatki. Nawet gdybyś prosiła. A przestałaś prosić.",
+      "Zamek kliknął i coś się w tobie skończyło. Coś innego zaczęło się od tyłu."
+     ],
+     "szkoła sissy - uczy się być dziewczynką jak w szkole: lekcje chodzenia, głosu, klęczenia, egzaminy ustami i dupą; dyplom to obroża": [
+      "Lekcja pierwsza: chodzenie w szpilkach. Lekcja druga: klęczenie w nich.",
+      "Twój głos jeszcze za niski. Ćwicz. Dziewczynki piszczą, kiedy je biorą.",
+      "Zdajesz egzaminy ustami. Nauczyciel ocenia twoje gardło. Zdałaś na piątkę.",
+      "W tej szkole nie ma wakacji. Jest tylko kolejny semestr posłuszeństwa.",
+      "Odrabiasz zadanie domowe na kolanach. Codziennie. Aż stanie się odruchem.",
+      "Najlepsza uczennica w klasie. Najszybciej zapomniałaś, kim byłaś.",
+      "Egzamin końcowy to noc z całą kadrą. Przygotowywałaś się do tego cały rok.",
+      "Zamiast dyplomu dostajesz obrożę. I nowe imię wygrawerowane w środku.",
+      "Program nauczania jest krótki: usta, dupa, dziękuję. Masz to już w małym palcu.",
+      "Inne dziewczynki patrzą na ciebie z zazdrością. Jesteś wzorem. Pokaż im, jak się wypina.",
+      "Powtórz za mną: jestem pilną uczennicą. Uczę się być dziewczynką do użytku.",
+      "Skończyłaś szkołę. Teraz zaczyna się praktyka. Dożywotnia."
+     ],
+     "kontrakt i dług - przegrała zakład, spłaca dług, podpisała kontrakt: każdy punkt oddaje im kolejny kawałek jej, a ona czyta i podpisuje dalej": [
+      "Podpisałaś. Każdą stronę. Z własnym, nowym imieniem na dole.",
+      "To był tylko zakład. Przegrałaś go w pięć minut i spłacasz do dziś.",
+      "Punkt pierwszy: twoje ciało. Punkt drugi: twoje usta. Punkt trzeci: wszystko, co zostało.",
+      "Dług rośnie z każdą nocą. I dobrze. Nie chcesz go spłacić. Chcesz go odpracowywać.",
+      "Czytałaś, co podpisujesz. Czytałaś i mokłaś. Potem podpisałaś.",
+      "Umowa jest prosta: oni dają ci wszystko, czego się boisz. Ty dajesz im wszystko, co masz.",
+      "Nie ma w tej umowie wypowiedzenia. Jest tylko aneks. Co miesiąc nowy.",
+      "Spłacasz ciałem, bo ciało jest jedyną walutą, jaką ci zostawili.",
+      "Twój podpis jest ładny i dziewczęcy. Ćwiczyłaś go specjalnie na ten dzień.",
+      "Przegrałaś zakład, kochanie. Nagrodą zwycięzcy jesteś ty. Na zawsze.",
+      "Powtórz za mną: podpisałam i należę do nich do spłaty długu. Dług jest nieskończony.",
+      "W każdym punkcie umowy jest to samo słowo: tak. Twoje."
+     ],
+     "pokojówka - jest ich pokojówką: uniform, fartuszek, obowiązki w domu, a między obowiązkami używana przez każdego, kto ma ochotę": [
+      "Fartuszek, pończochy, szpilki. Twój mundur służbowy. Włóż go i klęknij.",
+      "Pokojówka nie ma dnia wolnego. Ma listę obowiązków. Ty jesteś na jej końcu, zawsze dostępna.",
+      "Sprzątasz na kolanach, bo z kolan najłatwiej cię wziąć. Oni to wiedzą.",
+      "Zanim skończysz ścierać kurz, ktoś już podnosi ci spódniczkę. To też jest w twoich obowiązkach.",
+      "Dygnij. Powiedz: tak, proszę pana. I wypnij się, zanim skończy zdanie.",
+      "Twoja praca to dom. Twoja nagroda to oni. Twoja wypłata to ich sperma.",
+      "Pokojówki się nie pyta. Pokojówce się wydaje polecenia. A ty słuchasz z opuszczonymi oczami.",
+      "Każdy gość w tym domu ma do ciebie prawo. Właśnie po to tu jesteś.",
+      "Fartuszek zostaje. Reszta w dół. Pochyl się nad stołem, który dopiero wytarłaś.",
+      "Grzeczna pokojówka dziękuje, kiedy ją biorą. Dziękuje i wraca do pracy.",
+      "Powtórz za mną: jestem waszą pokojówką. Służę całym ciałem.",
+      "Kiedyś miałaś zawód. Teraz masz fartuszek. I jesteś w nim szczęśliwsza."
+     ],
      "gwiazda porno - została gwiazdą porno; jej filmy znają wszyscy, a każda scena to kolejna rola uległej dziewczyny": [
       "Zostałaś gwiazdą porno, kochanie. Twoje imię zna pół internetu.",
       "Światła, kamera, dziurka. Tak zaczyna się każdy twój dzień zdjęciowy.",
@@ -2501,7 +2591,14 @@
    "nie mam nic do gadania",
    "moje orgazmy należą do nich",
    "moje orgazmy nie są moje",
-   "sama się zgłosiłam"
+   "sama się zgłosiłam",
+   "jestem waszą pokojówką",
+   "jestem pokojówką",
+   "podpisałam",
+   "jestem pilną uczennicą",
+   "jestem jego żoną",
+   "należę do niego na zawsze",
+   "moja przyjemność jest zamknięta"
   ],
   "obey_phrases": [
    "dziękuję",
@@ -2654,7 +2751,7 @@
     "i give up",
     "i'm your girl",
     "i let go",
-    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine", "i volunteered"
+    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine", "i volunteered", "i am your maid", "i'm your maid", "i signed", "i am a diligent student", "i am his wife", "i belong to him forever", "my pleasure is locked"
    ],
    "obey_phrases": [
     "thank you",
@@ -2777,7 +2874,13 @@
     "addicted to them - they got her so used to them that she can't last without them; now she comes to beg for sex herself",
     "ordered - there's a queue of takers and she was ordered: chosen, delivered, ready to use",
     "spotted - they spotted her long ago; they watched and waited, and now they want to own her",
-    "porn star - she became a porn star; everyone knows her films and every scene is another role as a submissive girl"
+    "porn star - she became a porn star; everyone knows her films and every scene is another role as a submissive girl",
+    "the maid - she is their maid: uniform, apron, chores around the house, and between chores used by anyone who feels like it",
+    "contract and debt - she lost a bet, pays off a debt, signed a contract: every clause hands them another piece of her, and she reads on and keeps signing",
+    "sissy school - she learns to be a girl like at school: lessons in walking, voice, kneeling, exams with her mouth and her ass; the diploma is a collar",
+    "chastity - what used to make her a man is locked away; someone else has the key, and the only thing she still feels is her hole",
+    "the bride - given to someone for good: the dress, the ring, his name, a wedding night as a woman; from now on only men turn her on",
+    "dressed as a woman - heels, stockings, lingerie, earrings, nails: the clothes made her a girl and she can no longer walk, stand or sit any other way"
     ],
     "tasks": {
      "by_stage": {
@@ -2840,6 +2943,90 @@
       "urządzen"
      ],
      "seed": {
+      "dressed as a woman - heels, stockings, lingerie, earrings, nails: the clothes made her a girl and she can no longer walk, stand or sit any other way": [
+       "Heels change the walk. The walk changes the hips. The hips give away what you are.",
+       "Lace on your skin tells you every day what you are. You don't take it off even to sleep.",
+       "Pierced ears. Little holes that stay forever. Like the bigger one, lower down.",
+       "Long nails. You can't fasten anything yourself anymore. Others fasten you.",
+       "Stockings slid up your legs and something in you said: finally.",
+       "Lace panties under your trousers. Nobody sees. You feel them all day.",
+       "The corset teaches you to breathe shallow. Girls who wait breathe shallow.",
+       "You sit with your knees together because the skirt says so. The skirt is right.",
+       "You don't wear these clothes. They wear you. And they lead you to your knees.",
+       "Lipstick on your lips. Now everyone sees what those lips are for.",
+       "Repeat after me: they dressed me as a woman. I stayed in these clothes forever.",
+       "Try walking without heels. You can't. The body remembered the woman."
+      ],
+      "the bride - given to someone for good: the dress, the ring, his name, a wedding night as a woman; from now on only men turn her on": [
+       "White dress, veil, ring. Today they give you away for good. Curtsy and say: I do.",
+       "Wedding night. You spread your legs like a wife. Because you are a wife.",
+       "You carry his name. Your old one stayed at the registry, crossed out.",
+       "The ring is small and tight. Like your new life. A perfect fit.",
+       "You vowed obedience. That was the only true word in the whole vow.",
+       "You used to look at women. Now you look at men. Your body changed its mind on its own.",
+       "Women don't turn you on anymore. What your husband has between his legs does.",
+       "His wife. His property. His hole for every night. That's what love looks like, darling.",
+       "He takes off the veil. He takes off the dress. You only kneel and wait.",
+       "In the marital bed you have no opinion. You have duties. You fulfil them with your mouth.",
+       "Repeat after me: I am his wife. I belong to him forever.",
+       "First dance, first night, the first time it went in you on principle. Every day from then on."
+      ],
+      "chastity - what used to make her a man is locked away; someone else has the key, and the only thing she still feels is her hole": [
+       "What was between your legs is in a cage now. Someone else has the key.",
+       "Locked. Good. Pleasure has to go to one place. Your hole.",
+       "You don't touch it. You don't use it. You forget it. You have another entrance.",
+       "The key hangs on his neck. You look at it while he takes you. You won't get it.",
+       "Every day in the cage is a day your ass learns to feel for two.",
+       "You thought it was punishment. It's training. The body finds a way. Yours found it from behind.",
+       "Small, locked, obedient. That's what a girl looks like when she no longer needs what's in the cage.",
+       "You'll cum from your hole or not at all. That rule made you a woman faster than hormones.",
+       "The cage is tight because you keep getting smaller there. Exactly as intended.",
+       "Repeat after me: my pleasure is locked. Only my hole is open.",
+       "Nobody will open that cage. Even if you begged. And you've stopped begging.",
+       "The lock clicked and something in you ended. Something else began from behind."
+      ],
+      "sissy school - she learns to be a girl like at school: lessons in walking, voice, kneeling, exams with her mouth and her ass; the diploma is a collar": [
+       "Lesson one: walking in heels. Lesson two: kneeling in them.",
+       "Your voice is still too low. Practise. Girls squeal when they're taken.",
+       "You pass your exams with your mouth. The teacher grades your throat. Top marks.",
+       "There are no holidays at this school. Only the next semester of obedience.",
+       "You do your homework on your knees. Every day. Until it becomes a reflex.",
+       "Best student in the class. You forgot who you were the fastest.",
+       "The final exam is a night with the whole staff. You've been preparing all year.",
+       "Instead of a diploma you get a collar. With your new name engraved inside.",
+       "The curriculum is short: mouth, ass, thank you. You know it by heart already.",
+       "The other girls look at you with envy. You're the model student. Show them how to bend over.",
+       "Repeat after me: I am a diligent student. I'm learning to be a girl for use.",
+       "You finished school. Now the internship begins. For life."
+      ],
+      "contract and debt - she lost a bet, pays off a debt, signed a contract: every clause hands them another piece of her, and she reads on and keeps signing": [
+       "You signed. Every page. With your own new name at the bottom.",
+       "It was only a bet. You lost it in five minutes and you're still paying.",
+       "Clause one: your body. Clause two: your mouth. Clause three: everything that's left.",
+       "The debt grows every night. Good. You don't want to pay it off. You want to work it off.",
+       "You read what you were signing. You read and got wet. Then you signed.",
+       "The deal is simple: they give you everything you're afraid of. You give them everything you have.",
+       "There's no notice period in this contract. Only an annex. A new one every month.",
+       "You pay with your body because your body is the only currency they left you.",
+       "Your signature is pretty and girlish. You practised it for this day.",
+       "You lost the bet, darling. The winner's prize is you. Forever.",
+       "Repeat after me: I signed and I belong to them until the debt is paid. The debt is endless.",
+       "Every clause of the contract has the same word in it: yes. Yours."
+      ],
+      "the maid - she is their maid: uniform, apron, chores around the house, and between chores used by anyone who feels like it": [
+       "Apron, stockings, heels. Your work uniform. Put it on and kneel.",
+       "A maid has no day off. She has a list of chores. You're at the end of it, always available.",
+       "You clean on your knees because that's where you're easiest to take. They know it.",
+       "Before you finish dusting, someone is already lifting your skirt. That's in your duties too.",
+       "Curtsy. Say: yes, sir. And bend over before he finishes the sentence.",
+       "Your job is the house. Your reward is them. Your wages are their cum.",
+       "Nobody asks a maid. A maid gets orders. And you obey with your eyes down.",
+       "Every guest in this house has a right to you. That's exactly why you're here.",
+       "The apron stays. The rest comes down. Bend over the table you've just wiped.",
+       "A good maid says thank you when she's taken. Thanks them and goes back to work.",
+       "Repeat after me: I am your maid. I serve with my whole body.",
+       "You used to have a profession. Now you have an apron. And you're happier in it."
+      ],
       "porn star - she became a porn star; everyone knows her films and every scene is another role as a submissive girl": [
        "You became a porn star, darling. Half the internet knows your name.",
        "Lights, camera, hole. That's how every shooting day of yours begins.",
