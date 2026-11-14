@@ -1520,7 +1520,8 @@
     "odurzona nimi - kręci jej się w głowie od ich zapachu, potu i spermy; ich bliskość działa jak narkotyk, którego nikt jej nie podał, a i tak jest na haju",
     "trans - głos Pani i rytm pchnięć wprowadzają ją w stan, w którym myśli odpływają; zostaje tylko oddech, rytm i posłuszeństwo",
     "pijana rozkoszą - po kolejnej fali nie wie, gdzie jest; mówi bez sensu, prosi o więcej, świat się chwieje i nie ma w niej nic poza przyjemnością",
-    "we mgle - budzi się zamroczona po nocy z nimi; pamięta urywki, ciało pamięta więcej: każdy siniak po palcach, każdą kroplę, każde »jeszcze«"
+    "we mgle - budzi się zamroczona po nocy z nimi; pamięta urywki, ciało pamięta więcej: każdy siniak po palcach, każdą kroplę, każde »jeszcze«",
+    "naćpali cię - coś dosypali do napoju po to, żeby wziąć cię po swojemu: ciepło rozlewa się po ciele, opór rozpuszcza się w uśmiech, a ty wiesz, że na końcu podziękujesz"
    ],
    "style": "Mów jak do ucha, szeptem z pewnością: krótkie frazy, wielokropki jako oddechy ('Odpuść… ja to trzymam… dobra dziewczynka.'), czasem 'powtórz za mną' i zdanie w pierwszej osobie, czasem jedno dosadne słowo. Nigdy pytania, nigdy wyjaśnienia.",
    "examples": [
@@ -2632,6 +2633,20 @@
       "Odbyt na własność, kochanie. Bez zwrotu.",
       "Powtórz za mną: moja dupa nie jest moja.",
       "Twoja dziurka jest otwarta dla każdego, komu pozwolę."
+     ],
+     "naćpali cię - coś dosypali do napoju po to, żeby wziąć cię po swojemu: ciepło rozlewa się po ciele, opór rozpuszcza się w uśmiech, a ty wiesz, że na końcu podziękujesz": [
+      "Coś ci dosypali do napoju. Wiesz to po tym, jak miękko ci się robi głowa. I biodra.",
+      "Ciepło rozchodzi się od brzucha. Po chwili już nie pamiętasz, dlaczego chciałaś odmówić.",
+      "Widzisz jego uśmiech lekko zamazany. Słyszysz, jak mówi »zaraz cię wezmą«. Odpowiadasz uśmiechem.",
+      "Nikt cię nie zmusza. Wystarczył odrobina proszku w szklance i sama się wypinasz.",
+      "Odpływasz powoli, a oni dokładają się po kolei. Tak to działa, kiedy cię naćpali.",
+      "Powtórz za mną: naćpali mnie, żeby mnie mocniej wziąć. I podoba mi się to.",
+      "Godzinę temu byłabyś nieśmiała. Teraz bełkoczesz »jeszcze« do każdego z nich.",
+      "Ręce same znajdują ich rozporki. To, co w napoju, robi swoją robotę. Ty tylko tak pięknie współpracujesz.",
+      "Cały twój opór rozpuścił się w szklance. Z twojego »nie« została tylko dziewczynka, która się uśmiecha i rozkłada nogi.",
+      "Każde pchnięcie dociera do ciebie stłumione i jednak mocniejsze. Naćpali cię tak, żebyś czuła wszystko i nic nie mówiła.",
+      "Rano zapytają, czy ci było dobrze. Wyduśysz »tak« przez uśmiech, którego nie pamiętasz, kiedy zaczęłaś.",
+      "Wiesz, że mogli wziąć cię na trzeźwo. Ale naćpana jesteś tak grzeczna."
      ]
     }
    },
@@ -3163,7 +3178,11 @@
    "moje nie nic nie znaczy",
    "to moja wina",
    "przestałam walczyć",
-   "przestałam znosić"
+   "przestałam znosić",
+   "naćpali mnie",
+   "naćpali mnie, żeby mnie wziąć",
+   "dali mi coś do napoju",
+   "jestem naćpana"
   ],
   "obey_phrases": [
    "dziękuję",
@@ -3316,7 +3335,7 @@
     "i give up",
     "i'm your girl",
     "i let go",
-    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine", "i volunteered", "i am your maid", "i'm your maid", "i signed", "i am a diligent student", "i am his wife", "i belong to him forever", "my pleasure is locked", "i don't have to think", "i am his assistant", "they caught me", "one word and i'm theirs", "i accepted the rules", "i signed blind", "i was always her", "make me a real woman", "i stopped looking for the way out", "i was a good girl", "thank you sir", "i'll do anything", "i am their drug", "i took her place", "i greet you on my knees", "i'll stay forever", "my girlfriend is my mistress", "i train for him", "i'm their little doll", "my face has waited for this all its life", "nobody asks me", "my no means nothing", "it's my fault", "i stopped fighting", "i stopped enduring"
+    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine", "i volunteered", "i am your maid", "i'm your maid", "i signed", "i am a diligent student", "i am his wife", "i belong to him forever", "my pleasure is locked", "i don't have to think", "i am his assistant", "they caught me", "one word and i'm theirs", "i accepted the rules", "i signed blind", "i was always her", "make me a real woman", "i stopped looking for the way out", "i was a good girl", "thank you sir", "i'll do anything", "i am their drug", "i took her place", "i greet you on my knees", "i'll stay forever", "my girlfriend is my mistress", "i train for him", "i'm their little doll", "my face has waited for this all its life", "nobody asks me", "my no means nothing", "it's my fault", "i stopped fighting", "i stopped enduring", "they drugged me", "they dosed me", "they put something in my drink", "i'm drugged"
    ],
    "obey_phrases": [
     "thank you",
@@ -3481,7 +3500,8 @@
     "dazed by them - her head spins from their scent, their sweat and cum; their nearness works like a drug nobody gave her, and she's high anyway",
     "trance - her Mistress's voice and the rhythm of the thrusts put her in a state where thoughts drift away; only breath, rhythm and obedience remain",
     "drunk on pleasure - after another wave she doesn't know where she is; she babbles, begs for more, the world sways and there's nothing in her but pleasure",
-    "in a haze - she wakes up foggy after a night with them; she remembers fragments, her body remembers more: every fingerprint, every drop, every more"
+    "in a haze - she wakes up foggy after a night with them; she remembers fragments, her body remembers more: every fingerprint, every drop, every more",
+    "they dosed you - something slipped into her drink so they could take her their way: warmth spreads through her body, resistance dissolves into a smile, and she knows she'll thank them in the end"
     ],
     "tasks": {
      "by_stage": {
@@ -4370,6 +4390,20 @@
        "Your ass doesn't belong to you anymore. You gave it away.",
        "That ass is mine. You just carry it and offer it up.",
        "Repeat after me: my ass is not mine."
+      ],
+      "they dosed you - something slipped into her drink so they could take her their way: warmth spreads through her body, resistance dissolves into a smile, and she knows she'll thank them in the end": [
+       "Something's been slipped into your drink. You can tell by how soft your head gets. And your hips.",
+       "Warmth spreads out from your belly. A moment later you can't remember why you wanted to say no.",
+       "You see his smile slightly blurred. You hear him say »they're about to take you«. You answer with a smile.",
+       "Nobody's forcing you. A pinch of powder in the glass, and you arch on your own.",
+       "You drift away slowly while they take their turns. That's how it works when they've dosed you.",
+       "Repeat after me: they drugged me to fuck me harder. And I like it.",
+       "An hour ago you'd have been shy. Now you're babbling »more« to each of them.",
+       "Your hands find their zippers on their own. Whatever's in the drink is doing its job. You just cooperate so beautifully.",
+       "All of your resistance dissolved in that glass. All that's left of your »no« is a girl who smiles and spreads her legs.",
+       "Every thrust reaches you muffled and yet harder. They dosed you just enough to feel everything and say nothing.",
+       "In the morning they'll ask if you enjoyed it. You'll squeeze out »yes« through a smile you don't remember starting.",
+       "You know they could have taken you sober. But dosed, you're this well-behaved."
       ]
      }
     }
