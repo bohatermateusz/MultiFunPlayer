@@ -10,7 +10,7 @@ przykłady, które działają na pewno (bez modelu, od razu).
 
 | Powiedz | Co się stanie |
 |---|---|
-| **trąbka** (samo słowo, bez "kochanie"; też "kochanie, trąbka", "trąbko") | maszyny stają od razu (prędkość 0), wszystko odwołane, blokada zdjęta, Pani milknie. **Jedyne, co zdejmuje blokadę.** Klawisz **End**. "trąbka" nie jest już słowem bezpieczeństwa. |
+| **trąbka** (samo słowo, bez "kochanie"; też "kochanie, trąbka") | maszyny stają od razu (prędkość 0), wszystko odwołane, blokada zdjęta, Pani milknie. **Jedyne, co zdejmuje blokadę.** Klawisz **End**. Liczy się tylko dokładnie "trąbka", powiedziana wyraźnie (w trybie live głośniej niż tło o `listen.safe_word_margin_db`, domyślnie 10 dB); "trąbko", "trąbki" czy cicha "trąbka" wymyślona z szumu nic nie robią. "koniec" nie jest już słowem bezpieczeństwa. |
 
 ## Gdy film gra i chcę coś zmienić (skrypt dalej gra, tylko mocniej / łagodniej)
 

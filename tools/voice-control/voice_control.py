@@ -207,7 +207,8 @@ def build_conversation(args, cfg, controller, stt, voice, speakers, muted, gate,
         loops["live"] = LiveLoop(controller, rt, mic, voice, ws_speaker, fallback_transcribe=lambda pcm: stt.transcribe_wav(pcm_to_wav(pcm, 24000)),
                                  detector=detector, headphones=headphones, muted=muted_fn, speculative=live.get("speculative", True),
                                  interrupt_on_speech=live.get("interrupt_on_speech", True),
-                                 reject=lambda text: is_hallucination(text, lis.get("max_words", 25)) or echoes_prompt(text, stt.prompt))
+                                 reject=lambda text: is_hallucination(text, lis.get("max_words", 25)) or echoes_prompt(text, stt.prompt),
+                                 safe_word_margin_db=lis.get("safe_word_margin_db", 10))
         old_on_language = controller.on_language
 
         def on_language(lang):

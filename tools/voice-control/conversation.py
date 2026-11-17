@@ -6,6 +6,8 @@ live    - speech recognition as you speak (OpenAI Realtime), the safe word and p
           websocket voice. Target: her first word ~1-1.5 s after your last.
 agents  - ElevenLabs Agents (see agents.py): one audio stream both ways, our persona as the agent's own LLM.
 Every loop has start() / stop(); the manager swaps them without restarting the tool."""
+import array
+import math
 import queue
 import threading
 import time
@@ -73,7 +75,7 @@ class LiveLoop:
 
     def __init__(self, controller, stt, mic, voice, ws_speaker=None, fallback_transcribe=None, detector=None,
                  headphones=True, muted=lambda: False, speculative=True, interrupt_on_speech=True, log=print, rate=24000,
-                 reject=None):
+                 reject=None, safe_word_margin_db=None):
         self.c, self.stt, self.mic, self.voice, self.ws = controller, stt, mic, voice, ws_speaker
         # reject(text) -> True for a speech-to-text hallucination (the model writing out its own prompt on noise):
         # such a text never runs anything, neither as a partial nor as the final transcript
@@ -81,6 +83,11 @@ class LiveLoop:
         self.fallback_transcribe, self.detector = fallback_transcribe, detector
         self.headphones, self.muted, self.speculative, self.interrupt_on_speech = headphones, muted, speculative, interrupt_on_speech
         self.log, self.rate = log, rate
+        # the safe word counts only when it was said clearly: the loudest moment of the last seconds must stand
+        # safe_word_margin_db above the room's noise (a "trąbka" the model makes up from noise is never that loud)
+        self.safe_word_margin_db = safe_word_margin_db
+        self._levels = []                 # (time, dB) of every microphone block of the last LEVEL_KEEP seconds
+        self._unclear_logged = None
         self._stop = threading.Event()
         self._spec = {}                   # turn id -> {"text", "answer"|"error", "thread"}
         self._lock = threading.Lock()
@@ -98,9 +105,39 @@ class LiveLoop:
         self._stop.set()
         self.stt.stop()
 
+    LEVEL_KEEP = 20.0                     # seconds of levels kept: the noise floor is a low percentile of them
+    LEVEL_PEAK = 3.0                      # seconds back in which the word itself was said
+
+    @staticmethod
+    def level_db(pcm):
+        samples = array.array("h", pcm[:len(pcm) - len(pcm) % 2])
+        if not samples:
+            return -120.0
+        rms = math.sqrt(sum(s * s for s in samples) / len(samples))
+        return 20 * math.log10(max(rms, 1.0) / 32768.0)
+
+    def _note_level(self, pcm):
+        if self.safe_word_margin_db is None:
+            return
+        now = time.monotonic()
+        self._levels.append((now, self.level_db(pcm)))
+        while self._levels and now - self._levels[0][0] > self.LEVEL_KEEP:
+            self._levels.pop(0)
+
+    def said_clearly(self):
+        """-> (ok, dB above the noise floor); ok when there is nothing to judge by (no levels yet, the gate is off)"""
+        if self.safe_word_margin_db is None or len(self._levels) < 10:
+            return True, None
+        now = time.monotonic()
+        recent = [db for t, db in self._levels if now - t <= self.LEVEL_PEAK]
+        floor = sorted(db for _, db in self._levels)[len(self._levels) // 5]
+        above = (max(recent) if recent else -120.0) - floor
+        return above >= self.safe_word_margin_db, above
+
     def on_block(self, pcm):
         if self.muted():
             return
+        self._note_level(pcm)
         sent = self.stt.send_audio(pcm)
         if not sent and self.detector is not None and self.fallback_transcribe is not None:
             # the realtime session is down: the local detector cuts utterances and the batch model transcribes them
@@ -124,7 +161,16 @@ class LiveLoop:
             self.voice.interrupt()
 
     def _screen(self, text):
-        """the text to act on: a hallucination is dropped (None), except that the safe word in it still stops everything"""
+        """the text to act on: a hallucination is dropped (None), except that the safe word in it still stops everything;
+        the safe word said too quietly to stand out of the room's noise is dropped too (the model guessed it)"""
+        if self.c.mentions_safe_word(text):
+            ok, above = self.said_clearly()
+            if not ok:
+                if self._unclear_logged != text:
+                    self._unclear_logged = text
+                    self.log(f'  "{text}" -> ignored (safe word not said clearly: {above:.0f} dB above the noise, '
+                             f'needs {self.safe_word_margin_db:g})')
+                return None
         if not self.reject(text):
             return text
         if self.c.mentions_safe_word(text):

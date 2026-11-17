@@ -359,6 +359,32 @@ class Live(ChatBase):
         self.assertEqual(self.runs, [])
         self.assertEqual(self.loop._spec, {})
 
+    def _levels(self, room_db, word_db):
+        import time as _t
+        now = _t.monotonic()
+        self.loop.safe_word_margin_db = 10
+        self.loop._levels = [(now - 15 + i * 0.1, room_db) for i in range(100)] + [(now - 0.5, word_db)]
+
+    def test_a_quiet_safe_word_is_a_guess_and_runs_nothing(self):
+        # on noise the model wrote "trąbka" and the machine stopped, again and again, in the middle of the film
+        self.clock.t += 20
+        self._levels(-60, -55)
+        self.loop.on_partial("q1", "trąbka")
+        self.assertIsNone(self.loop.on_final("q1", "trąbka"))
+        self.assertEqual(self.runs, [])
+
+    def test_a_clearly_said_safe_word_stops(self):
+        self.clock.t += 20
+        self._levels(-60, -30)
+        self.loop.on_partial("q2", "trąbka")
+        self.assertEqual(self.loop.last_outcome.intent, "halt")
+        self.assertEqual(len(self.runs), 1)
+
+    def test_the_level_of_a_block(self):
+        import array
+        self.assertLess(self.loop.level_db(array.array("h", [0] * 480).tobytes()), -80)
+        self.assertGreater(self.loop.level_db(array.array("h", [16000, -16000] * 240).tobytes()), -7)
+
     def test_the_safe_word_in_an_echo_still_stops(self):
         self.clock.t += 20
         self.loop.reject = lambda text: True                 # whatever is rejected as a hallucination ...

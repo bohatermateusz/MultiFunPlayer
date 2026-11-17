@@ -71,12 +71,16 @@ class StrictScenes(unittest.TestCase):
 
     def test_only_the_safe_word_stops_everything(self):
         c = self.make()
-        for text in ["kochanie, trąbka", "kochanie, wyłącz maszynę", "trąbka", "Trąbko!", "kochanie, zatrzymaj maszynę"]:
+        for text in ["kochanie, trąbka", "kochanie, wyłącz maszynę", "trąbka", "Trąbka!", "kochanie, zatrzymaj maszynę"]:
             c._last.clear()
             self.assertEqual(c.handle(text).intent, "halt", text)
             self.assertEqual(self.runs[-1], [{"action": "{target}::Hismith::Halt", "args": []}], text)
         c._last.clear()
         self.assertNotEqual(c.handle("kochanie, koniec").intent, "halt")          # "koniec" is no longer the safe word
+        for text in ["Trąbko!", "trąbki", "trąbkę", "trombka", "kochanie, trąbek"]:  # only the word itself, nothing like it
+            c._last.clear()
+            self.assertNotEqual(c.handle(text).intent, "halt", text)
+            self.assertFalse(c.mentions_safe_word(text), text)
 
     def test_surprise_picks_a_random_mode_in_the_app(self):
         c = self.make()

@@ -394,12 +394,13 @@ class Controller:
         return False
 
     def mentions_safe_word(self, transcript) -> bool:
-        """the safe word anywhere in the utterance (fuzzy): an utterance heard while she speaks counts only with it"""
+        """the safe word anywhere in the utterance, exactly as it is (no similar words: "trąbka" must be said, not guessed);
+        an utterance heard while she speaks counts only with it"""
         halt = next((i for i in self.intents if i.id == "halt"), None)
         if halt is None:
             return False
         singles = {normalize(p) for p in halt.phrases if len(normalize(p).split()) == 1}
-        return any(_sim(w, t) >= 0.8 for t in normalize(transcript).split() for w in singles)
+        return any(t in singles for t in normalize(transcript).split())
 
     def addressed_to_her(self, transcript) -> bool:
         """starts with the wake word ("kochanie, ...", "Pani, ..."): said to her on purpose, not her echo"""
