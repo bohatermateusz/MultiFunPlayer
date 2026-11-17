@@ -108,7 +108,7 @@ PERSONA_DEFAULTS = {"enabled": True, "reply_window": 15.0, "base_p": 0.25, "step
                              "soft_categories": ["czułość", "odpuszczenie", "przejęcie", "opieka", "własność_czuła", "pochwały"],
                              "sharp_categories": ["rozkazy", "upokorzenia", "drwiny", "wyznania", "własność"],
                              "harsh_category": "bardzo_ostre"},
-                    "spontaneous": {"turn_chance": [0.0, 0.03, 0.08, 0.12, 0.18], "action_chance": [0.0, 0.05, 0.12, 0.2, 0.3],
+                    "spontaneous": {"machine": False, "turn_chance": [0.0, 0.03, 0.08, 0.12, 0.18], "action_chance": [0.0, 0.05, 0.12, 0.2, 0.3],
                                     "lube_min_stage": 3, "lube_chance": 0.12, "lube_gap_seconds": 300,
                                     "lube_surprise": {"enabled": False, "chance": [0.0, 0.0, 0.06, 0.12, 0.2], "min_stage": 2,
                                                       "max_per_window": 3, "window_seconds": 1800, "hearing_boost": 1.5}},
@@ -907,6 +907,8 @@ class Controller:
                    and now - self._last_lube >= float(sp["lube_gap_seconds"]))
         if not lube_ok:
             allowed.discard("lube_fire")
+        if not sp.get("machine", False):
+            allowed &= {"lube_fire"}         # the machine changes only on request: she never switches a mode by herself
         if self.lock_remaining() > 0:
             allowed &= {"lube_fire"}
         steps, used = self._persona_steps(plan, allowed)
@@ -1056,7 +1058,8 @@ class Controller:
             stage = self.stage()
             sp = self.persona_cfg["spontaneous"]["action_chance"]
             act = self.rng.random() < float(sp[max(0, min(stage, len(sp) - 1))])
-            step_ids = [i.id for i in self.intents if i.improvise] if act else None
+            step_ids = [i.id for i in self.intents if i.improvise and (i.id == "lube_fire" or self.persona_cfg["spontaneous"].get("machine", False))] if act else None
+            step_ids = step_ids or None
             surprise = self._lube_surprise_roll(stage, float(self.persona_cfg["spontaneous"]["lube_surprise"]["hearing_boost"]))
             if surprise:
                 state["niespodzianka"] = "lube"      # she is about to shoot unasked: the line should fit

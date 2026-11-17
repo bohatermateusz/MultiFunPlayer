@@ -348,7 +348,7 @@ class Live(ChatBase):
         prompt = self._with_echo_filter()
         wake, commands = prompt.split(". ", 1)
         kept = []
-        for c in commands.split(","):                  # the prompt up to the safe word (that one would stop everything)
+        for c in commands.split(","):                  # the prompt up to the safe word, if it is there (that one stops everything)
             if self.c.mentions_safe_word(c):
                 break
             kept.append(c.strip())
@@ -361,8 +361,8 @@ class Live(ChatBase):
 
     def test_the_safe_word_in_an_echo_still_stops(self):
         self.clock.t += 20
-        prompt = self._with_echo_filter()
-        self.loop.on_final("e2", prompt.replace(".", ",") + ".")
+        self.loop.reject = lambda text: True                 # whatever is rejected as a hallucination ...
+        self.loop.on_final("e2", "Kochanie, Pani, szybciej, wolniej, głębiej, trąbka, utrzymaj to.")
         self.assertEqual(self.loop.last_outcome.intent, "halt")
 
     def test_a_real_command_that_stands_in_the_prompt_still_runs(self):

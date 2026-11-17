@@ -46,8 +46,9 @@ def load_config(path):
     return cfg, intents
 
 
-# not "cooldown": its password starts with the safe word, and a hint must never make "trąbka" come out longer
-STT_HINT_INTENTS = ("faster", "slower", "deeper", "shallower", "halt", "lock", "lube_fire")
+# not "halt" / "cooldown": a word in the hint is what the model writes out on noise, and a phantom "trąbka" stops the
+# machine (91 false stops in one evening); "trąbka" is an ordinary word and is recognised without the hint
+STT_HINT_INTENTS = ("faster", "slower", "deeper", "shallower", "lock", "lube_fire")
 # short answers that count even when said while she is still speaking (unless she is saying them herself)
 OVER_HER_WORDS = ("proszę", "błagam", "przepraszam", "dziękuję", "tak", "please", "sorry", "yes")
 

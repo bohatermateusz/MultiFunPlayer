@@ -3543,6 +3543,8 @@
    "lube_many": 0.08
   },
   "spontaneous": {
+   "_comment": "machine: false = she never moves the machine on her own (speed, depth, modes, sequences change only when you ask, teased or not); her own moves are then Lube Launcher shots only.",
+   "machine": false,
    "turn_chance": [
     0.0,
     0.03,
