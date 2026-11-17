@@ -22,6 +22,7 @@ internal sealed partial class ButtplugOutputTarget
     private const int ModeCooldown = 13;           // the wind-down: slower, deeper, a narrower stroke, then micro strokes
     private const int SmallestStrokeWidth = 10;
     private const int MaxDepthAB = 80;             // "max tryb A / B": A or B at this depth
+    private const int PresetStartSpeed = 50;      // the speed that wakes a stopped machine before a built-in mode
     private static readonly int[] CalmSpeeds = [40, 25, 12, 1];   // calm, said again and again: medium down to slowest
     private const double SurpriseModeChance = 0.7;   // chance that the surprise also changes the machine's mode
 
@@ -607,6 +608,11 @@ internal sealed partial class ButtplugOutputTarget
             if (mode <= PresetModeMax)
             {
                 await RestoreScriptWindowAsync(state);
+                // a stopped machine (speed 0: a Stop, a paused film) does not start from a mode command alone - the
+                // S2 reported no movement after CC 04 n then. A running speed first, the mode right after it (the
+                // official app never hits this: its speed slider is never at 0 when a mode is picked).
+                await SetSpeedSurelyAsync(state.Speed > 0 ? state.Speed : PresetStartSpeed);
+                await Task.Delay(150);
                 _hismithPresetMode = mode;
                 NotifyOfPropertyChange(nameof(HismithPresetMode));
                 await SendPresetModeAsync(mode);
