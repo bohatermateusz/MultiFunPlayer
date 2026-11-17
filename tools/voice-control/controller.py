@@ -1253,6 +1253,8 @@ class Controller:
             return outcome
 
         request = turn.request
+        if request == "halt":
+            request = "none"                  # the safe word is the word "trąbka" itself, never a model's reading of words
         intent = next((i for i in self.intents if i.id == request), None)
         locked = self.lock_remaining() > 0
 
@@ -1732,7 +1734,7 @@ class Controller:
             return Outcome("ignored", f"llm unavailable ({answer})", via="llm")
         extra = {"llm_raw": answer.raw, "latency_ms": answer.latency_ms}
         intent = next((i for i in self.intents if i.id == answer.intent), None)
-        if intent is None:
+        if intent is None or intent.id == "halt":         # the safe word only when "trąbka" itself is heard, never guessed
             return Outcome("ignored", "llm: not a command", via="llm", extra=extra)
         needed = intent.llm_min_confidence if intent.llm_min_confidence is not None else float(self.llm_cfg["min_confidence"])
         if not answer.addressed:
