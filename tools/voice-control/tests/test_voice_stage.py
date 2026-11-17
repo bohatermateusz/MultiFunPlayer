@@ -224,8 +224,14 @@ class EscalationTests(unittest.TestCase):
         for i in range(10):
             self.say(f"kochanie, proszę {i}", request="lube_fire")
         self.assertGreaterEqual(self.c.stage(), 1)
+        ini = CFG["persona"]["initiative"]
+        window = float(ini["session_seconds"]) + float(ini["idle_prompt_seconds"]) * (int(ini["max_nudges"]) + 1)
+        for _ in range(int(window / 60) + 2):               # the main loop asks for the stage all the time
+            self.clock.t += 60
+            self.c.stage()
+        self.assertGreaterEqual(self.c.stage(), 1)          # the session is over: no more heat from time, the stage holds...
         self.clock.t += CFG["persona"]["escalation"]["heat_reset"] + 1
-        self.assertEqual(self.c.stage(), 0)
+        self.assertEqual(self.c.stage(), 0)                 # ...and a long break cools it down
 
     def test_stage_and_tone_reach_the_model_and_the_voice(self):
         for i in range(8):

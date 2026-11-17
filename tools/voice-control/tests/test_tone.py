@@ -49,8 +49,8 @@ class ToneRoll(unittest.TestCase):
         self.assertEqual(fractions[0], 0.0)
         self.assertEqual(fractions, sorted(fractions))
         self.assertLess(fractions[1], fractions[2] - 0.05)
-        self.assertGreater(fractions[4], 0.3)
-        self.assertLess(fractions[4], 0.5)                      # tender stays at least half of the game even at the top
+        self.assertGreater(fractions[4], 0.75)                  # at the top she is harsh; tender only as a rare contrast
+        self.assertLess(fractions[4], 0.9)
 
     def test_never_more_than_two_sharp_in_a_row(self):
         tones, _ = self.sim(4)

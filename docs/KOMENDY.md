@@ -194,6 +194,11 @@ Gdy Pani jest niedostępna (brak internetu / klucza): łagodne komendy (dość, 
 
 Sesja **narasta**: zaczyna się chłodno i łagodnie, potem Pani robi się stanowcza, ostra, a przy dłuższej rozmowie
 wulgarna i bezlitosna (etapy 0-4; liczy to narzędzie, nie model, a sufit ustawisz w `persona.escalation.max_stage`).
+Etap rośnie też **z czasem sesji**, nawet gdy tylko słuchasz: ok. 10 minut do etapu 4 (`escalation.per_minute`; Twoje
+prośby i wyznania przyspieszają). Wątki narracji mają swoje etapy (`narration.theme_stages`): na początku czułość
+i feminizacja, potem własność, potem uprzedmiotowienie, przymus i BDSM, na szczycie bydło, hodowla, sperma i kolejki;
+na najwyższym etapie Pani bierze głównie z najostrzejszych, czułość tylko czasem, jako kontrast. Sesja trwa do 30 min
+Twojego milczenia, a etap opada dopiero po dłuższej przerwie.
 Gdy milczysz ok. 25 s, **odzywa się sama** ("Czemu milczysz? Poproś mnie."). Mówi głosem ElevenLabs (wybierasz głos:
 `python voice_control.py voices`, potem `persona.tts.voice_id`). Jeśli masz słuchawki (domyślnie), **możesz jej przerwać**
 - gdy zaczniesz mówić, ona milknie od razu, więc "trąbka" zawsze usłyszy.

@@ -336,9 +336,13 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   also **recognised locally** (`confession_phrases`, `obey_phrases`), so they count for the dice (+30 % for a confession; a
   demanded thanks / task pays what she owed) even if the model does not notice them.
 * **Escalation**: the tool counts the heat of the session (+1 per turn, +1 per refusal, +2 per confession, +2 per grant;
-  thresholds 0 / 5 / 12 / 22 / 35; cooling down after 10 min of silence) and gives the model the **stage 0-4** and its tone
+  thresholds 0 / 5 / 12 / 22 / 35; plus `escalation.per_minute` while a session is on, so it heats up while you only
+  listen - about 10 min to stage 4; cooling down after `heat_reset` s without a session) and gives the model the **stage 0-4** and its tone
   (`persona.stages`, Polish, edit freely): cool and gentle -> firm -> sharp and degrading -> vulgar and merciless ->
   all out. Higher stages also tease more often when she refuses. `escalation.max_stage` is your ceiling.
+  Narration themes have stages too (`narration.theme_stages`, theme name before " - " -> stage; unlisted ones get
+  `default_theme_stage`): only themes up to the current stage come up, `top_share` of them from the stage itself and
+  `near_share` from the one below.
 * **She speaks first**: when you stay silent for 25 s during a session she says something herself ("Czemu
   milczysz? Poproś mnie.", questions, orders), up to 3 times in a row (`persona.initiative`, `--no-nudge`).
 * **Safe word while she talks**: `persona.output = "headphones"` (default; a VR headset): the microphone stays on and

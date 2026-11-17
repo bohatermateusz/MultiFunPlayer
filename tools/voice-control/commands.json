@@ -1376,9 +1376,9 @@
   "stages": [
    "etap 0 - opiekuńcza i ciepła; spokojna władza, bardzo łagodna; troska i bliskość",
    "etap 1 - ciepła, ale stanowcza i pewna siebie; zaczyna przejmować prowadzenie, nadal czuła",
-   "etap 2 - przejmuje kontrolę; czułość i rozkazy na przemian, coraz mniej pytań, coraz więcej decyzji",
-   "etap 3 - pełna władza; czułe i bezlitosne momenty na przemian, bez ostrzeżenia",
-   "etap 4 - bezwarunkowa władza, szczyt kontrastów: najczulsze i najostrzejsze momenty tuż obok siebie"
+   "etap 2 - przejmuje kontrolę; mniej czułości, więcej rozkazów; mówi o niej jak o własności, wyśmiewa jej dawne życie, ostre słowa padają coraz częściej",
+   "etap 3 - pełna władza i uprzedmiotowienie; mówi o niej jak o rzeczy i dziurce do użytku, wulgarnie, bez litości; czułość tylko jako krótki, okrutny kontrast",
+   "etap 4 - ekstremum: bydło, ciało do pieprzenia, sperma, kolejki, hodowla; najbardziej wulgarna i bezlitosna, traktuje ją wyłącznie jak przedmiot; rzadka, krótka czułość tylko po to, żeby zabolało mocniej"
   ],
   "escalation": {
    "enabled": true,
@@ -1389,6 +1389,7 @@
     "confession": 2,
     "granted": 2
    },
+   "per_minute": 3.5,
    "thresholds": [
     0,
     5,
@@ -1396,7 +1397,7 @@
     22,
     35
    ],
-   "heat_reset": 600,
+   "heat_reset": 1800,
    "tease_chance": [
     0.3,
     0.5,
@@ -1409,14 +1410,18 @@
    "enabled": true,
    "idle_prompt_seconds": 25,
    "max_nudges": 3,
-   "session_seconds": 180
+   "session_seconds": 1800
   },
   "narration": {
    "_comment": "Her running commentary: explicit, degrading lines at random moments while a session is on, whether you talk or not. Gap drawn from gap_seconds[stage] = [min, max]; sharp_p[stage] = how often the line is vulgar rather than tender; themes rotate without repeats; examples only show the register - the model invents its own lines.",
    "enabled": true,
    "gap_seconds": [[90, 150], [60, 110], [40, 80], [25, 55], [20, 40]],
-   "sharp_p": [0.3, 0.5, 0.7, 0.85, 0.9],
+   "sharp_p": [0.2, 0.45, 0.7, 0.85, 0.83],
    "max_words": 16,
+   "theme_stages": {"0": ["pochwała", "czułość w poniżeniu", "po sesji", "afirmacja", "trans dziewczyna", "spełniona fantazja", "witaj z powrotem", "nowe imię od dziewczyn", "pierwszy makijaż", "rajstopy i koronki", "ubrana w kobietę", "feminizacja", "nie musisz myśleć", "cisza w głowie", "na jego kolanach", "zamiast żony", "trans", "prostata", "puść się"], "1": ["przerobiona", "hormony", "choroba feminizacji", "salon i klinika", "szkoła sissy", "pokojówka", "panna młoda", "poranek po ślubie", "poranna kartka", "zasady nowego życia", "powitanie w drzwiach", "nagroda za grzeczność", "asystentka szefa", "pusta główka", "słowo-klucz", "przyłapana", "tylko trzy miesiące", "kontrakt i dług", "podpisane w ciemno", "pół roku później", "dziewczyna została Panią", "trener", "pas cnoty", "dziewczynka do rozłożenia", "ssanie", "sama się zgłosiłaś", "niewola z wyboru", "wypatrzona", "pusta", "odurzona nimi", "pijana rozkoszą", "lalka zamiast tyrana", "zrobię wszystko"], "2": ["należy do nich", "własność", "na zawsze", "ściema", "za późno", "pułapka", "przeprogramowanie", "świadek", "wdzięczność za zniewolenie", "wymazana", "zaprogramowana", "jedyny orgazm", "twoja dziurka nie jest twoja", "mowa odjęta", "złam mnie", "bez granic", "ten, który ją bierze", "branie od tyłu", "księżniczka odbytu", "ruchają cię w dupę", "lubisz to", "odbyt nie należy do niej", "orgazmy nie są jej", "dawne życie patrzy", "jedyne wyjście", "uzależniona od nich", "ich narkotyk", "dla ich zabawy", "pokojówki w posiadłości", "we mgle", "niewolnica przyjemności", "klub, gdzie nikt nie pyta"], "3": ["rzecz", "dziewczyna do ruchania", "na posyłki", "nikt nie pytał", "ciało zdradza", "przyciśnięta", "twoja wina", "dziesięć minut później", "przełamana", "przywiązana do krzesła", "rozpórka", "knebel i obroża", "ławka", "wystawiona na publiczność", "publiczna dupodajka", "lody na pokaz", "wszyscy cię chcą wyruchać", "gwiazda porno", "zamówiona", "jedyne zadanie", "oba końce", "dwóch naraz", "potrzebuje tego na sobie", "pod stołem", "zbrukana i dumna"], "4": ["bydło", "ciało do pieprzenia", "dojenie i hodowla", "ciepła sperma w środku", "na twarz i do ust", "jeden po drugim", "pokryta", "pełna po całej nocy", "karmiona nimi", "kolejka na usta", "spuszczają się w dupę", "zalanie"]},
+   "default_theme_stage": 2,
+   "top_share": 0.6,
+   "near_share": 0.25,
    "themes": [
     "ssanie - jak mała dziewczynka, grzecznie, do końca",
     "dziewczynka do rozłożenia - delikatna, gotowa, bezwolna",
@@ -3504,15 +3509,9 @@
    "poddaję się"
   ],
   "tone": {
-   "sharp_p": [
-    0.0,
-    0.08,
-    0.22,
-    0.38,
-    0.5
-   ],
-   "max_sharp_run": 2,
-   "soft_after_sharp": 0.7,
+   "sharp_p": [0.0, 0.15, 0.4, 0.65, 0.87],
+   "max_sharp_run": 8,
+   "soft_after_sharp": 0.1,
    "twist_p": 0.08,
    "harsh_p": 0.3,
    "soft_first_turns": 2,
@@ -3715,6 +3714,7 @@
      "You'll be pleasing them forever now.",
      "The pleasure was the bait. It was always about you stopping being your own."
     ],
+    "theme_stages": {"0": ["praise", "tenderness in humiliation", "aftercare", "affirmation", "trans girl", "fantasy come true", "welcome back", "a new name from the girls", "the first makeup", "stockings and lace", "dressed as a woman", "feminisation", "you don't have to think", "quiet in her head", "on his lap", "instead of his wife", "trance", "let go"], "1": ["remade", "hormones", "salon and clinic", "sissy school", "the maid", "the bride", "the morning after the wedding", "the morning note", "the rules of the new life", "greeting at the door", "the reward for being good", "the boss's assistant", "empty head", "the trigger word", "caught", "only three months", "contract and debt", "signed blind", "six months later", "the girlfriend became the Mistress", "the trainer", "chastity", "a girl to be spread", "sucking", "she volunteered", "captive by choice", "spotted", "empty", "dazed by them", "drunk on pleasure", "a doll instead of a tyrant", "anything"], "2": ["she belongs to them", "property", "forever", "the sham", "too late", "the trap", "reprogramming", "everyone knows", "gratitude for being owned", "erased", "the only orgasm left", "her hole is not hers", "break me", "the one who takes her", "taken from behind", "anal princess", "fucked in the ass", "her ass is not hers", "her orgasms are not hers", "the old life watches", "the only way out", "addicted to them", "their drug", "for their amusement", "the maids of the estate", "in a haze"], "3": ["a thing", "their girl to fuck", "on call", "nobody asked", "the body betrays her", "pinned", "your fault", "ten minutes later", "broken in", "tied to the chair", "spreader bar", "gag and collar", "the bench", "porn star", "ordered", "the only job", "both ends", "two at once", "marked and proud", "under the table"], "4": ["livestock", "a body to fuck", "milking and breeding", "warm cum inside", "on the face and in the mouth", "one after another", "covered", "full after the whole night", "fed on them", "they cum in her ass"]},
     "themes": [
      "sucking - like a little girl, obediently, to the end",
      "a girl to be spread - soft, ready, will-less",

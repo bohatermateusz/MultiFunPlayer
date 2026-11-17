@@ -185,6 +185,7 @@ class Controller:
         self._history = []                # [(role, text)] of the conversation with her
         self._heat = 0.0                  # escalation: grows with turns, refusals, confessions, grants
         self._heat_last = 0.0
+        self._heat_tick = 0.0             # last time the session's running time was added to the heat (escalation.per_minute)
         self._last_user = 0.0             # last time the user talked to her
         self._last_line = 0.0             # last time she spoke (a line or a nudge)
         self._nudges = 0
@@ -456,12 +457,34 @@ class Controller:
             self._log(transcript, outcome)
         return self._say(outcome)
 
-    def _narration_themes(self, cfg, soft=False):
-        """the themes she may comment on now (not the ones used lately); while winding down only the tender ones"""
+    def theme_stage(self, theme, cfg=None):
+        """the stage from which a narration theme may come up (narration.theme_stages: stage -> names before " - ")"""
+        cfg = cfg or self.persona_cfg["narration"]
+        name = theme.split(" - ")[0].strip().lower()
+        for stage, names in (cfg.get("theme_stages") or {}).items():
+            if name in {str(n).strip().lower() for n in names}:
+                return int(stage)
+        return int(cfg.get("default_theme_stage", 0))
+
+    def _narration_themes(self, cfg, soft=False, stage=None):
+        """the themes she may comment on now (not the ones used lately); while winding down only the tender ones.
+        With narration.theme_stages only the themes of the stage reached so far, and mostly the harshest of them: the
+        session gets hotter and stays hot (top_share from the stage itself, near_share from the one below)."""
         allowed = list(cfg["themes"])
         if soft:
             tender = [t for t in self.persona_cfg["cooldown"].get("themes", []) if t in allowed]
             allowed = tender or [t for t in allowed if t.lower().startswith(("po sesji", "aftercare"))] or allowed
+        elif stage is not None and cfg.get("theme_stages"):
+            reached = [t for t in allowed if self.theme_stage(t, cfg) <= stage] or allowed
+            top = max(self.theme_stage(t, cfg) for t in reached)
+            roll = self.rng.random()
+            if roll < float(cfg.get("top_share", 0.6)):
+                pick = [t for t in reached if self.theme_stage(t, cfg) == top]
+            elif roll < float(cfg.get("top_share", 0.6)) + float(cfg.get("near_share", 0.25)):
+                pick = [t for t in reached if self.theme_stage(t, cfg) == top - 1]
+            else:
+                pick = reached
+            allowed = pick or reached
         recent = self._themes_recent[-max(1, len(allowed) - 2):]
         return [t for t in allowed if t not in recent] or allowed
 
@@ -476,7 +499,7 @@ class Controller:
             soft = self.cooldown_active()
             if soft:
                 self._tone_now = ("czuły", 0)
-            themes = self._narration_themes(cfg, soft)
+            themes = self._narration_themes(cfg, soft, stage)
             theme = self.rng.choice(themes)
             self._themes_recent.append(theme)
             del self._themes_recent[:-len(cfg["themes"])]
@@ -783,6 +806,15 @@ class Controller:
         now = self.clock()
         if self._heat_last and now - self._heat_last > float(esc["heat_reset"]):
             self._heat = 0.0
+        per_minute = float(esc.get("per_minute", 0) or 0)
+        if per_minute:
+            # the session heats up with time too, not only with what he says: she gets harsher while he just listens
+            on = self._session_on(now)
+            if on and self._heat_tick:
+                self._heat += per_minute * max(0.0, now - self._heat_tick) / 60.0
+            self._heat_tick = now if on else 0.0
+            if on:
+                self._heat_last = now
         stage = sum(1 for t in esc["thresholds"] if self._heat >= t) - 1
         return max(0, min(stage, int(esc["max_stage"]), len(esc["thresholds"]) - 1))
 
@@ -985,7 +1017,7 @@ class Controller:
             self._tone_now = (tone, harsh)
             self._tones.append(tone)
             del self._tones[:-12]
-            themes = self._narration_themes(cfg, soft)
+            themes = self._narration_themes(cfg, soft, stage)
             theme = self.rng.choice(themes)
             self._themes_recent.append(theme)
             del self._themes_recent[:-len(cfg["themes"])]
