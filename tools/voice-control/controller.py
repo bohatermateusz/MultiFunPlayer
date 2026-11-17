@@ -44,7 +44,15 @@ SIDE_WORDS = {
              " do środka", " w środek", " w środku", " anal", " pośladk",
              " behind", " ass ", " butt", " rear", " inside", " pussy", " from the back"],
 }
-NO_WAKE_WORD = ("halt", "cooldown")   # said alone, at any moment: the safe word and the cooldown password
+NO_WAKE_WORD = ("halt", "cooldown")
+# requests that are one and the same wish for the dice (asks counted together, a met demand carries over)
+SAME_ASK = ({"script", "play", "normal"},)
+
+
+def same_ask(a, b):
+    return a == b or any(a in g and b in g for g in SAME_ASK)
+
+   # said alone, at any moment: the safe word and the cooldown password
 SIDED_ACTIONS = {"Speed", "Depth", "Mode", "Calm", "Boost", "LubeLauncher", "Cooldown"}
 # the same words as the matcher sees them (no accents), each with a space in front: " do ust", " od tylu", ...
 SIDE_NORM = {k: [" " + normalize(w) + ("" if not w.endswith(" ") else " ") for w in v] for k, v in SIDE_WORDS.items()}
@@ -1205,8 +1213,11 @@ class Controller:
                 self._owed, turn.thanked = rid, True          # the demand done: she gives it
             elif dem == "beg":
                 self._beg_met = rid
-            if rid and dem == "beg" and str(turn.request) in ("none", "", "improvise"):
-                turn.request = rid                            # "proszę bardzo" continues the same ask
+            bare = str(turn.request) in ("none", "", "improvise")
+            if rid and ((dem == "beg" and bare) or (not bare and same_ask(turn.request, rid))):
+                # "proszę bardzo" / "dziękuję" continues the same ask: the model may read "back to the film" as
+                # "play" one turn and "script" the next, and the asks, the credit and the owed grant must not be lost
+                turn.request = rid
             turn.defiance = False
             self._last_demand = None
         else:
@@ -1545,7 +1556,10 @@ class Controller:
             return None
         if not any(_sim(w, tokens[0]) >= self.wake_min_similarity for w in self.wake_words):
             return None
-        return " ".join(tokens[1:])
+        tokens = tokens[1:]
+        while tokens and any(_sim(w, tokens[0]) >= self.wake_min_similarity for w in self.wake_words):
+            tokens = tokens[1:]               # "Kochanie, Pani." is the wake word only (and the model's prompt echo)
+        return " ".join(tokens)
 
     def penalty_remaining(self) -> float:
         return max(0.0, self._penalty_until - self.clock())
