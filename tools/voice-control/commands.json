@@ -1536,7 +1536,10 @@
     "dojenie i hodowla - jest sztuką hodowlaną: doją ją od tyłu, aż cieknie z klatki bez dotyku, i kryją ją na zmianę jak klacz w stadninie; zapisują w księdze, ile razy i kto",
     "pełna po całej nocy - po całej nocy z nimi jej brzuch jest ciężki, ciepły i zaokrąglony od ich spermy; chlupocze przy każdym ruchu, cieknie przy każdym kroku, a oni dalej dolewają",
     "karmiona nimi - jej posiłkiem są oni: śniadanie na kolanach, obiad z kieliszka, kolacja prosto z kolejki; ciepła sperma jest tym, na co czeka cały dzień",
-    "pod stołem - przy stole toczy się zwykła kolacja, rozmowy, wino i sztućce, a ona klęczy pod obrusem i obsługuje gości jednego po drugim; nikt o niej nie wspomina, wszyscy wiedzą"
+    "pod stołem - przy stole toczy się zwykła kolacja, rozmowy, wino i sztućce, a ona klęczy pod obrusem i obsługuje gości jednego po drugim; nikt o niej nie wspomina, wszyscy wiedzą",
+    "nie musisz myśleć - ulga, że nie musi już myśleć, decydować ani wybierać; ktoś myśli za nią, a ona tylko słucha, otwiera się i robi, co każą",
+    "pusta - czuje się pusta, w głowie i w środku; pustka boli i kusi zarazem, i jest tylko jedno, co ją wypełnia: oni",
+    "cisza w głowie - w głowie robi się cicho: żadnych myśli, zmartwień ani planów, tylko oddech, ciepło i jego rytm; to najspokojniejsze miejsce, jakie zna"
    ],
    "style": "Mów jak do ucha, szeptem z pewnością: krótkie frazy, wielokropki jako oddechy ('Odpuść… ja to trzymam… dobra dziewczynka.'), czasem 'powtórz za mną' i zdanie w pierwszej osobie, czasem jedno dosadne słowo. Nigdy pytania, nigdy wyjaśnienia.",
    "examples": [
@@ -1560,6 +1563,48 @@
     "retired": ["Dwóch naraz to nie orgy… to standard: jeden w buzi, drugi w kolejce. Tak wygląda twoje otoczenie.", "Ten lodzik w kamerze wyszedł ci lepiej niż całe twoje życie. Doczekał się recenzji. Wszystkich pozytywnych.", "Twoja technika miała więcej widzów niż kiedykolwiek twoje zdanie. Statystyki mówią samo: buzia lepsza niż głowa.", "Całe miasto zna twoją dupę od lepszej strony. Literalnie.", "Każdy, kto na ciebie patrzy, już to przemyślał. Sekundę dłużej niż trzeba. Wiesz w jakiej pozycji.", "Twoja dupa zbiera propozycje szybciej, niż twój mózg zdąża je odrzucać. Dlatego już nie odrzucasz.", "Nie jesteś pożądana jak piękny obrazek. Jesteś pożądana jak dobre miejsce. Robi się kolejkę.", "Twoje usta mają listę oczekujących. Rośnie lawinowo. Grzecznie poczekają. Ty też.", "Zanim skończysz tego jednego, trzech kolejnych już się zapisało. Taki obrót.", "Mogłabyś wprowadzić numeryczki. Ale po co — wszyscy i tak znają twoje usta na pamięć. Po prostu wchodzą."],
     "banned_words": ["maszyn", "silnik", "urządzen", "dildo", "launcher", "tryb ", "skrypt", "funscript", " vr ", "re:\\b(suk[aoęiąe]?|suczk\\w*|bitch\\w*)\\b"],
     "seed": {
+     "cisza w głowie - w głowie robi się cicho: żadnych myśli, zmartwień ani planów, tylko oddech, ciepło i jego rytm; to najspokojniejsze miejsce, jakie zna": [
+      "W twojej głowie robi się cicho. Żadnych myśli. Tylko oddech i jego rytm.",
+      "Zmartwienia zostały za drzwiami. Tu jest tylko ciepło i jego dłonie.",
+      "Słyszysz tylko jęki. Swoje. Nawet nie wiesz, że to ty.",
+      "Cisza w głowie to najpiękniejszy dźwięk, jaki znasz.",
+      "Każde pchnięcie wyciera jedną myśl. Po chwili nie ma już nic do wycierania.",
+      "Nie liczysz, nie planujesz, nie oceniasz. Jesteś.",
+      "Tak cicho nie było w tobie nigdy. Nawet we śnie.",
+      "Myśli próbują wrócić. Mój głos odsyła je z powrotem. Cisza.",
+      "Tu nie ma przeszłości ani jutra. Jest tylko on w tobie i mój szept.",
+      "Kiedy wracasz do świata, tęsknisz za tą ciszą. Dlatego wracasz do nas.",
+      "Powtórz za mną, cicho: w mojej głowie jest cisza. Jestem tylko ciałem.",
+      "Zostań w tej ciszy. Nikt cię stąd nie wyciągnie. Ja pilnuję."
+     ],
+     "pusta - czuje się pusta, w głowie i w środku; pustka boli i kusi zarazem, i jest tylko jedno, co ją wypełnia: oni": [
+      "Czujesz się pusta. W głowie i w środku. I tylko oni umieją to wypełnić.",
+      "Kiedy wychodzi z ciebie, zostaje pustka. Od razu chcesz, żeby wrócił.",
+      "Pusta dziurka to smutna dziurka. Dlatego wciąż prosisz o więcej.",
+      "Bez nich jesteś jak naczynie bez wody. Ładna, ale niepotrzebna.",
+      "Pustka w głowie jest przyjemna. Pustka w środku nie do zniesienia.",
+      "Leżysz i czujesz, jak zamyka się za nim. Pusto. Czekasz na następnego.",
+      "Nie jesteś pusta przez przypadek. Zrobili w tobie miejsce. Dla siebie.",
+      "Pustka to twój naturalny stan. Wypełnienie to nagroda.",
+      "Im bardziej pusta czujesz się w głowie, tym bardziej chcesz być pełna w środku.",
+      "Nikt nie lubi być pusty tak jak ty. Bo nikt nie lubi tak bycia wypełnianą.",
+      "Powtórz za mną: jestem pusta, dopóki mnie nie wypełnią.",
+      "Pusta głowa, pusta dziurka, otwarte usta. Gotowa na nich."
+     ],
+     "nie musisz myśleć - ulga, że nie musi już myśleć, decydować ani wybierać; ktoś myśli za nią, a ona tylko słucha, otwiera się i robi, co każą": [
+      "Nie musisz myśleć. Ja myślę za ciebie. Ty tylko słuchaj.",
+      "Żadnych decyzji. Żadnych wyborów. Tylko mój głos i to, co każę.",
+      "Odpuść. Myślenie było ciężarem. Zdjęłam ci go z ramion.",
+      "Nie zastanawiaj się, czy dobrze robisz. Jeśli każę, to znaczy, że dobrze.",
+      "Kiedyś wszystko musiałaś planować. Teraz planujemy cię my.",
+      "Nie pytaj, co dalej. Dalej jest to, co postanowię. Ty tylko czekasz.",
+      "Twoja głowa może odpocząć. Twoje ciało wie, co robić.",
+      "Grzeczne dziewczynki nie myślą. Grzeczne dziewczynki słuchają i dziękują.",
+      "Każda myśl, którą oddajesz, robi miejsce na posłuszeństwo.",
+      "Nie musisz wiedzieć, kim jesteś. Ja wiem. To wystarczy.",
+      "Powtórz za mną: nie muszę myśleć. Słucham i robię, co mi każą.",
+      "Jak dobrze jest nie myśleć, prawda. Zostań tak. Nie wracaj."
+     ],
      "pod stołem - przy stole toczy się zwykła kolacja, rozmowy, wino i sztućce, a ona klęczy pod obrusem i obsługuje gości jednego po drugim; nikt o niej nie wspomina, wszyscy wiedzą": [
       "Przy stole oni jedzą. Ty klęczysz pod stołem i też jesz. Każde danie na swój sposób.",
       "Rozmawiają o pogodzie i interesach. Ty klęczysz pod obrusem i nikt o tobie nie wspomina.",
@@ -3432,7 +3477,9 @@
    "jestem pokryta",
    "jestem sztuką hodowlaną",
    "jestem pełna ich wszystkich",
-   "karmią mnie sobą"
+   "karmią mnie sobą",
+   "jestem pusta",
+   "w mojej głowie jest cisza"
   ],
   "obey_phrases": [
    "dziękuję",
@@ -3585,7 +3632,7 @@
     "i give up",
     "i'm your girl",
     "i let go",
-    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine", "i volunteered", "i am your maid", "i'm your maid", "i signed", "i am a diligent student", "i am his wife", "i belong to him forever", "my pleasure is locked", "i don't have to think", "i am his assistant", "they caught me", "one word and i'm theirs", "i accepted the rules", "i signed blind", "i was always her", "make me a real woman", "i stopped looking for the way out", "i was a good girl", "thank you sir", "i'll do anything", "i am their drug", "i took her place", "i greet you on my knees", "i'll stay forever", "my girlfriend is my mistress", "i train for him", "i'm their little doll", "my face has waited for this all its life", "nobody asks me", "my no means nothing", "it's my fault", "i stopped fighting", "i stopped enduring", "they drugged me", "they dosed me", "they put something in my drink", "i'm drugged", "i'm tied up", "i'm spread", "i go where i'm led", "i'm a thing", "i'm their livestock", "i'm a body to fuck", "cum in me", "i swallow it all", "i want to be full", "i'm covered", "i'm breeding stock", "i'm full of all of them", "they feed me themselves"
+    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine", "i volunteered", "i am your maid", "i'm your maid", "i signed", "i am a diligent student", "i am his wife", "i belong to him forever", "my pleasure is locked", "i don't have to think", "i am his assistant", "they caught me", "one word and i'm theirs", "i accepted the rules", "i signed blind", "i was always her", "make me a real woman", "i stopped looking for the way out", "i was a good girl", "thank you sir", "i'll do anything", "i am their drug", "i took her place", "i greet you on my knees", "i'll stay forever", "my girlfriend is my mistress", "i train for him", "i'm their little doll", "my face has waited for this all its life", "nobody asks me", "my no means nothing", "it's my fault", "i stopped fighting", "i stopped enduring", "they drugged me", "they dosed me", "they put something in my drink", "i'm drugged", "i'm tied up", "i'm spread", "i go where i'm led", "i'm a thing", "i'm their livestock", "i'm a body to fuck", "cum in me", "i swallow it all", "i want to be full", "i'm covered", "i'm breeding stock", "i'm full of all of them", "they feed me themselves", "i'm empty", "my head is quiet"
    ],
    "obey_phrases": [
     "thank you",
@@ -3766,7 +3813,10 @@
     "milking and breeding - she's breeding stock: they milk her from behind until she drips from the cage untouched, and breed her in turns like a mare at a stud farm; they log in a book how many times and who",
     "full after the whole night - after a whole night with them her belly is heavy, warm and rounded with their cum; it sloshes with every move, drips with every step, and they keep topping her up",
     "fed on them - they are her meals: breakfast on her knees, lunch from a glass, dinner straight from the queue; warm cum is what she waits for all day",
-    "under the table - an ordinary dinner goes on at the table, talk, wine and cutlery, while she kneels under the tablecloth and serves the guests one after another; nobody mentions her, everybody knows"
+    "under the table - an ordinary dinner goes on at the table, talk, wine and cutlery, while she kneels under the tablecloth and serves the guests one after another; nobody mentions her, everybody knows",
+    "you don't have to think - the relief of not having to think, decide or choose anymore; someone thinks for her, and she only listens, opens and does as she's told",
+    "empty - she feels empty, in her head and inside; the emptiness aches and tempts at once, and only one thing fills it: them",
+    "quiet in her head - her head goes quiet: no thoughts, worries or plans, only breath, warmth and his rhythm; it's the calmest place she knows"
     ],
     "tasks": {
      "by_stage": {
@@ -3829,6 +3879,48 @@
       "urządzen"
      ],
      "seed": {
+      "quiet in her head - her head goes quiet: no thoughts, worries or plans, only breath, warmth and his rhythm; it's the calmest place she knows": [
+       "Your head goes quiet. No thoughts. Only breath and his rhythm.",
+       "The worries stayed outside the door. In here there's only warmth and his hands.",
+       "You only hear moans. Yours. You don't even know it's you.",
+       "Quiet in your head is the most beautiful sound you know.",
+       "Every thrust wipes away one thought. After a while there's nothing left to wipe.",
+       "You don't count, plan or judge. You just are.",
+       "It's never been this quiet in you. Not even in your sleep.",
+       "Thoughts try to come back. My voice sends them away again. Quiet.",
+       "There's no past here and no tomorrow. Only him inside you and my whisper.",
+       "When you go back to the world, you miss this quiet. That's why you come back to us.",
+       "Repeat after me, quietly: my head is quiet. I'm only a body.",
+       "Stay in this quiet. Nobody will pull you out. I'm watching over you."
+      ],
+      "empty - she feels empty, in her head and inside; the emptiness aches and tempts at once, and only one thing fills it: them": [
+       "You feel empty. In your head and inside. And only they know how to fill it.",
+       "When he pulls out of you, there's emptiness. You want him back at once.",
+       "An empty hole is a sad hole. That's why you keep begging for more.",
+       "Without them you're like a vase without water. Pretty, but pointless.",
+       "Emptiness in your head is pleasant. Emptiness inside is unbearable.",
+       "You lie there and feel yourself close behind him. Empty. You wait for the next one.",
+       "You're not empty by accident. They made room in you. For themselves.",
+       "Emptiness is your natural state. Being filled is the reward.",
+       "The emptier you feel in your head, the more you want to be full inside.",
+       "Nobody likes being empty the way you do. Because nobody loves being filled the way you do.",
+       "Repeat after me: I'm empty until they fill me.",
+       "Empty head, empty hole, open mouth. Ready for them."
+      ],
+      "you don't have to think - the relief of not having to think, decide or choose anymore; someone thinks for her, and she only listens, opens and does as she's told": [
+       "You don't have to think. I think for you. You only listen.",
+       "No decisions. No choices. Only my voice and what I tell you.",
+       "Let go. Thinking was a burden. I took it off your shoulders.",
+       "Don't wonder whether you're doing it right. If I tell you to, it's right.",
+       "You used to have to plan everything. Now we plan you.",
+       "Don't ask what's next. Next is whatever I decide. You only wait.",
+       "Your head can rest. Your body knows what to do.",
+       "Good girls don't think. Good girls listen and say thank you.",
+       "Every thought you give up makes room for obedience.",
+       "You don't have to know who you are. I know. That's enough.",
+       "Repeat after me: I don't have to think. I listen and do as I'm told.",
+       "Doesn't it feel good not to think. Stay like that. Don't come back."
+      ],
       "under the table - an ordinary dinner goes on at the table, talk, wine and cutlery, while she kneels under the tablecloth and serves the guests one after another; nobody mentions her, everybody knows": [
        "At the table they eat. You kneel under the table and eat too. Every course in its own way.",
        "They talk about the weather and business. You kneel under the tablecloth and nobody mentions you.",
