@@ -510,13 +510,13 @@ internal sealed partial class ButtplugOutputTarget
 
         if (mode == ModeHalt && !GetQuickActuators(SpeedDescription, ActuatorType.Oscillate).Any())
         {
-            Logger.Info("No device with a speed actuator is connected, nothing to stop");
+            Logger.Debug("No device with a speed actuator on this side, nothing to stop");
             return;
         }
 
         if (mode is not (0 or ModeHalt) && !GetQuickActuators(PresetModeDescription).Any())
         {
-            Logger.Info("No device with a \"{0}\" actuator is connected, not starting mode {1}", PresetModeDescription, mode);
+            Logger.Debug("No device with a \"{0}\" actuator on this side, not starting mode {1}", PresetModeDescription, mode);
             return;
         }
 
@@ -551,7 +551,11 @@ internal sealed partial class ButtplugOutputTarget
                 if (previous is >= 1 and <= PresetModeMax)
                 {
                     // a speed command ends a built-in mode, but the server drops a command identical to the
-                    // last one: go through 0 so that the script's speed is surely sent
+                    // last one. The last speed is often 0 already (a paused film, Stop), and then a lone 0 never
+                    // reached the machine: it stayed in its mode. 1 then 0 always gets through (and the script's
+                    // own speed, if not 0, follows with the resend below).
+                    await SetSpeedAbsoluteAsync(1);
+                    await Task.Delay(150);
                     await SetSpeedAbsoluteAsync(0);
                     await Task.Delay(150);
                 }
