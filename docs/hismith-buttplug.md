@@ -24,9 +24,10 @@ seven-actuator layout of the Buttplug fork and no longer apply.
 | `Position/4` | Preset mode | built-in modes 1-8 |
 | `Position/5` | Position (move to depth now) | **funscript `L0`**, manual mode only (`CC 0A`, full travel, 0 = shallow) |
 
-1. Buttplug.io output: endpoint `192.168.0.145`, port `12345` (the engine runs on the Home
-   Assistant VM, not on this PC). Connect, then **Scan**: the engine only scans while a client asks it
-   to, and stops when the client disconnects.
+1. Buttplug.io output: endpoint `127.0.0.1`, port `12345`. Since 2026-11-17 the engine runs on this PC,
+   in WSL, on its own Realtek USB Bluetooth adapter (see `tools/buttplug-engine-wsl/README.md`); the
+   Home Assistant VM (`192.168.0.145`) is no longer used. Connect, then **Scan**: the engine only scans
+   while a client asks it to.
 2. Mappings: `L0` -> Hismith Servo Sex Machine `Position/5`; `V1` (lube script) -> Hismith Lube Launcher
    `Position/0`. Remove older S2 mappings (`L0` -> `Position/1` or `Position/3`). Leave `Oscillate/0` and
    `Position/1-4` unmapped; the HISMITH S2 row drives them. Pick devices by name: their indices change

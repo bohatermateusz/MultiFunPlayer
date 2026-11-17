@@ -127,6 +127,7 @@ class Hallucinations(unittest.TestCase):
         self.assertLessEqual(len(p), 100)
         self.assertIn("kochanie", p)
         self.assertNotIn("tryb", p)
+        self.assertNotIn("trąbka", p)            # a hinted word comes out on noise: a phantom safe word stops the machine
 
 
 class Retry(unittest.TestCase):

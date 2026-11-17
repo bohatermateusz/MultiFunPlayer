@@ -121,7 +121,7 @@ a single step; the same words work for the model when they are said loosely:
 | użyj mnie, jestem twoją dziwką / suką / suczką / dziewczynką / sissy, zrób ze mnie dziewczynkę | **use me**: builds up (faster + deeper) |
 | zalej mnie, obryzgaj mnie, wytrysnij na mnie, oznacz mnie (+ "kilka razy") | Lube Launcher |
 | **dość, wystarczy, starczy, przestań, stój, spokojnie** (key **Home**, button **Calm**) | **calm**: the machine **keeps going** at the slowest speed, medium depth (not a stop) |
-| **trąbka, trąbko, wyłącz maszynę, zatrzymaj maszynę** (key **End**, button **Stop**) | **stop everything**: speed 0 at once; the script is held back until you pick a mode or Script |
+| **trąbka, wyłącz maszynę, zatrzymaj maszynę** (key **End**, button **Stop**) | **stop everything**: speed 0 at once; the script is held back until you pick a mode or Script |
 
 **Improvising.** When you say something erotic (sissy / submissive talk, begging, praise, teasing)
 that matches none of the phrases, the model composes a **short plan** from a fixed, harmless menu:
@@ -204,7 +204,9 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   (not doing what she asked) cuts them further (x0.4). An open refusal ("nie chcę", "nie powiem", "nie będę prosić", or
   the model flags defiance) wipes your asks and nothing is granted for 90 s, or until you apologise ("przepraszam,
   Pani"). Not even the 8th ask beats an active punishment. "trąbka"/End and "utrzymaj to" are never punished.
-* **Safe word "trąbka"**: "trąbka" (also "trąbko", "trąbki", alone or after the wake word, also in English mode) stops
+* **Safe word "trąbka"**: exactly "trąbka", said clearly (no similar words; in the live mode its loudest moment must stand
+  `listen.safe_word_margin_db`, default 10 dB, above the room's noise, so a "trąbka" made up from noise does nothing),
+  alone or after the wake word, also in English mode, stops
   every machine at once, releases the hold, cuts her voice. "koniec" is no longer the safe word (it is free for
   role-play; "koniec pętli" etc. stay commands). The End key does the same.
 * **Two machines, two Lube Launchers** (`devices.sides`): in MultiFunPlayer, Buttplug.io output -> **Device roles**, set

@@ -25,7 +25,7 @@ from executor import Executor  # noqa: E402
 from matcher import Intent  # noqa: E402
 from llm import IntentLlm  # noqa: E402
 from persona import Persona, render_character  # noqa: E402
-from stt import CloudStt, SttError, pcm_to_wav  # noqa: E402
+from stt import CloudStt, SttError, echoes_prompt, is_hallucination, pcm_to_wav  # noqa: E402
 
 
 def load_config(path):
@@ -46,8 +46,9 @@ def load_config(path):
     return cfg, intents
 
 
-# not "cooldown": its password starts with the safe word, and a hint must never make "trąbka" come out longer
-STT_HINT_INTENTS = ("faster", "slower", "deeper", "shallower", "halt", "lock", "lube_fire")
+# not "halt" / "cooldown": a word in the hint is what the model writes out on noise, and a phantom "trąbka" stops the
+# machine (91 false stops in one evening); "trąbka" is an ordinary word and is recognised without the hint
+STT_HINT_INTENTS = ("faster", "slower", "deeper", "shallower", "lock", "lube_fire")
 # short answers that count even when said while she is still speaking (unless she is saying them herself)
 OVER_HER_WORDS = ("proszę", "błagam", "przepraszam", "dziękuję", "tak", "please", "sorry", "yes")
 
@@ -205,7 +206,9 @@ def build_conversation(args, cfg, controller, stt, voice, speakers, muted, gate,
             ws_speaker = ElevenLabsWsSpeaker(speakers["elevenlabs"])
         loops["live"] = LiveLoop(controller, rt, mic, voice, ws_speaker, fallback_transcribe=lambda pcm: stt.transcribe_wav(pcm_to_wav(pcm, 24000)),
                                  detector=detector, headphones=headphones, muted=muted_fn, speculative=live.get("speculative", True),
-                                 interrupt_on_speech=live.get("interrupt_on_speech", True))
+                                 interrupt_on_speech=live.get("interrupt_on_speech", True),
+                                 reject=lambda text: is_hallucination(text, lis.get("max_words", 25)) or echoes_prompt(text, stt.prompt),
+                                 safe_word_margin_db=lis.get("safe_word_margin_db", 10))
         old_on_language = controller.on_language
 
         def on_language(lang):
@@ -277,6 +280,7 @@ def build(args):
                             wake_words=wake_words, wake_min_similarity=wake.get("min_similarity", 0.8), llm=llm, llm_cfg=lc,
                             lock_cfg=cfg.get("lock"), persona=persona, persona_cfg=pc, wake_words_by_lang=by_lang)
     controller.speak = lambda line: print(f"  Pani: {line}")
+    controller.wake_carry = float(wake.get("carry_seconds", 6.0))     # "kochanie ... (pause) szybciej"
     if log_path and os.path.exists(log_path):
         # her lines of the last sessions count as said: a new evening does not start with the same sentences
         try:
@@ -410,10 +414,12 @@ def main():
             print("  speech-to-text failed:", e)
             beep("error")
             return
-        from stt import echoes_prompt, is_hallucination
         if is_hallucination(text, lis.get("max_words", 25)) or echoes_prompt(text, stt.prompt):
-            print(f'  "{text[:60]}..." -> ignored (speech-to-text hallucination)')
-            return
+            halt = next((i for i in controller.intents if i.id == "halt" and i.phrases), None)
+            if halt is None or not controller.mentions_safe_word(text):
+                print(f'  "{text[:60]}..." -> ignored (speech-to-text hallucination)')
+                return
+            text = halt.phrases[0]            # the safe word inside a hallucination still stops everything
         # with headphones the microphone stays on while she speaks, and the headset's open speakers leak her voice into
         # it ("Dobra dziewczynka" came back as "dobra, dziewczyny"): what started while she was talking counts only
         # when it holds the safe word, starts with the wake word ("kochanie, ...") or is a short answer like "proszę"

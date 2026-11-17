@@ -733,10 +733,6 @@
    "id": "halt",
    "phrases": [
     "trąbka",
-    "trąbko",
-    "trąbki",
-    "trąbkę",
-    "trombka",
     "trąbka trąbka",
     "wyłącz maszynę",
     "zatrzymaj maszynę"
@@ -749,9 +745,10 @@
     }
    ],
    "description": "SAFE WORD: 'trąbka' stops the machine completely (speed 0) and ends any hold. Only for an explicit 'trąbka' / switch the machine off.",
+   "_comment": "threshold 1.0: only the exact word, said clearly (no similar-sounding words, no guessing); in the live mode it must also be louder than the room by listen.safe_word_margin_db",
    "cooldown": 1,
    "llm_min_confidence": 0.7,
-   "threshold": 0.9,
+   "threshold": 1.0,
    "max_extra_words": 1
   },
   {
@@ -1083,6 +1080,7 @@
  },
  "listen": {
   "barge_in": "safe_word",
+  "safe_word_margin_db": 10,
   "cut_previous_line": false,
   "max_words": 25,
   "mode": "always",
@@ -3542,6 +3540,8 @@
    "lube_many": 0.08
   },
   "spontaneous": {
+   "_comment": "machine: false = she never moves the machine on her own (speed, depth, modes, sequences change only when you ask, teased or not); her own moves are then Lube Launcher shots only.",
+   "machine": false,
    "turn_chance": [
     0.0,
     0.03,

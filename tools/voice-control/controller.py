@@ -44,7 +44,15 @@ SIDE_WORDS = {
              " do środka", " w środek", " w środku", " anal", " pośladk",
              " behind", " ass ", " butt", " rear", " inside", " pussy", " from the back"],
 }
-NO_WAKE_WORD = ("halt", "cooldown")   # said alone, at any moment: the safe word and the cooldown password
+NO_WAKE_WORD = ("halt", "cooldown")
+# requests that are one and the same wish for the dice (asks counted together, a met demand carries over)
+SAME_ASK = ({"script", "play", "normal"},)
+
+
+def same_ask(a, b):
+    return a == b or any(a in g and b in g for g in SAME_ASK)
+
+   # said alone, at any moment: the safe word and the cooldown password
 SIDED_ACTIONS = {"Speed", "Depth", "Mode", "Calm", "Boost", "LubeLauncher", "Cooldown"}
 # the same words as the matcher sees them (no accents), each with a space in front: " do ust", " od tylu", ...
 SIDE_NORM = {k: [" " + normalize(w) + ("" if not w.endswith(" ") else " ") for w in v] for k, v in SIDE_WORDS.items()}
@@ -108,7 +116,7 @@ PERSONA_DEFAULTS = {"enabled": True, "reply_window": 15.0, "base_p": 0.25, "step
                              "soft_categories": ["czułość", "odpuszczenie", "przejęcie", "opieka", "własność_czuła", "pochwały"],
                              "sharp_categories": ["rozkazy", "upokorzenia", "drwiny", "wyznania", "własność"],
                              "harsh_category": "bardzo_ostre"},
-                    "spontaneous": {"turn_chance": [0.0, 0.03, 0.08, 0.12, 0.18], "action_chance": [0.0, 0.05, 0.12, 0.2, 0.3],
+                    "spontaneous": {"machine": False, "turn_chance": [0.0, 0.03, 0.08, 0.12, 0.18], "action_chance": [0.0, 0.05, 0.12, 0.2, 0.3],
                                     "lube_min_stage": 3, "lube_chance": 0.12, "lube_gap_seconds": 300,
                                     "lube_surprise": {"enabled": False, "chance": [0.0, 0.0, 0.06, 0.12, 0.2], "min_stage": 2,
                                                       "max_per_window": 3, "window_seconds": 1800, "hearing_boost": 1.5}},
@@ -179,6 +187,10 @@ class Controller:
         self.speak = speak
         self.rng = rng or random.Random()
         self._window_until = 0.0          # until then an utterance without the wake word is an answer to her
+        # "kochanie" said alone, then a pause, then the command: the live recognition cuts the turn on the pause, so
+        # for wake_carry seconds after a lone wake word the next utterance counts as if it started with it
+        self.wake_carry = 6.0
+        self._wake_until = 0.0
         self._asks = {}                   # request id -> how many times it was denied so far
         self._last_ask = 0.0
         self._owed = None                 # request id she will grant once the user does what she demanded
@@ -391,12 +403,13 @@ class Controller:
         return False
 
     def mentions_safe_word(self, transcript) -> bool:
-        """the safe word anywhere in the utterance (fuzzy): an utterance heard while she speaks counts only with it"""
+        """the safe word anywhere in the utterance, exactly as it is (no similar words: "trąbka" must be said, not guessed);
+        an utterance heard while she speaks counts only with it"""
         halt = next((i for i in self.intents if i.id == "halt"), None)
         if halt is None:
             return False
         singles = {normalize(p) for p in halt.phrases if len(normalize(p).split()) == 1}
-        return any(_sim(w, t) >= 0.8 for t in normalize(transcript).split() for w in singles)
+        return any(t in singles for t in normalize(transcript).split())
 
     def addressed_to_her(self, transcript) -> bool:
         """starts with the wake word ("kochanie, ...", "Pani, ..."): said to her on purpose, not her echo"""
@@ -548,6 +561,7 @@ class Controller:
                 o = self._run_match(m, now)
                 self._log(f"[partial] {text}", o)
                 return self._say(o)
+            text = self._carry_wake(text, consume=False)
             command = self.strip_wake_word(text)
             if command is None or not command.strip():
                 return None
@@ -934,6 +948,8 @@ class Controller:
                    and now - self._last_lube >= float(sp["lube_gap_seconds"]))
         if not lube_ok:
             allowed.discard("lube_fire")
+        if not sp.get("machine", False):
+            allowed &= {"lube_fire"}         # the machine changes only on request: she never switches a mode by herself
         if self.lock_remaining() > 0:
             allowed &= {"lube_fire"}
         steps, used = self._persona_steps(plan, allowed)
@@ -1083,7 +1099,8 @@ class Controller:
             stage = self.stage()
             sp = self.persona_cfg["spontaneous"]["action_chance"]
             act = self.rng.random() < float(sp[max(0, min(stage, len(sp) - 1))])
-            step_ids = [i.id for i in self.intents if i.improvise] if act else None
+            step_ids = [i.id for i in self.intents if i.improvise and (i.id == "lube_fire" or self.persona_cfg["spontaneous"].get("machine", False))] if act else None
+            step_ids = step_ids or None
             surprise = self._lube_surprise_roll(stage, float(self.persona_cfg["spontaneous"]["lube_surprise"]["hearing_boost"]))
             if surprise:
                 state["niespodzianka"] = "lube"      # she is about to shoot unasked: the line should fit
@@ -1228,8 +1245,11 @@ class Controller:
                 self._owed, turn.thanked = rid, True          # the demand done: she gives it
             elif dem == "beg":
                 self._beg_met = rid
-            if rid and dem == "beg" and str(turn.request) in ("none", "", "improvise"):
-                turn.request = rid                            # "proszę bardzo" continues the same ask
+            bare = str(turn.request) in ("none", "", "improvise")
+            if rid and ((dem == "beg" and bare) or (not bare and same_ask(turn.request, rid))):
+                # "proszę bardzo" / "dziękuję" continues the same ask: the model may read "back to the film" as
+                # "play" one turn and "script" the next, and the asks, the credit and the owed grant must not be lost
+                turn.request = rid
             turn.defiance = False
             self._last_demand = None
         else:
@@ -1276,6 +1296,8 @@ class Controller:
             return outcome
 
         request = turn.request
+        if request == "halt":
+            request = "none"                  # the safe word is the word "trąbka" itself, never a model's reading of words
         intent = next((i for i in self.intents if i.id == request), None)
         locked = self.lock_remaining() > 0
 
@@ -1545,6 +1567,17 @@ class Controller:
             self._log(f"[key] {intent_id}", outcome)
         return self._say(outcome) if outcome.extra.get("say") else outcome
 
+    def _carry_wake(self, transcript, consume):
+        """right after a lone wake word ("Kochanie..." cut off by a pause) -> "<wake word>, <transcript>"; otherwise
+        the transcript as it is. consume: the carry is used up (the final transcript; a partial only peeks)."""
+        if not self.wake_words or self.clock() >= self._wake_until or self.strip_wake_word(transcript) is not None:
+            return transcript
+        if not normalize(transcript).split():
+            return transcript
+        if consume:
+            self._wake_until = 0.0
+        return f"{self.wake_words[0]}, {transcript}"
+
     def strip_wake_word(self, transcript: str):
         """-> the transcript without the leading wake word, or None when it does not start with one.
         Without configured wake words the transcript is returned unchanged."""
@@ -1555,7 +1588,10 @@ class Controller:
             return None
         if not any(_sim(w, tokens[0]) >= self.wake_min_similarity for w in self.wake_words):
             return None
-        return " ".join(tokens[1:])
+        tokens = tokens[1:]
+        while tokens and any(_sim(w, tokens[0]) >= self.wake_min_similarity for w in self.wake_words):
+            tokens = tokens[1:]               # "Kochanie, Pani." is the wake word only (and the model's prompt echo)
+        return " ".join(tokens)
 
     def penalty_remaining(self) -> float:
         return max(0.0, self._penalty_until - self.clock())
@@ -1679,6 +1715,7 @@ class Controller:
         safe = self._safe_word_first(transcript)
         if safe is not None:
             return self._run_match(safe, now)                # "trąbka ..." stops, whatever follows
+        transcript = self._carry_wake(transcript, consume=True)
         command = self.strip_wake_word(transcript)
         if command is None:
             # the safe word and the cooldown password need no wake word, ever ("trąbka", "trąbka uspakajająca")
@@ -1694,6 +1731,7 @@ class Controller:
                     return self._need_persona(transcript, m if m is not None and self._gated(m.intent.id) else None)
             return self._maybe_llm(transcript, Outcome("ignored", "no wake word"))
         if not command.strip():
+            self._wake_until = now + float(self.wake_carry)
             return Outcome("ignored", "wake word only")
 
         m, reason = match(command, self.intents)
@@ -1742,7 +1780,7 @@ class Controller:
             return Outcome("ignored", f"llm unavailable ({answer})", via="llm")
         extra = {"llm_raw": answer.raw, "latency_ms": answer.latency_ms}
         intent = next((i for i in self.intents if i.id == answer.intent), None)
-        if intent is None:
+        if intent is None or intent.id == "halt":         # the safe word only when "trąbka" itself is heard, never guessed
             return Outcome("ignored", "llm: not a command", via="llm", extra=extra)
         needed = intent.llm_min_confidence if intent.llm_min_confidence is not None else float(self.llm_cfg["min_confidence"])
         if not answer.addressed:

@@ -22,6 +22,7 @@ internal sealed partial class ButtplugOutputTarget
     private const int ModeCooldown = 13;           // the wind-down: slower, deeper, a narrower stroke, then micro strokes
     private const int SmallestStrokeWidth = 10;
     private const int MaxDepthAB = 80;             // "max tryb A / B": A or B at this depth
+    private const int PresetStartSpeed = 50;      // the speed that wakes a stopped machine before a built-in mode
     private static readonly int[] CalmSpeeds = [40, 25, 12, 1];   // calm, said again and again: medium down to slowest
     private const double SurpriseModeChance = 0.7;   // chance that the surprise also changes the machine's mode
 
@@ -510,13 +511,13 @@ internal sealed partial class ButtplugOutputTarget
 
         if (mode == ModeHalt && !GetQuickActuators(SpeedDescription, ActuatorType.Oscillate).Any())
         {
-            Logger.Info("No device with a speed actuator is connected, nothing to stop");
+            Logger.Debug("No device with a speed actuator on this side, nothing to stop");
             return;
         }
 
         if (mode is not (0 or ModeHalt) && !GetQuickActuators(PresetModeDescription).Any())
         {
-            Logger.Info("No device with a \"{0}\" actuator is connected, not starting mode {1}", PresetModeDescription, mode);
+            Logger.Debug("No device with a \"{0}\" actuator on this side, not starting mode {1}", PresetModeDescription, mode);
             return;
         }
 
@@ -530,6 +531,19 @@ internal sealed partial class ButtplugOutputTarget
         Cur.Speed = Math.Clamp(speed, 0, 100);
         NotifyOfPropertyChange(nameof(HismithSpeed));
         await SendQuickActuatorsAsync(SpeedDescription, Cur.Speed, 100, ActuatorType.Oscillate);
+    }
+
+    // A speed that must reach the machine: a speed command is what ends a built-in mode (1-8), but the server drops a
+    // command identical to the last one for that feature. The last speed is unknown here (the script sends through
+    // its own path), and it is often the very value we want (0 after a paused film or a Stop, 100 after mode A), so a
+    // neighbouring value goes first: whichever of the two the server drops, the second one always differs from the
+    // last speed it passed on.
+    private async Task SetSpeedSurelyAsync(int speed)
+    {
+        speed = Math.Clamp(speed, 0, 100);
+        await SetSpeedAbsoluteAsync(speed > 0 ? speed - 1 : 1);
+        await Task.Delay(150);
+        await SetSpeedAbsoluteAsync(speed);
     }
 
     private async Task ApplyHismithModeAsync(int mode)
@@ -550,9 +564,10 @@ internal sealed partial class ButtplugOutputTarget
                 await SendQuickActuatorsAsync(WidthDescription, _hismithScriptWidth, 100);
                 if (previous is >= 1 and <= PresetModeMax)
                 {
-                    // a speed command ends a built-in mode, but the server drops a command identical to the
-                    // last one: go through 0 so that the script's speed is surely sent
-                    await SetSpeedAbsoluteAsync(0);
+                    // a speed command ends a built-in mode: 0 that surely reaches the machine (a lone 0 was dropped
+                    // after a paused film or a Stop, and the machine stayed in its mode); the script's own speed, if
+                    // not 0, follows with the resend below
+                    await SetSpeedSurelyAsync(0);
                     await Task.Delay(150);
                 }
 
@@ -576,7 +591,7 @@ internal sealed partial class ButtplugOutputTarget
                 NotifyModeChanged();
                 CancelLubeBurst();
                 EventAggregator.Publish(new ScriptLoopMessage(ScriptLoopCommand.Clear));
-                await SetSpeedAbsoluteAsync(0);
+                await SetSpeedSurelyAsync(0);       // also ends a built-in mode when the last speed was 0 already
                 NotifyOfPropertyChange(nameof(HismithModeStatus));
                 return;
             }
@@ -593,6 +608,11 @@ internal sealed partial class ButtplugOutputTarget
             if (mode <= PresetModeMax)
             {
                 await RestoreScriptWindowAsync(state);
+                // a stopped machine (speed 0: a Stop, a paused film) does not start from a mode command alone - the
+                // S2 reported no movement after CC 04 n then. A running speed first, the mode right after it (the
+                // official app never hits this: its speed slider is never at 0 when a mode is picked).
+                await SetSpeedSurelyAsync(state.Speed > 0 ? state.Speed : PresetStartSpeed);
+                await Task.Delay(150);
                 _hismithPresetMode = mode;
                 NotifyOfPropertyChange(nameof(HismithPresetMode));
                 await SendPresetModeAsync(mode);
@@ -606,7 +626,7 @@ internal sealed partial class ButtplugOutputTarget
                 state.Depth = 50;
                 NotifyOfPropertyChange(nameof(HismithDepth));
                 await SendQuickActuatorsAsync(DepthDescription, 50, 100);
-                await SetSpeedAbsoluteAsync(Math.Max(CalmSpeeds[state.CalmLevel], _hismithSlowestSpeed));
+                await SetSpeedSurelyAsync(Math.Max(CalmSpeeds[state.CalmLevel], _hismithSlowestSpeed));
             }
             else
             {
@@ -618,7 +638,7 @@ internal sealed partial class ButtplugOutputTarget
                     : Math.Clamp(ScriptWindowValue(DepthDescription, 50) + (int)Math.Round(DepthBoostOffset(state.DepthBoost)), 0, 100);
                 NotifyOfPropertyChange(nameof(HismithDepth));
                 await SendQuickActuatorsAsync(DepthDescription, state.Depth, 100);
-                await SetSpeedAbsoluteAsync(mode == ModeA ? 100 : _hismithSlowestSpeed);
+                await SetSpeedSurelyAsync(mode == ModeA ? 100 : _hismithSlowestSpeed);   // A after a built-in mode: 100 may be the last speed
             }
 
             NotifyOfPropertyChange(nameof(HismithModeStatus));

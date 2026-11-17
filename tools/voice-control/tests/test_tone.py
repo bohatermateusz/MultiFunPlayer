@@ -216,7 +216,7 @@ class Unsolicited(Server):
     def setUp(self):
         FakePani.table, FakePani.calls, FakePani.mode = {}, [], "ok"
         self.runs, self.said = [], []
-        self.c = make(runs=self.runs, spontaneous=dict(P["spontaneous"], turn_chance=[1.0] * 5, action_chance=[1.0] * 5, lube_chance=0.0))
+        self.c = make(runs=self.runs, spontaneous=dict(P["spontaneous"], machine=True, turn_chance=[1.0] * 5, action_chance=[1.0] * 5, lube_chance=0.0))
         self.c.persona = Persona("x", self.base, "m", api_key="k", timeout=2)
         self.c.speak_ex = lambda line, voice: self.said.append((line, voice))
 
@@ -268,9 +268,20 @@ class Unsolicited(Server):
         c._spontaneous([{"step": s, "times": 1} for s in ("halt", "calm", "lock", "surprise", "lube_many", "hard")], 4, {}, "x")
         self.assertEqual(runs, [])
 
+    def test_by_default_she_never_moves_the_machine_herself(self):
+        # watching the film, the voice tool must not change speed, depth or a mode unless asked
+        self.assertFalse(P["spontaneous"]["machine"])
+        runs = []
+        c = make(runs=runs, spontaneous=dict(P["spontaneous"], lube_chance=1.0))
+        e = {}
+        self.assertFalse(c._spontaneous([{"step": s, "times": 1} for s in ("faster", "mode_5", "script", "deeper")], 4, e, "tease"))
+        self.assertEqual(runs, [])
+        c._spontaneous([{"step": "slower", "times": 1}, {"step": "lube_fire", "times": 1}], 4, e, "reward")
+        self.assertEqual([s["action"].split("::", 1)[-1] for s in runs[-1]], ["Hismith::LubeLauncher::Fire"])
+
     def test_dry_run_sends_nothing_but_reports(self):
         runs = []
-        c = make(runs=runs)
+        c = make(runs=runs, spontaneous=dict(P["spontaneous"], machine=True))
         c.dry_run = True
         e = {}
         self.assertTrue(c._spontaneous([{"step": "faster", "times": 1}], 2, e, "reward"))

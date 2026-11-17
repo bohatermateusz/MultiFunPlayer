@@ -31,12 +31,23 @@ def is_hallucination(text, max_words=25, max_repeats=3):
     return False
 
 
-def echoes_prompt(text, prompt, min_words=5):
-    """on silence or noise the model writes out its own prompt ("spuść się na mnie, szybciej, wolniej, ..."): at least
-    min_words words that stand in the prompt in the same order -> True (a short real command is never caught)"""
-    words = re.sub(r"[^\w\s]", " ", (text or "").lower()).split()
-    hint = " " + " ".join(re.sub(r"[^\w\s]", " ", (prompt or "").lower()).split()) + " "
-    return len(words) >= min_words and f" {' '.join(words)} " in hint
+def _norm_words(text):
+    return re.sub(r"[^\w\s]", " ", (text or "").lower()).split()
+
+
+def echoes_prompt(text, prompt, min_words=5, min_commands=2):
+    """on silence or noise the model writes out its own prompt ("Kochanie, Pani, spuść się na mnie, szybciej, wolniej,
+    ..."): at least min_words words that stand in the prompt in the same order AND at least min_commands of the prompt's
+    command phrases -> True. A real command is never caught: "Pani, spuść się na mnie" also stands in the prompt in
+    that order, but it holds one command only. The prompt is "<wake words>. <phrase>, <phrase>, ..." (stt_prompt)."""
+    words = _norm_words(text)
+    hint = " " + " ".join(_norm_words(prompt)) + " "
+    if len(words) < min_words or f" {' '.join(words)} " not in hint:
+        return False
+    commands = (prompt or "").split(". ", 1)[-1].split(",")
+    said = f" {' '.join(words)} "
+    found = sum(1 for c in commands if _norm_words(c) and f" {' '.join(_norm_words(c))} " in said)
+    return found >= min_commands
 
 
 def pcm_to_wav(pcm: bytes, sample_rate: int = 16000) -> bytes:

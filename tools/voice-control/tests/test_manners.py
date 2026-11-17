@@ -84,6 +84,30 @@ class IgnoringHerDemand(Server):
         self.assertEqual(o.extra["decision"], "owed")
 
 
+class OneWish(Server):
+    def test_thanks_after_back_to_the_film_keep_the_ask_even_when_the_model_says_play(self):
+        # 11:31: "kochanie, wróć do filmu" (script) -> "Gdzie dziękuję?"; "Dziękuję." read by the model as "play":
+        # the thanks went to a fresh "play" ask with 0 asks and the owed grant was lost
+        self.c.persona_cfg = dict(P, base_p=0.0, base_p_overrides={}, step_p_overrides={}, step_p=0.0)
+        self.say("kochanie, wróć do filmu", request="script", demand="thank")
+        self.assertEqual(self.c._owed, "script")
+        o = self.say("dziękuję", request="play", thanked=True, granted="Masz.")
+        self.assertEqual(o.status, "executed")
+        self.assertEqual(o.intent, "script")
+
+    def test_a_different_wish_is_not_taken_for_the_old_one(self):
+        self.c.persona_cfg = dict(P, base_p=0.0, base_p_overrides={}, step_p_overrides={}, step_p=0.0)
+        self.say("kochanie, wróć do filmu", request="script", demand="beg")
+        o = self.say("proszę, spuść się na mnie", request="lube_fire")
+        self.assertEqual(o.intent, "lube_fire")
+
+    def test_only_wake_words_are_the_wake_word_only(self):
+        # "Kochanie, Pani." on noise (the start of the speech-to-text prompt) was read by her as a request
+        self.clock.t += 1
+        self.assertEqual(self.c.handle("Kochanie, Pani.").detail, "wake word only")
+        self.assertEqual(self.c.strip_wake_word("kochanie, Pani, wróć do filmu"), "wroc do filmu")
+
+
 class RefusalIsPunished(Server):
     def test_an_open_refusal_wipes_the_progress_and_blocks_everything_for_a_while(self):
         self.c.persona_cfg = dict(P, base_p=0.0, base_p_overrides={}, step_p_overrides={}, step_p=0.0, manners=dict(M, beg_met_bonus=0.0))

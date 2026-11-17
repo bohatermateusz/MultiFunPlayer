@@ -335,6 +335,86 @@ class Live(ChatBase):
                              headphones=True, log=lambda *a: None)
         self.c.speak_ex = None
 
+    def _with_echo_filter(self):
+        from stt import echoes_prompt
+        from voice_control import stt_prompt
+        prompt = stt_prompt(self.c.intents, self.c.wake_words)
+        self.loop.reject = lambda text: echoes_prompt(text, prompt)
+        return prompt
+
+    def test_the_prompt_written_out_on_noise_runs_nothing(self):
+        # gpt-4o-mini-transcribe on noise returned its own prompt, and the lube shot ran from it
+        self.clock.t += 20
+        prompt = self._with_echo_filter()
+        wake, commands = prompt.split(". ", 1)
+        kept = []
+        for c in commands.split(","):                  # the prompt up to the safe word, if it is there (that one stops everything)
+            if self.c.mentions_safe_word(c):
+                break
+            kept.append(c.strip())
+        echo = wake + ", " + ", ".join(kept) + "."
+        self.assertIn("spuść się", echo)
+        self.loop.on_partial("e1", echo[:len(echo) // 2])
+        self.assertIsNone(self.loop.on_final("e1", echo))
+        self.assertEqual(self.runs, [])
+        self.assertEqual(self.loop._spec, {})
+
+    def _levels(self, room_db, word_db):
+        import time as _t
+        now = _t.monotonic()
+        self.loop.safe_word_margin_db = 10
+        self.loop._levels = [(now - 15 + i * 0.1, room_db) for i in range(100)] + [(now - 0.5, word_db)]
+
+    def test_a_quiet_safe_word_is_a_guess_and_runs_nothing(self):
+        # on noise the model wrote "trąbka" and the machine stopped, again and again, in the middle of the film
+        self.clock.t += 20
+        self._levels(-60, -55)
+        self.loop.on_partial("q1", "trąbka")
+        self.assertIsNone(self.loop.on_final("q1", "trąbka"))
+        self.assertEqual(self.runs, [])
+
+    def test_a_clearly_said_safe_word_stops(self):
+        self.clock.t += 20
+        self._levels(-60, -30)
+        self.loop.on_partial("q2", "trąbka")
+        self.assertEqual(self.loop.last_outcome.intent, "halt")
+        self.assertEqual(len(self.runs), 1)
+
+    def test_the_level_of_a_block(self):
+        import array
+        self.assertLess(self.loop.level_db(array.array("h", [0] * 480).tobytes()), -80)
+        self.assertGreater(self.loop.level_db(array.array("h", [16000, -16000] * 240).tobytes()), -7)
+
+    def test_the_safe_word_in_an_echo_still_stops(self):
+        self.clock.t += 20
+        self.loop.reject = lambda text: True                 # whatever is rejected as a hallucination ...
+        self.loop.on_final("e2", "Kochanie, Pani, szybciej, wolniej, głębiej, trąbka, utrzymaj to.")
+        self.assertEqual(self.loop.last_outcome.intent, "halt")
+
+    def test_a_real_command_that_stands_in_the_prompt_still_runs(self):
+        self.clock.t += 20
+        self._with_echo_filter()
+        self.loop.on_partial("e3", "kochanie, utrzymaj to")
+        self.assertEqual(len(self.runs), 1)
+
+    def test_a_lone_wake_word_carries_over_to_the_next_turn(self):
+        # "Kochanie..." (pause: the recognition ends the turn) "utrzymaj to"
+        self.clock.t += 20
+        self.assertEqual(self.loop.on_final("w1", "Kochanie...").detail, "wake word only")
+        self.clock.t += 2
+        self.loop.on_partial("w2", "utrzymaj to")
+        self.assertEqual(len(self.runs), 1)
+        self.clock.t += 10                                   # the carry is spent / over: plain words do nothing
+        self.loop.on_final("w3", "utrzymaj to")
+        self.assertEqual(len(self.runs), 1)
+
+    def test_the_carry_ends_after_a_few_seconds(self):
+        self.clock.t += 20
+        self.loop.on_final("w4", "Kochanie...")
+        self.clock.t += 7
+        self.loop.on_partial("w5", "utrzymaj to")
+        self.assertEqual(self.runs, [])
+
     def test_partial_runs_a_plain_command_and_the_final_does_not_repeat_it(self):
         self.clock.t += 20
         self.loop.on_partial("t1", "kochanie, utrzymaj to")
