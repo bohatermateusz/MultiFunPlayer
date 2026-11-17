@@ -1,7 +1,8 @@
 # Ściąga: co mówić podczas sesji
 
 Każda komenda zaczyna się od **„kochanie"** albo **„Pani"** (można z przecinkiem, pauzą, „kochanie, …"). Bez tego słowa
-nic się nie dzieje. Jeśli słowo wyjdzie przekręcone („trwanie", „kochana") albo komenda jest powiedziana
+nic się nie dzieje. Po samym „kochanie" i dłuższej pauzie masz 6 sekund na komendę – liczy się tak, jakby
+„kochanie" było na początku (`wake.carry_seconds` w `commands.json`). Jeśli słowo wyjdzie przekręcone („trwanie", „kochana") albo komenda jest powiedziana
 po swojemu, model się domyśli, o co chodzi. Nie musisz mówić dokładnie tak, jak w tabelach – to tylko
 przykłady, które działają na pewno (bez modelu, od razu).
 

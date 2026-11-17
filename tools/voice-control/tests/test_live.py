@@ -335,6 +335,60 @@ class Live(ChatBase):
                              headphones=True, log=lambda *a: None)
         self.c.speak_ex = None
 
+    def _with_echo_filter(self):
+        from stt import echoes_prompt
+        from voice_control import stt_prompt
+        prompt = stt_prompt(self.c.intents, self.c.wake_words)
+        self.loop.reject = lambda text: echoes_prompt(text, prompt)
+        return prompt
+
+    def test_the_prompt_written_out_on_noise_runs_nothing(self):
+        # gpt-4o-mini-transcribe on noise returned its own prompt, and the lube shot ran from it
+        self.clock.t += 20
+        prompt = self._with_echo_filter()
+        wake, commands = prompt.split(". ", 1)
+        kept = []
+        for c in commands.split(","):                  # the prompt up to the safe word (that one would stop everything)
+            if self.c.mentions_safe_word(c):
+                break
+            kept.append(c.strip())
+        echo = wake + ", " + ", ".join(kept) + "."
+        self.assertIn("spuść się", echo)
+        self.loop.on_partial("e1", echo[:len(echo) // 2])
+        self.assertIsNone(self.loop.on_final("e1", echo))
+        self.assertEqual(self.runs, [])
+        self.assertEqual(self.loop._spec, {})
+
+    def test_the_safe_word_in_an_echo_still_stops(self):
+        self.clock.t += 20
+        prompt = self._with_echo_filter()
+        self.loop.on_final("e2", prompt.replace(".", ",") + ".")
+        self.assertEqual(self.loop.last_outcome.intent, "halt")
+
+    def test_a_real_command_that_stands_in_the_prompt_still_runs(self):
+        self.clock.t += 20
+        self._with_echo_filter()
+        self.loop.on_partial("e3", "kochanie, utrzymaj to")
+        self.assertEqual(len(self.runs), 1)
+
+    def test_a_lone_wake_word_carries_over_to_the_next_turn(self):
+        # "Kochanie..." (pause: the recognition ends the turn) "utrzymaj to"
+        self.clock.t += 20
+        self.assertEqual(self.loop.on_final("w1", "Kochanie...").detail, "wake word only")
+        self.clock.t += 2
+        self.loop.on_partial("w2", "utrzymaj to")
+        self.assertEqual(len(self.runs), 1)
+        self.clock.t += 10                                   # the carry is spent / over: plain words do nothing
+        self.loop.on_final("w3", "utrzymaj to")
+        self.assertEqual(len(self.runs), 1)
+
+    def test_the_carry_ends_after_a_few_seconds(self):
+        self.clock.t += 20
+        self.loop.on_final("w4", "Kochanie...")
+        self.clock.t += 7
+        self.loop.on_partial("w5", "utrzymaj to")
+        self.assertEqual(self.runs, [])
+
     def test_partial_runs_a_plain_command_and_the_final_does_not_repeat_it(self):
         self.clock.t += 20
         self.loop.on_partial("t1", "kochanie, utrzymaj to")

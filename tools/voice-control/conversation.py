@@ -72,8 +72,12 @@ class LiveLoop:
     for every block until stop() is true (sounddevice in the tool, a fake in the tests)."""
 
     def __init__(self, controller, stt, mic, voice, ws_speaker=None, fallback_transcribe=None, detector=None,
-                 headphones=True, muted=lambda: False, speculative=True, interrupt_on_speech=True, log=print, rate=24000):
+                 headphones=True, muted=lambda: False, speculative=True, interrupt_on_speech=True, log=print, rate=24000,
+                 reject=None):
         self.c, self.stt, self.mic, self.voice, self.ws = controller, stt, mic, voice, ws_speaker
+        # reject(text) -> True for a speech-to-text hallucination (the model writing out its own prompt on noise):
+        # such a text never runs anything, neither as a partial nor as the final transcript
+        self.reject = reject or (lambda text: False)
         self.fallback_transcribe, self.detector = fallback_transcribe, detector
         self.headphones, self.muted, self.speculative, self.interrupt_on_speech = headphones, muted, speculative, interrupt_on_speech
         self.log, self.rate = log, rate
@@ -119,7 +123,19 @@ class LiveLoop:
         if self.headphones and self.interrupt_on_speech:
             self.voice.interrupt()
 
+    def _screen(self, text):
+        """the text to act on: a hallucination is dropped (None), except that the safe word in it still stops everything"""
+        if not self.reject(text):
+            return text
+        if self.c.mentions_safe_word(text):
+            halt = next((i for i in self.c.intents if i.id == "halt" and i.phrases), None)
+            return halt.phrases[0] if halt else None
+        return None
+
     def on_partial(self, item, text):
+        text = self._screen(text)
+        if text is None:
+            return
         try:
             result = self.c.handle_partial(item, text)
         except Exception as e:
@@ -151,6 +167,10 @@ class LiveLoop:
     def on_final(self, item, text):
         with self._lock:
             spec = self._spec.pop(item, None)
+        heard, text = text, self._screen(text)
+        if text is None:
+            self.log(f'  "{heard[:60]}..." -> ignored (speech-to-text hallucination)')
+            return None
         kind, result = self.c.prepare(text) if not self.c._consumed.get(item) else ("outcome", self.c.handle_final(item, text))
         if kind == "outcome":
             self.last_outcome = result

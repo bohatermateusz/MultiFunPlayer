@@ -179,6 +179,10 @@ class Controller:
         self.speak = speak
         self.rng = rng or random.Random()
         self._window_until = 0.0          # until then an utterance without the wake word is an answer to her
+        # "kochanie" said alone, then a pause, then the command: the live recognition cuts the turn on the pause, so
+        # for wake_carry seconds after a lone wake word the next utterance counts as if it started with it
+        self.wake_carry = 6.0
+        self._wake_until = 0.0
         self._asks = {}                   # request id -> how many times it was denied so far
         self._last_ask = 0.0
         self._owed = None                 # request id she will grant once the user does what she demanded
@@ -525,6 +529,7 @@ class Controller:
                 o = self._run_match(m, now)
                 self._log(f"[partial] {text}", o)
                 return self._say(o)
+            text = self._carry_wake(text, consume=False)
             command = self.strip_wake_word(text)
             if command is None or not command.strip():
                 return None
@@ -1513,6 +1518,17 @@ class Controller:
             self._log(f"[key] {intent_id}", outcome)
         return self._say(outcome) if outcome.extra.get("say") else outcome
 
+    def _carry_wake(self, transcript, consume):
+        """right after a lone wake word ("Kochanie..." cut off by a pause) -> "<wake word>, <transcript>"; otherwise
+        the transcript as it is. consume: the carry is used up (the final transcript; a partial only peeks)."""
+        if not self.wake_words or self.clock() >= self._wake_until or self.strip_wake_word(transcript) is not None:
+            return transcript
+        if not normalize(transcript).split():
+            return transcript
+        if consume:
+            self._wake_until = 0.0
+        return f"{self.wake_words[0]}, {transcript}"
+
     def strip_wake_word(self, transcript: str):
         """-> the transcript without the leading wake word, or None when it does not start with one.
         Without configured wake words the transcript is returned unchanged."""
@@ -1647,6 +1663,7 @@ class Controller:
         safe = self._safe_word_first(transcript)
         if safe is not None:
             return self._run_match(safe, now)                # "trąbka ..." stops, whatever follows
+        transcript = self._carry_wake(transcript, consume=True)
         command = self.strip_wake_word(transcript)
         if command is None:
             # the safe word and the cooldown password need no wake word, ever ("trąbka", "trąbka uspakajająca")
@@ -1662,6 +1679,7 @@ class Controller:
                     return self._need_persona(transcript, m if m is not None and self._gated(m.intent.id) else None)
             return self._maybe_llm(transcript, Outcome("ignored", "no wake word"))
         if not command.strip():
+            self._wake_until = now + float(self.wake_carry)
             return Outcome("ignored", "wake word only")
 
         m, reason = match(command, self.intents)
