@@ -1420,6 +1420,7 @@
    "default_theme_stage": 2,
    "top_share": 0.6,
    "near_share": 0.25,
+   "levels": {"1": "WERSJA OSTRZEJSZA (sesja poszła dalej niż ten wątek): wulgarniej, mocniej, bardziej uprzedmiotawiająco, mniej czułości", "2": "WERSJA NAJOSTRZEJSZA (szczyt sesji): skrajnie wulgarnie, bez litości i bez czułości; ona jest już tylko rzeczą, dziurą i ciałem do użytku"},
    "themes": [
     "ssanie - jak mała dziewczynka, grzecznie, do końca",
     "dziewczynka do rozłożenia - delikatna, gotowa, bezwolna",
@@ -1565,6 +1566,7 @@
     "similarity": 0.8,
     "retired": ["Dwóch naraz to nie orgy… to standard: jeden w buzi, drugi w kolejce. Tak wygląda twoje otoczenie.", "Ten lodzik w kamerze wyszedł ci lepiej niż całe twoje życie. Doczekał się recenzji. Wszystkich pozytywnych.", "Twoja technika miała więcej widzów niż kiedykolwiek twoje zdanie. Statystyki mówią samo: buzia lepsza niż głowa.", "Całe miasto zna twoją dupę od lepszej strony. Literalnie.", "Każdy, kto na ciebie patrzy, już to przemyślał. Sekundę dłużej niż trzeba. Wiesz w jakiej pozycji.", "Twoja dupa zbiera propozycje szybciej, niż twój mózg zdąża je odrzucać. Dlatego już nie odrzucasz.", "Nie jesteś pożądana jak piękny obrazek. Jesteś pożądana jak dobre miejsce. Robi się kolejkę.", "Twoje usta mają listę oczekujących. Rośnie lawinowo. Grzecznie poczekają. Ty też.", "Zanim skończysz tego jednego, trzech kolejnych już się zapisało. Taki obrót.", "Mogłabyś wprowadzić numeryczki. Ale po co — wszyscy i tak znają twoje usta na pamięć. Po prostu wchodzą."],
     "banned_words": ["maszyn", "silnik", "urządzen", "dildo", "launcher", "tryb ", "skrypt", "funscript", " vr ", "re:\\b(suk[aoęiąe]?|suczk\\w*|bitch\\w*)\\b"],
+    "seed_up": {},
     "seed": {
      "cisza w głowie - w głowie robi się cicho: żadnych myśli, zmartwień ani planów, tylko oddech, ciepło i jego rytm; to najspokojniejsze miejsce, jakie zna": [
       "W twojej głowie robi się cicho. Żadnych myśli. Tylko oddech i jego rytm.",
@@ -3782,6 +3784,7 @@
      "The pleasure was the bait. It was always about you stopping being your own."
     ],
     "theme_stages": {"0": ["praise", "tenderness in humiliation", "aftercare", "affirmation", "trans girl", "fantasy come true", "welcome back", "a new name from the girls", "the first makeup", "stockings and lace", "dressed as a woman", "feminisation", "you don't have to think", "quiet in her head", "on his lap", "instead of his wife", "trance", "let go"], "1": ["remade", "hormones", "salon and clinic", "sissy school", "the maid", "the bride", "the morning after the wedding", "the morning note", "the rules of the new life", "greeting at the door", "the reward for being good", "the boss's assistant", "empty head", "the trigger word", "caught", "only three months", "contract and debt", "signed blind", "six months later", "the girlfriend became the Mistress", "the trainer", "chastity", "a girl to be spread", "sucking", "she volunteered", "captive by choice", "spotted", "empty", "dazed by them", "drunk on pleasure", "a doll instead of a tyrant", "anything"], "2": ["she belongs to them", "property", "forever", "the sham", "too late", "the trap", "reprogramming", "everyone knows", "gratitude for being owned", "erased", "the only orgasm left", "her hole is not hers", "break me", "the one who takes her", "taken from behind", "anal princess", "fucked in the ass", "her ass is not hers", "her orgasms are not hers", "the old life watches", "the only way out", "addicted to them", "their drug", "for their amusement", "the maids of the estate", "in a haze"], "3": ["a thing", "their girl to fuck", "on call", "nobody asked", "the body betrays her", "pinned", "your fault", "ten minutes later", "broken in", "tied to the chair", "spreader bar", "gag and collar", "the bench", "porn star", "ordered", "the only job", "both ends", "two at once", "marked and proud", "under the table"], "4": ["livestock", "a body to fuck", "milking and breeding", "warm cum inside", "on the face and in the mouth", "one after another", "covered", "full after the whole night", "fed on them", "they cum in her ass"]},
+    "levels": {"1": "HARSHER VERSION (the session has gone further than this theme): cruder, harder, more objectifying, less tenderness", "2": "HARSHEST VERSION (the peak of the session): extremely crude, merciless, no tenderness; she is only a thing, a hole and a body for use"},
     "themes": [
      "sucking - like a little girl, obediently, to the end",
      "a girl to be spread - soft, ready, will-less",
@@ -3946,6 +3949,7 @@
       "silnik",
       "urządzen"
      ],
+     "seed_up": {},
      "seed": {
       "slave of pleasure - they grab her, fuck her, and she cums on her own without controlling it; orgasm after orgasm until the pleasure holds her tighter than a chain": [
        "They grab you as you pass, bend you over anything and take you. And you cum before you can even be surprised.",

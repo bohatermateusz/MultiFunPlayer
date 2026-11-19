@@ -12,6 +12,27 @@ import threading
 import time
 
 
+def level_key(theme, label):
+    """the pool key of a theme's harsher version: the theme with the intensity spelled out (it is also the topic the model
+    gets when it writes more lines for that version)"""
+    return f"{theme} || {label}" if label else theme
+
+
+def escalated_seed(themes, seed_up, labels):
+    """narration.pool.seed_up (theme name before " - " -> {"1": [...], "2": [...]}) as pool seeds under level keys"""
+    out = {}
+    by_name = {t.split(" - ")[0].strip().lower(): t for t in themes}
+    for name, levels in (seed_up or {}).items():
+        theme = by_name.get(str(name).strip().lower())
+        if theme is None:
+            continue
+        for level, lines in (levels or {}).items():
+            label = (labels or {}).get(str(level))
+            if label and lines:
+                out[level_key(theme, label)] = list(lines)
+    return out
+
+
 def _norm(text):
     return re.sub(r"[^\w\s]", "", text.lower()).split()
 

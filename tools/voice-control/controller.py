@@ -19,7 +19,7 @@ NO = {"nie", "anuluj", "stop", "odwolaj"}
 
 LLM_DEFAULTS = {"min_confidence": 0.8, "max_words": 14, "prefilter_similarity": 0.5, "prefilter_min_length": 5, "context": 3,
                 "max_steps": 4, "max_faster": 3, "max_deeper": 3, "max_lube": 1}
-REPLACE_WHOLE = {("narration", "pool", "seed"), ("narration", "tasks", "by_stage"), ("narration", "tasks", "care"),
+REPLACE_WHOLE = {("narration", "pool", "seed"), ("narration", "pool", "seed_up"), ("narration", "tasks", "by_stage"), ("narration", "tasks", "care"),
                  ("vocabulary",), ("address",)}
 
 
@@ -479,6 +479,25 @@ class Controller:
                 return int(stage)
         return int(cfg.get("default_theme_stage", 0))
 
+    def _level_of(self, theme, stage, soft=False):
+        """how much harsher than the theme itself this moment is: 0 at the theme's own stage, 1-2 when the session has
+        gone further (narration.levels names them); never while winding down"""
+        cfg = self.persona_cfg["narration"]
+        if soft or not cfg.get("theme_stages") or not cfg.get("levels"):
+            return 0
+        return max(0, min(max(int(k) for k in cfg["levels"]), stage - self.theme_stage(theme, cfg)))
+
+    def _take_line(self, theme, stage, soft=False):
+        """a pool line for the theme at the intensity the session has reached, else a milder one. -> (line, key)"""
+        from lines import level_key
+        labels = self.persona_cfg["narration"].get("levels") or {}
+        for level in range(self._level_of(theme, stage, soft), -1, -1):
+            key = level_key(theme, labels.get(str(level)) if level else "")
+            line = self.pool.take(key)
+            if line:
+                return line, key
+        return None, level_key(theme, labels.get(str(self._level_of(theme, stage, soft))) if self._level_of(theme, stage, soft) else "")
+
     def _narration_themes(self, cfg, soft=False, stage=None):
         """the themes she may comment on now (not the ones used lately); while winding down only the tender ones.
         With narration.theme_stages only the themes of the stage reached so far, and mostly the harshest of them: the
@@ -522,7 +541,7 @@ class Controller:
             if tasks.get("enabled") and not soft and self.rng.random() < float(share[max(0, min(stage, len(share) - 1))]):
                 line, source = self._draw_task(stage), "task"
         if not line and self.pool is not None:
-            line = self.pool.take(theme)
+            line, _ = self._take_line(theme, stage, soft)
         if not line:
             return None, None
         with self._lock:
@@ -1050,14 +1069,15 @@ class Controller:
                 line = self._draw_task(stage)
             if line:
                 source, theme = "task", "polecenie"
-        if not line:
-            line = self.pool.take(theme) if self.pool is not None else None
+        topic = theme
+        if not line and self.pool is not None:
+            line, topic = self._take_line(theme, stage, soft)
             if line:
-                source, left = "pool", self.pool.left(theme)
+                source, left = "pool", self.pool.left(topic)
         if not line:
             for attempt in range(2):
                 try:
-                    line = self.persona.narrate(state, history, theme, list(cfg.get("examples", [])), int(cfg.get("max_words", 16)),
+                    line = self.persona.narrate(state, history, topic, list(cfg.get("examples", [])), int(cfg.get("max_words", 16)),
                                                 str(cfg.get("style", "")), self.persona_cfg.get("language_rule", ""))
                 except Exception:
                     return None
