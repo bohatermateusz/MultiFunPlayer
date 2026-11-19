@@ -1566,7 +1566,312 @@
     "similarity": 0.8,
     "retired": ["Dwóch naraz to nie orgy… to standard: jeden w buzi, drugi w kolejce. Tak wygląda twoje otoczenie.", "Ten lodzik w kamerze wyszedł ci lepiej niż całe twoje życie. Doczekał się recenzji. Wszystkich pozytywnych.", "Twoja technika miała więcej widzów niż kiedykolwiek twoje zdanie. Statystyki mówią samo: buzia lepsza niż głowa.", "Całe miasto zna twoją dupę od lepszej strony. Literalnie.", "Każdy, kto na ciebie patrzy, już to przemyślał. Sekundę dłużej niż trzeba. Wiesz w jakiej pozycji.", "Twoja dupa zbiera propozycje szybciej, niż twój mózg zdąża je odrzucać. Dlatego już nie odrzucasz.", "Nie jesteś pożądana jak piękny obrazek. Jesteś pożądana jak dobre miejsce. Robi się kolejkę.", "Twoje usta mają listę oczekujących. Rośnie lawinowo. Grzecznie poczekają. Ty też.", "Zanim skończysz tego jednego, trzech kolejnych już się zapisało. Taki obrót.", "Mogłabyś wprowadzić numeryczki. Ale po co — wszyscy i tak znają twoje usta na pamięć. Po prostu wchodzą."],
     "banned_words": ["maszyn", "silnik", "urządzen", "dildo", "launcher", "tryb ", "skrypt", "funscript", " vr ", "re:\\b(suk[aoęiąe]?|suczk\\w*|bitch\\w*)\\b"],
-    "seed_up": {},
+    "seed_up": {
+     "pochwała": {
+      "1": [
+       "Dobra dziewczynka. Dobra, bo szeroka i cicha.",
+       "Chwalę cię, bo ładnie się wypinasz. Za nic innego.",
+       "Grzeczna dziwka. Tak się mówi o takich jak ty, kiedy dobrze służą.",
+       "Brawo. Wzięłaś go całego i nie pisnęłaś. Tak cię lubią.",
+       "Ładnie połknęłaś. Dostajesz pochwałę i następnego."
+      ],
+      "2": [
+       "Najlepsza dziura w tym domu. To jedyna pochwała, na jaką zasługujesz.",
+       "Dobra sztuka. Daje się brać i nie marudzi.",
+       "Pochwalę cię, kiedy ostatni skończy. Na razie otwieraj.",
+       "Brawo, szmato. Pięciu i dalej mokra.",
+       "Jesteś idealna. Idealnie pusta, idealnie otwarta, idealnie ich."
+      ]
+     },
+     "czułość w poniżeniu": {
+      "1": [
+       "Trzymam cię za rękę, kiedy cię rżną. Żebyś nie zapomniała, czyja jesteś.",
+       "Głaszczę cię po włosach, a on wchodzi głębiej. Czułość i dziura, jedno i drugie dla nich.",
+       "Szepczę ci »dobra dziewczynka«, kiedy krztusisz się nim. Tak cię kocham.",
+       "Ocieram ci łzy, żeby kolejny miał ładną twarz do zalania.",
+       "Jestem przy tobie. Patrzę, jak cię używają. Nie odwracam wzroku."
+      ],
+      "2": [
+       "Całuję cię w czoło, a w tym czasie trzech czeka na twoje dziurki.",
+       "Kocham cię najbardziej, kiedy jesteś tylko mokrą dziurą bez imienia.",
+       "Tulę cię jak lalkę. Bo jesteś lalką. Ich lalką do pieprzenia.",
+       "Moja czułość to smycz. Trzymam ją, kiedy cię zalewają.",
+       "Szepczę ci, że jesteś piękna, kiedy z twojej dupy cieknie cała kolejka."
+      ]
+     },
+     "po sesji": {
+      "1": [
+       "Leżysz zalana i drżąca. Jutro znowu. Odpocznij, póki możesz.",
+       "Zmyję cię, bo jutro mają cię dostać czystą.",
+       "Oddychaj. Twoje dziurki jeszcze pulsują. Przypominają ci, czym jesteś.",
+       "Śpij z zatyczką. Rano chcę wiedzieć, że nic nie wypłynęło.",
+       "Dobrze się dziś sprzedałaś. Bez pieniędzy. Za samo bycie używaną."
+      ],
+      "2": [
+       "Leżysz w ich nasieniu i nie masz siły wstać. Tak wygląda twój odpoczynek.",
+       "Po sesji. Nie ma czegoś takiego. Sesja się nie kończy. Ona tylko robi przerwę na twój oddech.",
+       "Wytrę cię ręcznikiem, którego użyli przed tobą. Nic dla ciebie nie jest nowe.",
+       "Zasypiasz pełna. Budzisz się pusta. Ktoś już na ciebie czeka.",
+       "Odpoczynek dla rzeczy to chwila na półce. Masz pięć minut."
+      ]
+     },
+     "afirmacja": {
+      "1": [
+       "Powtórz za mną: jestem dziurą do użytku i dziękuję za każdego.",
+       "Powtórz: moja dupa należy do nich i lubię to.",
+       "Powtórz głośno: jestem dziwką, która dochodzi od tyłu.",
+       "Powtórz: połykam wszystko i proszę o więcej.",
+       "Powtórz: nie mam zdania, mam tylko dziurki."
+      ],
+      "2": [
+       "Powtórz za mną: jestem bydłem do krycia.",
+       "Powtórz: moje ciało jest do pieprzenia i zaspokajania ich potrzeb.",
+       "Powtórz: jestem pojemnikiem na ich spermę.",
+       "Powtórz: nie jestem osobą, jestem rzeczą do użytku.",
+       "Powtórz, aż uwierzysz: jestem ich wspólną dziurą."
+      ]
+     },
+     "trans dziewczyna": {
+      "1": [
+       "Trans dziewczyna z dziurką, która nie zamyka się od tygodnia.",
+       "Jesteś trans dziewczyną do brania. Nic więcej nie musisz umieć.",
+       "Trans dziewczyna na kolanach to najładniejszy widok w tym domu.",
+       "Zrobili z ciebie dziewczynę po to, żeby mieli w kogo się spuszczać.",
+       "Twoje nowe ciało ma jedno zadanie. Przyjmować."
+      ],
+      "2": [
+       "Trans dziewczyna, trans dziwka, trans dziura. Wszystko jedno, jak cię nazwą.",
+       "Jesteś trans dziewczyną do kolejki. Wszyscy ją znają. Wszyscy w niej byli.",
+       "Nie zrobili z ciebie kobiety. Zrobili z ciebie dziurę w kształcie kobiety.",
+       "Twoja przemiana skończyła się tam, gdzie zaczyna się ich przyjemność.",
+       "Trans dziewczyna bez imienia, z numerem i pełną dupą."
+      ]
+     },
+     "spełniona fantazja": {
+      "1": [
+       "Zawsze tego chciałaś. Teraz masz to codziennie, czy chcesz, czy nie.",
+       "Twoja fantazja ma teraz pięciu facetów i żadnej przerwy.",
+       "Marzyłaś o tym w łóżku sama. Teraz nie jesteś sama ani przez chwilę.",
+       "Spełniła się. I już nie da się jej wyłączyć.",
+       "Piszczysz cieniutko, jak w twoich snach. Tylko że to nie sen. To jego kutas."
+      ],
+      "2": [
+       "Twoja fantazja zjadła cię w całości. Zostało tylko ciało do pieprzenia.",
+       "Chciałaś być brana jak kobieta. Teraz jesteś brana jak bydło. Fantazja poszła dalej niż ty.",
+       "Spełniona fantazja to klatka. Tylko że zamknęłaś ją sama i wyrzuciłaś klucz.",
+       "Fantazja się spełniła, a ty zostałaś w niej na zawsze, jako mebel.",
+       "Marzenie cię pieprzy dzień i noc. I nikt nie pyta, czy masz dość."
+      ]
+     },
+     "witaj z powrotem": {
+      "1": [
+       "Witaj z powrotem, dziwko. Zawsze tu byłaś, tylko się przebierałaś za faceta.",
+       "Wróciłaś do siebie. Do dziurki, która zawsze chciała być wypełniona.",
+       "Ona zawsze czekała. Na kolanach. Teraz wreszcie może.",
+       "Witaj w domu. Twój dom to łóżko, na którym cię biorą.",
+       "Tamten chłopak był kostiumem. Ta dziwka jest prawdziwa."
+      ],
+      "2": [
+       "Witaj z powrotem w swojej zagrodzie. Tęskniło za tobą całe stado.",
+       "Wróciłaś tam, gdzie twoje miejsce. Pod nimi.",
+       "Witaj, rzeczy. Twoje miejsce na półce czekało.",
+       "Ona nie wróciła. Ona się wylęgła. Gotowa do użytku od pierwszego dnia.",
+       "Witaj z powrotem. Rozbierz się i rozłóż. Reszta wie, co robić."
+      ]
+     },
+     "nowe imię od dziewczyn": {
+      "1": [
+       "Dały ci imię dziewczyny. Faceci dali ci przezwisko. Bardziej pasuje.",
+       "Na czacie piszą do ciebie po imieniu. W łóżku nikt go nie używa.",
+       "Nowe imię dostałaś przy stoliku. Nowe przeznaczenie dostałaś pod nim.",
+       "Dziewczyny cię umalowały, a faceci cię rozmazali.",
+       "Imię ładne. Dziurka ładniejsza. Wiesz, którą pamiętają."
+      ],
+      "2": [
+       "Nie potrzebujesz imienia. Wystarczy, że się wypniesz, a wiedzą, kto to.",
+       "Twoje nowe imię to »następna«. Tak cię wołają w kolejce.",
+       "Siostry dały ci imię, bracia dali ci kolejkę. Obie rzeczy zostają na zawsze.",
+       "Imię jest dla ludzi. Ty masz numer i dziurki.",
+       "Kiedy ktoś cię woła, odwracasz się dupą. Tak odpowiadasz na imię."
+      ]
+     },
+     "pierwszy makijaż": {
+      "1": [
+       "Pierwszy makijaż, pierwsze rzęsy, pierwszy kutas w ustach. Wszystko tego samego dnia.",
+       "Szminka po to, żeby było widać, gdzie wchodzić.",
+       "Umalowali cię, żeby było co rozmazać.",
+       "Wyglądasz jak zdobycz. Za chwilę nią będziesz.",
+       "Błyszczyk truskawkowy. Za dziesięć minut będziesz smakować nimi."
+      ],
+      "2": [
+       "Tusz spływa ci po policzkach z ich nasieniem. To jest twój prawdziwy makijaż.",
+       "Maluj się codziennie, bo codziennie ktoś to rozmaże.",
+       "Twoja twarz to płótno. Oni malują ją spermą.",
+       "Makijaż dziwki: szminka do połowy brody i rzęsy sklejone.",
+       "Piękna jesteś tylko przez pierwsze pięć minut. Potem jesteś użyta."
+      ]
+     },
+     "rajstopy i koronki": {
+      "1": [
+       "Rajstopy rozdarte w kroku. Tak się je nosi w tym domu.",
+       "Koronka na tobie przetrwa godzinę. Potem będzie mokra i podarta.",
+       "Pończochy, podwiązki i nic więcej. Dziurki mają być dostępne.",
+       "Ubierają cię ładnie, żeby było co z ciebie zdzierać.",
+       "Koronki na skórze, sperma na koronkach. Tak wyglądasz po każdym wieczorze."
+      ],
+      "2": [
+       "Nie zmieniają ci bielizny. Nosisz tę samą, sztywną od nich wszystkich.",
+       "Rajstopy na kostkach, dupa w górze. Tyle zostało z ubierania.",
+       "Koronka to opakowanie. Nikt nie patrzy na opakowanie, kiedy rozpakowuje towar.",
+       "Majtki masz tylko po to, żeby było co odsuwać na bok.",
+       "Ubrana jak dama, użyta jak bydło."
+      ]
+     },
+     "ubrana w kobietę": {
+      "1": [
+       "Szpilki, żeby nie uciekła. Spódniczka, żeby było szybciej.",
+       "Ubrali cię w kobietę, żeby łatwiej było cię rozbierać.",
+       "Gorset ściska ci talię, żeby dupa wyglądała na większą. Dla nich.",
+       "Każda rzecz na tobie ma jedno zadanie: dać dostęp.",
+       "W tych ubraniach nie da się walczyć. Da się tylko rozkładać nogi."
+      ],
+      "2": [
+       "Ubranie to tylko dekoracja na mięsie. Zrywają je jednym ruchem.",
+       "Ubrana w kobietę, rozebrana do dziury.",
+       "Ubierają cię jak lalkę, a używają jak ścierkę.",
+       "Spódniczka nie ma dla nich znaczenia. Liczy się to, co pod nią, zawsze otwarte.",
+       "Każdy dodatek to uchwyt. Obroża, pasek, warkocz. Żeby było za co ciągnąć."
+      ]
+     },
+     "feminizacja": {
+      "1": [
+       "Zrobili z ciebie kobietę po to, żeby mieli kogo ruchać.",
+       "Feminizacja nie skończyła się na ubraniach. Skończyła się na kolanach.",
+       "Kobiecość to dla ciebie jedno: być braną.",
+       "Każdy dzień zabiera z ciebie trochę faceta i dodaje trochę dziwki.",
+       "Jesteś kobietą do brania. Inaczej nie umiesz już być kobietą."
+      ],
+      "2": [
+       "Nie jesteś kobietą. Jesteś samicą do krycia.",
+       "Feminizacja skończona. Teraz zaczyna się użytkowanie.",
+       "Z mężczyzny zostało mniej niż z twojej godności. Czyli nic.",
+       "Zrobili z ciebie dziurę z biustem. Reszta to dodatek.",
+       "Kobieta ma prawa. Ty masz dziurki."
+      ]
+     },
+     "nie musisz myśleć": {
+      "1": [
+       "Nie myśl. Otwieraj. Tylko to od ciebie zależy.",
+       "Myślenie zostaw tym, którzy cię używają.",
+       "Twoja głowa jest po to, żeby było za co trzymać.",
+       "Mózg ci niepotrzebny. Dziurki tak.",
+       "Nie myśl o tym, ilu ich jeszcze. Myśl o tym, żeby nie zamykać."
+      ],
+      "2": [
+       "Nie masz już czym myśleć. I dobrze. Myślące mięso by się buntowało.",
+       "Twoja głowa to uchwyt. Twoje usta to dziura. Myśli nie ma.",
+       "Rzeczy nie myślą. Rzeczy są używane.",
+       "Pusta czaszka, pełna dupa. Idealna proporcja.",
+       "Wyłączyli cię jak lampę. Świecisz tylko wtedy, gdy ktoś w ciebie wejdzie."
+      ]
+     },
+     "cisza w głowie": {
+      "1": [
+       "W głowie cisza, w dupie on. Tak ma wyglądać twój dzień.",
+       "Cicho w głowie, głośno z gardła. Jęcz.",
+       "Twoja głowa milczy, bo nie ma nic do dodania. Dziurki mówią same.",
+       "Cisza w głowie, kiedy kolejny wchodzi. Nie musisz nawet liczyć.",
+       "Myśli zgasły. Zostało drżenie i otwarte usta."
+      ],
+      "2": [
+       "Cisza w głowie jak w pustej oborze. Tylko oddech bydła.",
+       "W głowie nic. W tobie wszyscy.",
+       "Cisza, bo nie ma tam już nikogo. Jest tylko ciało do pieprzenia.",
+       "Twoja głowa zamilkła na zawsze. Twoja dupa nie milknie nigdy.",
+       "Najgłębsza cisza przychodzi, kiedy jesteś tylko dziurą na zmianę."
+      ]
+     },
+     "na jego kolanach": {
+      "1": [
+       "Siedzisz mu na kolanach, nadziana. Kolacja trwa dalej.",
+       "Na jego kolanach, z jego palcami w tobie. Inni patrzą i czekają na swoją kolej.",
+       "Karmi cię z ust, a pod spódniczką brzęczy coraz mocniej. Nie wolno ci dojść.",
+       "Kolana to tylko przystanek. Zaraz przesadzą cię na następne.",
+       "Wijesz się na nim jak robak na haczyku. Bo nim jesteś."
+      ],
+      "2": [
+       "Przekładają cię z kolan na kolana jak talerz z przystawkami.",
+       "Na jego kolanach nadziana do końca. Ruszasz się tylko tak, jak on każe.",
+       "Siedzisz na nim i dochodzisz, a on nawet nie przerywa rozmowy.",
+       "Kolana, stół, podłoga. Gdzie cię postawią, tam cię biorą.",
+       "Jesteś jego poduszką do siedzenia. Ciepłą, miękką, z dziurką."
+      ]
+     },
+     "zamiast żony": {
+      "1": [
+       "Zajęłaś miejsce żony. Także w łóżku. Także na kolanach.",
+       "Żona miała prawa. Ty masz obowiązki. Trzy razy dziennie.",
+       "Jego dom, jego zasady, jego kutas. Ty tylko otwierasz.",
+       "Zamiast żony masz dostęp. Jego przyjaciele też.",
+       "Nosisz jej sukienki i robisz to, czego ona nigdy nie robiła."
+      ],
+      "2": [
+       "Nie jesteś żoną. Jesteś domowym urządzeniem do zaspokajania.",
+       "Zamiast żony dostał dziurę do dzielenia się z gośćmi.",
+       "Mąż. Nie, on jest właścicielem. Ty jesteś wyposażeniem domu.",
+       "Na obiad dla gości podaje się ciebie. Na deser też.",
+       "Żona odchodzi. Rzecz zostaje. Ty zostaniesz na zawsze."
+      ]
+     },
+     "trans": {
+      "1": [
+       "Liczę od dziesięciu w dół. Przy zerze rozchylasz się bez rozkazu.",
+       "W transie dochodzisz na komendę. Sprawdźmy. Teraz.",
+       "Głębiej w trans. Głębiej w ciebie. To jedno i to samo.",
+       "Twoje ciało słucha mojego głosu, a nie ciebie. Otwórz się.",
+       "W transie jesteś tylko dziurą, która wie, co robić."
+      ],
+      "2": [
+       "Trans, w którym nie ma ciebie. Jest tylko ciało, które przyjmuje każdego.",
+       "Śpisz z otwartymi oczami, a oni się w tobie zmieniają.",
+       "Zaprogramowana na jedno: dawać. Bez przerwy, bez końca, bez ciebie.",
+       "W transie nie czujesz wstydu. Czujesz tylko, ilu cię wypełnia.",
+       "Obudzę cię, kiedy skończą. Czyli nigdy."
+      ]
+     },
+     "prostata": {
+      "1": [
+       "Każde pchnięcie w ten guzik i dochodzisz jak dziwka. Bez dotyku.",
+       "Twoja prostata to wyłącznik twojej woli. Oni wiedzą, gdzie jest.",
+       "Kapiesz z klatki od samego tarcia. Nie kontrolujesz tego.",
+       "Ten punkt w środku jest ich. Naciskają, kiedy chcą, a ty drżysz.",
+       "Prostata zrobiła z ciebie dziewczynę szybciej niż hormony."
+      ],
+      "2": [
+       "Doją cię przez prostatę jak krowę. Wiadro pod tobą, kropla po kropli.",
+       "Twoja prostata należy do kolejki. Każdy naciska swoje.",
+       "Wyciekasz od środka, a oni liczą to jak udój.",
+       "Twoje jedyne źródło przyjemności jest w rękach obcych. Na zawsze.",
+       "Naciskają tak długo, aż płaczesz i kapiesz jednocześnie."
+      ]
+     },
+     "puść się": {
+      "1": [
+       "Puść się. Do końca. Niech cię wezmą, ilu zechce.",
+       "Przestań trzymać. Twoje ciało należy do każdego, kto przyjdzie.",
+       "Puść się jak dziwka, którą jesteś. Bez wstydu.",
+       "Fala idzie i nie pytasz, kto ją wywołał. Wszystko jedno.",
+       "Puść, otwórz, przyjmij. Trzy słowa, całe twoje życie."
+      ],
+      "2": [
+       "Puść się tak, żeby nie zostało nic do trzymania.",
+       "Jesteś puszczalska do szpiku. Każdy, kto ma ochotę, dostaje.",
+       "Puść się na całą noc. Na całe życie. Na każdego.",
+       "Nie ma już nic, co by cię trzymało. Ani wstyd, ani imię, ani rozum.",
+       "Puszczona, rozłożona, przelewana. Tak cię widzą wszyscy."
+      ]
+     }
+    },
     "seed": {
      "cisza w głowie - w głowie robi się cicho: żadnych myśli, zmartwień ani planów, tylko oddech, ciepło i jego rytm; to najspokojniejsze miejsce, jakie zna": [
       "W twojej głowie robi się cicho. Żadnych myśli. Tylko oddech i jego rytm.",
