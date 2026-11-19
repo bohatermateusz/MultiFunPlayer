@@ -2910,6 +2910,231 @@
        "Członkowie klubu dostają ciebie w cenie wejściówki.",
        "Zaplecze klubu: ty, łańcuch i cała sala w kolejce."
       ]
+     },
+     "rzecz": {
+      "1": [
+       "Rzecz zużyta do połowy. Druga połowa czeka na noc.",
+       "Rzeczy się nie myje po każdym użyciu. Ciebie też nie.",
+       "Leżysz tam, gdzie cię rzucili. Rzeczy nie wybierają miejsca.",
+       "Rzecz z dziurkami. Sprawdzają wszystkie po kolei.",
+       "Rzecz, którą się pożycza, oddaje i znowu pożycza. Bez końca."
+      ]
+     },
+     "dziewczyna do ruchania": {
+      "1": [
+       "Dziewczyna do ruchania na zmiany. Dzienna, nocna, weekendowa.",
+       "Nie masz nic do gadania, bo masz pełne usta.",
+       "Uległa, bo nie ma wyboru. Mokra, bo lubi.",
+       "Dziewczyny do ruchania nie pytają ilu. Pytają tylko, którędy.",
+       "Twoje jedyne zdanie to jęk. Wypowiadasz je pod każdym."
+      ]
+     },
+     "na posyłki": {
+      "1": [
+       "Na posyłki dla całego bloku. Gwizdną i biegniesz na czworakach.",
+       "Zamawiają cię jak pizzę. Dowóz w pończochach, zwrot nieprzewidziany.",
+       "Towar z katalogu, wydawany na żądanie, bez kolejki. Kolejka jest w środku.",
+       "Ich uzależnienie od seksu karmi się tobą. Codziennie.",
+       "Jesteś pod numerem telefonu. Dzwonią, a ty się rozkładasz."
+      ]
+     },
+     "nikt nie pytał": {
+      "1": [
+       "Nikt nie pyta, bo nikt nie musi. Biorą.",
+       "Łapią cię za kark w korytarzu i pochylają nad pierwszym meblem.",
+       "Śpisz z rozchylonymi nogami, żeby nie musieli budzić cię do niczego.",
+       "Nikt nie pytał, czy możesz. Nikt nie zapyta, czy masz dość.",
+       "Wchodzą bez słowa i wychodzą bez słowa. Ty zostajesz z ich ciepłem."
+      ]
+     },
+     "ciało zdradza": {
+      "1": [
+       "Twoje ciało zdradza cię przy każdym. Dochodzisz z płaczem i prosisz o więcej.",
+       "Mówisz nie, a dupa ssie go do środka.",
+       "Twoje ciało jest po ich stronie. Ty przegrałaś dawno.",
+       "Kapie z ciebie, chociaż przysięgasz, że nie chcesz. Nikt ci nie wierzy.",
+       "Ciało dziwki w głowie, która jeszcze udaje. Niedługo przestanie."
+      ]
+     },
+     "przyciśnięta": {
+      "1": [
+       "Przyciśnięta do łóżka, jeden na tobie, drugi trzyma ręce. Nie ma dokąd uciec.",
+       "Kolana przy uszach, jego ciężar na tobie, dupa otwarta do końca.",
+       "Przyciśnięta twarzą do podłogi. Biorą, aż nie czujesz kolan.",
+       "Nie ruszysz się. Nie musisz. Wystarczy, że jesteś otwarta.",
+       "Przyciśnięta tak, że oddychasz tylko między pchnięciami."
+      ]
+     },
+     "twoja wina": {
+      "1": [
+       "To twoja wina, że jesteś taka dupna. Więc płacisz dupą.",
+       "Sama się prosiłaś. Teraz prosisz codziennie.",
+       "Twoja wina, że cię chcą. Więc dostają.",
+       "Za każdy błąd kolejny w kolejce. Popełniasz ich dużo.",
+       "To twoja wina, i to twoja kara, i to twoje życie."
+      ]
+     },
+     "dziesięć minut później": {
+      "1": [
+       "Dziesięć minut później wstyd, a dwadzieścia minut później kolejny w tobie.",
+       "Wstydzisz się, że błagałaś. Zaraz będziesz błagać znowu.",
+       "Leżysz w mokrej pościeli i już nasłuchujesz kroków.",
+       "Wstyd nigdy cię nie powstrzymał. Teraz już nawet nie spowalnia.",
+       "Po każdym razie mówisz »nigdy więcej«. Po każdym razie jest więcej."
+      ]
+     },
+     "przełamana": {
+      "1": [
+       "Przełamana, rozjechana, gotowa. Tak cię przekazują dalej.",
+       "Nie walczysz, bo nie zostało nic do walki. Tylko dziurki.",
+       "Opór złamali w tydzień. Godność w jeden wieczór.",
+       "Teraz już tylko piszczysz i dziękujesz. Na zmianę.",
+       "Przełamana do użytku. Jak wybita droga. Każdy przejeżdża."
+      ]
+     },
+     "przywiązana do krzesła": {
+      "1": [
+       "Przywiązana do krzesła na całą noc. Kto wejdzie do pokoju, ten bierze.",
+       "Krzesło stoi na środku salonu. Ty na nim, wypięta dla gości.",
+       "Nie odwiążą cię, dopóki nie wypełnią do końca.",
+       "Przywiązana, zakneblowana, pełna. Krzesło trzyma, oni biorą.",
+       "Krzesło w kącie to twoje miejsce pracy. Pracujesz dupą."
+      ]
+     },
+     "rozpórka": {
+      "1": [
+       "Rozpórka na kostkach przez cały dzień. Chodzisz rozkraczona i wszyscy widzą.",
+       "Nogi rozłożone na stałe, dziurki otwarte na stałe.",
+       "Z rozpórką nie uciekniesz nawet do łazienki. Biorą cię po drodze.",
+       "Rozłożona jak towar na ladzie. Każdy przechodzący sprawdza.",
+       "Rozpórka zrobiła z ciebie zawsze dostępną dziurę."
+      ]
+     },
+     "knebel i obroża": {
+      "1": [
+       "Knebel wyjmują tylko po to, żeby wsadzić ci kutasa.",
+       "Prowadzą cię na smyczy od pokoju do pokoju. W każdym ktoś cię bierze.",
+       "Obroża z kółkiem, a do kółka przypięta kartka: »wolna«.",
+       "Ślinisz się przez knebel, kiedy biorą cię od tyłu.",
+       "Smycz krótka, kolana obdarte, dupa pełna. Spacer zakończony."
+      ]
+     },
+     "ławka": {
+      "1": [
+       "Ławka w piwnicy. Przypięta od rana do nocy.",
+       "Na ławce jesteś tylko dwiema dziurkami na odpowiedniej wysokości.",
+       "Przypinają cię do ławki na imprezę. Goście się zmieniają, ty nie.",
+       "Ławka nie ma imienia. Ty też nie, dopóki na niej leżysz.",
+       "Pod ławką kałuża. Na ławce ty. Kolejka sięga schodów."
+      ]
+     },
+     "wystawiona na publiczność": {
+      "1": [
+       "Każdy film z tobą ma tysiące widzów i setki komentarzy, co jeszcze ci zrobić.",
+       "Wystawiona w sieci jak towar. Każdy klika, każdy chce spróbować.",
+       "Twoje dziurki znają całe miasto z ekranów. Teraz chcą na żywo.",
+       "Klikają, komentują, umawiają się. Ty tylko otwierasz drzwi.",
+       "Publika ogląda, a potem przychodzi. Ty przyjmujesz każdego widza."
+      ]
+     },
+     "publiczna dupodajka": {
+      "1": [
+       "Publiczna dupodajka. Każdy na osiedlu wie, gdzie mieszkasz i kiedy jesteś wolna.",
+       "W windzie, na klatce, w piwnicy. Biorą cię tam, gdzie złapią.",
+       "Twoja dupa ma więcej znajomych niż ty.",
+       "Daje każdemu, kto zapyta. A nikt już nie pyta.",
+       "Publiczna jak przystanek. Każdy wsiada i wysiada."
+      ]
+     },
+     "lody na pokaz": {
+      "1": [
+       "Robisz loda na stole, a reszta nagrywa i ocenia.",
+       "Pokaz trwa godzinę. Na koniec twoja twarz jest dowodem.",
+       "Kamera blisko, gardło do końca, łzy na policzkach. Hit sezonu.",
+       "Twoje usta są publiczne. Każdy ma do nich prawo i telefon.",
+       "Lodzik na żywo dla całej sali. Każdy chce być następny."
+      ]
+     },
+     "wszyscy cię chcą wyruchać": {
+      "1": [
+       "Wszyscy chcą cię wyruchać. I wszyscy w końcu to robią.",
+       "Na ulicy patrzą na twoją dupę i umawiają się między sobą, kto pierwszy.",
+       "Nie pytają czy, pytają kiedy. Odpowiedź zawsze brzmi: teraz.",
+       "Każdy uśmiech do ciebie to zaproszenie do kolejki.",
+       "Chcą cię wszyscy, więc dostają cię wszyscy. Po kolei."
+      ]
+     },
+     "gwiazda porno": {
+      "1": [
+       "Gwiazda porno, która nigdy nie dostaje dubla. Za pierwszym razem biorą ją trzech.",
+       "Kręcą cię dzień w dzień. Scenariusz jest zawsze ten sam: ty, dziurki, oni.",
+       "Twoja najlepsza scena trwała cztery godziny. Nikt nie wołał cięcia.",
+       "Fani piszą, co chcą ci zrobić. Reżyser czyta i kręci.",
+       "Na planie nie masz imienia. Masz rolę: dziura numer jeden."
+      ]
+     },
+     "zamówiona": {
+      "1": [
+       "Zamówiona na wieczór kawalerski. Dostarczona, rozpakowana, zużyta.",
+       "Zamówili cię na całą noc dla całej drużyny.",
+       "Kurier przywiózł cię w pudełku z kokardą. Klient otworzył dupą do góry.",
+       "Zamawiają cię na godziny, a zwracają po dniach.",
+       "Jesteś na liście zamówień pod pozycją: dziura, sztuka jedna, bez limitu."
+      ]
+     },
+     "jedyne zadanie": {
+      "1": [
+       "Jedyne zadanie: dawać się ruchać. Wykonujesz je przez całą dobę.",
+       "Nie masz innego zajęcia. Masz tylko dziurki i grafik.",
+       "Obciągać, dawać dupy, dziękować. Tyle umiesz i tyle wystarczy.",
+       "Twoja jedyna praca nie ma przerw ani urlopu.",
+       "Jedno zadanie, setki wykonań dziennie. Bez błędów."
+      ]
+     },
+     "oba końce": {
+      "1": [
+       "Jeden w ustach, drugi w dupie, a ty wisisz między nimi jak na rożnie.",
+       "Oba końce zajęte, oczy w słup, ślina na brodzie.",
+       "Kołyszą cię między sobą tak, że nie wiesz, który pcha.",
+       "Nie musisz myśleć, bo z obu stron jesteś pełna.",
+       "Oba końce i nic pośrodku. Tak wygląda twoje ciało."
+      ]
+     },
+     "dwóch naraz": {
+      "1": [
+       "Dwóch naraz to dla ciebie rozgrzewka.",
+       "Jeden pod tobą, drugi za tobą. Trzeci czeka przy twarzy.",
+       "Dwóch w jednej dziurce, bo tak się da i bo tak chcą.",
+       "Na zmianę nie wystarcza. Biorą cię naraz.",
+       "Dwóch naraz, potem dwóch następnych. Kolejka idzie parami."
+      ]
+     },
+     "potrzebuje tego na sobie": {
+      "1": [
+       "Potrzebujesz ich na sobie jak powietrza. Bez tego czujesz się goła.",
+       "Chodzisz oznaczona cały dzień. Każdy wie, że ktoś cię już miał.",
+       "Wcierasz ich w skórę jak krem. Jutro poprosisz o nową porcję.",
+       "Bez ich zapachu nie wiesz, kim jesteś. Z nim wiesz: dziwką.",
+       "Potrzebujesz tego na twarzy, żeby czuć się ubraną."
+      ]
+     },
+     "pod stołem": {
+      "1": [
+       "Pod stołem pracujesz przez całą kolację, od przystawki do deseru.",
+       "Goście nawet nie przerywają jedzenia. Ty nie przerywasz ssania.",
+       "Pod obrusem kałuża, a ty na kolanach w niej, przy kolejnym.",
+       "Ktoś upuszcza widelec. Podnosisz zębami. Potem wracasz do roboty.",
+       "Kolacja się kończy, a ty jeszcze nie skończyłaś ostatniego gościa."
+      ]
+     },
+     "zbrukana i dumna": {
+      "1": [
+       "Zbrukana od stóp do głów i dumna z każdej warstwy.",
+       "Nie myjesz się, bo chcesz, żeby wszyscy wiedzieli, ilu ich było.",
+       "Każda plama na twojej sukience to podpis.",
+       "Śmierdzisz nimi i chodzisz z podniesioną głową.",
+       "Zbrukana tak, że nikt cię nie pomyli z porządną. I dobrze."
+      ]
      }
     },
     "seed": {
