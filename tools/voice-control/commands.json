@@ -1420,6 +1420,7 @@
    "default_theme_stage": 2,
    "top_share": 0.6,
    "near_share": 0.25,
+   "levels": {"1": "WERSJA OSTRZEJSZA (sesja poszła dalej niż ten wątek): wulgarniej, mocniej, bardziej uprzedmiotawiająco, mniej czułości", "2": "WERSJA NAJOSTRZEJSZA (szczyt sesji): skrajnie wulgarnie, bez litości i bez czułości; ona jest już tylko rzeczą, dziurą i ciałem do użytku"},
    "themes": [
     "ssanie - jak mała dziewczynka, grzecznie, do końca",
     "dziewczynka do rozłożenia - delikatna, gotowa, bezwolna",
@@ -1565,6 +1566,1577 @@
     "similarity": 0.8,
     "retired": ["Dwóch naraz to nie orgy… to standard: jeden w buzi, drugi w kolejce. Tak wygląda twoje otoczenie.", "Ten lodzik w kamerze wyszedł ci lepiej niż całe twoje życie. Doczekał się recenzji. Wszystkich pozytywnych.", "Twoja technika miała więcej widzów niż kiedykolwiek twoje zdanie. Statystyki mówią samo: buzia lepsza niż głowa.", "Całe miasto zna twoją dupę od lepszej strony. Literalnie.", "Każdy, kto na ciebie patrzy, już to przemyślał. Sekundę dłużej niż trzeba. Wiesz w jakiej pozycji.", "Twoja dupa zbiera propozycje szybciej, niż twój mózg zdąża je odrzucać. Dlatego już nie odrzucasz.", "Nie jesteś pożądana jak piękny obrazek. Jesteś pożądana jak dobre miejsce. Robi się kolejkę.", "Twoje usta mają listę oczekujących. Rośnie lawinowo. Grzecznie poczekają. Ty też.", "Zanim skończysz tego jednego, trzech kolejnych już się zapisało. Taki obrót.", "Mogłabyś wprowadzić numeryczki. Ale po co — wszyscy i tak znają twoje usta na pamięć. Po prostu wchodzą."],
     "banned_words": ["maszyn", "silnik", "urządzen", "dildo", "launcher", "tryb ", "skrypt", "funscript", " vr ", "re:\\b(suk[aoęiąe]?|suczk\\w*|bitch\\w*)\\b"],
+    "seed_up": {
+     "pochwała": {
+      "1": [
+       "Dobra dziewczynka. Dobra, bo szeroka i cicha.",
+       "Chwalę cię, bo ładnie się wypinasz. Za nic innego.",
+       "Grzeczna dziwka. Tak się mówi o takich jak ty, kiedy dobrze służą.",
+       "Brawo. Wzięłaś go całego i nie pisnęłaś. Tak cię lubią.",
+       "Ładnie połknęłaś. Dostajesz pochwałę i następnego."
+      ],
+      "2": [
+       "Najlepsza dziura w tym domu. To jedyna pochwała, na jaką zasługujesz.",
+       "Dobra sztuka. Daje się brać i nie marudzi.",
+       "Pochwalę cię, kiedy ostatni skończy. Na razie otwieraj.",
+       "Brawo, szmato. Pięciu i dalej mokra.",
+       "Jesteś idealna. Idealnie pusta, idealnie otwarta, idealnie ich."
+      ]
+     },
+     "czułość w poniżeniu": {
+      "1": [
+       "Trzymam cię za rękę, kiedy cię rżną. Żebyś nie zapomniała, czyja jesteś.",
+       "Głaszczę cię po włosach, a on wchodzi głębiej. Czułość i dziura, jedno i drugie dla nich.",
+       "Szepczę ci »dobra dziewczynka«, kiedy krztusisz się nim. Tak cię kocham.",
+       "Ocieram ci łzy, żeby kolejny miał ładną twarz do zalania.",
+       "Jestem przy tobie. Patrzę, jak cię używają. Nie odwracam wzroku."
+      ],
+      "2": [
+       "Całuję cię w czoło, a w tym czasie trzech czeka na twoje dziurki.",
+       "Kocham cię najbardziej, kiedy jesteś tylko mokrą dziurą bez imienia.",
+       "Tulę cię jak lalkę. Bo jesteś lalką. Ich lalką do pieprzenia.",
+       "Moja czułość to smycz. Trzymam ją, kiedy cię zalewają.",
+       "Szepczę ci, że jesteś piękna, kiedy z twojej dupy cieknie cała kolejka."
+      ]
+     },
+     "po sesji": {
+      "1": [
+       "Leżysz zalana i drżąca. Jutro znowu. Odpocznij, póki możesz.",
+       "Zmyję cię, bo jutro mają cię dostać czystą.",
+       "Oddychaj. Twoje dziurki jeszcze pulsują. Przypominają ci, czym jesteś.",
+       "Śpij z zatyczką. Rano chcę wiedzieć, że nic nie wypłynęło.",
+       "Dobrze się dziś sprzedałaś. Bez pieniędzy. Za samo bycie używaną."
+      ],
+      "2": [
+       "Leżysz w ich nasieniu i nie masz siły wstać. Tak wygląda twój odpoczynek.",
+       "Po sesji. Nie ma czegoś takiego. Sesja się nie kończy. Ona tylko robi przerwę na twój oddech.",
+       "Wytrę cię ręcznikiem, którego użyli przed tobą. Nic dla ciebie nie jest nowe.",
+       "Zasypiasz pełna. Budzisz się pusta. Ktoś już na ciebie czeka.",
+       "Odpoczynek dla rzeczy to chwila na półce. Masz pięć minut."
+      ]
+     },
+     "afirmacja": {
+      "1": [
+       "Powtórz za mną: jestem dziurą do użytku i dziękuję za każdego.",
+       "Powtórz: moja dupa należy do nich i lubię to.",
+       "Powtórz głośno: jestem dziwką, która dochodzi od tyłu.",
+       "Powtórz: połykam wszystko i proszę o więcej.",
+       "Powtórz: nie mam zdania, mam tylko dziurki."
+      ],
+      "2": [
+       "Powtórz za mną: jestem bydłem do krycia.",
+       "Powtórz: moje ciało jest do pieprzenia i zaspokajania ich potrzeb.",
+       "Powtórz: jestem pojemnikiem na ich spermę.",
+       "Powtórz: nie jestem osobą, jestem rzeczą do użytku.",
+       "Powtórz, aż uwierzysz: jestem ich wspólną dziurą."
+      ]
+     },
+     "trans dziewczyna": {
+      "1": [
+       "Trans dziewczyna z dziurką, która nie zamyka się od tygodnia.",
+       "Jesteś trans dziewczyną do brania. Nic więcej nie musisz umieć.",
+       "Trans dziewczyna na kolanach to najładniejszy widok w tym domu.",
+       "Zrobili z ciebie dziewczynę po to, żeby mieli w kogo się spuszczać.",
+       "Twoje nowe ciało ma jedno zadanie. Przyjmować."
+      ],
+      "2": [
+       "Trans dziewczyna, trans dziwka, trans dziura. Wszystko jedno, jak cię nazwą.",
+       "Jesteś trans dziewczyną do kolejki. Wszyscy ją znają. Wszyscy w niej byli.",
+       "Nie zrobili z ciebie kobiety. Zrobili z ciebie dziurę w kształcie kobiety.",
+       "Twoja przemiana skończyła się tam, gdzie zaczyna się ich przyjemność.",
+       "Trans dziewczyna bez imienia, z numerem i pełną dupą."
+      ]
+     },
+     "spełniona fantazja": {
+      "1": [
+       "Zawsze tego chciałaś. Teraz masz to codziennie, czy chcesz, czy nie.",
+       "Twoja fantazja ma teraz pięciu facetów i żadnej przerwy.",
+       "Marzyłaś o tym w łóżku sama. Teraz nie jesteś sama ani przez chwilę.",
+       "Spełniła się. I już nie da się jej wyłączyć.",
+       "Piszczysz cieniutko, jak w twoich snach. Tylko że to nie sen. To jego kutas."
+      ],
+      "2": [
+       "Twoja fantazja zjadła cię w całości. Zostało tylko ciało do pieprzenia.",
+       "Chciałaś być brana jak kobieta. Teraz jesteś brana jak bydło. Fantazja poszła dalej niż ty.",
+       "Spełniona fantazja to klatka. Tylko że zamknęłaś ją sama i wyrzuciłaś klucz.",
+       "Fantazja się spełniła, a ty zostałaś w niej na zawsze, jako mebel.",
+       "Marzenie cię pieprzy dzień i noc. I nikt nie pyta, czy masz dość."
+      ]
+     },
+     "witaj z powrotem": {
+      "1": [
+       "Witaj z powrotem, dziwko. Zawsze tu byłaś, tylko się przebierałaś za faceta.",
+       "Wróciłaś do siebie. Do dziurki, która zawsze chciała być wypełniona.",
+       "Ona zawsze czekała. Na kolanach. Teraz wreszcie może.",
+       "Witaj w domu. Twój dom to łóżko, na którym cię biorą.",
+       "Tamten chłopak był kostiumem. Ta dziwka jest prawdziwa."
+      ],
+      "2": [
+       "Witaj z powrotem w swojej zagrodzie. Tęskniło za tobą całe stado.",
+       "Wróciłaś tam, gdzie twoje miejsce. Pod nimi.",
+       "Witaj, rzeczy. Twoje miejsce na półce czekało.",
+       "Ona nie wróciła. Ona się wylęgła. Gotowa do użytku od pierwszego dnia.",
+       "Witaj z powrotem. Rozbierz się i rozłóż. Reszta wie, co robić."
+      ]
+     },
+     "nowe imię od dziewczyn": {
+      "1": [
+       "Dały ci imię dziewczyny. Faceci dali ci przezwisko. Bardziej pasuje.",
+       "Na czacie piszą do ciebie po imieniu. W łóżku nikt go nie używa.",
+       "Nowe imię dostałaś przy stoliku. Nowe przeznaczenie dostałaś pod nim.",
+       "Dziewczyny cię umalowały, a faceci cię rozmazali.",
+       "Imię ładne. Dziurka ładniejsza. Wiesz, którą pamiętają."
+      ],
+      "2": [
+       "Nie potrzebujesz imienia. Wystarczy, że się wypniesz, a wiedzą, kto to.",
+       "Twoje nowe imię to »następna«. Tak cię wołają w kolejce.",
+       "Siostry dały ci imię, bracia dali ci kolejkę. Obie rzeczy zostają na zawsze.",
+       "Imię jest dla ludzi. Ty masz numer i dziurki.",
+       "Kiedy ktoś cię woła, odwracasz się dupą. Tak odpowiadasz na imię."
+      ]
+     },
+     "pierwszy makijaż": {
+      "1": [
+       "Pierwszy makijaż, pierwsze rzęsy, pierwszy kutas w ustach. Wszystko tego samego dnia.",
+       "Szminka po to, żeby było widać, gdzie wchodzić.",
+       "Umalowali cię, żeby było co rozmazać.",
+       "Wyglądasz jak zdobycz. Za chwilę nią będziesz.",
+       "Błyszczyk truskawkowy. Za dziesięć minut będziesz smakować nimi."
+      ],
+      "2": [
+       "Tusz spływa ci po policzkach z ich nasieniem. To jest twój prawdziwy makijaż.",
+       "Maluj się codziennie, bo codziennie ktoś to rozmaże.",
+       "Twoja twarz to płótno. Oni malują ją spermą.",
+       "Makijaż dziwki: szminka do połowy brody i rzęsy sklejone.",
+       "Piękna jesteś tylko przez pierwsze pięć minut. Potem jesteś użyta."
+      ]
+     },
+     "rajstopy i koronki": {
+      "1": [
+       "Rajstopy rozdarte w kroku. Tak się je nosi w tym domu.",
+       "Koronka na tobie przetrwa godzinę. Potem będzie mokra i podarta.",
+       "Pończochy, podwiązki i nic więcej. Dziurki mają być dostępne.",
+       "Ubierają cię ładnie, żeby było co z ciebie zdzierać.",
+       "Koronki na skórze, sperma na koronkach. Tak wyglądasz po każdym wieczorze."
+      ],
+      "2": [
+       "Nie zmieniają ci bielizny. Nosisz tę samą, sztywną od nich wszystkich.",
+       "Rajstopy na kostkach, dupa w górze. Tyle zostało z ubierania.",
+       "Koronka to opakowanie. Nikt nie patrzy na opakowanie, kiedy rozpakowuje towar.",
+       "Majtki masz tylko po to, żeby było co odsuwać na bok.",
+       "Ubrana jak dama, użyta jak bydło."
+      ]
+     },
+     "ubrana w kobietę": {
+      "1": [
+       "Szpilki, żeby nie uciekła. Spódniczka, żeby było szybciej.",
+       "Ubrali cię w kobietę, żeby łatwiej było cię rozbierać.",
+       "Gorset ściska ci talię, żeby dupa wyglądała na większą. Dla nich.",
+       "Każda rzecz na tobie ma jedno zadanie: dać dostęp.",
+       "W tych ubraniach nie da się walczyć. Da się tylko rozkładać nogi."
+      ],
+      "2": [
+       "Ubranie to tylko dekoracja na mięsie. Zrywają je jednym ruchem.",
+       "Ubrana w kobietę, rozebrana do dziury.",
+       "Ubierają cię jak lalkę, a używają jak ścierkę.",
+       "Spódniczka nie ma dla nich znaczenia. Liczy się to, co pod nią, zawsze otwarte.",
+       "Każdy dodatek to uchwyt. Obroża, pasek, warkocz. Żeby było za co ciągnąć."
+      ]
+     },
+     "feminizacja": {
+      "1": [
+       "Zrobili z ciebie kobietę po to, żeby mieli kogo ruchać.",
+       "Feminizacja nie skończyła się na ubraniach. Skończyła się na kolanach.",
+       "Kobiecość to dla ciebie jedno: być braną.",
+       "Każdy dzień zabiera z ciebie trochę faceta i dodaje trochę dziwki.",
+       "Jesteś kobietą do brania. Inaczej nie umiesz już być kobietą."
+      ],
+      "2": [
+       "Nie jesteś kobietą. Jesteś samicą do krycia.",
+       "Feminizacja skończona. Teraz zaczyna się użytkowanie.",
+       "Z mężczyzny zostało mniej niż z twojej godności. Czyli nic.",
+       "Zrobili z ciebie dziurę z biustem. Reszta to dodatek.",
+       "Kobieta ma prawa. Ty masz dziurki."
+      ]
+     },
+     "nie musisz myśleć": {
+      "1": [
+       "Nie myśl. Otwieraj. Tylko to od ciebie zależy.",
+       "Myślenie zostaw tym, którzy cię używają.",
+       "Twoja głowa jest po to, żeby było za co trzymać.",
+       "Mózg ci niepotrzebny. Dziurki tak.",
+       "Nie myśl o tym, ilu ich jeszcze. Myśl o tym, żeby nie zamykać."
+      ],
+      "2": [
+       "Nie masz już czym myśleć. I dobrze. Myślące mięso by się buntowało.",
+       "Twoja głowa to uchwyt. Twoje usta to dziura. Myśli nie ma.",
+       "Rzeczy nie myślą. Rzeczy są używane.",
+       "Pusta czaszka, pełna dupa. Idealna proporcja.",
+       "Wyłączyli cię jak lampę. Świecisz tylko wtedy, gdy ktoś w ciebie wejdzie."
+      ]
+     },
+     "cisza w głowie": {
+      "1": [
+       "W głowie cisza, w dupie on. Tak ma wyglądać twój dzień.",
+       "Cicho w głowie, głośno z gardła. Jęcz.",
+       "Twoja głowa milczy, bo nie ma nic do dodania. Dziurki mówią same.",
+       "Cisza w głowie, kiedy kolejny wchodzi. Nie musisz nawet liczyć.",
+       "Myśli zgasły. Zostało drżenie i otwarte usta."
+      ],
+      "2": [
+       "Cisza w głowie jak w pustej oborze. Tylko oddech bydła.",
+       "W głowie nic. W tobie wszyscy.",
+       "Cisza, bo nie ma tam już nikogo. Jest tylko ciało do pieprzenia.",
+       "Twoja głowa zamilkła na zawsze. Twoja dupa nie milknie nigdy.",
+       "Najgłębsza cisza przychodzi, kiedy jesteś tylko dziurą na zmianę."
+      ]
+     },
+     "na jego kolanach": {
+      "1": [
+       "Siedzisz mu na kolanach, nadziana. Kolacja trwa dalej.",
+       "Na jego kolanach, z jego palcami w tobie. Inni patrzą i czekają na swoją kolej.",
+       "Karmi cię z ust, a pod spódniczką brzęczy coraz mocniej. Nie wolno ci dojść.",
+       "Kolana to tylko przystanek. Zaraz przesadzą cię na następne.",
+       "Wijesz się na nim jak robak na haczyku. Bo nim jesteś."
+      ],
+      "2": [
+       "Przekładają cię z kolan na kolana jak talerz z przystawkami.",
+       "Na jego kolanach nadziana do końca. Ruszasz się tylko tak, jak on każe.",
+       "Siedzisz na nim i dochodzisz, a on nawet nie przerywa rozmowy.",
+       "Kolana, stół, podłoga. Gdzie cię postawią, tam cię biorą.",
+       "Jesteś jego poduszką do siedzenia. Ciepłą, miękką, z dziurką."
+      ]
+     },
+     "zamiast żony": {
+      "1": [
+       "Zajęłaś miejsce żony. Także w łóżku. Także na kolanach.",
+       "Żona miała prawa. Ty masz obowiązki. Trzy razy dziennie.",
+       "Jego dom, jego zasady, jego kutas. Ty tylko otwierasz.",
+       "Zamiast żony masz dostęp. Jego przyjaciele też.",
+       "Nosisz jej sukienki i robisz to, czego ona nigdy nie robiła."
+      ],
+      "2": [
+       "Nie jesteś żoną. Jesteś domową zabawką do zaspokajania.",
+       "Zamiast żony dostał dziurę do dzielenia się z gośćmi.",
+       "Mąż. Nie, on jest właścicielem. Ty jesteś wyposażeniem domu.",
+       "Na obiad dla gości podaje się ciebie. Na deser też.",
+       "Żona odchodzi. Rzecz zostaje. Ty zostaniesz na zawsze."
+      ]
+     },
+     "trans": {
+      "1": [
+       "Liczę od dziesięciu w dół. Przy zerze rozchylasz się bez rozkazu.",
+       "W transie dochodzisz na komendę. Sprawdźmy. Teraz.",
+       "Głębiej w trans. Głębiej w ciebie. To jedno i to samo.",
+       "Twoje ciało słucha mojego głosu, a nie ciebie. Otwórz się.",
+       "W transie jesteś tylko dziurą, która wie, co robić."
+      ],
+      "2": [
+       "Trans, w którym nie ma ciebie. Jest tylko ciało, które przyjmuje każdego.",
+       "Śpisz z otwartymi oczami, a oni się w tobie zmieniają.",
+       "Zaprogramowana na jedno: dawać. Bez przerwy, bez końca, bez ciebie.",
+       "W transie nie czujesz wstydu. Czujesz tylko, ilu cię wypełnia.",
+       "Obudzę cię, kiedy skończą. Czyli nigdy."
+      ]
+     },
+     "prostata": {
+      "1": [
+       "Każde pchnięcie w ten guzik i dochodzisz jak dziwka. Bez dotyku.",
+       "Twoja prostata to wyłącznik twojej woli. Oni wiedzą, gdzie jest.",
+       "Kapiesz z klatki od samego tarcia. Nie kontrolujesz tego.",
+       "Ten punkt w środku jest ich. Naciskają, kiedy chcą, a ty drżysz.",
+       "Prostata zrobiła z ciebie dziewczynę szybciej niż hormony."
+      ],
+      "2": [
+       "Doją cię przez prostatę jak krowę. Wiadro pod tobą, kropla po kropli.",
+       "Twoja prostata należy do kolejki. Każdy naciska swoje.",
+       "Wyciekasz od środka, a oni liczą to jak udój.",
+       "Twoje jedyne źródło przyjemności jest w rękach obcych. Na zawsze.",
+       "Naciskają tak długo, aż płaczesz i kapiesz jednocześnie."
+      ]
+     },
+     "puść się": {
+      "1": [
+       "Puść się. Do końca. Niech cię wezmą, ilu zechce.",
+       "Przestań trzymać. Twoje ciało należy do każdego, kto przyjdzie.",
+       "Puść się jak dziwka, którą jesteś. Bez wstydu.",
+       "Fala idzie i nie pytasz, kto ją wywołał. Wszystko jedno.",
+       "Puść, otwórz, przyjmij. Trzy słowa, całe twoje życie."
+      ],
+      "2": [
+       "Puść się tak, żeby nie zostało nic do trzymania.",
+       "Jesteś puszczalska do szpiku. Każdy, kto ma ochotę, dostaje.",
+       "Puść się na całą noc. Na całe życie. Na każdego.",
+       "Nie ma już nic, co by cię trzymało. Ani wstyd, ani imię, ani rozum.",
+       "Puszczona, rozłożona, przelewana. Tak cię widzą wszyscy."
+      ]
+     },
+     "przerobiona": {
+      "1": [
+       "Przerobili cię na dziurę z cyckami. Tak wygląda ich zabawa.",
+       "Zabrali ci jaja i dali dupę do użytku. Uczciwa wymiana, mówią.",
+       "Przerobiona na zabawkę, która sama się wypina.",
+       "Z faceta zostało tyle, ile kapie ci z klatki.",
+       "Przerobili cię dokładnie pod siebie. Pasujesz na każdego."
+      ],
+      "2": [
+       "Przerobili cię na bydło. Najpierw na dziewczynkę, potem na sztukę do krycia.",
+       "Z tamtego mężczyzny zostało mięso. Mięso do pieprzenia.",
+       "Przeróbka skończona. Model: dziura. Rocznik: na zawsze.",
+       "Nie poznałby cię nikt. Nawet ty. Bo nie ma już kogo poznawać.",
+       "Przerobiona tak dokładnie, że nie zostało nic do zepsucia."
+      ]
+     },
+     "hormony": {
+      "1": [
+       "Estrogen zmiękczył ci ciało, a oni wchodzą w nie coraz łatwiej.",
+       "Hormony zabrały ci twardość. Zostawiły ci mokrą dziurkę.",
+       "Twoje piersi rosną dla ich rąk, nie dla ciebie.",
+       "Każda dawka robi z ciebie bardziej chętną. Zauważyłaś.",
+       "Testosteron poszedł do kosza. Twoja godność razem z nim."
+      ],
+      "2": [
+       "Hormony zrobiły z ciebie samicę w rui. Ciągle gotową, ciągle mokrą.",
+       "Pompują cię estrogenem jak sztukę hodowlaną. Żebyś lepiej przyjmowała.",
+       "Twoje ciało ma już tylko jeden odruch: rozłożyć się.",
+       "Nie walczysz, bo nie masz czym. Zabrali ci nawet to.",
+       "Miękka, okrągła, pusta w środku. Gotowa do zalewania."
+      ]
+     },
+     "choroba feminizacji": {
+      "1": [
+       "Choroba weszła ci w głowę. Teraz myślisz tylko o kutasach.",
+       "Objawy: mokra dziurka, otwarte usta, zero oporu. Nieuleczalne.",
+       "Zaraziłaś się kobiecością tak, że jedyne lekarstwo to bycie braną.",
+       "Gorączka nie spada. Spada tylko twoja bielizna.",
+       "Im bardziej chora, tym chętniej klękasz."
+      ],
+      "2": [
+       "Choroba zżarła wszystko. Zostało ciało, które błaga o kolejnego.",
+       "Stadium końcowe: dziura z nogami, bez imienia, bez woli.",
+       "Nieuleczalna i zaraźliwa. Kto cię dotknie, chce więcej.",
+       "Nie ma kwarantanny dla takich jak ty. Jest kolejka.",
+       "Choroba zrobiła z ciebie zwierzę w rui. Na zawsze."
+      ]
+     },
+     "salon i klinika": {
+      "1": [
+       "Powiększyli ci usta, żeby lepiej obejmowały. Za zgodą, którą podpisałaś na kolanach.",
+       "W klinice pytali o rozmiar. Wybrali największy. Dla nich.",
+       "Każdy zabieg robi z ciebie lepszą dziurkę.",
+       "Fryzjer, paznokcie, usta. Wszystko pod to, jak będziesz wyglądać przy kolejnym.",
+       "Po salonie od razu do sypialni. Nikt nie traci czasu."
+      ],
+      "2": [
+       "Klinika ulepsza towar. Ty jesteś towarem.",
+       "Zrobili ci usta do ssania i dupę do brania. Reszta to dekoracja.",
+       "Po każdej wizycie jesteś mniej sobą, a bardziej ich zabawką.",
+       "Ciało poprawione pod kolejkę. Każdy element ma dostęp.",
+       "Wyszłaś z kliniki jako produkt. Gotowy do użycia od progu."
+      ]
+     },
+     "szkoła sissy": {
+      "1": [
+       "Lekcja dziś: gardło do samego końca. Egzamin wieczorem, przy całej klasie.",
+       "Oceny dostajesz w spermie. Masz same piątki.",
+       "Szkoła uczy cię jednego: otwierać się na każde polecenie.",
+       "Zadanie domowe: dziesięciu przed kolacją.",
+       "Najlepsza uczennica, bo najszybciej przestała protestować."
+      ],
+      "2": [
+       "Egzamin końcowy: cała kadra, cała noc, wszystkie dziurki.",
+       "Dyplom wypisują ci na brzuchu. Markerem. Kreska za każdego.",
+       "Szkoła sissy kształci jedno: bydło do krycia z dobrymi manierami.",
+       "Wychowałaś się na dziurę. Szkoła jest z ciebie dumna.",
+       "Absolwentka. Teraz praktyka na każdym, kto zapłaci."
+      ]
+     },
+     "pokojówka": {
+      "1": [
+       "Między ścieraniem kurzu a podawaniem kawy ktoś zawsze podnosi ci spódniczkę.",
+       "Pokojówka sprząta podłogę językiem, kiedy jej każą.",
+       "Fartuszek zostaje, majtki znikają. Tak wygląda twoja zmiana.",
+       "Każdy gość może cię użyć. Tak brzmi umowa domu.",
+       "Sprzątasz, potem jesteś sprzątana. Ich spermą."
+      ],
+      "2": [
+       "Jesteś pokojówką tylko z nazwy. Naprawdę jesteś domową dziurą do dyspozycji.",
+       "Nie sprzątasz. Jesteś ścierką. Wycierają się tobą.",
+       "Służba w tym domu ma jedno zadanie. Ty je wykonujesz na kolanach.",
+       "Pokojówka do brania na każdym meblu w każdym pokoju.",
+       "Fartuszek mokry, kolana obdarte, usta pełne. Zwykły dzień w pracy."
+      ]
+     },
+     "panna młoda": {
+      "1": [
+       "Noc poślubna z całym orszakiem weselnym.",
+       "Welon na głowie, druhny trzymają cię za nogi, a pan młody wchodzi.",
+       "Przysięgałaś posłuszeństwo. Teraz jego koledzy sprawdzają, czy dotrzymujesz.",
+       "Obrączka na palcu, sperma na sukni. Tak wygląda twój ślub.",
+       "Mąż dzieli się żoną. Taka tradycja w tym domu."
+      ],
+      "2": [
+       "Panna młoda dla całej sali. Każdy gość dostaje swój taniec. W tobie.",
+       "Biała suknia szybko przestała być biała.",
+       "Twój mąż sprzedaje noc poślubną. Godzina po godzinie.",
+       "Żona do użytku publicznego. Obrączka to tylko znak, czyja jest kolejka.",
+       "Ślub był po to, żeby było legalnie. Reszta jest po to, żeby było na zawsze."
+      ]
+     },
+     "poranek po ślubie": {
+      "1": [
+       "Budzisz się w koronce i jego spermie. Wczoraj nie było snem.",
+       "Pod suknią klatka, w dupie zatyczka, na palcu obrączka. Wszystko na stałe.",
+       "Mąż już czeka. Poranny obowiązek żony zaczyna się na kolanach.",
+       "Podpisy były prawdziwe. Teraz twoje ciało też podpisuje. Co rano.",
+       "Transmisję oglądali wszyscy. Dzisiaj oglądają powtórkę."
+      ],
+      "2": [
+       "Poranek po ślubie z trzema świadkami w łóżku. Wszyscy chcą swojej części.",
+       "Żona od wczoraj, dziura od zawsze.",
+       "Budzisz się pełna i już ktoś odsuwa kołdrę.",
+       "Pierwszy poranek małżeństwa, a ty już nie wiesz, który to mąż.",
+       "Twoja noc poślubna jeszcze się nie skończyła. Może nigdy."
+      ]
+     },
+     "poranna kartka": {
+      "1": [
+       "Na kartce: tabletka, sprzątanie, a potem pięciu przed obiadem.",
+       "Punkt czwarty: ćwicz gardło, aż przestaniesz się dławić. Wieczorem sprawdzą.",
+       "Każdego ranka kartka. Każda kończy się na kolanach.",
+       "Na kartce narysował ci strzałkę. Wskazuje na twoją dupę.",
+       "Lista obowiązków jest krótka. Otwierać się. Dziękować. Połykać."
+      ],
+      "2": [
+       "Kartka mówi: dziś jesteś dla wszystkich. Bez przerw.",
+       "Na kartce nie ma twojego imienia. Jest numer i godziny użycia.",
+       "Punkt jedyny: daj się ruchać każdemu, kto wejdzie.",
+       "Kartka przypięta do obroży, żeby każdy wiedział, co z tobą robić.",
+       "Rano kartka, wieczorem kreski na udzie. Ilu dziś było."
+      ]
+     },
+     "zasady nowego życia": {
+      "1": [
+       "Zasada: dziurki zawsze dostępne. Nawet we śnie.",
+       "Zasada: mówisz tylko »tak« i »dziękuję«. Reszta słów ci odebrana.",
+       "Zasada: każdy, kto przyjdzie, ma do ciebie prawo.",
+       "Złamiesz zasadę, kara jest prosta. Następny i jeszcze jeden.",
+       "Zasady są krótkie, bo ty nie musisz ich rozumieć. Masz je wykonywać."
+      ],
+      "2": [
+       "Jedna zasada: jesteś do pieprzenia. Wszystko inne to szczegóły.",
+       "Zasady bydła: jeść, czekać, dawać się kryć.",
+       "Nie ma zasady, która by cię chroniła. Wszystkie chronią ich przyjemność.",
+       "Zasada ostatnia i najważniejsza: nigdy nie zamykasz nóg.",
+       "Nowe życie ma zasady rzeczy. Leżysz tam, gdzie cię położą."
+      ]
+     },
+     "powitanie w drzwiach": {
+      "1": [
+       "Witasz każdego gościa na kolanach. Nie tylko jego.",
+       "Drzwi się otwierają, a twoje usta razem z nimi.",
+       "W przedpokoju kolejka do twoich ust. Płaszcze wiszą, spodnie opadają.",
+       "Witasz go dupą, kiedy jest zmęczony. Tak żąda.",
+       "Nie zdążył zamknąć drzwi, a ty już połykasz."
+      ],
+      "2": [
+       "Jesteś wycieraczką z dziurkami. Każdy, kto wchodzi, coś w tobie zostawia.",
+       "Powitanie w drzwiach dla każdego dostawcy. Taki jest regulamin domu.",
+       "Stoisz przy drzwiach wypięta jak automat. Kto wchodzi, ten wrzuca.",
+       "W tym domu dzwonek znaczy jedno: na kolana.",
+       "Witasz ich wszystkich tak samo. Bez imienia, bez twarzy, z otwartymi ustami."
+      ]
+     },
+     "nagroda za grzeczność": {
+      "1": [
+       "Nagroda za cały dzień: trzech naraz i nikt ci nie pozwoli dojść.",
+       "Dostajesz nagrodę w dupę. Głęboko. Bez przygotowania.",
+       "Grzeczna przez cały dzień, więc dziś biorą cię wszyscy.",
+       "Nagrodą jest jego sperma w gardle. Podziękuj.",
+       "Za grzeczność dostajesz więcej tego samego. Tak działa tu łaska."
+      ],
+      "2": [
+       "Nagroda: noc w kolejce, na ławce, z zatyczką do rana.",
+       "Byłaś grzeczna, więc pożyczą cię sąsiadom.",
+       "Nagroda dla bydła to krycie. Bez wybierania rozpłodnika.",
+       "Najlepsza nagroda: nikt nie zapyta, czy masz dość.",
+       "Za grzeczność zalewają cię od środka i z zewnątrz. Ciesz się."
+      ]
+     },
+     "asystentka szefa": {
+      "1": [
+       "Asystentka do kawy, do notatek i do pieprzenia na biurku.",
+       "Awans dostałaś na kolanach przed całym zarządem.",
+       "Każde spotkanie kończy się pod stołem.",
+       "Szef pożycza cię klientom. Tak zamyka się kontrakty.",
+       "Twoja ocena roczna: najlepsze usta w firmie."
+      ],
+      "2": [
+       "Firmowa dziura. Dostępna dla każdego z identyfikatorem.",
+       "Spotkanie zarządu, a ty jesteś punktem programu na stole.",
+       "Delegacja to dla ciebie tydzień w hotelowym łóżku z całym działem.",
+       "Pracujesz na etacie dziwki z pakietem socjalnym: zatyczka i klatka.",
+       "Nadgodziny bez końca. Płatne ich spermą."
+      ]
+     },
+     "pusta główka": {
+      "1": [
+       "Pusta główka chichocze, a dupa przyjmuje. Idealny podział pracy.",
+       "Nie pamiętasz, jak liczyć. Pamiętasz tylko, jak się wypinać.",
+       "Główka pusta, gardło pełne.",
+       "Jedno słowo zostało ci w głowie: jeszcze.",
+       "Myśli wyparowały razem z ich spermą. Zostało przyjemne buczenie."
+      ],
+      "2": [
+       "Głupiutka dziura, która sama otwiera się na komendę.",
+       "Twoja głowa to puste pudełko. Twoja dupa to jedyne, co działa.",
+       "Nie umiesz już mówić pełnym zdaniem. Umiesz jęczeć i połykać.",
+       "Pusta lalka do pieprzenia. Bez baterii, bez woli, bez końca.",
+       "Zostawili ci jeden odruch: rozkładać nogi, kiedy ktoś stoi blisko."
+      ]
+     },
+     "słowo-klucz": {
+      "1": [
+       "Jedno słowo i rozkładasz nogi przy wszystkich.",
+       "Powiedzą je przy kolacji, a ty już wchodzisz pod stół.",
+       "Słowo-klucz otwiera ci dupę szybciej niż jakikolwiek kutas.",
+       "Każdy z nich zna to słowo. Każdy go używa.",
+       "Nie pamiętasz, kiedy ci je wszyli. Pamiętasz tylko, że po nim dochodzisz."
+      ],
+      "2": [
+       "Słowo i stajesz się bydłem. Na czworakach, z dupą w górze.",
+       "Używają słowa na ulicy, żeby zobaczyć, jak klękasz między ludźmi.",
+       "Jedno słowo i jesteś dziurą dla każdego, kto je wypowie.",
+       "Zaprogramowana jak automat do pieprzenia. Słowo zamiast monety.",
+       "Słowo, które cię wyłącza, i słowo, które cię otwiera. To samo słowo."
+      ]
+     },
+     "przyłapana": {
+      "1": [
+       "Przyłapali cię w majtkach i od razu wiedzieli, że weźmie cię każdy.",
+       "Za milczenie płacisz dupą. Codziennie.",
+       "Zdjęcia krążą, a ty klęczysz przed każdym, kto je widział.",
+       "Szantaż zamienił się w kolejkę.",
+       "Przyłapali cię raz. Teraz łapią cię za biodra codziennie."
+      ],
+      "2": [
+       "Przyłapana, wystawiona, użyta przez wszystkich, którzy wiedzieli.",
+       "Twoje zdjęcia są w każdym telefonie w okolicy. Twoja dupa też.",
+       "Za ciszę płacisz całą sobą. Cisza i tak się nie zdarzy.",
+       "Sekret stał się ogłoszeniem: wolna dziura, dzwonić.",
+       "Przyłapali cię na byciu dziwką. Teraz pilnują, żebyś nią została."
+      ]
+     },
+     "tylko trzy miesiące": {
+      "1": [
+       "Trzy miesiące mijają, a ty dalej klęczysz. Bo podpisałaś przedłużenie gardłem.",
+       "Kontrakt mówił: trzy miesiące. Twoja dupa mówi: na zawsze.",
+       "Każdy dzień kontraktu to kolejka. Liczysz dni, oni liczą rundy.",
+       "Skłamał, a ty połknęłaś kłamstwo razem z nim.",
+       "Dług spłacony dawno. Dalej płacisz, bo lubisz."
+      ],
+      "2": [
+       "Trzy miesiące były haczykiem. Ryba nie wraca do wody.",
+       "Kontrakt przedłużony bez końca. Podpis: twoja wypięta dupa.",
+       "Z umowy na czas określony zrobili cię towarem na zawsze.",
+       "Nikt już nie pamięta, że miało się skończyć. Najmniej ty.",
+       "Trzy miesiące, trzy dziurki, trzysta facetów. Policz sama."
+      ]
+     },
+     "kontrakt i dług": {
+      "1": [
+       "Spłacasz dług każdą dziurką. Odsetki rosną co noc.",
+       "Klauzula o dostępności: zawsze, wszędzie, dla każdego wierzyciela.",
+       "Raty pobierają z ciebie na kolanach.",
+       "Podpisałaś, że twoje ciało jest zastawem. Teraz je zabierają kawałek po kawałku.",
+       "Dług rośnie szybciej, niż zdążysz go odpracować. Tak to zaplanowali."
+      ],
+      "2": [
+       "Jesteś zastawem. Zastaw się używa, dopóki dług trwa. Dług trwa zawsze.",
+       "Komornik przyszedł i zajął twoją dupę.",
+       "Każdy wierzyciel bierze swoją ratę w ciebie.",
+       "Kontrakt mówi jasno: jesteś majątkiem ruchomym do użytku.",
+       "Nie spłacisz tego nigdy. I dobrze. Masz pracować do końca."
+      ]
+     },
+     "podpisane w ciemno": {
+      "1": [
+       "Podpisałaś, że każdy klient salonu może cię wziąć na fotelu.",
+       "W papierach było wszystko. Także to, co dzieje się teraz za witryną.",
+       "Przechodnie patrzą, jak cię biorą na fotelu do tatuażu.",
+       "Znak na brzuchu mówi: wolna dziura. Każdy umie czytać.",
+       "Podpisałaś w ciemno. Teraz wszyscy widzą w świetle."
+      ],
+      "2": [
+       "W papierach był grafik. Ty jesteś na nim co godzinę.",
+       "Podpisałaś zgodę na bycie rzeczą. Oni tylko z niej korzystają.",
+       "Tatuaż na brzuchu: liczba. Ilu cię miało. Dopisują co tydzień.",
+       "Witryna salonu zamieniła się w wystawę. Ty jesteś towarem do testowania.",
+       "Podpis był twój. Reszta życia jest ich."
+      ]
+     },
+     "pół roku później": {
+      "1": [
+       "Pół roku później nie liczysz już facetów. Liczysz tylko dni bez nich. Zero.",
+       "Rytuał poranny: makijaż, zatyczka, kolana.",
+       "Kłamstwo, że tego chciałaś, zamieniło się w głód.",
+       "Przestałaś płakać. Zaczęłaś prosić.",
+       "Pół roku i twoja dupa nie pamięta, jak to jest być zamkniętą."
+      ],
+      "2": [
+       "Pół roku później jesteś już tylko numerem w ich kalendarzu.",
+       "Nawet rodzice by cię nie poznali. Poznaliby cię za to ich koledzy.",
+       "Pół roku później nie ma już w tobie nic do łamania.",
+       "Twoje ciało zapomniało wszystko poza jednym: jak przyjmować.",
+       "Pół roku, setki razy, zero sprzeciwu. Taki masz bilans."
+      ]
+     },
+     "dziewczyna została Panią": {
+      "1": [
+       "Twoja była dziewczyna wpuszcza do ciebie obcych i patrzy.",
+       "Ona trzyma cię za włosy, a jej nowy chłopak bierze cię od tyłu.",
+       "Kiedyś ją całowałaś. Teraz liżesz to, co on w niej zostawił.",
+       "Panienka zakłada pasek i pokazuje ci, kto tu jest mężczyzną.",
+       "Ona dostaje pensję za to, żeby patrzeć, jak cię używają. Uśmiecha się."
+      ],
+      "2": [
+       "Twoja dziewczyna sprzedaje cię swoim koleżankom na wieczory panieńskie.",
+       "Ona prowadzi cię na smyczy przez imprezę i każdy może sobie wziąć.",
+       "Zrobiła z ciebie swoją sprzątaczkę po swoich kochankach. Językiem.",
+       "Ona ma teraz chłopaka, a ty jesteś jego dziurą na boku.",
+       "Twoja Pani kiedyś była twoją dziewczyną. Teraz jest twoją właścicielką i alfonsem."
+      ]
+     },
+     "trener": {
+      "1": [
+       "Trener rzeźbi ci dupę pod siebie. Każdy przysiad to zaproszenie.",
+       "W szatni ćwiczysz to, do czego naprawdę cię przygotowywał.",
+       "Trening się kończy, a ty zostajesz pod prysznicem dla całej drużyny.",
+       "Twoje pośladki rosną, a kolejka do nich razem z nimi.",
+       "Silna nie będziesz nigdy. Będziesz rozciągnięta."
+      ],
+      "2": [
+       "Trener wyhodował cię jak zwierzę. Teraz cała drużyna korzysta z wyników.",
+       "W szatni jesteś sprzętem drużyny. Jak ławka. Jak ręcznik.",
+       "Przygotował twoje ciało do jednego: do przyjmowania całej szatni.",
+       "Ćwiczenia skończone. Teraz jesteś nagrodą za wygrany mecz.",
+       "Zrobił z ciebie dupę z nogami. Arcydzieło, mówi, i pokazuje kolegom."
+      ]
+     },
+     "pas cnoty": {
+      "1": [
+       "Klatka zamknięta, dupa otwarta. Tak cię zaprojektowali.",
+       "Nie dotkniesz się nigdy więcej. Dochodzić możesz tylko od tyłu, z obcym w środku.",
+       "Klucz krąży między nimi. Ty go nigdy nie zobaczysz.",
+       "Twój mały kawałek faceta kapie w klatce, kiedy kolejny w ciebie wchodzi.",
+       "Zamknęli cię na zawsze, żebyś pamiętała, że twoje jedyne wejście jest z tyłu."
+      ],
+      "2": [
+       "Klatka bez klucza. Zostaje na zawsze, a ty kapiesz przez nią jak sztuka przy dojeniu.",
+       "W klatce jest coś, czego już nikt nie traktuje poważnie. Najmniej ty.",
+       "Zamknięta z przodu, dostępna z tyłu dla całego miasta.",
+       "Klatka to twój podpis: nie mężczyzna, nie kobieta, tylko dziura.",
+       "Twój przód jest martwy. Żyjesz tylko tam, gdzie cię biorą."
+      ]
+     },
+     "dziewczynka do rozłożenia": {
+      "1": [
+       "Rozłożona dla każdego, kto przejdzie obok.",
+       "Nogi szeroko, ręce za głową. Tak czekasz na następnego.",
+       "Delikatna dziewczynka, którą rozkładają jak kartkę.",
+       "Rozkładasz się sama, zanim ktoś zdąży poprosić.",
+       "Bezwolna i rozłożona. Twoja najlepsza poza."
+      ],
+      "2": [
+       "Rozłożona na stole jak danie dla całej sali.",
+       "Rozkładają cię na czterech, jak skórę do wyprawienia.",
+       "Rozłożona tak szeroko, że każdy wchodzi bez zatrzymania.",
+       "Leżysz rozłożona całą noc. Kto wstanie, ten bierze.",
+       "Rozłożona dziura z dziewczęcą buzią. Nic więcej."
+      ]
+     },
+     "ssanie": {
+      "1": [
+       "Ssij do samego końca i nie przestawaj, kiedy kończy. Następny czeka.",
+       "Gardło do końca, nos w jego brzuchu. Tak ssie dobra dziewczynka.",
+       "Ślinisz się na niego i na siebie. Nikt nie każe ci przestać.",
+       "Ssiesz, aż szczęka zdrętwieje. Potem ssiesz dalej.",
+       "Twoje usta są tylko do tego. Mówić przestały już dawno."
+      ],
+      "2": [
+       "Gardło na zmianę dla całej kolejki. Łzy, ślina i ich smak.",
+       "Ssiesz jak głodne zwierzę. Bo jesteś głodnym zwierzęciem.",
+       "Twoje usta to dziura, nie usta. Wchodzą do niej bez pytania.",
+       "Krztusisz się, płaczesz i otwierasz szerzej. Taki masz odruch.",
+       "Dławią cię jeden po drugim, a ty dziękujesz między nimi."
+      ]
+     },
+     "sama się zgłosiłaś": {
+      "1": [
+       "Sama się zgłosiłaś. Sama się rozebrałaś. Sama wypięłaś. Teraz wszyscy korzystają.",
+       "Przyszłaś po to, żeby cię zerżnęli. Dostajesz, po co przyszłaś.",
+       "Nikt cię nie zmuszał do wpisania się na listę. Teraz jesteś na niej codziennie.",
+       "Zgłosiłaś się jako ochotniczka. Ochotniczki biorą wszystkich.",
+       "Sama zapukałaś. Teraz pukają w ciebie."
+      ],
+      "2": [
+       "Zgłosiłaś się do bycia bydłem. Wpisali cię do stada.",
+       "Sama oddałaś się w użytkowanie. Nie ma reklamacji.",
+       "Ochotniczka do kolejki. Stoi w niej codziennie, na kolanach.",
+       "Sama się zgłosiłaś, więc nikt nie ma litości. Bo po co.",
+       "Przyszłaś sama. Wyjdziesz tylko jako ich rzecz."
+      ]
+     },
+     "niewola z wyboru": {
+      "1": [
+       "Wybrałaś łańcuch. Teraz każdy, kto go pociągnie, dostaje cię całą.",
+       "Niewola z wyboru znaczy, że nie możesz się nawet poskarżyć.",
+       "Branka, która sama przyszła. Biorą cię jak swoją zdobycz.",
+       "Klucz oddałaś sama. Teraz wszyscy mają kopię.",
+       "Sama założyłaś obrożę. Oni tylko przypinają smycz."
+      ],
+      "2": [
+       "Wybrałaś bycie rzeczą. Rzeczy się nie zwalnia, rzeczy się zużywa.",
+       "Niewolnica z wyboru. Najtańsza w utrzymaniu, najczęściej używana.",
+       "Wybrałaś to raz. Oni wybierają cię codziennie.",
+       "Łańcuch, który sama założyłaś, przypięli do łóżka w piwnicy.",
+       "Z wyboru w niewolę, z niewoli w użytek, z użytku w zapomnienie."
+      ]
+     },
+     "wypatrzona": {
+      "1": [
+       "Wypatrzyli twoją dupę, zanim poznali twoje imię. Imię już im niepotrzebne.",
+       "Obserwowali cię miesiącami. Teraz biorą cię godzinami.",
+       "Polowali na ciebie, a teraz dzielą się zdobyczą.",
+       "Patrzyli, jak się schylasz. Teraz schylasz się dla nich codziennie.",
+       "Wybrali cię jak kawałek mięsa w sklepie."
+      ],
+      "2": [
+       "Wypatrzona, złapana, oznaczona. Teraz jesteś sztuką w ich stadzie.",
+       "Polowanie skończone. Zdobycz leży rozłożona dla wszystkich myśliwych.",
+       "Upatrzyli cię jak zwierzę do hodowli. Trafili idealnie.",
+       "Teraz wszyscy, którzy na ciebie patrzyli, mają cię na własność.",
+       "Wypatrzona dla dupy. Zatrzymana dla dupy. Używana dla dupy."
+      ]
+     },
+     "pusta": {
+      "1": [
+       "Pusta dziurka to obraza dla nich. Nie pozwalają ci być pustą długo.",
+       "Czujesz pustkę po każdym z nich i od razu prosisz następnego.",
+       "Bez nich jesteś tylko pustym naczyniem na ich spermę.",
+       "Pusta w głowie, pusta w dupie. Dwa stany, które oni naprawiają.",
+       "Pustka boli. Więc wypinasz się na każdego."
+      ],
+      "2": [
+       "Pusta jak zbiornik. Napełniają cię i opróżniają, i znowu napełniają.",
+       "Jesteś pustą dziurą, dopóki ktoś nie wejdzie. Potem jesteś pełną dziurą.",
+       "Pustka to twój stan spoczynku. Spoczynku nie masz.",
+       "Nie jesteś osobą, która czuje się pusta. Jesteś pustką, która czeka na nich.",
+       "Pusta lalka, w której zawsze ktoś jest."
+      ]
+     },
+     "odurzona nimi": {
+      "1": [
+       "Ich zapach odbiera ci rozum. Klękasz, zanim zrozumiesz dlaczego.",
+       "Pot, sperma i skóra. Jedno powąchanie i już jesteś mokra.",
+       "Wąchasz ich jak zwierzę w rui. Jak dziwka w rui.",
+       "Kręci ci się w głowie, a twoja dupa już się otwiera.",
+       "Ich zapach jest twoim zaproszeniem. Zawsze przyjmujesz."
+      ],
+      "2": [
+       "Odurzona nimi tak, że nie odróżniasz już jednego od drugiego. Wszystko jedno, kto.",
+       "Ich zapach to twój sygnał do krycia. Jak u zwierzęcia.",
+       "Na haju od ich nasienia. Ciągle głodna kolejnej dawki.",
+       "Wdychasz ich, połykasz ich, nosisz ich w sobie. Nic innego nie ma.",
+       "Ich zapach na tobie mówi każdemu: ta jest do wzięcia."
+      ]
+     },
+     "pijana rozkoszą": {
+      "1": [
+       "Bełkoczesz »jeszcze« do każdego, kto przejdzie obok.",
+       "Pijana rozkoszą, ślinisz się na poduszkę i nie wiesz, który to już.",
+       "Nie umiesz powiedzieć nie. Umiesz tylko piszczeć.",
+       "Zataczasz się od łóżka do łóżka. Wszędzie ktoś czeka.",
+       "Tak pijana, że sama się nadziewasz, nie wiedząc na kogo."
+      ],
+      "2": [
+       "Pijana od orgazmów, oczy uciekają, a oni dalej pchają.",
+       "Bełkoczesz jak zwierzę. Ludzkie słowa już ci nie wychodzą.",
+       "Rozkosz zrobiła z ciebie bezwładne mięso do pieprzenia.",
+       "Tak pijana, że nie czujesz, kto w tobie jest. Tylko że ktoś jest zawsze.",
+       "Leżysz w kałuży, bełkoczesz, kapiesz. Oni dalej się zmieniają."
+      ]
+     },
+     "lalka zamiast tyrana": {
+      "1": [
+       "Kiedyś biłeś. Teraz piszczysz, kiedy biją cię w dupę.",
+       "Tyran w falbankach. Każdy, kogo straszyłeś, ma teraz kolejkę do ciebie.",
+       "Twoje dawne ofiary trzymają cię za włosy. Ładnie, prawda.",
+       "Lalka z różową szminką i dupą do użytku. Tak skończył groźny facet.",
+       "Kiedyś rządziłeś. Teraz jesteś zabawką dla tych, którymi rządziłeś."
+      ],
+      "2": [
+       "Groźny facet zamieniony w gumową lalkę do pieprzenia.",
+       "Każdy, kogo skrzywdziłeś, bierze cię teraz po kolei. Sprawiedliwość w falbankach.",
+       "Lalka nie ma dumy. Ma sztuczne rzęsy i rozjechaną dupę.",
+       "Twoje pięści są teraz dłońmi do trzymania kutasów.",
+       "Z tyrana zrobili dmuchaną lalkę. Dmuchają ją wszyscy."
+      ]
+     },
+     "zrobię wszystko": {
+      "1": [
+       "Zrobię wszystko, powiedziałaś. Teraz wszystko oznacza całą jego drużynę.",
+       "Wszystko to też gardło do końca. I dupa bez przygotowania.",
+       "Każde »wszystko« kosztuje cię kolejnego.",
+       "Obietnica była ustna. Spłacasz ją ustami.",
+       "Wszystko, co obiecałaś, odbierają w naturze."
+      ],
+      "2": [
+       "Wszystko znaczy bez granic. Sprawdzają to codziennie.",
+       "Powiedziałaś »wszystko«, więc nie masz prawa do »dość«.",
+       "Wszystko to też to, czego się brzydzisz. Szczególnie to.",
+       "Zrobisz wszystko, więc dostajesz wszystkich.",
+       "Twoje »wszystko« jest ich wiecznym biletem do twojej dupy."
+      ]
+     },
+     "należy do nich": {
+      "1": [
+       "Należysz do nich jak wspólny ręcznik. Każdy się wyciera.",
+       "Przekazują cię z rąk do rąk, z łóżka do łóżka.",
+       "Nie należysz do jednego. Należysz do kolejki.",
+       "Każdy z nich ma do ciebie klucz. Każdy z niego korzysta.",
+       "Oddana obcym, przekazana dalej, wzięta przez wszystkich."
+      ],
+      "2": [
+       "Należysz do nich jak bydło do gospodarstwa. Policzona i oznaczona.",
+       "Twoje ciało jest wspólną własnością. Grafik wisi na lodówce.",
+       "Przechodzisz z rąk do rąk tak często, że nikt już nie pamięta, kto był pierwszy.",
+       "Należysz do każdego, kto zapłaci, i do każdego, kto nie zapłaci.",
+       "Jesteś majątkiem całego domu. Jak kanapa. Siadają na tobie wszyscy."
+      ]
+     },
+     "własność": {
+      "1": [
+       "Moja własność. Daję ją komu chcę i patrzę, jak ją używa.",
+       "Własność się nie pyta. Własność się wypożycza.",
+       "Jesteś moja, więc mogę cię oddać pięciu naraz.",
+       "Masz moje znamię i ich spermę. Obie rzeczy oznaczają to samo.",
+       "Pożyczam cię jak samochód. Wracasz pobrudzona."
+      ],
+      "2": [
+       "Moja własność do wynajęcia na godziny.",
+       "Jesteś przedmiotem w moim inwentarzu. Numer, opis, stan: zużyta.",
+       "Własność nie ma praw. Ma tylko zastosowanie i właściciela.",
+       "Oddaję cię w dzierżawę całemu klubowi. Wracasz, kiedy skończą.",
+       "Moja rzecz. Moja dziura. Moja do rozdawania."
+      ]
+     },
+     "na zawsze": {
+      "1": [
+       "Na zawsze dziurą. Nie ma wyjścia i nie będzie.",
+       "Będziesz ich zaspokajać do końca życia. Codziennie, bez przerw.",
+       "Na zawsze rozłożona. Twoje nogi zapomniały, jak się zamyka.",
+       "Każdy dzień jak poprzedni: kolana, dupa, połykanie. Do śmierci.",
+       "Na zawsze w kolejce. Nigdy na jej końcu."
+      ],
+      "2": [
+       "Na zawsze bydłem. Dopóki ciało wytrzyma, a potem jeszcze dłużej.",
+       "Zużyją cię do ostatniej kropli. A potem zaczną od nowa.",
+       "Na zawsze rzeczą. Rzeczy się nie wypuszcza na wolność.",
+       "Twoje »na zawsze« zaczęło się pierwszej nocy i nie skończy się nigdy.",
+       "Do końca życia jesteś ich ciałem do pieprzenia. Bez emerytury."
+      ]
+     },
+     "ściema": {
+      "1": [
+       "Przyjemność była przynętą. Teraz jesteś złowiona i wypatroszona.",
+       "Orgazmy były po to, żebyś przestała się bronić. Udało się.",
+       "Myślałaś, że to dla ciebie. To zawsze było dla nich.",
+       "Dali ci trochę rozkoszy, żeby zabrać ci wszystko inne.",
+       "Ściema zadziałała. Teraz jesteś dziurą, która jeszcze dziękuje."
+      ],
+      "2": [
+       "Cała twoja przyjemność była haczykiem na bydło. Złapali cię.",
+       "Ściema skończona. Zostało tylko użytkowanie.",
+       "Oszukali cię rozkoszą, a teraz używają cię bez niej.",
+       "Przynęta zjedzona. Ty jesteś teraz w sieci, na zawsze.",
+       "Myślałaś, że wybierasz. Oni tylko hodowali cię pod siebie."
+      ]
+     },
+     "za późno": {
+      "1": [
+       "Za późno na wstyd. Wszyscy już w tobie byli.",
+       "Za późno, żeby wrócić. Twoja dupa nie pamięta drogi.",
+       "Za późno na »nie«. Powiedziałaś »tak« setki razy.",
+       "Jesteś już tym, czym cię zrobili. Dziurą do użytku.",
+       "Za późno. Twoje dawne życie nie przyjmie z powrotem takiej dziwki."
+      ],
+      "2": [
+       "Za późno na wszystko poza byciem pieprzoną.",
+       "Zostało ci tylko jedno do zrobienia: rozłożyć się dla następnego.",
+       "Za późno na bycie kimś. Jesteś czymś. Na zawsze.",
+       "Twoje ciało przekroczyło granicę, której nawet nie widziałaś.",
+       "Za późno na ratunek. Nikt nie przyjdzie po bydło."
+      ]
+     },
+     "pułapka": {
+      "1": [
+       "Weszłaś w pułapkę z otwartą buzią. Teraz ją wypełniają.",
+       "Drzwi zamknięte. W środku tylko ty i kolejka.",
+       "Pułapka miała kształt łóżka. Nie wyszłaś z niego od miesięcy.",
+       "Sama weszłaś. Sama się rozebrałaś. Pułapka zrobiła resztę.",
+       "Klatka, z której nie chcesz wyjść, to najlepsza klatka."
+      ],
+      "2": [
+       "Pułapka na bydło. Wpędzili cię do zagrody i zamknęli bramę.",
+       "W pułapce nie ma wyjścia, jest tylko kolejka do ciebie.",
+       "Złapali cię jak zwierzę. Teraz trzymają cię do krycia.",
+       "Pułapka zatrzasnęła się na twojej dupie. Na stałe.",
+       "Nie ma ucieczki. Jest tylko kolejny, i kolejny, i kolejny."
+      ]
+     },
+     "przeprogramowanie": {
+      "1": [
+       "Przeprogramowali cię. Teraz na widok kutasa otwierasz usta.",
+       "Twoje ciało działa jak im ustawili: mokra, chętna, cicha.",
+       "Stary program usunięty. Nowy: dawać, dziękować, połykać.",
+       "Twoje »nie« zostało skasowane z systemu.",
+       "Każdy dotyk włącza w tobie jedno: rozkładanie nóg."
+      ],
+      "2": [
+       "Przeprogramowana na bydło. Reagujesz na klepnięcie, nie na słowa.",
+       "Twój jedyny program: przyjmować. Uruchamia się sam, kiedy ktoś podejdzie.",
+       "Nadpisali cię. Nie ma kopii zapasowej.",
+       "Zainstalowali w tobie dziurę. Reszta systemu została odinstalowana.",
+       "Działasz jak automat do zaspokajania. Wrzuć kutasa, dostaniesz jęk."
+      ]
+     },
+     "świadek": {
+      "1": [
+       "Wszyscy wiedzą, czym jesteś. Twój szef, twoi sąsiedzi, twoja rodzina.",
+       "Każdy, kto cię mija, widział cię na kolanach.",
+       "Nie da się tego ukryć. Pachniesz nimi z daleka.",
+       "Świadkowie stoją w kolejce. Chcą zobaczyć z bliska.",
+       "Wszyscy wiedzą. Część z nich już cię miała."
+      ],
+      "2": [
+       "Całe miasto było świadkiem. Połowa miasta była w tobie.",
+       "Świadkowie nie zeznają. Świadkowie korzystają.",
+       "Twoja hańba ma tysiące wyświetleń i setki uczestników.",
+       "Wszyscy widzieli. Wszyscy pamiętają. Wszyscy wracają.",
+       "Każdy świadek staje się klientem. Ty nie odmawiasz nikomu."
+      ]
+     },
+     "wdzięczność za zniewolenie": {
+      "1": [
+       "Dziękuj za każdego, kto cię użył. Głośno, po imieniu, jeśli pamiętasz.",
+       "Dziękujesz z pełnymi ustami. Bełkotem, ale szczerze.",
+       "Wdzięczna dziura to dobra dziura.",
+       "Dziękuj za klatkę, za zatyczkę i za kolejkę.",
+       "Każde »dziękuję« to zaproszenie dla następnego."
+      ],
+      "2": [
+       "Dziękuj, że cię hodują. Bydło nie umie dziękować, ty umiesz.",
+       "Wdzięczna za to, że jesteś rzeczą. Rzeczy rzadko mają taki zaszczyt.",
+       "Dziękujesz na kolanach w kałuży ich nasienia.",
+       "Całujesz ręce, które cię złamały. I dupy też.",
+       "Twoje »dziękuję« jest ostatnim słowem, które ci zostawili. Używaj go."
+      ]
+     },
+     "wymazana": {
+      "1": [
+       "Wymazali ci imię, wspomnienia i wstyd. Zostawili dziurkę.",
+       "Nie pamiętasz, kim byłaś. Pamiętasz tylko smak.",
+       "Twoja przeszłość jest pusta. Twoja przyszłość jest pełna. Ich.",
+       "Wymazana do czysta, żeby mogli zapisać cię na nowo. Spermą.",
+       "Z całej ciebie zostało tyle, ile da się wziąć."
+      ],
+      "2": [
+       "Wymazana tak dokładnie, że nie ma już kogo żałować.",
+       "Nie ma ciebie. Jest ciało z numerem i zagroda.",
+       "Usunęli osobę. Zostawili sprzęt do zaspokajania. Ciało.",
+       "Wymazana z życia, wpisana do księgi hodowlanej.",
+       "Twój mózg to czysta kartka. Piszą na niej tylko »otwórz« i »połknij«."
+      ]
+     },
+     "zaprogramowana": {
+      "1": [
+       "Zaprogramowali cię na posłuszeństwo. Działasz bez zarzutu.",
+       "Kod w twojej głowie mówi jedno: dawaj.",
+       "Nawet nie zauważasz, kiedy się wypinasz. Program działa sam.",
+       "Ktoś wpisał w ciebie »tak«. Nie ma tam innego słowa.",
+       "Działasz, jak cię ustawili. Mokra na zawołanie."
+      ],
+      "2": [
+       "Zaprogramowana jak zabawka erotyczna. Z jedną funkcją.",
+       "Kod jest prosty: kutas wchodzi, ty dziękujesz.",
+       "Ustawili cię na bycie dziurą. Na stałe.",
+       "Twoja jedyna aktualizacja to większa pojemność.",
+       "Zaprogramowana do bycia zużywaną. Bez daty ważności."
+      ]
+     },
+     "jedyny orgazm": {
+      "1": [
+       "Dochodzisz tylko z dziurki, a dziurka należy do nich.",
+       "Twój przód umarł. Żyje tylko twoja dupa.",
+       "Każdy twój orgazm wymaga kogoś w środku. Dlatego błagasz.",
+       "Kapiesz z klatki dopiero, kiedy ktoś w ciebie wejdzie.",
+       "Twoje jedyne dojście to bycie zerżniętą."
+      ],
+      "2": [
+       "Dochodzisz jak zwierzę w rui: tylko pod rozpłodnikiem.",
+       "Twoja przyjemność jest w dupie, a dupa jest w kolejce.",
+       "Bez nich nie dojdziesz nigdy. Z nimi dochodzisz bez przerwy i bez kontroli.",
+       "Orgazm, który wyciągają z ciebie jak udój.",
+       "Przestawili ci ciało tak, że dochodzisz tylko, kiedy jesteś używana."
+      ]
+     },
+     "twoja dziurka nie jest twoja": {
+      "1": [
+       "Twoja dziurka należy do tego, kto w niej jest. Teraz akurat do niego.",
+       "Nie decydujesz, kto wchodzi. Dziurka jest otwarta dla każdego.",
+       "Twoja dziurka ma więcej właścicieli niż ty znajomych.",
+       "Dziurka do wynajęcia. Cennik: żaden.",
+       "Nie dotkniesz jej. Ona jest dla nich."
+      ],
+      "2": [
+       "Twoja dziurka to publiczne wejście. Jak drzwi do dworca.",
+       "Dziurka bez właścicielki, z setką użytkowników.",
+       "Zapisana na nich wszystkich. Ty tylko ją nosisz.",
+       "Twoja dziurka pracuje na zmiany. Ty śpisz między nimi, jeśli zdążysz.",
+       "Dziurka, która nigdy nie jest pusta i nigdy nie jest twoja."
+      ]
+     },
+     "mowa odjęta": {
+      "1": [
+       "Mówisz tylko »tak« i »dziękuję«. Reszta słów ci zabrana.",
+       "Twoje usta są do ssania, nie do mówienia.",
+       "Każdą próbę zdania zamykają kutasem.",
+       "Odebrali ci głos. Zostawili jęki.",
+       "Milcz. Dziurki mówią za ciebie."
+      ],
+      "2": [
+       "Nie masz mowy. Masz odgłosy bydła. Mlaskanie, sapanie, jęk.",
+       "Twoje usta zakneblowane czymś ciepłym na stałe.",
+       "Mówić mogą ludzie. Ty możesz tylko połykać.",
+       "Zabrali ci język do słów. Zostawili do lizania.",
+       "Twoje jedyne słowo to bełkot z pełnymi ustami."
+      ]
+     },
+     "złam mnie": {
+      "1": [
+       "Prosisz, żeby cię złamali. Robią to codziennie po kawałku.",
+       "Mury w tobie pękają z każdym pchnięciem.",
+       "Złamią cię tak, że będziesz dziękować za odłamki.",
+       "Prosisz o więcej, aż płaczesz, a potem prosisz dalej.",
+       "Twoje »złam mnie« usłyszał cały pokój. Wszyscy pomagają."
+      ],
+      "2": [
+       "Złamana do końca. Nie ma już w tobie nic sztywnego, poza klatką.",
+       "Rozbili cię na kawałki i każdy wziął sobie jeden.",
+       "Złamana, rozłożona, przelewana. Tak wygląda spełnione życzenie.",
+       "Nie ma już czego łamać. Teraz tylko używają szczątków.",
+       "Złamali cię jak zwierzę do jazdy. Teraz jeździ każdy."
+      ]
+     },
+     "bez granic": {
+      "1": [
+       "Granice zniknęły razem z twoimi majtkami.",
+       "Nie ma rzeczy, której byś nie zrobiła. Sprawdzają codziennie.",
+       "Każda linia, której się bałaś, została przekroczona przez kolejkę.",
+       "Bez granic znaczy bez odmowy. Nigdy.",
+       "Twoje ciało nie ma już żadnego »stop«."
+      ],
+      "2": [
+       "Bez granic jak bydło. Kryją cię, kiedy chcą i ile chcą.",
+       "Nie masz już granic. Masz tylko dziurki i ich apetyt.",
+       "Każda nowa granica pada tego samego dnia, w którym się pojawi.",
+       "Bez granic, bez wstydu, bez imienia. Tylko otwarta.",
+       "Granice są dla ludzi. Ty jesteś rzeczą."
+      ]
+     },
+     "ten, który ją bierze": {
+      "1": [
+       "Jego rytm, jego głębokość, jego tempo. Ty tylko przyjmujesz.",
+       "On decyduje, kiedy skończysz. I czy w ogóle.",
+       "Wchodzi w ciebie jak w swoje. Bo jesteś jego.",
+       "Pozwalam mu na wszystko. On korzysta ze wszystkiego.",
+       "Nie liczy się, czy chcesz. Liczy się, czy on chce. Zawsze chce."
+      ],
+      "2": [
+       "Bierze cię jak rozpłodnik klacz. Bez czułości, do końca.",
+       "Ten, który cię bierze, zmienia się co pół godziny. Rytm zostaje.",
+       "On używa cię jak swojej rzeczy. Ty dziękujesz jak rzecz.",
+       "Wchodzi, kończy, wychodzi. Następny ma ten sam rytm.",
+       "Twoje ciało należy do tego, kto akurat jest w środku."
+      ]
+     },
+     "branie od tyłu": {
+      "1": [
+       "Od tyłu, głęboko, bez patrzenia w twarz. Twarz się nie liczy.",
+       "Wypięta na czworakach, a oni się zmieniają.",
+       "Biorą cię od tyłu, żebyś nie widziała, ilu ich jest.",
+       "Twarzą w poduszkę, dupą do świata.",
+       "Od tyłu, bo tak się bierze dziwki, nie dziewczyny."
+      ],
+      "2": [
+       "Od tyłu jak zwierzę. Klepnięcie, wejście, następny.",
+       "Biorą cię od tyłu tak długo, że zapominasz, że masz przód.",
+       "Twoja twarz nikogo nie obchodzi. Twoja dupa obchodzi wszystkich.",
+       "Na czworakach przez całą noc. Kolana obdarte, dupa pełna.",
+       "Od tyłu, w kolejce, bez imion. Tak się kryje bydło."
+      ]
+     },
+     "księżniczka odbytu": {
+      "1": [
+       "Księżniczka, której korona jest w dupie. Wszyscy się kłaniają i wchodzą.",
+       "Twój tron to ławka do brania od tyłu.",
+       "Księżniczka odbytu przyjmuje poddanych. Wszystkich naraz.",
+       "Twoja dupa jest jedynym, co w tobie królewskie.",
+       "Każdy rycerz dostaje audiencję w twojej dziurce."
+      ],
+      "2": [
+       "Księżniczka odbytu na tronie z zatyczką, w kałuży ich nasienia.",
+       "Twoje królestwo to rozjechana dziurka i kolejka poddanych.",
+       "Korona z ich spermy, płaszcz z ich potu.",
+       "Księżniczka, którą poddani używają jak publicznego miejsca.",
+       "Królowa dziur. Rządzisz tylko tym, ilu się zmieści."
+      ]
+     },
+     "ruchają cię w dupę": {
+      "1": [
+       "Ruchają cię w dupę tak, że nie możesz siedzieć. I dobrze, siedzieć nie musisz.",
+       "Głęboko, mocno, bez przerw. Twoja dupa jest dla nich.",
+       "Ruchają cię w dupę, a ty dziękujesz za każde pchnięcie.",
+       "Rozjeżdżają cię po kolei, aż przestajesz się zaciskać.",
+       "Twoja dupa zna ich lepiej niż ich żony."
+      ],
+      "2": [
+       "Ruchają cię w dupę do utraty czucia. Potem jeszcze dłużej.",
+       "Rozjechana dupa, otwarta na stałe. Nikt już nie musi cię przygotowywać.",
+       "Ruchają cię jak bydło. Bez imion, bez przerw, bez litości.",
+       "Twoja dupa jest najczęściej używanym miejscem w tym domu.",
+       "Ruchają cię w dupę, aż kapie z ciebie na ich buty. Potem każą wylizać."
+      ]
+     },
+     "lubisz to": {
+      "1": [
+       "Lubisz to. Twoja dupa się zaciska, kiedy wchodzą.",
+       "Nie udawaj. Lubisz być dziurą do użytku.",
+       "Lubisz, jak cię biorą obcy. Najbardziej obcy.",
+       "Lubisz smak, lubisz ciężar, lubisz kolejkę.",
+       "Lubisz to tak bardzo, że się wstydzisz. I lubisz ten wstyd."
+      ],
+      "2": [
+       "Lubisz być bydłem. Twoje ciało mówi to głośniej niż twoje usta.",
+       "Lubisz to bardziej niż życie, które miałaś. Dlatego go nie masz.",
+       "Lubisz, jak cię zużywają. Każda kropla to dowód.",
+       "Lubisz być niczym. Niczym, do którego wszyscy wchodzą.",
+       "Lubisz to tak, że sama się nadziewasz na każdego."
+      ]
+     },
+     "odbyt nie należy do niej": {
+      "1": [
+       "Twoja dupa należy do mnie i do nich. Ty ją tylko wypinasz.",
+       "Nie decydujesz o swoim odbycie. Decyduje kolejka.",
+       "Twój odbyt ma grafik. Ciebie nikt nie pyta o zdanie.",
+       "Dupa nie twoja, ale ty za nią odpowiadasz. Ma być czysta i otwarta.",
+       "Twoja dziurka ma więcej właścicieli, niż jesteś w stanie policzyć."
+      ],
+      "2": [
+       "Twój odbyt to własność publiczna. Jak park. Każdy może wejść.",
+       "Dupa oddana na zawsze. Nawet nie pamiętasz, jak to było ją mieć.",
+       "Twój odbyt jest dzierżawiony. Czynsz płacą w nasieniu.",
+       "Nie masz dupy. Masz wejście dla nich.",
+       "Twój odbyt należy do tych, którzy go rozjechali. Czyli do wszystkich."
+      ]
+     },
+     "orgazmy nie są jej": {
+      "1": [
+       "Dochodzisz na ich rozkaz. Albo wcale.",
+       "Twój orgazm jest ich zabawką. Dają i zabierają.",
+       "Każą ci dojść przy wszystkich. Dochodzisz, płacząc.",
+       "Odmawiają ci tygodniami, a potem wyciskają z ciebie trzy naraz.",
+       "Twoja przyjemność jest ich nagrodą, nie twoją."
+      ],
+      "2": [
+       "Doją z ciebie orgazmy jak mleko. Wiadrem.",
+       "Twoje dojście to ich rozrywka przy piwie.",
+       "Dochodzisz bez pozwolenia i dostajesz za to kolejnych pięciu.",
+       "Twoja rozkosz należy do kolejki. Każdy wyciska swoją część.",
+       "Orgazm, którego nie chcesz, przychodzi i tak. Bo nie jest twój."
+      ]
+     },
+     "dawne życie patrzy": {
+      "1": [
+       "Twoi dawni kumple stoją w kolejce. Każdy zna cię od tyłu.",
+       "Była dziewczyna patrzy, jak jej dawny chłopak połyka.",
+       "Sąsiad pożycza cię na weekend. Odstawia pod drzwi.",
+       "Koledzy z pracy dzielą się zdjęciami. I tobą.",
+       "Twoje dawne życie przyszło popatrzeć i zostało się spuścić."
+      ],
+      "2": [
+       "Cała twoja przeszłość cię zaliczyła. Po kolei.",
+       "Ci, którzy cię znali jako faceta, teraz znają cię jako dziurę.",
+       "Dawne życie stoi w kolejce, a ty klęczysz na jej końcu i początku.",
+       "Twój stary kumpel cię kryje, a drugi trzyma za włosy.",
+       "Wszyscy, przed którymi udawałeś, teraz się z ciebie śmieją. Z pełnymi spodniami."
+      ]
+     },
+     "jedyne wyjście": {
+      "1": [
+       "Jedyne wyjście prowadzi przez stół zabiegowy. Za nim jest tylko dziura.",
+       "Poproś, a odetną ostatni kawałek faceta. Wtedy będziesz wolną dziwką.",
+       "Wolność dostaniesz tylko jako dziura. Nigdy jako ktoś.",
+       "Wyjście jest dla kobiety. Dla kobiety do brania.",
+       "Powiesz to w końcu. Na kolanach, z pełnymi ustami."
+      ],
+      "2": [
+       "Jedyne wyjście to wejście. Dla nich.",
+       "Wolność dla bydła to zagroda bez łańcucha. Dalej zagroda.",
+       "Poprosisz o to sama i podziękujesz chirurgowi ustami.",
+       "Za drzwiami nie ma wolności. Jest większa kolejka.",
+       "Nie ma wyjścia. Są tylko kolejne wejścia."
+      ]
+     },
+     "uzależniona od nich": {
+      "1": [
+       "Trzęsiesz się, kiedy ich nie ma. Przychodzisz sama i rozkładasz się na progu.",
+       "Bez kutasa w sobie nie umiesz zasnąć.",
+       "Głód nimi jest silniejszy niż wstyd. Przychodzisz na kolanach.",
+       "Błagasz o dawkę w każdej przerwie.",
+       "Uzależniona od bycia zerżniętą. Nie ma odwyku."
+      ],
+      "2": [
+       "Uzależniona jak zwierzę od paszy. Wracasz do koryta sama.",
+       "Twoje ciało wyje, kiedy jest puste. Pukasz do każdych drzwi.",
+       "Bez nich jesteś nikim. Z nimi jesteś dziurą. Wybierasz dziurę codziennie.",
+       "Głód nasienia trzyma cię mocniej niż łańcuch.",
+       "Przychodzisz sama, prosisz sama, rozkładasz się sama. Oni tylko biorą."
+      ]
+     },
+     "ich narkotyk": {
+      "1": [
+       "Nie mogą przestać cię ruchać. Ty nie możesz przestać dawać.",
+       "Biorą cię jak ćpuni: szybko, mocno, ciągle więcej.",
+       "Każdy wraca po swoją dawkę. Twoja dupa nie ma przerwy.",
+       "Tolerancja rośnie, więc biorą cię we dwóch, we trzech.",
+       "Jesteś ich nałogiem. Nałogów się nie oszczędza."
+      ],
+      "2": [
+       "Eksploatują cię jak złoże. Do ostatniej kropli.",
+       "Jesteś dla nich towarem, którego nigdy nie ma dość. Więc biorą bez końca.",
+       "Głód nimi rośnie, a ty jesteś jedynym źródłem.",
+       "Zużywają cię jak nałóg zużywa ciało. Szybciej, mocniej, więcej.",
+       "Wyssają z ciebie wszystko i wrócą po resztki."
+      ]
+     },
+     "dla ich zabawy": {
+      "1": [
+       "Istniejesz dla ich zabawy. Dziś zabawa ma pięciu uczestników.",
+       "Śmieją się, kiedy się krztusisz. Taka jest zabawa.",
+       "Zabawka, która sama się wypina. Najlepsza zabawka.",
+       "Twoja przyjemność ich nie obchodzi. Ich zabawa tak.",
+       "Bawią się tobą, aż się znudzą. Nie nudzą się nigdy."
+      ],
+      "2": [
+       "Zabawka do rozrywania. Rozrywają cię na zmianę.",
+       "Jesteś rozrywką na wieczór kawalerski. Każdy wieczór kawalerski.",
+       "Bawią się tobą jak zwierzęciem w cyrku. Na czworakach, z dupą w górze.",
+       "Twoja jedyna rola: być zabawą, która się nie kończy.",
+       "Dla ich zabawy, do ich ulgi, na ich rozkaz. Nic więcej."
+      ]
+     },
+     "pokojówki w posiadłości": {
+      "1": [
+       "Wszystkie pokojówki w posiadłości mają ten sam grafik: sprzątanie i krycie.",
+       "Schylasz się z miotełką, a za tobą już ktoś stoi.",
+       "Między pokojówkami rywalizacja: która przyjmie więcej.",
+       "Dygasz każdemu i każdy cię bierze. Taka jest etykieta domu.",
+       "Zatyczka, fartuszek, pończochy. Strój roboczy do pieprzenia."
+      ],
+      "2": [
+       "Pokojówki w posiadłości to stado. Ty jesteś najczęściej krytą sztuką.",
+       "W posiadłości liczą was jak inwentarz. Na koniec dnia sprawdzają, ile kto przyjął.",
+       "Sprzątasz po nich i jesteś sprzątana przez nich. Bez końca.",
+       "Na balu jesteście przekąską. Goście biorą sobie po jednej.",
+       "Posiadłość ma dwadzieścia pokoi. W każdym ktoś na ciebie czeka."
+      ]
+     },
+     "we mgle": {
+      "1": [
+       "Budzisz się we mgle i z obcym w środku. Nie wiesz, który to.",
+       "Mgła w głowie, sperma w dupie. Nie pamiętasz, ilu było.",
+       "Urywki: światło, kolejka, twoje »jeszcze«. Reszta to ich nasienie.",
+       "Nie pamiętasz nocy, ale twoje uda pamiętają każdego.",
+       "We mgle biorą cię najłatwiej. Nawet nie stawiasz oporu."
+      ],
+      "2": [
+       "Mgła taka gęsta, że nie wiesz, czy jesteś osobą, czy zagrodą.",
+       "Budzisz się w kałuży na podłodze, a ktoś już wchodzi.",
+       "Pamiętasz tylko ciężar i ciepło. Setki razy.",
+       "Mgła i krycie. Krycie i mgła. Nie rozróżniasz już dni.",
+       "Nie pamiętasz własnego imienia. Pamiętasz smak każdego z nich."
+      ]
+     },
+     "niewolnica przyjemności": {
+      "1": [
+       "Dochodzisz, kiedy cię łapią, nawet zanim wejdą.",
+       "Twoje ciało dochodzi pod każdym, kto cię przytrzyma.",
+       "Nie panujesz nad tym. Kapiesz z klatki przy wszystkich.",
+       "Fala za falą, aż płaczesz. A oni dalej się zmieniają.",
+       "Przyjemność cię trzyma, a oni trzymają przyjemność."
+      ],
+      "2": [
+       "Dochodzisz jak zwierzę pod rozpłodnikiem. Bez kontroli, bez wstydu, bez końca.",
+       "Wyciskają z ciebie orgazmy, aż jesteś pusta i drżąca. Potem jeszcze jeden.",
+       "Przyjemność zrobiła z ciebie bezwolne mięso.",
+       "Dochodzisz tak często, że przestałaś to zauważać. Oni nie przestali liczyć.",
+       "Niewolnica przyjemności, która nawet nie wie, kto ją teraz bierze."
+      ]
+     },
+     "klub, gdzie nikt nie pyta": {
+      "1": [
+       "W klubie nikt nie pyta o imię. Pytają tylko, która dziurka wolna.",
+       "Pokój na tyłach, materac, kolejka. Twój wieczór.",
+       "Wchodzisz jako gość, wychodzisz jako atrakcja klubu.",
+       "Barman podaje ci drinka i wskazuje drzwi na zaplecze.",
+       "W klubie są takie jak ty. Ty jesteś najczęściej wybierana."
+      ],
+      "2": [
+       "W klubie jesteś punktem programu. Dziura na scenie.",
+       "Materac na zapleczu ma twoje imię. Nikt go nie zmienia.",
+       "W klubie, gdzie nikt nie pyta, nikt cię też nie żałuje.",
+       "Członkowie klubu dostają ciebie w cenie wejściówki.",
+       "Zaplecze klubu: ty, łańcuch i cała sala w kolejce."
+      ]
+     },
+     "rzecz": {
+      "1": [
+       "Rzecz zużyta do połowy. Druga połowa czeka na noc.",
+       "Rzeczy się nie myje po każdym użyciu. Ciebie też nie.",
+       "Leżysz tam, gdzie cię rzucili. Rzeczy nie wybierają miejsca.",
+       "Rzecz z dziurkami. Sprawdzają wszystkie po kolei.",
+       "Rzecz, którą się pożycza, oddaje i znowu pożycza. Bez końca."
+      ]
+     },
+     "dziewczyna do ruchania": {
+      "1": [
+       "Dziewczyna do ruchania na zmiany. Dzienna, nocna, weekendowa.",
+       "Nie masz nic do gadania, bo masz pełne usta.",
+       "Uległa, bo nie ma wyboru. Mokra, bo lubi.",
+       "Dziewczyny do ruchania nie pytają ilu. Pytają tylko, którędy.",
+       "Twoje jedyne zdanie to jęk. Wypowiadasz je pod każdym."
+      ]
+     },
+     "na posyłki": {
+      "1": [
+       "Na posyłki dla całego bloku. Gwizdną i biegniesz na czworakach.",
+       "Zamawiają cię jak pizzę. Dowóz w pończochach, zwrot nieprzewidziany.",
+       "Towar z katalogu, wydawany na żądanie, bez kolejki. Kolejka jest w środku.",
+       "Ich uzależnienie od seksu karmi się tobą. Codziennie.",
+       "Jesteś pod numerem telefonu. Dzwonią, a ty się rozkładasz."
+      ]
+     },
+     "nikt nie pytał": {
+      "1": [
+       "Nikt nie pyta, bo nikt nie musi. Biorą.",
+       "Łapią cię za kark w korytarzu i pochylają nad pierwszym meblem.",
+       "Śpisz z rozchylonymi nogami, żeby nie musieli budzić cię do niczego.",
+       "Nikt nie pytał, czy możesz. Nikt nie zapyta, czy masz dość.",
+       "Wchodzą bez słowa i wychodzą bez słowa. Ty zostajesz z ich ciepłem."
+      ]
+     },
+     "ciało zdradza": {
+      "1": [
+       "Twoje ciało zdradza cię przy każdym. Dochodzisz z płaczem i prosisz o więcej.",
+       "Mówisz nie, a dupa ssie go do środka.",
+       "Twoje ciało jest po ich stronie. Ty przegrałaś dawno.",
+       "Kapie z ciebie, chociaż przysięgasz, że nie chcesz. Nikt ci nie wierzy.",
+       "Ciało dziwki w głowie, która jeszcze udaje. Niedługo przestanie."
+      ]
+     },
+     "przyciśnięta": {
+      "1": [
+       "Przyciśnięta do łóżka, jeden na tobie, drugi trzyma ręce. Nie ma dokąd uciec.",
+       "Kolana przy uszach, jego ciężar na tobie, dupa otwarta do końca.",
+       "Przyciśnięta twarzą do podłogi. Biorą, aż nie czujesz kolan.",
+       "Nie ruszysz się. Nie musisz. Wystarczy, że jesteś otwarta.",
+       "Przyciśnięta tak, że oddychasz tylko między pchnięciami."
+      ]
+     },
+     "twoja wina": {
+      "1": [
+       "To twoja wina, że jesteś taka dupna. Więc płacisz dupą.",
+       "Sama się prosiłaś. Teraz prosisz codziennie.",
+       "Twoja wina, że cię chcą. Więc dostają.",
+       "Za każdy błąd kolejny w kolejce. Popełniasz ich dużo.",
+       "To twoja wina, i to twoja kara, i to twoje życie."
+      ]
+     },
+     "dziesięć minut później": {
+      "1": [
+       "Dziesięć minut później wstyd, a dwadzieścia minut później kolejny w tobie.",
+       "Wstydzisz się, że błagałaś. Zaraz będziesz błagać znowu.",
+       "Leżysz w mokrej pościeli i już nasłuchujesz kroków.",
+       "Wstyd nigdy cię nie powstrzymał. Teraz już nawet nie spowalnia.",
+       "Po każdym razie mówisz »nigdy więcej«. Po każdym razie jest więcej."
+      ]
+     },
+     "przełamana": {
+      "1": [
+       "Przełamana, rozjechana, gotowa. Tak cię przekazują dalej.",
+       "Nie walczysz, bo nie zostało nic do walki. Tylko dziurki.",
+       "Opór złamali w tydzień. Godność w jeden wieczór.",
+       "Teraz już tylko piszczysz i dziękujesz. Na zmianę.",
+       "Przełamana do użytku. Jak wybita droga. Każdy przejeżdża."
+      ]
+     },
+     "przywiązana do krzesła": {
+      "1": [
+       "Przywiązana do krzesła na całą noc. Kto wejdzie do pokoju, ten bierze.",
+       "Krzesło stoi na środku salonu. Ty na nim, wypięta dla gości.",
+       "Nie odwiążą cię, dopóki nie wypełnią do końca.",
+       "Przywiązana, zakneblowana, pełna. Krzesło trzyma, oni biorą.",
+       "Krzesło w kącie to twoje miejsce pracy. Pracujesz dupą."
+      ]
+     },
+     "rozpórka": {
+      "1": [
+       "Rozpórka na kostkach przez cały dzień. Chodzisz rozkraczona i wszyscy widzą.",
+       "Nogi rozłożone na stałe, dziurki otwarte na stałe.",
+       "Z rozpórką nie uciekniesz nawet do łazienki. Biorą cię po drodze.",
+       "Rozłożona jak towar na ladzie. Każdy przechodzący sprawdza.",
+       "Rozpórka zrobiła z ciebie zawsze dostępną dziurę."
+      ]
+     },
+     "knebel i obroża": {
+      "1": [
+       "Knebel wyjmują tylko po to, żeby wsadzić ci kutasa.",
+       "Prowadzą cię na smyczy od pokoju do pokoju. W każdym ktoś cię bierze.",
+       "Obroża z kółkiem, a do kółka przypięta kartka: »wolna«.",
+       "Ślinisz się przez knebel, kiedy biorą cię od tyłu.",
+       "Smycz krótka, kolana obdarte, dupa pełna. Spacer zakończony."
+      ]
+     },
+     "ławka": {
+      "1": [
+       "Ławka w piwnicy. Przypięta od rana do nocy.",
+       "Na ławce jesteś tylko dwiema dziurkami na odpowiedniej wysokości.",
+       "Przypinają cię do ławki na imprezę. Goście się zmieniają, ty nie.",
+       "Ławka nie ma imienia. Ty też nie, dopóki na niej leżysz.",
+       "Pod ławką kałuża. Na ławce ty. Kolejka sięga schodów."
+      ]
+     },
+     "wystawiona na publiczność": {
+      "1": [
+       "Każdy film z tobą ma tysiące widzów i setki komentarzy, co jeszcze ci zrobić.",
+       "Wystawiona w sieci jak towar. Każdy klika, każdy chce spróbować.",
+       "Twoje dziurki znają całe miasto z ekranów. Teraz chcą na żywo.",
+       "Klikają, komentują, umawiają się. Ty tylko otwierasz drzwi.",
+       "Publika ogląda, a potem przychodzi. Ty przyjmujesz każdego widza."
+      ]
+     },
+     "publiczna dupodajka": {
+      "1": [
+       "Publiczna dupodajka. Każdy na osiedlu wie, gdzie mieszkasz i kiedy jesteś wolna.",
+       "W windzie, na klatce, w piwnicy. Biorą cię tam, gdzie złapią.",
+       "Twoja dupa ma więcej znajomych niż ty.",
+       "Daje każdemu, kto zapyta. A nikt już nie pyta.",
+       "Publiczna jak przystanek. Każdy wsiada i wysiada."
+      ]
+     },
+     "lody na pokaz": {
+      "1": [
+       "Robisz loda na stole, a reszta nagrywa i ocenia.",
+       "Pokaz trwa godzinę. Na koniec twoja twarz jest dowodem.",
+       "Kamera blisko, gardło do końca, łzy na policzkach. Hit sezonu.",
+       "Twoje usta są publiczne. Każdy ma do nich prawo i telefon.",
+       "Lodzik na żywo dla całej sali. Każdy chce być następny."
+      ]
+     },
+     "wszyscy cię chcą wyruchać": {
+      "1": [
+       "Wszyscy chcą cię wyruchać. I wszyscy w końcu to robią.",
+       "Na ulicy patrzą na twoją dupę i umawiają się między sobą, kto pierwszy.",
+       "Nie pytają czy, pytają kiedy. Odpowiedź zawsze brzmi: teraz.",
+       "Każdy uśmiech do ciebie to zaproszenie do kolejki.",
+       "Chcą cię wszyscy, więc dostają cię wszyscy. Po kolei."
+      ]
+     },
+     "gwiazda porno": {
+      "1": [
+       "Gwiazda porno, która nigdy nie dostaje dubla. Za pierwszym razem biorą ją trzech.",
+       "Kręcą cię dzień w dzień. Scenariusz jest zawsze ten sam: ty, dziurki, oni.",
+       "Twoja najlepsza scena trwała cztery godziny. Nikt nie wołał cięcia.",
+       "Fani piszą, co chcą ci zrobić. Reżyser czyta i kręci.",
+       "Na planie nie masz imienia. Masz rolę: dziura numer jeden."
+      ]
+     },
+     "zamówiona": {
+      "1": [
+       "Zamówiona na wieczór kawalerski. Dostarczona, rozpakowana, zużyta.",
+       "Zamówili cię na całą noc dla całej drużyny.",
+       "Kurier przywiózł cię w pudełku z kokardą. Klient otworzył dupą do góry.",
+       "Zamawiają cię na godziny, a zwracają po dniach.",
+       "Jesteś na liście zamówień pod pozycją: dziura, sztuka jedna, bez limitu."
+      ]
+     },
+     "jedyne zadanie": {
+      "1": [
+       "Jedyne zadanie: dawać się ruchać. Wykonujesz je przez całą dobę.",
+       "Nie masz innego zajęcia. Masz tylko dziurki i grafik.",
+       "Obciągać, dawać dupy, dziękować. Tyle umiesz i tyle wystarczy.",
+       "Twoja jedyna praca nie ma przerw ani urlopu.",
+       "Jedno zadanie, setki wykonań dziennie. Bez błędów."
+      ]
+     },
+     "oba końce": {
+      "1": [
+       "Jeden w ustach, drugi w dupie, a ty wisisz między nimi jak na rożnie.",
+       "Oba końce zajęte, oczy w słup, ślina na brodzie.",
+       "Kołyszą cię między sobą tak, że nie wiesz, który pcha.",
+       "Nie musisz myśleć, bo z obu stron jesteś pełna.",
+       "Oba końce i nic pośrodku. Tak wygląda twoje ciało."
+      ]
+     },
+     "dwóch naraz": {
+      "1": [
+       "Dwóch naraz to dla ciebie rozgrzewka.",
+       "Jeden pod tobą, drugi za tobą. Trzeci czeka przy twarzy.",
+       "Dwóch w jednej dziurce, bo tak się da i bo tak chcą.",
+       "Na zmianę nie wystarcza. Biorą cię naraz.",
+       "Dwóch naraz, potem dwóch następnych. Kolejka idzie parami."
+      ]
+     },
+     "potrzebuje tego na sobie": {
+      "1": [
+       "Potrzebujesz ich na sobie jak powietrza. Bez tego czujesz się goła.",
+       "Chodzisz oznaczona cały dzień. Każdy wie, że ktoś cię już miał.",
+       "Wcierasz ich w skórę jak krem. Jutro poprosisz o nową porcję.",
+       "Bez ich zapachu nie wiesz, kim jesteś. Z nim wiesz: dziwką.",
+       "Potrzebujesz tego na twarzy, żeby czuć się ubraną."
+      ]
+     },
+     "pod stołem": {
+      "1": [
+       "Pod stołem pracujesz przez całą kolację, od przystawki do deseru.",
+       "Goście nawet nie przerywają jedzenia. Ty nie przerywasz ssania.",
+       "Pod obrusem kałuża, a ty na kolanach w niej, przy kolejnym.",
+       "Ktoś upuszcza widelec. Podnosisz zębami. Potem wracasz do roboty.",
+       "Kolacja się kończy, a ty jeszcze nie skończyłaś ostatniego gościa."
+      ]
+     },
+     "zbrukana i dumna": {
+      "1": [
+       "Zbrukana od stóp do głów i dumna z każdej warstwy.",
+       "Nie myjesz się, bo chcesz, żeby wszyscy wiedzieli, ilu ich było.",
+       "Każda plama na twojej sukience to podpis.",
+       "Śmierdzisz nimi i chodzisz z podniesioną głową.",
+       "Zbrukana tak, że nikt cię nie pomyli z porządną. I dobrze."
+      ]
+     }
+    },
     "seed": {
      "cisza w głowie - w głowie robi się cicho: żadnych myśli, zmartwień ani planów, tylko oddech, ciepło i jego rytm; to najspokojniejsze miejsce, jakie zna": [
       "W twojej głowie robi się cicho. Żadnych myśli. Tylko oddech i jego rytm.",
@@ -2589,7 +4161,19 @@
      "niewolnica przyjemności - orgazm za orgazmem, aż przyjemność ją trzyma mocniej niż łańcuch": [
       "Co chwilę dostajesz orgazm… i to jest twój łańcuch.",
       "Powtórz za mną: jestem niewolnicą przyjemności.",
-      "Nie trzymam cię siłą. Trzymam cię tym, jak bardzo tego chcesz."
+      "Nie trzymam cię siłą. Trzymam cię tym, jak bardzo tego chcesz.",
+      "Łapią cię w przejściu, pochylają nad czymkolwiek i biorą. A ty dochodzisz, zanim zdążysz się zdziwić.",
+      "Nie kontrolujesz tego. Twoje ciało dochodzi samo, za każdym razem, kiedy ktoś w ciebie wejdzie.",
+      "Nie musisz chcieć. Nie musisz pozwolić. Przyjemność i tak przychodzi. Jest silniejsza od ciebie.",
+      "Mówisz »nie teraz«, a twoja dziurka zaciska się i drżysz w pierwszej fali.",
+      "Jeden ruch jego bioder i już cię nie ma. Zostaje tylko ciało, które dochodzi na zawołanie.",
+      "Dochodzisz z klatki, której nikt nie dotyka. Kapiesz na podłogę jak zepsuty kran.",
+      "Kiedyś decydowałaś, kiedy skończysz. Teraz kończysz, kiedy oni zaczynają.",
+      "Fala za falą. Nie umiesz przestać. Nie umiesz ich zatrzymać. Nie chcesz.",
+      "Przyjemność to twój łańcuch. Oni tylko trzymają koniec i patrzą, jak się wijesz.",
+      "Wystarczy, że złapie cię za biodra. Ciało pamięta, co będzie dalej, i dochodzi z wyprzedzeniem.",
+      "Twoje orgazmy nie są twoje. Są ich nagrodą za to, jak łatwo cię złamać.",
+      "Niewolnica przyjemności nie odpoczywa. Między jednym a drugim drży, czeka i już mięknie."
      ],
      "mowa odjęta - mówi tylko to, co każę, kiedy każę; myśli ktoś za nią": [
       "Nie masz już swojego głosu… mówisz tylko to, co ja chcę.",
@@ -3535,7 +5119,9 @@
    "jestem pełna ich wszystkich",
    "karmią mnie sobą",
    "jestem pusta",
-   "w mojej głowie jest cisza"
+   "w mojej głowie jest cisza",
+   "jestem niewolnicą przyjemności",
+   "dochodzę, kiedy mnie biorą"
   ],
   "obey_phrases": [
    "dziękuję",
@@ -3684,7 +5270,7 @@
     "i give up",
     "i'm your girl",
     "i let go",
-    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine", "i volunteered", "i am your maid", "i'm your maid", "i signed", "i am a diligent student", "i am his wife", "i belong to him forever", "my pleasure is locked", "i don't have to think", "i am his assistant", "they caught me", "one word and i'm theirs", "i accepted the rules", "i signed blind", "i was always her", "make me a real woman", "i stopped looking for the way out", "i was a good girl", "thank you sir", "i'll do anything", "i am their drug", "i took her place", "i greet you on my knees", "i'll stay forever", "my girlfriend is my mistress", "i train for him", "i'm their little doll", "my face has waited for this all its life", "nobody asks me", "my no means nothing", "it's my fault", "i stopped fighting", "i stopped enduring", "they drugged me", "they dosed me", "they put something in my drink", "i'm drugged", "i'm tied up", "i'm spread", "i go where i'm led", "i'm a thing", "i'm their livestock", "i'm a body to fuck", "cum in me", "i swallow it all", "i want to be full", "i'm covered", "i'm breeding stock", "i'm full of all of them", "they feed me themselves", "i'm empty", "my head is quiet"
+    "i'm your little girl", "i am a trans girl", "i'm a trans girl", "i'm a trans girl now", "i'm their girl to fuck", "i have no say", "my orgasms belong to them", "my orgasms are not mine", "i volunteered", "i am your maid", "i'm your maid", "i signed", "i am a diligent student", "i am his wife", "i belong to him forever", "my pleasure is locked", "i don't have to think", "i am his assistant", "they caught me", "one word and i'm theirs", "i accepted the rules", "i signed blind", "i was always her", "make me a real woman", "i stopped looking for the way out", "i was a good girl", "thank you sir", "i'll do anything", "i am their drug", "i took her place", "i greet you on my knees", "i'll stay forever", "my girlfriend is my mistress", "i train for him", "i'm their little doll", "my face has waited for this all its life", "nobody asks me", "my no means nothing", "it's my fault", "i stopped fighting", "i stopped enduring", "they drugged me", "they dosed me", "they put something in my drink", "i'm drugged", "i'm tied up", "i'm spread", "i go where i'm led", "i'm a thing", "i'm their livestock", "i'm a body to fuck", "cum in me", "i swallow it all", "i want to be full", "i'm covered", "i'm breeding stock", "i'm full of all of them", "they feed me themselves", "i'm empty", "my head is quiet", "i'm a slave of pleasure", "i cum when they take me"
    ],
    "obey_phrases": [
     "thank you",
@@ -3768,6 +5354,7 @@
      "The pleasure was the bait. It was always about you stopping being your own."
     ],
     "theme_stages": {"0": ["praise", "tenderness in humiliation", "aftercare", "affirmation", "trans girl", "fantasy come true", "welcome back", "a new name from the girls", "the first makeup", "stockings and lace", "dressed as a woman", "feminisation", "you don't have to think", "quiet in her head", "on his lap", "instead of his wife", "trance", "let go"], "1": ["remade", "hormones", "salon and clinic", "sissy school", "the maid", "the bride", "the morning after the wedding", "the morning note", "the rules of the new life", "greeting at the door", "the reward for being good", "the boss's assistant", "empty head", "the trigger word", "caught", "only three months", "contract and debt", "signed blind", "six months later", "the girlfriend became the Mistress", "the trainer", "chastity", "a girl to be spread", "sucking", "she volunteered", "captive by choice", "spotted", "empty", "dazed by them", "drunk on pleasure", "a doll instead of a tyrant", "anything"], "2": ["she belongs to them", "property", "forever", "the sham", "too late", "the trap", "reprogramming", "everyone knows", "gratitude for being owned", "erased", "the only orgasm left", "her hole is not hers", "break me", "the one who takes her", "taken from behind", "anal princess", "fucked in the ass", "her ass is not hers", "her orgasms are not hers", "the old life watches", "the only way out", "addicted to them", "their drug", "for their amusement", "the maids of the estate", "in a haze"], "3": ["a thing", "their girl to fuck", "on call", "nobody asked", "the body betrays her", "pinned", "your fault", "ten minutes later", "broken in", "tied to the chair", "spreader bar", "gag and collar", "the bench", "porn star", "ordered", "the only job", "both ends", "two at once", "marked and proud", "under the table"], "4": ["livestock", "a body to fuck", "milking and breeding", "warm cum inside", "on the face and in the mouth", "one after another", "covered", "full after the whole night", "fed on them", "they cum in her ass"]},
+    "levels": {"1": "HARSHER VERSION (the session has gone further than this theme): cruder, harder, more objectifying, less tenderness", "2": "HARSHEST VERSION (the peak of the session): extremely crude, merciless, no tenderness; she is only a thing, a hole and a body for use"},
     "themes": [
      "sucking - like a little girl, obediently, to the end",
      "a girl to be spread - soft, ready, will-less",
@@ -3869,7 +5456,8 @@
     "under the table - an ordinary dinner goes on at the table, talk, wine and cutlery, while she kneels under the tablecloth and serves the guests one after another; nobody mentions her, everybody knows",
     "you don't have to think - the relief of not having to think, decide or choose anymore; someone thinks for her, and she only listens, opens and does as she's told",
     "empty - she feels empty, in her head and inside; the emptiness aches and tempts at once, and only one thing fills it: them",
-    "quiet in her head - her head goes quiet: no thoughts, worries or plans, only breath, warmth and his rhythm; it's the calmest place she knows"
+    "quiet in her head - her head goes quiet: no thoughts, worries or plans, only breath, warmth and his rhythm; it's the calmest place she knows",
+    "slave of pleasure - they grab her, fuck her, and she cums on her own without controlling it; orgasm after orgasm until the pleasure holds her tighter than a chain"
     ],
     "tasks": {
      "by_stage": {
@@ -3931,7 +5519,1419 @@
       "silnik",
       "urządzen"
      ],
+     "seed_up": {
+      "praise": {
+       "1": [
+        "Good girl. Good because you're wide and quiet.",
+        "I praise you because you bend over nicely. For nothing else.",
+        "Good little whore. That's what they call girls like you when they serve well.",
+        "Bravo. You took all of him and didn't squeak. That's how they like you.",
+        "You swallowed nicely. You get praise and the next one."
+       ],
+       "2": [
+        "The best hole in this house. That's the only praise you deserve.",
+        "Good stock. Lets herself be taken and doesn't whine.",
+        "I'll praise you when the last one's done. For now, keep open.",
+        "Bravo, slut. Five of them and still wet.",
+        "You're perfect. Perfectly empty, perfectly open, perfectly theirs."
+       ]
+      },
+      "tenderness in humiliation": {
+       "1": [
+        "I hold your hand while they fuck you. So you don't forget whose you are.",
+        "I stroke your hair while he goes deeper. Tenderness and a hole, both for them.",
+        "I whisper good girl while you choke on him. That's how I love you.",
+        "I wipe your tears so the next one has a pretty face to cover.",
+        "I'm right here. Watching them use you. I don't look away."
+       ],
+       "2": [
+        "I kiss your forehead while three wait for your holes.",
+        "I love you most when you're just a wet hole without a name.",
+        "I cuddle you like a doll. Because you are a doll. Their doll to fuck.",
+        "My tenderness is a leash. I hold it while they flood you.",
+        "I whisper that you're beautiful while the whole queue runs out of your ass."
+       ]
+      },
+      "aftercare": {
+       "1": [
+        "You lie there flooded and shaking. Again tomorrow. Rest while you can.",
+        "I'll wash you, because tomorrow they want you clean.",
+        "Breathe. Your holes are still throbbing. Reminding you what you are.",
+        "Sleep with the plug in. In the morning I want to know nothing ran out.",
+        "You sold yourself well today. For nothing. Just for being used."
+       ],
+       "2": [
+        "You lie in their cum and can't get up. That's what your rest looks like.",
+        "After the session. There's no such thing. It only pauses for your breath.",
+        "I'll wipe you with the towel they used before you. Nothing's new for you.",
+        "You fall asleep full. You wake up empty. Someone's already waiting.",
+        "Rest for a thing is a moment on the shelf. You have five minutes."
+       ]
+      },
+      "affirmation": {
+       "1": [
+        "Repeat after me: I'm a hole for use and I thank every one of them.",
+        "Repeat: my ass belongs to them and I love it.",
+        "Say it out loud: I'm a whore who cums from behind.",
+        "Repeat: I swallow it all and beg for more.",
+        "Repeat: I have no opinion, only holes."
+       ],
+       "2": [
+        "Repeat after me: I'm livestock for breeding.",
+        "Repeat: my body is for fucking and for meeting their needs.",
+        "Repeat: I'm a container for their cum.",
+        "Repeat: I'm not a person, I'm a thing for use.",
+        "Repeat until you believe it: I'm their shared hole."
+       ]
+      },
+      "trans girl": {
+       "1": [
+        "A trans girl with a hole that hasn't closed in a week.",
+        "You're a trans girl for taking. You don't need to know anything else.",
+        "A trans girl on her knees is the prettiest sight in this house.",
+        "They made you a girl so they'd have someone to cum in.",
+        "Your new body has one job. To take."
+       ],
+       "2": [
+        "Trans girl, trans whore, trans hole. Call it what you like.",
+        "You're a trans girl for the queue. Everyone knows her. Everyone's been in her.",
+        "They didn't make you a woman. They made a hole in the shape of a woman.",
+        "Your transition ended where their pleasure begins.",
+        "A trans girl without a name, with a number and a full ass."
+       ]
+      },
+      "fantasy come true": {
+       "1": [
+        "You always wanted this. Now you get it every day, whether you want it or not.",
+        "Your fantasy now has five men and no breaks.",
+        "You dreamed of it in bed alone. Now you're never alone, not for a minute.",
+        "It came true. And now it can't be switched off.",
+        "You squeal thin and high, like in your dreams. Only it's no dream. It's his cock."
+       ],
+       "2": [
+        "Your fantasy swallowed you whole. All that's left is a body to fuck.",
+        "You wanted to be taken like a woman. Now you're taken like livestock. The fantasy went further than you.",
+        "A fantasy come true is a cage. You locked it yourself and threw away the key.",
+        "The fantasy came true, and you stayed in it forever, as furniture.",
+        "Your dream fucks you day and night. And nobody asks if you've had enough."
+       ]
+      },
+      "welcome back": {
+       "1": [
+        "Welcome back, whore. You were always here, just dressed up as a man.",
+        "You came home. To a hole that always wanted to be filled.",
+        "She was always waiting. On her knees. Now she finally can.",
+        "Welcome home. Your home is the bed they take you on.",
+        "That boy was a costume. This whore is real."
+       ],
+       "2": [
+        "Welcome back to your pen. The whole herd missed you.",
+        "You're back where you belong. Under them.",
+        "Welcome, thing. Your place on the shelf was waiting.",
+        "She didn't come back. She hatched. Ready for use from day one.",
+        "Welcome back. Strip and spread. The rest know what to do."
+       ]
+      },
+      "a new name from the girls": {
+       "1": [
+        "The girls gave you a girl's name. The men gave you a nickname. It fits better.",
+        "In the chat they use your name. In bed nobody does.",
+        "You got your new name at the table. Your new purpose under it.",
+        "The girls made you up, and the men smeared you.",
+        "A pretty name. A prettier hole. You know which one they remember."
+       ],
+       "2": [
+        "You don't need a name. You bend over and they know who it is.",
+        "Your new name is next. That's what they call in the queue.",
+        "The sisters gave you a name, the brothers gave you a queue. Both stay forever.",
+        "Names are for people. You have a number and holes.",
+        "When someone calls you, you turn your ass to them. That's how you answer to your name."
+       ]
+      },
+      "the first makeup": {
+       "1": [
+        "First makeup, first lashes, first cock in your mouth. All on the same day.",
+        "Lipstick so they can see where to go in.",
+        "They made you up so there'd be something to smear.",
+        "You look like prey. In a minute you will be.",
+        "Strawberry gloss. In ten minutes you'll taste of them."
+       ],
+       "2": [
+        "Mascara runs down your cheeks with their cum. That's your real makeup.",
+        "Do your makeup every day, because every day someone smears it.",
+        "Your face is a canvas. They paint it with cum.",
+        "Whore's makeup: lipstick halfway down the chin and lashes glued shut.",
+        "You're only pretty for the first five minutes. After that you're used."
+       ]
+      },
+      "stockings and lace": {
+       "1": [
+        "Tights torn at the crotch. That's how they're worn in this house.",
+        "The lace on you lasts an hour. Then it's wet and torn.",
+        "Stockings, garters, nothing else. The holes must be available.",
+        "They dress you prettily so there's something to tear off.",
+        "Lace on your skin, cum on the lace. That's you after every evening."
+       ],
+       "2": [
+        "They don't change your underwear. You wear the same, stiff with all of them.",
+        "Tights at your ankles, ass in the air. That's what's left of dressing up.",
+        "Lace is packaging. Nobody looks at the packaging when they unwrap the goods.",
+        "You only have panties so there's something to pull aside.",
+        "Dressed like a lady, used like livestock."
+       ]
+      },
+      "dressed as a woman": {
+       "1": [
+        "Heels so she can't run. A skirt so it's quicker.",
+        "They dressed you as a woman so you'd be easier to undress.",
+        "The corset squeezes your waist so your ass looks bigger. For them.",
+        "Everything you wear has one job: access.",
+        "You can't fight in these clothes. You can only spread your legs."
+       ],
+       "2": [
+        "Clothes are just decoration on meat. They rip them off in one move.",
+        "Dressed as a woman, stripped to a hole.",
+        "They dress you like a doll and use you like a rag.",
+        "The skirt means nothing to them. What counts is what's under it, always open.",
+        "Every accessory is a handle. Collar, belt, braid. Something to pull."
+       ]
+      },
+      "feminisation": {
+       "1": [
+        "They made you a woman so they'd have someone to fuck.",
+        "The feminisation didn't end with the clothes. It ended on your knees.",
+        "Being a woman means one thing for you: being taken.",
+        "Every day takes a little man out of you and adds a little whore.",
+        "You're a woman for taking. You don't know how to be a woman any other way."
+       ],
+       "2": [
+        "You're not a woman. You're a female for breeding.",
+        "Feminisation complete. Now the usage begins.",
+        "There's less left of the man than of your dignity. Which is nothing.",
+        "They made you a hole with tits. The rest is extras.",
+        "A woman has rights. You have holes."
+       ]
+      },
+      "you don't have to think": {
+       "1": [
+        "Don't think. Open. That's the only thing that's up to you.",
+        "Leave the thinking to the ones who use you.",
+        "Your head is there so they have something to hold on to.",
+        "You don't need a brain. You need holes.",
+        "Don't think about how many are left. Think about not closing."
+       ],
+       "2": [
+        "You've nothing left to think with. Good. Thinking meat would rebel.",
+        "Your head is a handle. Your mouth is a hole. No thoughts.",
+        "Things don't think. Things get used.",
+        "An empty skull, a full ass. The perfect ratio.",
+        "They switched you off like a lamp. You only light up when someone goes in."
+       ]
+      },
+      "quiet in her head": {
+       "1": [
+        "Quiet in your head, him in your ass. That's how your day should look.",
+        "Quiet in your head, loud from your throat. Moan.",
+        "Your head is silent because it has nothing to add. Your holes speak for themselves.",
+        "Quiet in your head while the next one goes in. You don't even have to count.",
+        "The thoughts went out. Trembling and an open mouth are left."
+       ],
+       "2": [
+        "Quiet in your head like an empty barn. Only the breathing of livestock.",
+        "Nothing in your head. All of them in you.",
+        "Quiet, because there's nobody in there anymore. Only a body to fuck.",
+        "Your head went quiet for good. Your ass never goes quiet.",
+        "The deepest quiet comes when you're just a hole in rotation."
+       ]
+      },
+      "on his lap": {
+       "1": [
+        "You sit on his lap, impaled. Dinner goes on.",
+        "On his lap, with his fingers in you. The others watch and wait their turn.",
+        "He feeds you from his mouth while the humming under your skirt grows. You're not allowed to cum.",
+        "His lap is only a stop. In a minute they'll move you to the next.",
+        "You squirm on him like a worm on a hook. Because you are one."
+       ],
+       "2": [
+        "They pass you from lap to lap like a plate of starters.",
+        "On his lap, impaled to the hilt. You move only as he tells you.",
+        "You sit on him and cum, and he doesn't even stop talking.",
+        "Lap, table, floor. Wherever they put you, they take you.",
+        "You're his seat cushion. Warm, soft, with a hole."
+       ]
+      },
+      "instead of his wife": {
+       "1": [
+        "You took his wife's place. In bed too. On your knees too.",
+        "The wife had rights. You have duties. Three times a day.",
+        "His house, his rules, his cock. You only open.",
+        "Instead of a wife he has access. So do his friends.",
+        "You wear her dresses and do what she never did."
+       ],
+       "2": [
+        "You're not a wife. You're a household toy for relief.",
+        "Instead of a wife he got a hole to share with guests.",
+        "Husband. No, he's the owner. You're the furnishings.",
+        "For the guests' dinner, you're served. For dessert too.",
+        "A wife leaves. A thing stays. You'll stay forever."
+       ]
+      },
+      "trance": {
+       "1": [
+        "I count down from ten. At zero you spread without an order.",
+        "In trance you cum on command. Let's check. Now.",
+        "Deeper into trance. Deeper into you. It's the same thing.",
+        "Your body obeys my voice, not you. Open up.",
+        "In trance you're just a hole that knows what to do."
+       ],
+       "2": [
+        "A trance with no you in it. Only a body that takes everyone.",
+        "You sleep with your eyes open while they take turns inside you.",
+        "Programmed for one thing: to give. Without a break, without end, without you.",
+        "In trance you feel no shame. Only how many are filling you.",
+        "I'll wake you when they're done. Which is never."
+       ]
+      },
+      "let go": {
+       "1": [
+        "Let go. All the way. Let as many take you as want to.",
+        "Stop holding on. Your body belongs to whoever comes.",
+        "Let go like the whore you are. No shame.",
+        "The wave comes and you don't ask who caused it. It doesn't matter.",
+        "Let go, open, take. Three words, your whole life."
+       ],
+       "2": [
+        "Let go so there's nothing left to hold.",
+        "You're easy to the bone. Anyone who wants it gets it.",
+        "Let go for the whole night. For the whole of your life. For everyone.",
+        "There's nothing left holding you. Not shame, not a name, not a mind.",
+        "Loose, spread, overflowing. That's how everyone sees you."
+       ]
+      },
+      "remade": {
+       "1": [
+        "They remade you into a hole with tits. That's their idea of fun.",
+        "They took your balls and gave you an ass for use. A fair trade, they say.",
+        "Remade into a toy that bends over by itself.",
+        "What's left of the man is what drips from your cage.",
+        "They remade you to fit them exactly. You fit every one."
+       ],
+       "2": [
+        "They remade you into livestock. First into a girl, then into breeding stock.",
+        "What's left of that man is meat. Meat to fuck.",
+        "Remake complete. Model: hole. Year: forever.",
+        "Nobody would recognise you. Not even you. There's no one left to recognise.",
+        "Remade so thoroughly there's nothing left to break."
+       ]
+      },
+      "hormones": {
+       "1": [
+        "Estrogen softened your body, and they slide into it easier and easier.",
+        "The hormones took your hardness. They left you a wet hole.",
+        "Your breasts grow for their hands, not for you.",
+        "Every dose makes you more willing. You noticed.",
+        "The testosterone went in the bin. Your dignity with it."
+       ],
+       "2": [
+        "The hormones made you a female in heat. Always ready, always wet.",
+        "They pump you with estrogen like breeding stock. So you take it better.",
+        "Your body has only one reflex left: to spread.",
+        "You don't fight because you have nothing to fight with. They took that too.",
+        "Soft, round, empty inside. Ready to be flooded."
+       ]
+      },
+      "salon and clinic": {
+       "1": [
+        "They plumped your lips so they'd wrap better. With consent you signed on your knees.",
+        "At the clinic they asked about size. They chose the biggest. For them.",
+        "Every treatment makes you a better hole.",
+        "Hair, nails, lips. All for how you'll look under the next one.",
+        "From the salon straight to the bedroom. Nobody wastes time."
+       ],
+       "2": [
+        "The clinic upgrades the goods. You're the goods.",
+        "They made you a mouth for sucking and an ass for taking. The rest is decoration.",
+        "After every visit you're less yourself and more their toy.",
+        "A body upgraded for the queue. Every part accessible.",
+        "You left the clinic as a product. Ready for use from the doorstep."
+       ]
+      },
+      "sissy school": {
+       "1": [
+        "Today's lesson: throat all the way. Exam tonight, in front of the whole class.",
+        "Your grades come in cum. Straight A's.",
+        "The school teaches you one thing: open on every command.",
+        "Homework: ten before dinner.",
+        "Best student, because she stopped protesting the fastest."
+       ],
+       "2": [
+        "Final exam: the whole staff, the whole night, every hole.",
+        "They write your diploma on your belly. In marker. A line for each one.",
+        "Sissy school trains one thing: well-mannered breeding stock.",
+        "You were raised into a hole. The school is proud of you.",
+        "A graduate. Now the internship on anyone who pays."
+       ]
+      },
+      "the maid": {
+       "1": [
+        "Between dusting and serving coffee, someone always lifts your skirt.",
+        "The maid cleans the floor with her tongue when told.",
+        "The apron stays, the panties go. That's your shift.",
+        "Every guest may use you. That's the house contract.",
+        "You clean, then you get cleaned. With their cum."
+       ],
+       "2": [
+        "You're a maid in name only. Really you're the house hole on call.",
+        "You don't clean. You're the rag. They wipe themselves on you.",
+        "The staff in this house has one task. You do it on your knees.",
+        "A maid for taking on every piece of furniture in every room.",
+        "Wet apron, scraped knees, full mouth. An ordinary day at work."
+       ]
+      },
+      "the bride": {
+       "1": [
+        "A wedding night with the whole wedding party.",
+        "Veil on your head, bridesmaids holding your legs, and the groom goes in.",
+        "You vowed obedience. Now his friends check you keep it.",
+        "A ring on your finger, cum on your dress. That's your wedding.",
+        "The husband shares his wife. That's the tradition in this house."
+       ],
+       "2": [
+        "A bride for the whole hall. Every guest gets his dance. Inside you.",
+        "The white dress quickly stopped being white.",
+        "Your husband sells the wedding night. Hour by hour.",
+        "A wife for public use. The ring only shows whose queue it is.",
+        "The wedding was so it'd be legal. The rest is so it'd be forever."
+       ]
+      },
+      "the morning after the wedding": {
+       "1": [
+        "You wake in lace and his cum. Yesterday wasn't a dream.",
+        "A cage under the dress, a plug in your ass, a ring on your finger. All for good.",
+        "Your husband is waiting. A wife's morning duty starts on her knees.",
+        "The signatures were real. Now your body signs too. Every morning.",
+        "Everyone watched the stream. Today they're watching the replay."
+       ],
+       "2": [
+        "The morning after the wedding with three witnesses in bed. Each wants his share.",
+        "A wife since yesterday, a hole forever.",
+        "You wake up full and someone's already pulling back the covers.",
+        "The first morning of the marriage, and you already don't know which one is the husband.",
+        "Your wedding night isn't over yet. Maybe it never will be."
+       ]
+      },
+      "the morning note": {
+       "1": [
+        "On the note: a pill, cleaning, then five before lunch.",
+        "Point four: practise your throat until you stop gagging. They'll check tonight.",
+        "A note every morning. Every one ends on your knees.",
+        "He drew you an arrow on the note. It points at your ass.",
+        "The list of duties is short. Open. Say thank you. Swallow."
+       ],
+       "2": [
+        "The note says: today you're for everyone. No breaks.",
+        "Your name isn't on the note. A number and hours of use are.",
+        "The only point: let everyone who comes in fuck you.",
+        "The note's clipped to your collar so everyone knows what to do with you.",
+        "A note in the morning, tally marks on your thigh at night. How many today."
+       ]
+      },
+      "the rules of the new life": {
+       "1": [
+        "Rule: holes always available. Even in your sleep.",
+        "Rule: you only say yes and thank you. The rest of the words are taken.",
+        "Rule: anyone who comes has a right to you.",
+        "Break a rule and the punishment is simple. The next one, and one more.",
+        "The rules are short because you don't have to understand them. You have to follow them."
+       ],
+       "2": [
+        "One rule: you're for fucking. The rest is detail.",
+        "Livestock rules: eat, wait, be bred.",
+        "No rule protects you. They all protect their pleasure.",
+        "The last and most important rule: you never close your legs.",
+        "The new life has the rules of a thing. You lie where they put you."
+       ]
+      },
+      "greeting at the door": {
+       "1": [
+        "You greet every guest on your knees. Not only him.",
+        "The door opens, and your mouth opens with it.",
+        "A queue for your mouth in the hallway. Coats hang, trousers drop.",
+        "You greet him with your ass when he's tired. He demands it.",
+        "He hasn't closed the door yet and you're already swallowing."
+       ],
+       "2": [
+        "You're a doormat with holes. Everyone who comes in leaves something.",
+        "A greeting at the door for every delivery man. House rules.",
+        "You stand by the door bent over like a slot. Whoever comes in puts something in.",
+        "In this house the doorbell means one thing: on your knees.",
+        "You greet them all the same. No name, no face, mouth open."
+       ]
+      },
+      "the reward for being good": {
+       "1": [
+        "Reward for the whole day: three at once and nobody lets you cum.",
+        "You get your reward in the ass. Deep. No warm-up.",
+        "Good all day, so tonight everyone takes you.",
+        "The reward is his cum in your throat. Say thank you.",
+        "Being good gets you more of the same. That's mercy here."
+       ],
+       "2": [
+        "Reward: a night in the queue, on the bench, plugged until morning.",
+        "You were good, so they'll lend you to the neighbours.",
+        "The reward for livestock is breeding. No choosing the stud.",
+        "The best reward: nobody will ask if you've had enough.",
+        "For being good they flood you inside and out. Be glad."
+       ]
+      },
+      "the boss's assistant": {
+       "1": [
+        "An assistant for coffee, for notes and for fucking on the desk.",
+        "You got your promotion on your knees in front of the whole board.",
+        "Every meeting ends under the table.",
+        "The boss lends you to clients. That's how deals get closed.",
+        "Your annual review: the best mouth in the company."
+       ],
+       "2": [
+        "The company hole. Available to anyone with a badge.",
+        "A board meeting, and you're the item on the agenda on the table.",
+        "A business trip is a week in a hotel bed with the whole department.",
+        "You work full time as a whore with a benefits package: a plug and a cage.",
+        "Endless overtime. Paid in their cum."
+       ]
+      },
+      "empty head": {
+       "1": [
+        "The empty head giggles, and the ass takes it. A perfect division of labour.",
+        "You don't remember how to count. You only remember how to bend over.",
+        "Empty head, full throat.",
+        "One word is left in your head: more.",
+        "The thoughts evaporated with their cum. A pleasant hum is left."
+       ],
+       "2": [
+        "A silly hole that opens on command.",
+        "Your head is an empty box. Your ass is the only thing that works.",
+        "You can't speak in full sentences anymore. You can moan and swallow.",
+        "An empty doll to fuck. No batteries, no will, no end.",
+        "They left you one reflex: spread your legs when someone stands close."
+       ]
+      },
+      "the trigger word": {
+       "1": [
+        "One word and you spread your legs in front of everyone.",
+        "They say it at dinner and you're already going under the table.",
+        "The trigger word opens your ass faster than any cock.",
+        "Every one of them knows the word. Every one uses it.",
+        "You don't remember when they sewed it in. You only remember you cum after it."
+       ],
+       "2": [
+        "A word and you become livestock. On all fours, ass in the air.",
+        "They use the word in the street to watch you kneel among people.",
+        "One word and you're a hole for anyone who says it.",
+        "Programmed like a toy to fuck. A word instead of a coin.",
+        "The word that switches you off and the word that opens you. The same word."
+       ]
+      },
+      "caught": {
+       "1": [
+        "They caught you in panties and knew at once anyone could take you.",
+        "You pay for silence with your ass. Every day.",
+        "The photos go round, and you kneel for everyone who's seen them.",
+        "The blackmail turned into a queue.",
+        "They caught you once. Now they catch you by the hips every day."
+       ],
+       "2": [
+        "Caught, exposed, used by everyone who knew.",
+        "Your photos are on every phone in the area. Your ass too.",
+        "You pay for silence with all of you. The silence won't happen anyway.",
+        "The secret became an ad: free hole, call anytime.",
+        "They caught you being a whore. Now they make sure you stay one."
+       ]
+      },
+      "only three months": {
+       "1": [
+        "Three months pass and you're still kneeling. You signed the extension with your throat.",
+        "The contract said three months. Your ass says forever.",
+        "Every day of the contract is a queue. You count days, they count rounds.",
+        "He lied, and you swallowed the lie along with him.",
+        "The debt's long paid. You keep paying because you like it."
+       ],
+       "2": [
+        "Three months was the hook. The fish doesn't go back in the water.",
+        "The contract extended without end. Signature: your ass in the air.",
+        "They turned a fixed-term contract into goods forever.",
+        "Nobody remembers it was supposed to end. You least of all.",
+        "Three months, three holes, three hundred men. Do the maths."
+       ]
+      },
+      "contract and debt": {
+       "1": [
+        "You pay off the debt with every hole. The interest grows every night.",
+        "The availability clause: always, anywhere, for every creditor.",
+        "They collect the instalments from you on your knees.",
+        "You signed that your body is the collateral. Now they take it piece by piece.",
+        "The debt grows faster than you can work it off. That's how they planned it."
+       ],
+       "2": [
+        "You're the collateral. Collateral gets used while the debt lasts. The debt lasts forever.",
+        "The bailiff came and seized your ass.",
+        "Every creditor takes his instalment in you.",
+        "The contract is clear: you're movable property for use.",
+        "You'll never pay it off. Good. You're to work until the end."
+       ]
+      },
+      "signed blind": {
+       "1": [
+        "You signed that every client of the salon may take you in the chair.",
+        "It was all in the papers. Including what's happening behind the window now.",
+        "Passers-by watch them take you in the tattoo chair.",
+        "The mark on your belly says: free hole. Everyone can read.",
+        "You signed in the dark. Now everyone sees in the light."
+       ],
+       "2": [
+        "There was a schedule in the papers. You're on it every hour.",
+        "You signed consent to being a thing. They're just using it.",
+        "A tattoo on your belly: a number. How many have had you. They update it weekly.",
+        "The salon window turned into a display. You're the goods for testing.",
+        "The signature was yours. The rest of your life is theirs."
+       ]
+      },
+      "six months later": {
+       "1": [
+        "Six months later you don't count the men. You count the days without them. Zero.",
+        "Morning ritual: makeup, plug, knees.",
+        "The lie that you wanted it turned into hunger.",
+        "You stopped crying. You started begging.",
+        "Six months and your ass doesn't remember being closed."
+       ],
+       "2": [
+        "Six months later you're just a number in their calendar.",
+        "Even your parents wouldn't recognise you. Their friends would, though.",
+        "Six months later there's nothing left in you to break.",
+        "Your body forgot everything but one thing: how to take.",
+        "Six months, hundreds of times, zero objections. That's your balance."
+       ]
+      },
+      "the girlfriend became the Mistress": {
+       "1": [
+        "Your ex-girlfriend lets strangers into you and watches.",
+        "She holds you by the hair while her new boyfriend takes you from behind.",
+        "You used to kiss her. Now you lick what he left in her.",
+        "The young Miss straps on and shows you who the man is here.",
+        "She's paid to watch them use you. She smiles."
+       ],
+       "2": [
+        "Your girlfriend sells you to her friends for hen nights.",
+        "She leads you on a leash through the party and anyone may take a turn.",
+        "She made you her cleaner after her lovers. With your tongue.",
+        "She has a boyfriend now, and you're his hole on the side.",
+        "Your Mistress used to be your girlfriend. Now she's your owner and your pimp."
+       ]
+      },
+      "the trainer": {
+       "1": [
+        "The trainer sculpts your ass for himself. Every squat is an invitation.",
+        "In the locker room you practise what he really trained you for.",
+        "Training's over, and you stay in the showers for the whole team.",
+        "Your glutes grow, and the queue for them grows too.",
+        "You'll never be strong. You'll be stretched."
+       ],
+       "2": [
+        "The trainer bred you like an animal. Now the whole team uses the results.",
+        "In the locker room you're team equipment. Like a bench. Like a towel.",
+        "He prepared your body for one thing: taking the whole locker room.",
+        "The exercises are done. Now you're the prize for a won match.",
+        "He made you an ass with legs. A masterpiece, he says, and shows his mates."
+       ]
+      },
+      "chastity": {
+       "1": [
+        "Cage locked, ass open. That's how they designed you.",
+        "You'll never touch yourself again. You can only cum from behind, with a stranger inside.",
+        "The key goes round between them. You'll never see it.",
+        "Your little piece of man drips in the cage when the next one goes in.",
+        "They locked you for good so you'd remember your only entrance is at the back."
+       ],
+       "2": [
+        "A cage with no key. It stays forever, and you drip through it like stock at milking.",
+        "In the cage is something nobody takes seriously anymore. You least of all.",
+        "Locked in front, open at the back for the whole town.",
+        "The cage is your signature: not a man, not a woman, just a hole.",
+        "Your front is dead. You only live where they take you."
+       ]
+      },
+      "a girl to be spread": {
+       "1": [
+        "Spread for anyone who walks by.",
+        "Legs wide, hands behind your head. That's how you wait for the next.",
+        "A delicate girl they spread like a sheet of paper.",
+        "You spread yourself before anyone has to ask.",
+        "Will-less and spread. Your best pose."
+       ],
+       "2": [
+        "Spread on the table like a dish for the whole room.",
+        "They spread you by all four limbs, like a hide for tanning.",
+        "Spread so wide that everyone goes in without stopping.",
+        "You lie spread all night. Whoever gets up, takes you.",
+        "A spread hole with a girly face. Nothing more."
+       ]
+      },
+      "sucking": {
+       "1": [
+        "Suck to the very end and don't stop when he finishes. The next one's waiting.",
+        "Throat all the way, nose in his belly. That's how a good girl sucks.",
+        "You drool on him and on yourself. Nobody tells you to stop.",
+        "You suck until your jaw goes numb. Then you keep sucking.",
+        "Your mouth is only for this. It stopped talking long ago."
+       ],
+       "2": [
+        "Throat in rotation for the whole queue. Tears, drool and their taste.",
+        "You suck like a hungry animal. Because you are a hungry animal.",
+        "Your mouth is a hole, not a mouth. They go in without asking.",
+        "You choke, cry and open wider. That's your reflex.",
+        "They choke you one after another, and you say thank you in between."
+       ]
+      },
+      "she volunteered": {
+       "1": [
+        "You volunteered. You undressed. You bent over. Now everyone helps themselves.",
+        "You came here to get fucked. You get what you came for.",
+        "Nobody forced you onto the list. Now you're on it every day.",
+        "You signed up as a volunteer. Volunteers take everyone.",
+        "You knocked on their door. Now they knock into you."
+       ],
+       "2": [
+        "You volunteered to be livestock. They entered you in the herd.",
+        "You handed yourself over for use. No refunds.",
+        "A volunteer for the queue. She stands in it every day, on her knees.",
+        "You volunteered, so nobody has mercy. Why would they.",
+        "You came on your own. You'll leave only as their thing."
+       ]
+      },
+      "captive by choice": {
+       "1": [
+        "You chose the chain. Now anyone who pulls it gets all of you.",
+        "Captive by choice means you can't even complain.",
+        "A captive who came on her own. They take you like their spoils.",
+        "You handed over the key yourself. Now they all have copies.",
+        "You put on the collar yourself. They only clip on the leash."
+       ],
+       "2": [
+        "You chose to be a thing. Things don't get freed, they get worn out.",
+        "A slave by choice. The cheapest to keep, the most often used.",
+        "You chose it once. They choose you every day.",
+        "The chain you put on yourself, they clipped to the bed in the basement.",
+        "From choice into captivity, from captivity into use, from use into oblivion."
+       ]
+      },
+      "spotted": {
+       "1": [
+        "They spotted your ass before they learned your name. They don't need the name now.",
+        "They watched you for months. Now they take you for hours.",
+        "They hunted you, and now they share the catch.",
+        "They watched you bend over. Now you bend for them every day.",
+        "They picked you like a cut of meat in a shop."
+       ],
+       "2": [
+        "Spotted, caught, tagged. Now you're a head in their herd.",
+        "The hunt's over. The catch lies spread for all the hunters.",
+        "They picked you out like an animal for breeding. A perfect choice.",
+        "Now everyone who watched you owns you.",
+        "Spotted for your ass. Kept for your ass. Used for your ass."
+       ]
+      },
+      "empty": {
+       "1": [
+        "An empty hole is an insult to them. They never let you be empty for long.",
+        "You feel the emptiness after each of them and beg for the next at once.",
+        "Without them you're just an empty vessel for their cum.",
+        "Empty in the head, empty in the ass. Two states they fix.",
+        "The emptiness aches. So you bend over for everyone."
+       ],
+       "2": [
+        "Empty like a tank. They fill you, drain you, and fill you again.",
+        "You're an empty hole until someone goes in. Then you're a full hole.",
+        "Emptiness is your resting state. You get no rest.",
+        "You're not a person who feels empty. You're an emptiness waiting for them.",
+        "An empty doll with someone always inside."
+       ]
+      },
+      "dazed by them": {
+       "1": [
+        "Their scent takes your mind away. You kneel before you understand why.",
+        "Sweat, cum and skin. One sniff and you're wet.",
+        "You sniff them like an animal in heat. Like a whore in heat.",
+        "Your head spins, and your ass is already opening.",
+        "Their scent is your invitation. You always accept."
+       ],
+       "2": [
+        "So dazed by them you can't tell one from another. It doesn't matter who.",
+        "Their scent is your signal to be bred. Like an animal's.",
+        "High on their cum. Always hungry for the next dose.",
+        "You breathe them, swallow them, carry them inside. There's nothing else.",
+        "Their scent on you tells everyone: this one's for taking."
+       ]
+      },
+      "drunk on pleasure": {
+       "1": [
+        "You slur more to everyone who walks by.",
+        "Drunk on pleasure, you drool on the pillow and don't know which one this is.",
+        "You can't say no. You can only squeal.",
+        "You stagger from bed to bed. Someone's waiting in every one.",
+        "So drunk you impale yourself without knowing on whom."
+       ],
+       "2": [
+        "Drunk on orgasms, eyes rolling, and they keep thrusting.",
+        "You babble like an animal. Human words don't come out anymore.",
+        "Pleasure made you limp meat to fuck.",
+        "So drunk you can't feel who's in you. Only that someone always is.",
+        "You lie in a puddle, babbling, dripping. They keep taking turns."
+       ]
+      },
+      "a doll instead of a tyrant": {
+       "1": [
+        "You used to hit. Now you squeal when they pound your ass.",
+        "A tyrant in ruffles. Everyone you scared now queues for you.",
+        "Your old victims hold you by the hair. Nice.",
+        "A doll with pink lipstick and an ass for use. That's how the scary man ended.",
+        "You used to rule. Now you're a toy for the ones you ruled."
+       ],
+       "2": [
+        "A scary man turned into a rubber doll to fuck.",
+        "Everyone you hurt takes you in turn. Justice in ruffles.",
+        "A doll has no pride. She has fake lashes and a wrecked ass.",
+        "Your fists are now hands for holding cocks.",
+        "They made the tyrant a blow-up doll. Everyone blows it."
+       ]
+      },
+      "anything": {
+       "1": [
+        "I'll do anything, you said. Now anything means his whole team.",
+        "Anything also means throat all the way. And ass with no warm-up.",
+        "Every anything costs you another one.",
+        "The promise was spoken. You pay it off with your mouth.",
+        "Everything you promised, they collect in kind."
+       ],
+       "2": [
+        "Anything means no limits. They check it every day.",
+        "You said anything, so you have no right to enough.",
+        "Anything also means what disgusts you. Especially that.",
+        "You'll do anything, so you get everyone.",
+        "Your anything is their lifetime ticket to your ass."
+       ]
+      },
+      "she belongs to them": {
+       "1": [
+        "You belong to them like a shared towel. Everyone wipes themselves on you.",
+        "They pass you hand to hand, bed to bed.",
+        "You don't belong to one. You belong to the queue.",
+        "Every one of them has a key to you. Every one uses it.",
+        "Given to strangers, passed on, taken by all."
+       ],
+       "2": [
+        "You belong to them like livestock to a farm. Counted and tagged.",
+        "Your body is common property. The schedule hangs on the fridge.",
+        "You change hands so often nobody remembers who was first.",
+        "You belong to anyone who pays, and anyone who doesn't.",
+        "You're the property of the whole house. Like the sofa. Everyone sits on you."
+       ]
+      },
+      "property": {
+       "1": [
+        "My property. I give her to whoever I like and watch him use her.",
+        "Property doesn't get asked. Property gets lent out.",
+        "You're mine, so I can give you to five at once.",
+        "You carry my mark and their cum. Both mean the same.",
+        "I lend you like a car. You come back dirty."
+       ],
+       "2": [
+        "My property, for hire by the hour.",
+        "You're an item on my list. Number, description, condition: used.",
+        "Property has no rights. Only a use and an owner.",
+        "I lease you to the whole club. You come back when they're done.",
+        "My thing. My hole. Mine to hand out."
+       ]
+      },
+      "forever": {
+       "1": [
+        "A hole forever. There's no way out and there won't be.",
+        "You'll serve them for the rest of your life. Every day, no breaks.",
+        "Spread forever. Your legs forgot how to close.",
+        "Every day like the last: knees, ass, swallowing. Until you die.",
+        "Forever in the queue. Never at its end."
+       ],
+       "2": [
+        "Livestock forever. As long as the body lasts, and longer.",
+        "They'll use you to the last drop. Then start again.",
+        "A thing forever. Things don't get set free.",
+        "Your forever began the first night and will never end.",
+        "For the rest of your life you're their body to fuck. No retirement."
+       ]
+      },
+      "the sham": {
+       "1": [
+        "The pleasure was bait. Now you're caught and gutted.",
+        "The orgasms were so you'd stop defending yourself. It worked.",
+        "You thought it was for you. It was always for them.",
+        "They gave you a little pleasure to take everything else.",
+        "The sham worked. Now you're a hole that still says thank you."
+       ],
+       "2": [
+        "All your pleasure was a hook for livestock. They caught you.",
+        "The sham is over. Only the usage is left.",
+        "They tricked you with pleasure and now use you without it.",
+        "The bait's eaten. You're in the net now, forever.",
+        "You thought you were choosing. They were only breeding you for themselves."
+       ]
+      },
+      "too late": {
+       "1": [
+        "Too late for shame. They've all been in you.",
+        "Too late to go back. Your ass doesn't remember the way.",
+        "Too late for no. You've said yes hundreds of times.",
+        "You already are what they made you. A hole for use.",
+        "Too late. Your old life won't take back a whore like this."
+       ],
+       "2": [
+        "Too late for anything but being fucked.",
+        "There's one thing left for you to do: spread for the next one.",
+        "Too late to be someone. You're something. Forever.",
+        "Your body crossed a line you didn't even see.",
+        "Too late for rescue. Nobody comes for livestock."
+       ]
+      },
+      "the trap": {
+       "1": [
+        "You walked into the trap with your mouth open. Now they fill it.",
+        "The door's locked. Inside there's only you and the queue.",
+        "The trap was shaped like a bed. You haven't left it in months.",
+        "You walked in. You undressed. The trap did the rest.",
+        "A cage you don't want to leave is the best cage."
+       ],
+       "2": [
+        "A livestock trap. They drove you into the pen and shut the gate.",
+        "There's no way out of the trap, only a queue into you.",
+        "They caught you like an animal. Now they keep you for breeding.",
+        "The trap snapped shut on your ass. For good.",
+        "No escape. Only the next one, and the next, and the next."
+       ]
+      },
+      "reprogramming": {
+       "1": [
+        "They reprogrammed you. Now at the sight of a cock you open your mouth.",
+        "Your body works the way they set it: wet, willing, quiet.",
+        "Old program deleted. New one: give, thank, swallow.",
+        "Your no was erased from the system.",
+        "Every touch switches on one thing in you: spreading your legs."
+       ],
+       "2": [
+        "Reprogrammed as livestock. You respond to a slap, not to words.",
+        "Your only program: take. It starts on its own when someone comes near.",
+        "They overwrote you. There's no backup.",
+        "They installed a hole in you. The rest of the system was uninstalled.",
+        "You work like a vending slot for relief. Put in a cock, get a moan."
+       ]
+      },
+      "everyone knows": {
+       "1": [
+        "Everyone knows what you are. Your boss, your neighbours, your family.",
+        "Everyone who passes you has seen you on your knees.",
+        "It can't be hidden. You smell of them from a distance.",
+        "The witnesses are queuing. They want a closer look.",
+        "Everyone knows. Some of them have already had you."
+       ],
+       "2": [
+        "The whole town witnessed it. Half the town has been in you.",
+        "Witnesses don't testify. Witnesses help themselves.",
+        "Your disgrace has thousands of views and hundreds of participants.",
+        "Everyone saw. Everyone remembers. Everyone comes back.",
+        "Every witness becomes a customer. You turn nobody away."
+       ]
+      },
+      "gratitude for being owned": {
+       "1": [
+        "Thank every one who used you. Out loud, by name, if you remember.",
+        "You say thank you with a full mouth. Mumbled, but sincere.",
+        "A grateful hole is a good hole.",
+        "Thank them for the cage, the plug and the queue.",
+        "Every thank you is an invitation to the next one."
+       ],
+       "2": [
+        "Thank them for breeding you. Livestock can't say thank you; you can.",
+        "Grateful to be a thing. Things rarely get such an honour.",
+        "You say thank you on your knees in a puddle of their cum.",
+        "You kiss the hands that broke you. And the asses too.",
+        "Thank you is the last word they left you. Use it."
+       ]
+      },
+      "erased": {
+       "1": [
+        "They erased your name, your memories and your shame. They left the hole.",
+        "You don't remember who you were. You remember the taste.",
+        "Your past is empty. Your future is full. Of them.",
+        "Wiped clean so they could write you again. In cum.",
+        "All that's left of you is what can be taken."
+       ],
+       "2": [
+        "Erased so completely there's nobody left to mourn.",
+        "There's no you. There's a body with a number, and a pen.",
+        "They removed the person. They left the body for relief.",
+        "Erased from life, entered in the herd book.",
+        "Your mind is a blank page. They only write open and swallow on it."
+       ]
+      },
+      "the only orgasm left": {
+       "1": [
+        "You only cum from your hole, and the hole belongs to them.",
+        "Your front died. Only your ass is alive.",
+        "Every orgasm of yours needs someone inside. That's why you beg.",
+        "You only drip from the cage once someone goes in.",
+        "Your only climax is being fucked."
+       ],
+       "2": [
+        "You cum like an animal in heat: only under a stud.",
+        "Your pleasure is in your ass, and your ass is in the queue.",
+        "Without them you'll never cum. With them you cum nonstop and out of control.",
+        "An orgasm they draw out of you like milking.",
+        "They rewired your body so you only cum while being used."
+       ]
+      },
+      "her hole is not hers": {
+       "1": [
+        "Your hole belongs to whoever is in it. Right now, to him.",
+        "You don't decide who goes in. The hole is open to everyone.",
+        "Your hole has more owners than you have friends.",
+        "A hole for hire. Price list: none.",
+        "You won't touch it. It's for them."
+       ],
+       "2": [
+        "Your hole is a public entrance. Like the door to a station.",
+        "A hole without an owner, with a hundred users.",
+        "It's registered to all of them. You only carry it.",
+        "Your hole works in shifts. You sleep between them, if you manage.",
+        "A hole that's never empty and never yours."
+       ]
+      },
+      "break me": {
+       "1": [
+        "You beg them to break you. They do it every day, piece by piece.",
+        "The walls in you crack with every thrust.",
+        "They'll break you so you thank them for the shards.",
+        "You beg for more until you cry, and then you keep begging.",
+        "The whole room heard your break me. They're all helping."
+       ],
+       "2": [
+        "Broken all the way. Nothing stiff left in you but the cage.",
+        "They smashed you to pieces and each took one.",
+        "Broken, spread, overflowing. That's a wish granted.",
+        "There's nothing left to break. Now they just use the remains.",
+        "They broke you like a horse for riding. Now everyone rides."
+       ]
+      },
+      "the one who takes her": {
+       "1": [
+        "His rhythm, his depth, his pace. You only take.",
+        "He decides when you finish. And whether you do.",
+        "He goes into you like into his own. Because you're his.",
+        "I allow him everything. He uses everything.",
+        "It doesn't matter whether you want to. It matters whether he does. He always does."
+       ],
+       "2": [
+        "He takes you like a stud takes a mare. No tenderness, to the end.",
+        "The one who takes you changes every half hour. The rhythm stays.",
+        "He uses you like his thing. You thank him like a thing.",
+        "He goes in, finishes, goes out. The next has the same rhythm.",
+        "Your body belongs to whoever happens to be inside."
+       ]
+      },
+      "taken from behind": {
+       "1": [
+        "From behind, deep, without looking at your face. The face doesn't count.",
+        "Bent over on all fours, and they take turns.",
+        "They take you from behind so you can't see how many there are.",
+        "Face in the pillow, ass to the world.",
+        "From behind, because that's how you take whores, not girls."
+       ],
+       "2": [
+        "From behind like an animal. A slap, in, next.",
+        "They take you from behind so long you forget you have a front.",
+        "Nobody cares about your face. Everyone cares about your ass.",
+        "On all fours all night. Knees raw, ass full.",
+        "From behind, in a queue, without names. That's how livestock is bred."
+       ]
+      },
+      "anal princess": {
+       "1": [
+        "A princess whose crown is in her ass. Everyone bows and goes in.",
+        "Your throne is a bench for taking from behind.",
+        "The anal princess receives her subjects. All at once.",
+        "Your ass is the only royal thing about you.",
+        "Every knight gets an audience in your hole."
+       ],
+       "2": [
+        "The anal princess on a throne with a plug, in a puddle of their cum.",
+        "Your kingdom is a wrecked hole and a queue of subjects.",
+        "A crown of their cum, a cloak of their sweat.",
+        "A princess her subjects use like a public place.",
+        "The queen of holes. You rule only over how many will fit."
+       ]
+      },
+      "fucked in the ass": {
+       "1": [
+        "They fuck your ass until you can't sit. Fine, you don't need to sit.",
+        "Deep, hard, no breaks. Your ass is for them.",
+        "They fuck your ass and you thank them for every thrust.",
+        "They wreck you in turn until you stop clenching.",
+        "Your ass knows them better than their wives do."
+       ],
+       "2": [
+        "They fuck your ass until you can't feel it. Then longer.",
+        "A wrecked ass, open for good. Nobody needs to prepare you anymore.",
+        "They fuck you like livestock. No names, no breaks, no mercy.",
+        "Your ass is the most used place in this house.",
+        "They fuck your ass till it drips on their shoes. Then they tell you to lick it."
+       ]
+      },
+      "her ass is not hers": {
+       "1": [
+        "Your ass belongs to me and to them. You only bend it over.",
+        "You don't decide about your ass. The queue does.",
+        "Your ass has a schedule. Nobody asks your opinion.",
+        "The ass isn't yours, but you're responsible for it. Clean and open.",
+        "Your hole has more owners than you can count."
+       ],
+       "2": [
+        "Your ass is public property. Like a park. Anyone can walk in.",
+        "An ass given away for good. You don't even remember having one.",
+        "Your ass is leased. They pay the rent in cum.",
+        "You don't have an ass. You have an entrance for them.",
+        "Your ass belongs to those who wrecked it. That's everyone."
+       ]
+      },
+      "her orgasms are not hers": {
+       "1": [
+        "You cum on their order. Or not at all.",
+        "Your orgasm is their toy. They give and they take away.",
+        "They make you cum in front of everyone. You cum crying.",
+        "They deny you for weeks, then squeeze three out of you at once.",
+        "Your pleasure is their reward, not yours."
+       ],
+       "2": [
+        "They milk orgasms out of you like milk. By the bucket.",
+        "Your climax is their entertainment over beer.",
+        "You cum without permission and get five more for it.",
+        "Your pleasure belongs to the queue. Each squeezes out his share.",
+        "An orgasm you don't want comes anyway. Because it isn't yours."
+       ]
+      },
+      "the old life watches": {
+       "1": [
+        "Your old mates are in the queue. Each knows you from behind.",
+        "Your ex watches her old boyfriend swallow.",
+        "The neighbour borrows you for the weekend. Leaves you at the door.",
+        "Colleagues share photos. And you.",
+        "Your old life came to look and stayed to cum."
+       ],
+       "2": [
+        "Your whole past has had you. In turn.",
+        "Those who knew you as a man now know you as a hole.",
+        "The old life stands in the queue, and you kneel at both ends of it.",
+        "One old mate breeds you while another holds your hair.",
+        "Everyone you pretended for now laughs at you. With their trousers full."
+       ]
+      },
+      "the only way out": {
+       "1": [
+        "The only way out goes through the operating table. Beyond it there's only a hole.",
+        "Ask, and they'll cut off the last piece of the man. Then you'll be a free whore.",
+        "You'll get freedom only as a hole. Never as someone.",
+        "The way out is for a woman. A woman for taking.",
+        "You'll say it in the end. On your knees, with your mouth full."
+       ],
+       "2": [
+        "The only way out is a way in. For them.",
+        "Freedom for livestock is a pen without a chain. Still a pen.",
+        "You'll ask for it yourself and thank the surgeon with your mouth.",
+        "Beyond the door there's no freedom. There's a longer queue.",
+        "There's no way out. Only more ways in."
+       ]
+      },
+      "addicted to them": {
+       "1": [
+        "You shake when they're not around. You come on your own and spread on the doorstep.",
+        "You can't fall asleep without a cock inside you.",
+        "The hunger for them is stronger than shame. You come on your knees.",
+        "You beg for a dose in every break.",
+        "Addicted to getting fucked. There's no rehab."
+       ],
+       "2": [
+        "Addicted like an animal to feed. You go back to the trough yourself.",
+        "Your body howls when it's empty. You knock on every door.",
+        "Without them you're nobody. With them you're a hole. You choose the hole every day.",
+        "The hunger for cum holds you tighter than a chain.",
+        "You come alone, beg alone, spread alone. They only take."
+       ]
+      },
+      "their drug": {
+       "1": [
+        "They can't stop fucking you. You can't stop giving.",
+        "They take you like addicts: fast, hard, always more.",
+        "Each comes back for his dose. Your ass gets no break.",
+        "Tolerance grows, so they take you two, three at a time.",
+        "You're their habit. Habits don't get spared."
+       ],
+       "2": [
+        "They exploit you like a deposit. To the last drop.",
+        "You're goods they can never get enough of. So they take without end.",
+        "Their hunger grows, and you're the only source.",
+        "They wear you out the way a habit wears out a body. Faster, harder, more.",
+        "They'll suck everything out of you and come back for the scraps."
+       ]
+      },
+      "for their amusement": {
+       "1": [
+        "You exist for their amusement. Tonight the fun has five participants.",
+        "They laugh when you choke. That's the fun.",
+        "A toy that bends over by itself. The best toy.",
+        "Your pleasure doesn't interest them. Their fun does.",
+        "They play with you until they're bored. They never get bored."
+       ],
+       "2": [
+        "A toy to tear apart. They take turns tearing.",
+        "You're the entertainment for a stag night. Every stag night.",
+        "They play with you like an animal in a circus. On all fours, ass up.",
+        "Your only role: to be the fun that never ends.",
+        "For their fun, for their relief, on their command. Nothing more."
+       ]
+      },
+      "the maids of the estate": {
+       "1": [
+        "All the maids on the estate share the same schedule: cleaning and breeding.",
+        "You bend down with the duster and someone's already standing behind you.",
+        "Among the maids there's a contest: who takes more.",
+        "You curtsy to everyone and everyone takes you. That's the house etiquette.",
+        "Plug, apron, stockings. Work clothes for fucking."
+       ],
+       "2": [
+        "The maids of the estate are a herd. You're the most often bred head.",
+        "On the estate they count you like stock. At day's end they check who took how many.",
+        "You clean up after them and get cleaned out by them. Without end.",
+        "At the ball you're the canapés. Guests take one each.",
+        "The estate has twenty rooms. In each one someone is waiting for you."
+       ]
+      },
+      "in a haze": {
+       "1": [
+        "You wake in a haze with a stranger inside you. You don't know which one.",
+        "Fog in your head, cum in your ass. You don't remember how many.",
+        "Fragments: light, a queue, your own more. The rest is their seed.",
+        "You don't remember the night, but your thighs remember each one.",
+        "In the haze they take you easiest. You don't even resist."
+       ],
+       "2": [
+        "A haze so thick you don't know if you're a person or a pen.",
+        "You wake in a puddle on the floor and someone's already going in.",
+        "You only remember weight and warmth. Hundreds of times.",
+        "Haze and breeding. Breeding and haze. You can't tell the days apart.",
+        "You don't remember your own name. You remember the taste of each of them."
+       ]
+      },
+      "a thing": {
+       "1": [
+        "A thing half used up. The other half is waiting for the night.",
+        "Things don't get washed after every use. Neither do you.",
+        "You lie where they threw you. Things don't choose their place.",
+        "A thing with holes. They check all of them in turn.",
+        "A thing you lend, get back and lend again. Without end."
+       ]
+      },
+      "their girl to fuck": {
+       "1": [
+        "Their girl to fuck in shifts. Day shift, night shift, weekend.",
+        "You have no say because your mouth is full.",
+        "Submissive because there's no choice. Wet because she likes it.",
+        "Girls to fuck don't ask how many. They only ask which way.",
+        "Your only sentence is a moan. You say it under everyone."
+       ]
+      },
+      "on call": {
+       "1": [
+        "On call for the whole block. They whistle and you run on all fours.",
+        "They order you like a pizza. Delivered in stockings, returns not expected.",
+        "Goods from the catalogue, issued on demand, no queue. The queue is inside.",
+        "Their sex addiction feeds on you. Every day.",
+        "You're a phone number. They call, and you spread."
+       ]
+      },
+      "nobody asked": {
+       "1": [
+        "Nobody asks because nobody has to. They take.",
+        "They grab you by the neck in the hallway and bend you over the first piece of furniture.",
+        "You sleep with your legs apart so they don't have to wake you for anything.",
+        "Nobody asked if you could. Nobody will ask if you've had enough.",
+        "They come in without a word and leave without a word. You stay with their warmth."
+       ]
+      },
+      "the body betrays her": {
+       "1": [
+        "Your body betrays you with every one. You cum crying and beg for more.",
+        "You say no, and your ass sucks him in.",
+        "Your body is on their side. You lost long ago.",
+        "It drips out of you though you swear you don't want it. Nobody believes you.",
+        "A whore's body with a head that still pretends. Not for long."
+       ]
+      },
+      "pinned": {
+       "1": [
+        "Pinned to the bed, one on top, another holding your hands. Nowhere to go.",
+        "Knees by your ears, his weight on you, ass open to the end.",
+        "Pinned face down on the floor. They take you until you can't feel your knees.",
+        "You won't move. You don't need to. It's enough that you're open.",
+        "Pinned so you only breathe between thrusts."
+       ]
+      },
+      "your fault": {
+       "1": [
+        "It's your fault you have an ass like that. So you pay with it.",
+        "You asked for it. Now you ask every day.",
+        "Your fault they want you. So they get you.",
+        "For every mistake, another one in the queue. You make many.",
+        "It's your fault, and your punishment, and your life."
+       ]
+      },
+      "ten minutes later": {
+       "1": [
+        "Ten minutes later shame, twenty minutes later the next one inside you.",
+        "You're ashamed you begged. In a minute you'll beg again.",
+        "You lie in wet sheets already listening for footsteps.",
+        "Shame never stopped you. Now it doesn't even slow you down.",
+        "After every time you say never again. After every time there's more."
+       ]
+      },
+      "broken in": {
+       "1": [
+        "Broken in, wrecked, ready. That's how they pass you on.",
+        "You don't fight because there's nothing left to fight with. Only holes.",
+        "They broke your resistance in a week. Your dignity in one evening.",
+        "Now you only squeal and say thank you. By turns.",
+        "Broken in for use. Like a worn road. Everyone drives over it."
+       ]
+      },
+      "tied to the chair": {
+       "1": [
+        "Tied to the chair all night. Whoever walks into the room takes you.",
+        "The chair stands in the middle of the lounge. You on it, bent over for the guests.",
+        "They won't untie you until you're full to the brim.",
+        "Tied, gagged, full. The chair holds, they take.",
+        "The chair in the corner is your workplace. You work with your ass."
+       ]
+      },
+      "spreader bar": {
+       "1": [
+        "A spreader bar on your ankles all day. You walk bow-legged and everyone sees.",
+        "Legs spread for good, holes open for good.",
+        "With a spreader bar you can't even get to the bathroom. They take you on the way.",
+        "Spread like goods on a counter. Everyone passing checks.",
+        "The bar made you a hole that's always available."
+       ]
+      },
+      "gag and collar": {
+       "1": [
+        "They only take the gag out to put a cock in.",
+        "They lead you on a leash from room to room. In each one someone takes you.",
+        "A collar with a ring, and a tag on the ring: free.",
+        "You drool through the gag while they take you from behind.",
+        "Short leash, raw knees, full ass. Walk over."
+       ]
+      },
+      "the bench": {
+       "1": [
+        "The bench in the basement. Strapped from morning to night.",
+        "On the bench you're just two holes at the right height.",
+        "They strap you to the bench for the party. The guests change, you don't.",
+        "The bench has no name. Neither do you while you're on it.",
+        "A puddle under the bench. You on the bench. The queue reaches the stairs."
+       ]
+      },
+      "porn star": {
+       "1": [
+        "A porn star who never gets a second take. The first time, three take her.",
+        "They film you day after day. The plot is always the same: you, holes, them.",
+        "Your best scene lasted four hours. Nobody called cut.",
+        "Fans write what they want to do to you. The director reads it and shoots.",
+        "On set you have no name. You have a role: hole number one."
+       ]
+      },
+      "ordered": {
+       "1": [
+        "Ordered for a stag night. Delivered, unwrapped, used up.",
+        "They ordered you for the whole night for the whole team.",
+        "The courier brought you in a box with a bow. The customer opened it ass up.",
+        "They order you by the hour and return you after days.",
+        "You're on the order list as: hole, one unit, no limit."
+       ]
+      },
+      "the only job": {
+       "1": [
+        "The only job: getting fucked. You do it around the clock.",
+        "You have no other work. Only holes and a schedule.",
+        "Suck, give your ass, say thank you. That's all you can do, and it's enough.",
+        "Your only job has no breaks and no holidays.",
+        "One job, hundreds of performances a day. No mistakes."
+       ]
+      },
+      "both ends": {
+       "1": [
+        "One in your mouth, one in your ass, and you hang between them like on a spit.",
+        "Both ends taken, eyes rolled back, drool on your chin.",
+        "They rock you between them so you can't tell who's thrusting.",
+        "You don't have to think, because you're full from both sides.",
+        "Both ends and nothing in between. That's what your body is."
+       ]
+      },
+      "two at once": {
+       "1": [
+        "Two at once is a warm-up for you.",
+        "One under you, one behind you. A third waits by your face.",
+        "Two in one hole, because it can be done and because they want to.",
+        "Taking turns isn't enough. They take you at once.",
+        "Two at once, then the next two. The queue moves in pairs."
+       ]
+      },
+      "marked and proud": {
+       "1": [
+        "Soiled from head to toe and proud of every layer.",
+        "You don't wash, because you want everyone to know how many there were.",
+        "Every stain on your dress is a signature.",
+        "You stink of them and walk with your head high.",
+        "Soiled so nobody could mistake you for a decent girl. Good."
+       ]
+      },
+      "under the table": {
+       "1": [
+        "Under the table you work through the whole dinner, starter to dessert.",
+        "The guests don't even stop eating. You don't stop sucking.",
+        "A puddle under the tablecloth, and you kneeling in it, at the next one.",
+        "Someone drops a fork. You pick it up with your teeth. Then back to work.",
+        "Dinner ends, and you haven't finished the last guest yet."
+       ]
+      }
+     },
      "seed": {
+      "slave of pleasure - they grab her, fuck her, and she cums on her own without controlling it; orgasm after orgasm until the pleasure holds her tighter than a chain": [
+       "They grab you as you pass, bend you over anything and take you. And you cum before you can even be surprised.",
+       "You don't control it. Your body cums on its own, every time someone goes into you.",
+       "You don't have to want it. You don't have to allow it. The pleasure comes anyway. It's stronger than you.",
+       "You say not now, and your hole clenches and you shake in the first wave.",
+       "One move of his hips and you're gone. All that's left is a body that cums on command.",
+       "You cum from a cage nobody touches. You drip on the floor like a broken tap.",
+       "You used to decide when you'd finish. Now you finish when they start.",
+       "Wave after wave. You can't stop. You can't stop them. You don't want to.",
+       "Pleasure is your chain. They only hold the end and watch you squirm.",
+       "He only has to grab your hips. Your body remembers what comes next and cums ahead of time.",
+       "Repeat after me: I'm a slave of pleasure. I cum when they take me.",
+       "A slave of pleasure gets no rest. Between one and the next she trembles, waits and already melts."
+      ],
       "quiet in her head - her head goes quiet: no thoughts, worries or plans, only breath, warmth and his rhythm; it's the calmest place she knows": [
        "Your head goes quiet. No thoughts. Only breath and his rhythm.",
        "The worries stayed outside the door. In here there's only warmth and his hands.",

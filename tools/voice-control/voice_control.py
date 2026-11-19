@@ -148,15 +148,17 @@ def build_pool(args, pc, persona, log_path, lang="pl"):
     p = n.get("pool", {})
     if persona is None or not n.get("enabled") or not p.get("enabled", True) or getattr(args, "no_narration", False):
         return None
-    from lines import LinePool
+    from lines import LinePool, escalated_seed
     folder = os.path.dirname(os.path.abspath(args.config))
+    seed = dict(p.get("seed") or {})
+    seed.update(escalated_seed(n.get("themes", []), p.get("seed_up"), n.get("levels")))   # the harsher versions of the themes
     examples, max_words = list(n.get("examples", [])), int(n.get("max_words", 16))
     style, rule = str(n.get("style", "")), str(pc.get("language_rule", ""))
     pool = LinePool(lambda theme, avoid, count: persona.fresh_lines(theme, examples, avoid, count, max_words, style=style, language_rule=rule),
                     pool_path=None if args.no_log else os.path.join(folder, "lines_pool.json" if lang == "pl" else f"lines_pool.{lang}.json"),
                     said_path=None if args.no_log else os.path.join(folder, "said.jsonl"),
                     min_pool=p.get("min_pool", 8), batch=p.get("batch", 20), max_said=p.get("max_said", 2000),
-                    similarity=p.get("similarity", 0.8), max_words=max_words, seed=p.get("seed"), banned_words=p.get("banned_words"),
+                    similarity=p.get("similarity", 0.8), max_words=max_words, seed=seed, banned_words=p.get("banned_words"),
                     retired=p.get("retired"))
     return pool
 

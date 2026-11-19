@@ -84,3 +84,47 @@ class ThemesFollowTheStage(Server):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class HarsherVersions(Server):
+    """a theme from an early stage gets its harsher version (narration.pool.seed_up) once the session has gone further"""
+
+    def setUp(self):
+        super().setUp()
+        import tempfile
+        from lines import LinePool, escalated_seed, level_key
+        self.level_key = level_key
+        self.c.persona_cfg = copy.deepcopy(P)
+        n = self.c.persona_cfg["narration"]
+        self.theme = [t for t in n["themes"] if t.startswith("pochwała")][0]        # stage 0
+        labels = n["levels"]
+        seed = {self.theme: ["Grzeczna jesteś dziś.", "Ładnie klęczysz, kochanie."]}
+        seed.update(escalated_seed(n["themes"], {"pochwała": {"1": ["Dobra dziwka, szeroko rozłożona."], "2": ["Najlepsza dziura w całym domu."]}}, labels))
+        d = tempfile.mkdtemp()
+        self.c.pool = LinePool(lambda *a: [], os.path.join(d, "p.json"), os.path.join(d, "s.jsonl"), background=False, seed=seed)
+        self.labels = labels
+
+    def test_the_level_follows_the_distance_between_the_stages(self):
+        self.assertEqual(self.c._level_of(self.theme, 0), 0)
+        self.assertEqual(self.c._level_of(self.theme, 1), 1)
+        self.assertEqual(self.c._level_of(self.theme, 4), 2)
+        self.assertEqual(self.c._level_of(self.theme, 4, soft=True), 0)        # winding down: never harsher
+        bydlo = [t for t in self.c.persona_cfg["narration"]["themes"] if t.startswith("bydło")][0]
+        self.assertEqual(self.c._level_of(bydlo, 4), 0)                        # a top theme is already the top
+
+    def test_the_harshest_line_first_then_milder_ones(self):
+        self.assertEqual(self.c._take_line(self.theme, 4)[0], "Najlepsza dziura w całym domu.")
+        self.assertEqual(self.c._take_line(self.theme, 4)[0], "Dobra dziwka, szeroko rozłożona.")   # the top ran out: one down
+        self.assertEqual(self.c._take_line(self.theme, 4)[0], "Grzeczna jesteś dziś.")
+        self.assertEqual(self.c._take_line(self.theme, 0)[0], "Ładnie klęczysz, kochanie.")
+
+    def test_every_harsher_seed_names_a_real_theme(self):
+        for cfg in (P["narration"], dict(P["narration"], **P["languages"]["en"]["narration"])):
+            names = {t.split(" - ")[0].strip().lower() for t in cfg["themes"]}
+            for name, levels in cfg["pool"].get("seed_up", {}).items():
+                self.assertIn(name.lower(), names, name)
+                self.assertTrue(set(levels) <= set(cfg["levels"]), name)
+                for lines in levels.values():
+                    for x in lines:
+                        self.assertNotIn("?", x)
+                        self.assertLessEqual(len(x.split()), 30, x)
