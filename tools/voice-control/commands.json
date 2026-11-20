@@ -1282,7 +1282,7 @@
     "break_after_sentence": "0.25s",
     "text_shaping": true
    },
-   "voice_id": "m2VPSbnJZWpLA9r0WX9q",
+   "voice_id": "Bz1e1clEKwgN71Vx7cxj",
    "voice_prefer": {
     "_comment": "Used when voice_id is empty: the first of these names found on the account, else a female young/middle-aged voice by labels, else any female, else (allow_library) a young female Polish voice from the shared library, added to the account. The pick is written back into voice_id.",
     "names": ["Hanna", "Jagna", "Asia", "Jola", "Arleta", "Jessica", "Lily", "Sarah", "Alice", "Matilda"],
@@ -1416,6 +1416,10 @@
     0.7,
     0.85,
     1.0
+   ],
+   "tease_seconds": [
+    15,
+    25
    ]
   },
   "initiative": {
@@ -5109,7 +5113,8 @@
      "enabled": true,
      "window_seconds": 60,
      "bank_share": 0.5,
-     "tail": "Zrób to i powiedz mi, a dostaniesz nagrodę.",
+     "tail": "Zrób to i powiedz: zrobione. Dostaniesz nagrodę.",
+     "head_repeat": "Chcesz nagrodę?",
      "lube_p": {
       "front": 0.6,
       "rear": 0.35

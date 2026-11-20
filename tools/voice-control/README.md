@@ -253,9 +253,15 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   Asking again without doing it rolls the dice once more and, on a no, repeats the same order. A refusal the model gives
   without any demand ("Nie. I nie dąsaj się.") is replaced by an "ask nicer" line.
 * **Her own orders pay** (`narration.tasks.rewards`): an order she gives by herself in the narration ends with "Zrób to
-  i powiedz mi, a dostaniesz nagrodę." Say it is done within 60 s ("gotowe", "wypinam", "tak, Pani") and you get a
+  i powiedz: zrobione. Dostaniesz nagrodę." ("Powtórz: ..." orders start with "Chcesz nagrodę?" instead, and repeating
+  the sentence is doing it). Say it is done within 60 s ("zrobione", "gotowe", "wypinam", "tak, Pani") and you get a
   Lube Launcher shot on the order's side (mouth / face orders: the front one, 60 %; the rest: the rear one, 35 %) or the
   machine of that side faster (+2 speed steps) for 10-15 s, then back. Half of her orders come from the refusal bank.
+* **A tease does not last** (`escalation.tease_seconds`, 15-25 s): the "slower" / "shallower" she runs on a refusal
+  is undone after that, so a run of refusals no longer leaves the machine crawling. A talk line of hers that says the
+  shot is happening ("masz teraz gorącą falę na twarz") fires one Lube Launcher shot - she keeps her word. "Nie
+  oszczędzaj mnie" / "nie przestawaj" and listed commands are never taken for an open refusal. In the live mode a
+  line the tool puts in itself (her order, a reminder) is now said - before, such a refusal was silent.
 * **No wake word for commands** (`wake.optional_for_commands`, on): a command from the list works said plainly
   ("ruchaj mnie mocniej", "włącz tryb ósmy"), also over her voice unless it is her own words coming back; loose talk
   still needs "kochanie" / "Pani" or her reply window. Utterances dropped as her echo or as a speech-to-text

@@ -580,3 +580,35 @@ class Config(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class StreamedOwnLines(ChatBase):
+    """2026-11-20 10:55-11:05: a refusal with her order (or a reminder of it) was never said in the live mode -
+    the tool's own line replaced the streamed one and nothing was spoken"""
+
+    def setUp(self):
+        super().setUp()
+        td = dict(P["manners"].get("task_demands") or {}, enabled=True, chance=[1.0])
+        self.c.persona_cfg = dict(self.c.persona_cfg, base_p=0.0, step_p=0.0, step_p_overrides={}, max_asks=99,
+                                  manners=dict(self.c.persona_cfg["manners"], task_demands=td))
+
+    def streamed(self, text):
+        self.clock.t += 20
+        FakeChat.table[text] = answer("faster", denied="Nie.")
+        kind, need = self.c.prepare(text)
+        return self.c.handle_streamed(text, self.persona.respond_stream(text, INTENTS, STEP_IDS, need.state, need.history),
+                                      self.speak_sentence, need)
+
+    def test_her_order_is_said_in_the_live_mode(self):
+        o = self.streamed("kochanie, szybciej")
+        self.assertEqual(o.status, "denied")
+        spoken = [s for s, f in self.sentences if s]
+        self.assertEqual(spoken, [o.extra["say"]])
+        self.assertIn(o.extra["task"], spoken[0])
+        self.assertEqual(sum(1 for _, f in self.sentences if f), 1)    # one end of the answer, not two
+
+    def test_the_reminder_is_said_too(self):
+        first = self.streamed("kochanie, szybciej")
+        self.sentences.clear()
+        again = self.streamed("kochanie, proszę, szybciej")
+        self.assertIn(first.extra["task"], " ".join(s for s, _ in self.sentences))

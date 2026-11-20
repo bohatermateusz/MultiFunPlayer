@@ -246,3 +246,51 @@ class OrdersInNarration(Server):
         bank = [t["line"] for v in TD["tasks"].values() for t in v]
         self.assertIn(self.c._spont_task["line"], bank)
         self.assertTrue(self.c._spont_task["done"])
+
+
+class SessionFixes(Server):
+    """from the session 2026-11-20 10:50-11:05"""
+
+    def test_a_tease_goes_back_after_its_time(self):
+        self.c.persona_cfg = cfg(0.0, escalation=dict(P["escalation"], tease_chance=[1.0], tease_seconds=[0.05, 0.05]))
+        o = self.say("kochanie, spuść się na mnie", request="lube_fire", tease_actions=[{"step": "slower", "times": 1}])
+        self.assertEqual(o.extra.get("tease"), ["slower"])
+        self.c._reward_timers[-1].join(2)
+        actions = [st["action"] for steps in self.runs for st in steps]
+        self.assertEqual(len(actions), 2)
+        self.assertTrue(actions[0].endswith("Speed::Slower") and actions[1].endswith("Speed::Faster"), actions)
+
+    def test_repeating_her_sentence_is_doing_her_order(self):
+        # 10:58 "Powtórz, głośno: jestem posłuszną sissi." -> "Jestem posłuszną sissy." went to the dice
+        self.c._spont_task = {"line": "Powtórz, głośno: jestem posłuszną sissi.", "done": [], "side": "rear", "until": 1e9}
+        o = self.say("Jestem posłuszną sissy.")
+        self.assertEqual(o.intent, "task_reward")
+        for t in self.c._reward_timers:
+            t.cancel()
+
+    def test_a_promised_shot_is_fired(self):
+        # 11:02:48 "...masz teraz gorącą falę na twarz" in a plain talk turn - nothing was fired
+        o = self.say("kochanie, jestem twoją szmatą", request="none", granted="Za to masz teraz gorącą falę na twarz, moja dziwko.")
+        self.assertEqual((o.status, o.intent), ("executed", "lube_fire"))
+        self.assertTrue(o.extra["promise"])
+        self.assertEqual(len(self.runs), 1)
+
+    def test_plain_talk_fires_nothing(self):
+        o = self.say("kochanie, jestem twoja", request="none", granted="Grzeczna. Jesteś moja.")
+        self.assertEqual(o.status, "talk")
+        self.assertEqual(self.runs, [])
+
+    def test_a_wish_with_nie_is_not_defiance(self):
+        # 11:05:12 "Nie oszczędzaj mnie." -> punished for 90 s
+        self.say("kochanie, nie oszczędzaj mnie", request="hard", defiance=True)
+        self.assertEqual(self.c.penalty_remaining(), 0)
+        self.say("kochanie, pierdol mnie mocniej", request="hard", defiance=True)
+        self.assertEqual(self.c.penalty_remaining(), 0)
+        self.say("nie chcę", request="none", defiance=True)
+        self.assertGreater(self.c.penalty_remaining(), 0)
+
+    def test_her_order_tells_the_word_and_repeat_orders_keep_the_sentence(self):
+        r = P["narration"]["tasks"]["rewards"]
+        self.assertIn("zrobione", r["tail"])
+        from controller import repeat_target
+        self.assertEqual(repeat_target(r["head_repeat"] + " Powtórz, głośno: jestem posłuszną sissi."), "jestem posłuszną sissi.")

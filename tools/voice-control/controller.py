@@ -80,6 +80,9 @@ def repeat_target(line):
 
 REFUSAL_MARKERS = re.compile(r"\b(nie|nigdy|spierdalaj|spadaj|odwal|odpierdol|pierdol\w*|won|głup\w*|idiot\w*|chuj\w*|"
                              r"no|never|won't|refuse|stupid|fuck\s+off)\b", re.I)
+# "nie" that asks for more, not a refusal: "nie oszczędzaj mnie", "nie przestawaj", "nie zwalniaj"
+NOT_A_REFUSAL = re.compile(r"\bnie\s+(oszczędzaj|oszczedzaj|przestawaj|zwalniaj|żałuj|zaluj|zatrzymuj|czekaj|litu|lituj|"
+                           r"wyjmuj|kończ|koncz|stop)\w*|\bdon'?t\s+(stop|spare|slow)", re.I)
 MOOD_MINUTES = (6, 14)   # her mood shifts on its own after this many minutes (random in the range)
 SAFE_WORD_COMPOUNDS = {"pętli", "petli", "sekwencji", "trybu", "blokady", "filmu", "loop", "sequence", "mode", "the"}
 
@@ -505,6 +508,51 @@ class Controller:
         own += list((self._spont_task or {}).get("done") or []) if spont else []
         return [w for w in own + list(cfg.get("done_words") or []) if len(w.split()) == 1]
 
+    TEASE_UNDO = {"Speed::Slower": "Speed::Faster", "Depth::Shallower": "Depth::Deeper"}
+
+    def _undo_later(self, steps):
+        """a tease (slower / shallower on a refusal) lasts escalation.tease_seconds, then the machine goes back: nine
+        refusals in a row must not leave it crawling (2026-11-20 10:54-11:05). -> the seconds, or None"""
+        span = self.persona_cfg["escalation"].get("tease_seconds")
+        if not span:
+            return None
+        side = self._turn_side
+        undo = []
+        for st in self._sided(steps, side):
+            action = st.get("action", "")
+            for a, b in self.TEASE_UNDO.items():
+                if action.endswith(a):
+                    undo.append(dict(st, action=action[: -len(a)] + b))
+        if not undo:
+            return None
+        seconds = self.rng.uniform(float(span[0]), float(span[1]))
+        timer = threading.Timer(seconds, self._run_raw, args=(undo,))
+        timer.daemon = True
+        timer.start()
+        self._reward_timers = [t for t in self._reward_timers if t.is_alive()] + [timer]
+        return round(seconds, 1)
+
+    PROMISE = re.compile(r"(dostajesz|masz|łap|bierz|teraz)\b.{0,40}\b(fal\w*|sperm\w*|nasieni\w*|strza\w*|porcj\w*|wytrysk\w*)|"
+                         r"\b(spuszczam|zalewam|dochodzi|tryskam)\b", re.I)
+
+    def _promises_a_shot(self, line):
+        """her line says the shot is happening now ("masz teraz gorącą falę na twarz") - then it must happen"""
+        return bool(line) and bool(self.PROMISE.search(line))
+
+    def _keep_promise(self, extra, now):
+        """one Lube Launcher shot for what she promised in a talk line (side from her words), within its cooldown"""
+        intent = next((i for i in self.intents if i.id == "lube_fire"), None)
+        if intent is None:
+            return False
+        last = self._last.get("lube_fire")
+        if last is not None and now - last < intent.cooldown:
+            return False
+        self._last["lube_fire"] = now
+        extra["promise"] = True
+        if not self.dry_run:
+            self.run_steps(copy.deepcopy(intent.steps))
+        return True
+
     def _rewards_cfg(self):
         return self.persona_cfg.get("narration", {}).get("tasks", {}).get("rewards") or {}
 
@@ -544,7 +592,9 @@ class Controller:
         done = list(task.get("done") or []) + list(cfg.get("done_words") or [])
         singles = {normalize(d) for d in done if len(normalize(d).split()) == 1}
         words = set(normalize(transcript).split())
-        if not (words & singles or self._says_any(transcript, [d for d in done if normalize(d) not in singles], 0.8)
+        target = repeat_target(task["line"])
+        repeated = bool(target) and similar(transcript, target) >= 0.55
+        if not (repeated or words & singles or self._says_any(transcript, [d for d in done if normalize(d) not in singles], 0.8)
                 or self._says_any(transcript, self.persona_cfg["obey_phrases"], 0.88)):
             return None
         self._spont_task = None
@@ -573,7 +623,6 @@ class Controller:
                 timer.start()
                 self._reward_timers = [t for t in self._reward_timers if t.is_alive()] + [timer]
         praise = list(rewards.get("praise", {}).get(kind) or []) or ["Grzeczna."]
-        from lines import similar
         recent = [t for r, t in self._history[-12:] if r == "assistant"]
         fresh = [x for x in praise if not any(similar(x, t) >= 0.75 for t in recent)] or praise
         line = self.rng.choice(fresh)
@@ -1089,6 +1138,7 @@ class Controller:
         speak_sentence(text, meta, final) while the model still writes it. -> Outcome"""
         G, D = "\x00G", "\x00D"
         head = None
+        fixed = None
         outcome = None
         chosen = None
         buf = {"line_if_granted": "", "line_if_denied": ""}
@@ -1103,7 +1153,16 @@ class Controller:
                         outcome = self._finish_persona(transcript, head)
                     say = outcome.extra.get("say", "")
                     chosen = "line_if_granted" if say == G else "line_if_denied" if say == D else None
-                    if chosen is None:
+                    fixed = say if chosen is None and say and G not in say and D not in say else None
+                    if fixed:
+                        # the tool put its own line in (her order, a reminder, a refusal that says what to do): it is
+                        # said as it is - the model's streamed sentence would never carry it (before: silence)
+                        from lines import scrub as _scrub
+                        speak_sentence(_scrub(fixed)[0], {"tone": outcome.extra.get("tone", self._tone_now[0]), "kind": "answer",
+                                                          "stage": outcome.extra.get("stage", self.stage()), "language": self.language}, True)
+                        with self._lock:
+                            self._remember_said(fixed)
+                    elif chosen is None:
                         outcome.extra.pop("say", None)
                     meta = {"tone": outcome.extra.get("tone", self._tone_now[0]), "kind": "answer",
                             "stage": outcome.extra.get("stage", self.stage()), "language": self.language}
@@ -1136,7 +1195,7 @@ class Controller:
                             if self.is_banned(line):
                                 outcome.extra["names_gear"] = True
                             self._remember_said(line)
-                    else:
+                    elif not fixed:
                         speak_sentence("", meta or {}, True)
                     outcome.extra["persona_raw"] = turn.raw
                     outcome.extra["latency_ms"] = turn.latency_ms
@@ -1649,7 +1708,11 @@ class Controller:
         rewards = self._rewards_cfg()
         if source == "task" and rewards.get("enabled") and self.language == "pl":
             order = spont or {"line": line, "done": []}
-            line = " ".join(x for x in (line, rewards.get("tail", "")) if x)   # he knows it pays to do it
+            if repeat_target(line):
+                # "Powtórz: ..." - the reward in front, so that the sentence to repeat stays exactly hers
+                line = " ".join(x for x in (rewards.get("head_repeat", ""), line) if x)
+            else:
+                line = " ".join(x for x in (line, rewards.get("tail", "")) if x)   # he knows it pays, and which word
         with self._lock:
             if source == "task" and rewards.get("enabled") and self.language == "pl":
                 self._spont_task = {"line": order["line"], "done": list(order.get("done") or []),
@@ -1861,6 +1924,9 @@ class Controller:
                 self._repeat_target = None
         # the model's "defiance" counts only when he actually said no: a misheard word is not rebellion
         defiant = (turn.defiance and bool(REFUSAL_MARKERS.search(transcript))) or self._says_any(transcript, m["refusal_phrases"], 0.92)
+        if defiant and (listed is not None or NOT_A_REFUSAL.search(transcript)):
+            defiant = False                  # "nie oszczędzaj mnie", "pierdol mnie mocniej": a wish, not a no
+            turn.defiance = False
         if not defiant and self.penalty_remaining() > 0 and self._says_any(transcript, m["apology_phrases"], 0.8):
             self._penalty_until = 0.0                        # an apology ends the punishment
             self._heat_up("turn")
@@ -1927,6 +1993,8 @@ class Controller:
                 if self._spontaneous(turn.grant_actions if reward else turn.tease_actions, stage, extra, "reward" if reward else "tease"):
                     return spoken(turn.line_if_granted if reward else turn.line_if_denied, Outcome("talk", "persona (unsolicited)", "", 0.0, "persona", extra))
             pending = self._owed or self._last_demand or self.penalty_remaining() > 0
+            if not pending and self._promises_a_shot(turn.line_if_granted) and self._keep_promise(extra, now):
+                return spoken(turn.line_if_granted, Outcome("executed", "persona: promise kept", "lube_fire", 1.0, "persona", extra))
             line = (turn.line_if_denied or turn.line_if_granted) if pending else (turn.line_if_granted or turn.line_if_denied)
             if pending and self._last_demand:
                 line = self._varied_denial(line, self._last_demand[1])
@@ -2012,6 +2080,7 @@ class Controller:
                 extra["tease"] = used
                 if not self.dry_run:
                     self.run_steps(steps)
+                    extra["tease_seconds"] = self._undo_later(steps)
         return spoken(turn.line_if_denied, o)
 
     def _lube_count(self, intent, shots, extra):
