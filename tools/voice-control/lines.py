@@ -68,6 +68,8 @@ SCRUB = [
     (r"\bsuczkę\b", "dziwkę"), (r"\bsukę\b", "dziwkę"),
     (r"\bsuczki\b", "dziwki"), (r"\bsuki\b", "dziwki"),
     (r"\bsuczka\b", "dziwka"), (r"\bsuka\b", "dziwka"),
+    # "moja własność" as a way to call her sounds unnatural (user, 2026-11-20): another word of hers instead
+    (r"\bmoja własno(?:ść|ści)\b(?=\s*[.!?,…]|\s*$)", "moja dziewczynko"), (r"\bmoja właścicielko\b", "moja dziewczynko"),
     (r"\bbitches\b", "sluts"), (r"\bbitchy\b", "slutty"), (r"\bbitch\b", "slut"),
 ]
 

@@ -14,7 +14,7 @@ TD = P["manners"]["task_demands"]
 
 
 def cfg(chance, **kw):
-    base = dict(P, base_p=0.0, base_p_overrides={}, step_p_overrides={}, step_p=0.0,
+    base = dict(P, base_p=0.0, base_p_overrides={}, step_p_overrides={}, step_p=0.0, lube=dict(P["lube"], rear_share=0.5),
                 manners=dict(P["manners"], task_demands=dict(TD, enabled=True, chance=[chance])))
     base.update(kw)
     return base
@@ -70,7 +70,8 @@ class Orders(Server):
     def test_done_words_count_while_she_speaks(self):
         self.c.persona_cfg = cfg(1.0)
         self.say("kochanie, ruchaj mnie mocniej", request="hard")
-        self.assertIn(self.c._task["done"][0], self.c.task_done_words())
+        singles = [d for d in self.c._task["done"] if len(d.split()) == 1] or TD["done_words"][:1]
+        self.assertIn(singles[0], self.c.task_done_words())
 
 
 class OrderAndDefiance(Server):
@@ -294,3 +295,56 @@ class SessionFixes(Server):
         self.assertIn("zrobione", r["tail"])
         from controller import repeat_target
         self.assertEqual(repeat_target(r["head_repeat"] + " Powtórz, głośno: jestem posłuszną sissi."), "jestem posłuszną sissi.")
+
+
+class CumAndAddress(Server):
+    """user, 2026-11-20: every cum = 5 shots, half of them behind, no "moja własność\""""
+
+    def test_every_shot_becomes_five(self):
+        self.c.shots_per_cum = 5
+        self.c._run_raw([{"action": "{target}::Hismith::Rear::LubeLauncher::Fire", "args": []},
+                         {"action": "{target}::Hismith::LubeLauncher::FireMany", "args": [3]},
+                         {"action": "{target}::Hismith::Speed::Faster", "args": []}])
+        self.assertEqual(self.runs[-1], [{"action": "{target}::Hismith::Rear::LubeLauncher::FireMany", "args": [5]},
+                                         {"action": "{target}::Hismith::LubeLauncher::FireMany", "args": [5]},
+                                         {"action": "{target}::Hismith::Speed::Faster", "args": []}])
+
+    def test_a_granted_cum_without_a_side_goes_behind_about_half_the_time(self):
+        self.c.shots_per_cum = 5
+        self.c.persona_cfg = cfg(0.0, base_p_overrides={"lube_fire": 1.0}, base_p=1.0)
+        sides = []
+        for seed in range(40):
+            self.c.rng.seed(seed)
+            self.runs.clear()
+            self.clock.t += 30
+            self.say("kochanie, proszę, spuść się", request="lube_fire", side="front")
+            actions = [st["action"] for steps in self.runs for st in steps if "LubeLauncher" in st["action"]]
+            if actions:
+                sides.append("Rear" if "::Rear::" in actions[0] else "Front")
+        self.assertGreater(sides.count("Rear"), 8)
+        self.assertGreater(sides.count("Front"), 8)
+
+    def test_she_is_told_where_it_goes(self):
+        self.c.persona_cfg = cfg(0.0)
+        need = self.c._need_persona("kochanie, spuść się")
+        self.assertIn(need.state["wytrysk_gdzie"], ("tyl", "przod"))
+
+    def test_the_words_decide_when_he_says_it(self):
+        self.c.shots_per_cum = 5
+        self.c.persona_cfg = cfg(0.0, base_p_overrides={"lube_fire": 1.0}, base_p=1.0, last_second=dict(P["last_second"], enabled=False))
+        for seed in range(10):
+            self.c.rng.seed(seed)
+            self.runs.clear()
+            self.clock.t += 30
+            o = self.say("kochanie, proszę, spuść mi się do ust", request="lube_fire", side="rear")
+            if o.status != "executed":
+                continue                                     # the dice (at most 95 %)
+            actions = [st["action"] for steps in self.runs for st in steps if "LubeLauncher" in st["action"]]
+            self.assertTrue(actions and "::Front::" in actions[0], actions)
+
+    def test_moja_wlasnosc_is_never_said_as_her_name(self):
+        from lines import scrub
+        self.assertEqual(scrub("Dobrze, moja własność.")[0], "Dobrze, moja dziewczynko.")
+        self.assertEqual(scrub("Nie teraz, moja właścicielko. Czekaj.")[0], "Nie teraz, moja dziewczynko. Czekaj.")
+        self.assertEqual(scrub("Jesteś moją własnością.")[0], "Jesteś moją własnością.")
+        self.assertNotIn("moja własność", CFG["persona"]["address"]["names"])

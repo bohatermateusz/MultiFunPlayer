@@ -1180,7 +1180,7 @@
   "timeout": 8,
   "history_turns": 8,
   "reply_window": 60,
-  "base_p": 0.12,
+  "base_p": 0.5,
   "step_p": 0.15,
   "confession_p": 0.2,
   "max_asks": 5,
@@ -1369,20 +1369,20 @@
    "loop_off"
   ],
   "base_p_overrides": {
-   "calm": 0.35,
-   "slower": 0.35,
-   "shallower": 0.35,
-   "pause": 0.35,
-   "play": 0.35,
-   "lube_fire": 0.06,
-   "lube_two": 0.06,
-   "lube_many": 0.06,
-   "hard": 0.1,
-   "fill": 0.1,
-   "use_me": 0.1,
-   "surprise": 0.1,
-   "mode_a": 0.1,
-   "improvise": 0.1
+   "calm": 0.5,
+   "slower": 0.5,
+   "shallower": 0.5,
+   "pause": 0.5,
+   "play": 0.5,
+   "lube_fire": 0.5,
+   "lube_two": 0.5,
+   "lube_many": 0.5,
+   "hard": 0.5,
+   "fill": 0.5,
+   "use_me": 0.5,
+   "surprise": 0.5,
+   "mode_a": 0.5,
+   "improvise": 0.5
   },
   "output": "headphones",
   "stages": [
@@ -1411,11 +1411,11 @@
    ],
    "heat_reset": 1800,
    "tease_chance": [
-    0.3,
     0.5,
-    0.7,
-    0.85,
-    1.0
+    0.5,
+    0.5,
+    0.5,
+    0.5
    ],
    "tease_seconds": [
     15,
@@ -5116,8 +5116,8 @@
      "tail": "Zrób to i powiedz: zrobione. Dostaniesz nagrodę.",
      "head_repeat": "Chcesz nagrodę?",
      "lube_p": {
-      "front": 0.6,
-      "rear": 0.35
+      "front": 0.5,
+      "rear": 0.5
      },
      "push_seconds": [
       10,
@@ -5142,7 +5142,7 @@
      }
     },
     "enabled": true,
-    "share": [0.15, 0.25, 0.35, 0.4, 0.4],
+    "share": [0.5, 0.5, 0.5, 0.5, 0.5],
     "by_stage": {
      "0": [
       "Ściskaj odbyt. Puść. Poczuj.",
@@ -5215,7 +5215,6 @@
     "kochanie",
     "słoneczko",
     "laleczko",
-    "moja własność",
     "szmato",
     "dziwko",
     "Analeno"
@@ -5792,6 +5791,9 @@
    }
   },
   "lube": {
+   "_comment_shots": "shots_per_cum: every cum (a request, a reward, a promise, a surprise, a key) is this many shots, 1 s apart (MFP caps at 5). rear_share: where a cum goes when he does not say - behind with this chance, else in her mouth / on her face.",
+   "shots_per_cum": 5,
+   "rear_share": 0.5,
    "max_shots": 5
   },
   "program": {
@@ -9281,11 +9283,11 @@
     "_comment": "A refusal can be an order instead of 'ask nicer': with chance[stage] she tells him to do something that fits the request (kinds: the machine -> a body position, the Lube Launcher -> the mouth / the face; 'any' for both), says how to report it, and grants the request as soon as he says he did it (one of the order's 'done' words, done_words, or obey_phrases). Until then her reminders repeat the order. Polish only (no orders in an English session).",
     "enabled": true,
     "chance": [
-     0.35,
-     0.45,
      0.5,
-     0.55,
-     0.6
+     0.5,
+     0.5,
+     0.5,
+     0.5
     ],
     "kinds": {
      "machine": [

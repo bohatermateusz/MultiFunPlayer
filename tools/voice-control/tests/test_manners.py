@@ -16,6 +16,14 @@ from voice_control import load_config  # noqa: E402
 
 CFG, INTENTS = load_config(os.path.join(os.path.dirname(__file__), "..", "commands.json"))
 CFG["persona"]["manners"].setdefault("task_demands", {})["enabled"] = False   # orders on refusal: test_tasks.py
+
+# the dice these tests were written for (before 2026-11-20 the user set everything to 50 %, see test_tone.FiftyFifty)
+_pp = CFG["persona"]
+_pp.update(base_p=0.12, base_p_overrides={"calm": 0.35, "slower": 0.35, "shallower": 0.35, "pause": 0.35, "play": 0.35,
+                                          "lube_fire": 0.06, "lube_two": 0.06, "lube_many": 0.06, "hard": 0.1, "fill": 0.1,
+                                          "use_me": 0.1, "surprise": 0.1, "mode_a": 0.1, "improvise": 0.1})
+_pp["escalation"]["tease_chance"] = [0.3, 0.5, 0.7, 0.85, 1.0]
+_pp["lube"]["rear_share"] = None                     # no rolled side: these tests fire "every launcher" (test_tasks: rolled)
 P = CFG["persona"]
 M = P["manners"]
 

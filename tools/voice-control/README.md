@@ -257,6 +257,11 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   the sentence is doing it). Say it is done within 60 s ("zrobione", "gotowe", "wypinam", "tak, Pani") and you get a
   Lube Launcher shot on the order's side (mouth / face orders: the front one, 60 %; the rest: the rear one, 35 %) or the
   machine of that side faster (+2 speed steps) for 10-15 s, then back. Half of her orders come from the refusal bank.
+* **Every cum is 5 shots, half of them behind** (`persona.lube.shots_per_cum`, `rear_share`): any Lube Launcher shot
+  (a request, a reward, a promise, a surprise, a key) goes out as FireMany 5 (1 s apart). When he does not say where
+  ("do ust", "w dupę"), the side is rolled 50/50 before she answers and given to her ("wytrysk_gdzie"), so her line and
+  the launcher agree. Since 2026-11-20 all the dice are 50 % (first ask of everything, her orders, rewards, teases).
+  She never calls her "moja własność" / "moja właścicielko" (prompt rule + scrubbed to "moja dziewczynko").
 * **A tease does not last** (`escalation.tease_seconds`, 15-25 s): the "slower" / "shallower" she runs on a refusal
   is undone after that, so a run of refusals no longer leaves the machine crawling. A talk line of hers that says the
   shot is happening ("masz teraz gorącą falę na twarz") fires one Lube Launcher shot - she keeps her word. "Nie

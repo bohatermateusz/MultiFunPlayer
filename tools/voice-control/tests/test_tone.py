@@ -179,10 +179,11 @@ class HarderDice(unittest.TestCase):
             total += asks
         return total / n
 
-    def test_the_lube_launcher_takes_many_requests(self):
+    def test_the_lube_launcher_is_about_a_coin_flip(self):
+        # user, 2026-11-20: "zmień prawdopodobieństwa na 50% wszystkiego"
         mean = self.asks_until_granted("lube_fire")
-        self.assertGreater(mean, 3.0)
-        self.assertLess(mean, 5.01)
+        self.assertGreater(mean, 1.3)
+        self.assertLess(mean, 2.5)
 
     def test_mild_requests_are_easier_than_the_lube_launcher(self):
         self.assertLess(self.asks_until_granted("calm"), 3.3)
@@ -194,10 +195,14 @@ class HarderDice(unittest.TestCase):
         self.assertLess(self.asks_until_granted("lube_fire", difficulty=2.0), base)
         self.assertAlmostEqual(self.asks_until_granted("lube_fire", difficulty=0.0, n=50), P["max_asks"], delta=0.3)
 
-    def test_it_is_harder_than_before(self):
-        self.assertLessEqual(P["base_p"], 0.12)
+    def test_every_first_ask_is_fifty_fifty(self):
+        self.assertEqual(P["base_p"], 0.5)
         self.assertLessEqual(P["max_asks"], 5)              # not endless: the 5th ask is (almost) sure
-        self.assertLessEqual(P["base_p_overrides"]["lube_fire"], 0.06)
+        self.assertEqual(set(P["base_p_overrides"].values()), {0.5})
+        self.assertEqual(set(P["manners"]["task_demands"]["chance"]), {0.5})
+        self.assertEqual(set(P["narration"]["tasks"]["share"]), {0.5})
+        self.assertEqual(set(P["narration"]["tasks"]["rewards"]["lube_p"].values()), {0.5})
+        self.assertEqual(P["lube"]["rear_share"], 0.5)
 
 
 class Server(unittest.TestCase):

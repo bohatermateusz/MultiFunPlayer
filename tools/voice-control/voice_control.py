@@ -286,6 +286,7 @@ def build(args):
     controller.speak = lambda line: print(f"  Pani: {line}")
     controller.wake_carry = float(wake.get("carry_seconds", 6.0))     # "kochanie ... (pause) szybciej"
     controller.wake_cfg_optional_for_commands = bool(wake.get("optional_for_commands", True))   # "ruchaj mnie mocniej" alone works
+    controller.shots_per_cum = (cfg.get("persona", {}).get("lube") or {}).get("shots_per_cum")   # each cum = 5 shots
     if log_path and os.path.exists(log_path):
         # her lines of the last sessions count as said: a new evening does not start with the same sentences
         try:

@@ -170,7 +170,10 @@ class Controller:
         self.llm = llm
         self.llm_cfg = dict(LLM_DEFAULTS, **(llm_cfg or {}))
         self._lock = threading.RLock()   # voice and keyboard threads share the cool-downs
-        self._run_raw = run_steps          # callable(list of steps)
+        self._run_inner = run_steps        # callable(list of steps)
+        self._run_raw = self._run_shots    # the same, every Lube Launcher shot made a whole cum (shots_per_cum)
+        self.shots_per_cum = None          # persona.lube.shots_per_cum: each cum = this many shots (None: as the steps say)
+        self._cum_side = None              # where the next cum goes when he does not say (rolled per turn: "rear" / "front")
         self.run_steps = self._run_sided  # the same, with the side of the current turn (front / rear) applied
         self.sides_enabled = True         # the machines are told apart (MFP device roles); False: every command to all
         self._turn_side = None            # "front" / "rear" for the turn being handled, None = every side
@@ -507,6 +510,29 @@ class Controller:
         own = list((self._task or {}).get("done") or []) if refusal else []
         own += list((self._spont_task or {}).get("done") or []) if spont else []
         return [w for w in own + list(cfg.get("done_words") or []) if len(w.split()) == 1]
+
+    def _run_shots(self, steps):
+        """each cum is shots_per_cum shots (user, 2026-11-20: "każde spuszczanie to 5 strzałów"): LubeLauncher::Fire and
+        ::FireMany become FireMany with that count"""
+        n = self.shots_per_cum
+        if n:
+            out = []
+            for st in steps:
+                action = st.get("action", "")
+                if action.endswith("LubeLauncher::Fire"):
+                    st = dict(st, action=action + "Many", args=[int(n)])
+                elif action.endswith("LubeLauncher::FireMany"):
+                    st = dict(st, args=[int(n)])
+                out.append(st)
+            steps = out
+        return self._run_inner(steps)
+
+    def _roll_cum_side(self):
+        """where a cum goes when nobody said: behind with lube.rear_share (0.5), else in her mouth / on her face"""
+        share = self.persona_cfg.get("lube", {}).get("rear_share", 0.5)
+        if share is None:
+            return None                                       # off: the old way (her choice / every launcher)
+        return "rear" if self.rng.random() < float(share) else "front"
 
     TEASE_UNDO = {"Speed::Slower": "Speed::Faster", "Depth::Shallower": "Depth::Deeper"}
 
@@ -1512,7 +1538,7 @@ class Controller:
 
     def _fire_lube_surprise(self, extra):
         if self._turn_side is None:
-            self._turn_side = self._last_side or "front"            # an unasked shot: in her face, unless the scene is behind
+            self._turn_side = self._roll_cum_side() or self._last_side or "front"   # an unasked shot: behind or in her face
         intent = next((i for i in self.intents if i.id == "lube_fire"), None)
         if intent is None:
             return False
@@ -1819,7 +1845,12 @@ class Controller:
 
     def _need_persona(self, transcript, plain=None):
         self._last_plain = plain
-        return _NeedPersona(transcript, self._persona_state(), list(self._history), plain)
+        state = self._persona_state()
+        # a cum he asks for without saying where: rolled here, so that her line and the launcher agree
+        self._cum_side = self._roll_cum_side() if not getattr(self, "_turn_side_from_words", False) else None
+        if self._cum_side:
+            state["wytrysk_gdzie"] = "tyl" if self._cum_side == "rear" else "przod"
+        return _NeedPersona(transcript, state, list(self._history), plain)
 
     def _ask_persona(self, need: _NeedPersona):
         try:
@@ -1896,6 +1927,8 @@ class Controller:
             turn.thanked = True
         if not getattr(self, "_turn_side_from_words", False) and getattr(turn, "side", "auto") in ("front", "rear", "both"):
             self._turn_side = None if turn.side == "both" else turn.side          # she chose the side from the context
+        if not getattr(self, "_turn_side_from_words", False) and self._cum_side and str(turn.request).startswith("lube_"):
+            self._turn_side = self._cum_side                                      # the cum goes where it was rolled
         m = self.persona_cfg["manners"]
         met = self._demand_met(transcript)
         if met:

@@ -254,10 +254,9 @@ class EscalationTests(unittest.TestCase):
         self.assertLess(settings[0]["speed"], settings[5]["speed"])
         self.assertEqual(len(CFG["persona"]["escalation"]["tease_chance"]), 5)
 
-    def test_higher_stages_tease_more_often(self):
-        chances = CFG["persona"]["escalation"]["tease_chance"]
-        self.assertEqual(chances, sorted(chances))
-        self.assertEqual(chances[-1], 1.0)
+    def test_she_teases_half_the_time_at_every_stage(self):
+        # user, 2026-11-20: 50 % for everything (the tease is short now: escalation.tease_seconds)
+        self.assertEqual(CFG["persona"]["escalation"]["tease_chance"], [0.5] * 5)
 
     def test_prompts_carry_the_brevity_and_the_tone(self):
         prompt = build_system_prompt(CFG["persona"]["character"], INTENTS, [], {"etap": 3, "ton": "TON-TEST"})
