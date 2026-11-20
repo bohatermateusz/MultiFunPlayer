@@ -479,10 +479,15 @@
                            Text="LUBE LAUNCHER"
                            Typography.Capitals="AllSmallCaps"/>
                 <Button Style="{StaticResource MaterialDesignFlatButton}"
+                        Margin="0 0 5 0"
+                        Click="{s:Action FireLubeLauncherFront}"
+                        Content="Spray Front"
+                        ToolTip="One squirt from the Front launcher"/>
+                <Button Style="{StaticResource MaterialDesignFlatButton}"
                         Margin="0 0 20 0"
-                        Click="{s:Action FireLubeLauncher}"
-                        Content="Spray"
-                        ToolTip="One squirt"/>
+                        Click="{s:Action FireLubeLauncherRear}"
+                        Content="Spray Back"
+                        ToolTip="One squirt from the Rear launcher"/>
                 <TextBlock Margin="0 0 8 0" VerticalAlignment="Center" Text="Auto"/>
                 <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
                               IsChecked="{Binding LubeAutoSpray}"
@@ -509,6 +514,11 @@
                 <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
                               IsChecked="{Binding RemoteCommandsEnabled}"
                               ToolTip="Lets a program on this computer run a few MultiFunPlayer actions over UDP"/>
+                <TextBlock Margin="16 0 8 0" VerticalAlignment="Center" Text="media status to port:"/>
+                <TextBox Width="60"
+                         VerticalAlignment="Center"
+                         Text="{Binding RemoteStatusPort, UpdateSourceTrigger=LostFocus}"
+                         ToolTip="While remote commands are on, the current video, position and play/pause go to this UDP port once a second (the voice control tool follows the scene with it)"/>
             </StackPanel>
 
             <TextBlock HorizontalAlignment="Left"

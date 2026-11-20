@@ -81,6 +81,20 @@ internal sealed partial class ButtplugOutputTarget
 
     private static string DeviceKey(ButtplugDevice device) => $"{device.Name}#{device.Index}";
 
+    // the side in an engine display name: the word "Front", or "Rear" / "Back"; null when it names no side
+    private static HismithSide? SideFromDisplayName(string displayName)
+    {
+        if (string.IsNullOrWhiteSpace(displayName))
+            return null;
+
+        var words = displayName.Split([' ', '-', '_', '(', ')', '[', ']'], StringSplitOptions.RemoveEmptyEntries);
+        if (words.Any(w => w.Equals("Front", StringComparison.OrdinalIgnoreCase)))
+            return HismithSide.Front;
+        if (words.Any(w => w.Equals("Rear", StringComparison.OrdinalIgnoreCase) || w.Equals("Back", StringComparison.OrdinalIgnoreCase)))
+            return HismithSide.Rear;
+        return null;
+    }
+
     private HismithSide RoleOf(ButtplugDevice device)
         => device != null && _deviceRoles.TryGetValue(DeviceKey(device), out var role) ? role : HismithSide.Both;
 
@@ -137,7 +151,7 @@ internal sealed partial class ButtplugOutputTarget
         {
             DeviceRoles.Clear();
             foreach (var device in AvailableDevices.ToList())
-                DeviceRoles.Add(new HismithDeviceRole(DeviceKey(device), $"{device.Name} #{device.Index}", RoleOf(device), OnDeviceRoleChanged));
+                DeviceRoles.Add(new HismithDeviceRole(DeviceKey(device), string.IsNullOrWhiteSpace(device.DisplayName) ? $"{device.Name} #{device.Index}" : $"{device.DisplayName} #{device.Index}", RoleOf(device), OnDeviceRoleChanged));
             NotifyOfPropertyChange(nameof(HasDeviceRoles));
         });
     }

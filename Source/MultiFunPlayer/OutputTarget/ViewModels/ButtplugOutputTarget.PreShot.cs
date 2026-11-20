@@ -1,4 +1,4 @@
-using Buttplug;
+﻿using Buttplug;
 using MultiFunPlayer.Common;
 using System.Diagnostics;
 
@@ -109,11 +109,14 @@ internal sealed partial class ButtplugOutputTarget
 
             var shotAt = Now + s;
             if (Math.Abs(shotAt - _plannedScriptShot) < 1.5)
-                return;                                     // this shot has been drawn already
+            {
+                _plannedScriptShot = Math.Max(_plannedScriptShot, shotAt);   // the next shot of a burst (scene-map writes 3 per cum, 1 s apart)
+                return;                                     // belongs to the shot that has been drawn already
+            }
             _plannedScriptShot = shotAt;
 
             if (FrontVibrateAxes().Count > 0 && Random.Shared.NextDouble() < PreShotChance)
-                StartPreShotRamp(s, PreShotHoldAfter);
+                StartPreShotRamp(s, PreShotHoldAfter + 2 * 1.2);   // hold through the 3-shot burst of a script cum
             return;
         }
     }

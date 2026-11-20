@@ -186,6 +186,13 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
     public void FireLubeLauncher()
         => _ = FireLubeLauncherManyAsync(1);
 
+    // one squirt from the launcher of one side only (its device role Front / Rear; a "Both" launcher fires for either)
+    public void FireLubeLauncherFront()
+        => InSide(HismithSide.Front, () => _ = FireLubeLauncherManyAsync(1));
+
+    public void FireLubeLauncherRear()
+        => InSide(HismithSide.Rear, () => _ = FireLubeLauncherManyAsync(1));
+
     // The server drops a command that is identical to the last one sent to the same feature, so a
     // second "1" would never reach the launcher. "1" squirts, "0" does nothing but resets that state.
     private async Task FireLubeLauncherAsync()
@@ -278,6 +285,7 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
         _remoteCommandSource = source;
         var previousTask = _remoteListenerTask;
         _remoteListenerTask = RunRemoteCommandListenerAsync(_remoteCommandsPort, source.Token, previousTask);
+        _ = RunMediaStatusSenderAsync(source.Token);
     }
 
     private async Task RunRemoteCommandListenerAsync(int port, CancellationToken token, Task previousListener)
@@ -688,7 +696,7 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
 
         void OnDeviceAdded(ButtplugDevice device)
         {
-            Logger.Info($"Device added: \"{device.Name}\"");
+            Logger.Info($"Device added: \"{device.Name}\" #{device.Index}{(string.IsNullOrWhiteSpace(device.DisplayName) ? "" : $" ({device.DisplayName})")}");
 
             RebindByName(device);
             AvailableDevices.Add(device);
@@ -863,8 +871,20 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
     // index and its map rows (bound by name + index) would stay red. A device whose name + index has no rows takes over
     // the rows (and the Rear/Front role) saved for the same name under an index no connected device has, as long as
     // they all point at one old index (two same-named devices with rows on different indices stay as they are).
+    //
+    // A device the engine names by its MAC address (display_name in the engine's user-device-config.json, e.g.
+    // "PiuPiu Front") also has a fixed index there, so nothing is rebound: it takes the side its name says.
     private void RebindByName(ButtplugDevice device)
     {
+        if (SideFromDisplayName(device.DisplayName) is { } side)
+        {
+            var key = DeviceKey(device);
+            if (!_deviceRoles.TryGetValue(key, out var old) || old != side)
+                Logger.Info("Device \"{0}\" ({1}) serves the {2} side, set by the engine by its MAC address", key, device.DisplayName, side);
+            _deviceRoles[key] = side;
+            return;
+        }
+
         var connected = AvailableDevices.ToList();
         bool SameName(string name) => string.Equals(name, device.Name, StringComparison.OrdinalIgnoreCase);
         bool Free(uint index) => !connected.Any(d => SameName(d.Name) && d.Index == index);
@@ -1039,6 +1059,7 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
             settings[nameof(DeviceSettings)] = JArray.FromObject(DeviceSettings);
             settings[nameof(RemoteCommandsEnabled)] = RemoteCommandsEnabled;
             settings[nameof(RemoteCommandsPort)] = RemoteCommandsPort;
+            settings[nameof(RemoteStatusPort)] = RemoteStatusPort;
             SaveHismithModeSettings(settings);
         }
         else if (action == SettingsAction.Loading)
@@ -1051,6 +1072,8 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
 
             if (settings.TryGetValue<int>(nameof(RemoteCommandsPort), out var remoteCommandsPort))
                 RemoteCommandsPort = remoteCommandsPort;
+            if (settings.TryGetValue<int>(nameof(RemoteStatusPort), out var remoteStatusPort))
+                RemoteStatusPort = remoteStatusPort;
             if (settings.TryGetValue<bool>(nameof(RemoteCommandsEnabled), out var remoteCommandsEnabled))
                 RemoteCommandsEnabled = remoteCommandsEnabled;
 
