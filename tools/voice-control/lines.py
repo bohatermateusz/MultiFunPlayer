@@ -33,6 +33,21 @@ def escalated_seed(themes, seed_up, labels):
     return out
 
 
+def scene_seed(scene_cfg, labels):
+    """narration.scene.seed (act -> {"0": [...], "1": [...], "2": [...]}) as pool seeds under the scene bank's keys
+    (level 0 is the plain key, 1 and 2 the harsher versions named by narration.levels)"""
+    from scene import scene_theme
+    cfg = scene_cfg or {}
+    out = {}
+    for act, levels in (cfg.get("seed") or {}).items():
+        theme = scene_theme(act, cfg.get("labels"))
+        for level, lines in (levels or {}).items():
+            label = (labels or {}).get(str(level)) if str(level) != "0" else ""
+            if lines and (label or str(level) == "0"):
+                out[level_key(theme, label)] = list(lines)
+    return out
+
+
 def _norm(text):
     return re.sub(r"[^\w\s]", "", text.lower()).split()
 
@@ -80,7 +95,7 @@ def is_banned_line(line, banned_words):
 class LinePool:
     def __init__(self, generate, pool_path=None, said_path=None, min_pool=8, batch=20, max_said=2000, similarity=0.8,
                  max_words=16, avoid_recent=40, clock=time.time, background=True, seed=None, banned_words=None,
-                 retired=None):
+                 retired=None, recycle_hours=3.0):
         self.generate = generate              # generate(theme, avoid: [str], count) -> [str]
         self.pool_path, self.said_path = pool_path, said_path
         self.min_pool, self.batch, self.max_said = int(min_pool), int(batch), int(max_said)
@@ -92,8 +107,15 @@ class LinePool:
         self.pool = {}                        # theme -> [lines]
         self.said = []                        # every line ever spoken, oldest first
         self.last_error = None
+        # when the fresh lines of a theme are spent (and the model wrote none), a line of that theme said more than
+        # recycle_hours ago may come back (recycle); 0 = never
+        self.recycle_seconds = float(recycle_hours or 0) * 3600
+        self._said_at = {}                    # line -> when it was last said (epoch seconds)
+        self._said_theme = {}                 # line -> the pool key it was said from
+        self._seed_lines = {k: [" ".join(str(x).split()) for x in v] for k, v in (seed or {}).items()}
         self._load()
         gone = {" ".join(str(x).split()) for x in (retired or [])}
+        self._retired = gone
         if gone and any(x in gone for v in self.pool.values() for x in v):
             # lines rewritten or withdrawn in commands.json (narration.pool.retired) leave the saved pool
             self.pool = {t: [x for x in v if x not in gone] for t, v in self.pool.items()}
@@ -129,9 +151,17 @@ class LinePool:
                 with open(self.said_path, encoding="utf-8") as f:
                     for row in f:
                         try:
-                            self.said.append(str(json.loads(row)["line"]))
+                            data = json.loads(row)
+                            line = str(data["line"])
                         except (json.JSONDecodeError, KeyError, TypeError):
                             continue
+                        self.said.append(line)
+                        try:
+                            self._said_at[line] = time.mktime(time.strptime(str(data.get("time")), "%Y-%m-%d %H:%M:%S"))
+                        except (ValueError, OverflowError):
+                            pass
+                        if data.get("theme"):
+                            self._said_theme[line] = str(data["theme"])
             except OSError:
                 pass
             del self.said[:-self.max_said]
@@ -181,14 +211,15 @@ class LinePool:
         with self._lock:
             return len(self.pool.get(theme, []))
 
-    def take(self, theme):
-        """-> a fresh line for the theme (removed from the pool and remembered as said), or None"""
+    def take(self, theme, rng=None):
+        """-> a fresh line for the theme (removed from the pool and remembered as said), or None. With rng a random
+        line of the theme rather than the oldest one (so the same lines do not come in the same order)."""
         with self._lock:
             lines = self.pool.get(theme, [])
             while lines:
-                line = lines.pop(0)
+                line = lines.pop(rng.randrange(len(lines)) if rng is not None else 0)
                 if not any(similar(line, s) >= self.similarity for s in self.said[-200:]):
-                    self._record(line)
+                    self._record(line, theme)
                     self._save_pool()
                     low = len(lines) < self.min_pool
                     break
@@ -204,15 +235,55 @@ class LinePool:
         with self._lock:
             self._record(line)
 
-    def _record(self, line):
+    def _record(self, line, theme=None):
+        now = self.clock()
         self.said.append(line)
         del self.said[:-self.max_said]
+        self._said_at[line] = now
+        if theme:
+            self._said_theme[line] = theme
         if self.said_path:
+            row = {"time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now)), "line": line}
+            if theme:
+                row["theme"] = theme
             try:
                 with open(self.said_path, "a", encoding="utf-8") as f:
-                    f.write(json.dumps({"time": time.strftime("%Y-%m-%d %H:%M:%S"), "line": line}, ensure_ascii=False) + "\n")
+                    f.write(json.dumps(row, ensure_ascii=False) + "\n")
             except OSError:
                 pass
+
+    def recycle(self, theme, rng=None):
+        """-> a line of the theme said again, or None (see recycle_any)"""
+        line, _ = self.recycle_any([theme], rng)
+        return line
+
+    def recycle_any(self, keys, rng=None):
+        """-> (line, key) said again, or (None, None). Only once the fresh lines of those keys are spent: the bank starts
+        over - of all their lines (hand-written, or said from them before) the one said the longest ago, so every
+        line comes back once before any comes back twice - and never one said within recycle_hours. Recorded as said."""
+        if not self.recycle_seconds:
+            return None, None
+        now = self.clock()
+        with self._lock:
+            keys = [k for k in dict.fromkeys(keys) if not self.pool.get(k)]       # fresh lines first
+            if not keys:
+                return None, None
+            wanted = set(keys)
+            ready = {}
+            for k in keys:
+                for x in self._seed_lines.get(k, []):
+                    ready.setdefault(x, k)
+            for x, k in self._said_theme.items():
+                if k in wanted:
+                    ready[x] = k
+            ready = {x: k for x, k in ready.items() if x in self._said_at and now - self._said_at[x] >= self.recycle_seconds
+                     and x not in self._retired and not self.banned(x)}
+            if not ready:
+                return None, None
+            oldest = min(self._said_at[x] for x in ready)
+            line = (rng or __import__("random")).choice(sorted(x for x in ready if self._said_at[x] - oldest < 60))
+            self._record(line, ready[line])
+            return line, ready[line]
 
     def banned(self, line):
         """True when the line uses a banned word: a plain entry is a substring, an "re:" entry a regular expression"""

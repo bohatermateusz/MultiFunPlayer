@@ -19,6 +19,8 @@ class Narration(Server):
         super().setUp()
         self.c.persona_cfg = copy.deepcopy(P)
         self.c.persona_cfg["narration"]["tasks"]["enabled"] = False     # the physical orders have their own tests
+        self.c.persona_cfg["narration"]["min_gap_seconds"] = [0, 0]   # the pause between her lines: own tests (MinGap)
+        self.c.persona_cfg["narration"]["address"]["enabled"] = False  # what she calls her: own tests (test_address)
         self.calls = []
 
         words = ["klęcz", "ssij", "odpuść", "należysz", "dziękuj", "oddychaj", "patrz", "powtórz", "zostań", "puść",
@@ -151,7 +153,7 @@ class Narration(Server):
         class FakePool:
             said = []
 
-            def take(self, theme):
+            def take(self, theme, rng=None):
                 return "Z puli: " + theme[:8]
 
             def left(self, theme):

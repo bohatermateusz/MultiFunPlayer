@@ -105,7 +105,7 @@ class WithHer(Server):
             def __init__(self, tag):
                 self.tag = tag
 
-            def take(self, theme):
+            def take(self, theme, rng=None):
                 return f"{self.tag}: {theme[:10]}"
 
             def left(self, theme):

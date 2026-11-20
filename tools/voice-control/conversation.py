@@ -157,8 +157,12 @@ class LiveLoop:
 
     # ---- events from the recognition ------------------------------------------------------------------
     def on_speech_start(self):
+        try:
+            self.c.heard_voice()            # her narration waits until you are done
+        except AttributeError:
+            pass
         if self.headphones and self.interrupt_on_speech:
-            self.voice.interrupt()
+            self.voice.interrupt()          # only with live.interrupt_on_speech: by default your voice never cuts her off
 
     def _screen(self, text):
         """the text to act on: a hallucination is dropped (None), except that the safe word in it still stops everything;

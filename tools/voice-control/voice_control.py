@@ -148,10 +148,12 @@ def build_pool(args, pc, persona, log_path, lang="pl"):
     p = n.get("pool", {})
     if persona is None or not n.get("enabled") or not p.get("enabled", True) or getattr(args, "no_narration", False):
         return None
-    from lines import LinePool, escalated_seed
+    from lines import LinePool, escalated_seed, scene_seed
     folder = os.path.dirname(os.path.abspath(args.config))
     seed = dict(p.get("seed") or {})
     seed.update(escalated_seed(n.get("themes", []), p.get("seed_up"), n.get("levels")))   # the harsher versions of the themes
+    if (n.get("scene") or {}).get("enabled", True):
+        seed.update(scene_seed(n.get("scene"), n.get("levels")))      # the lines for what is happening in the video
     examples, max_words = list(n.get("examples", [])), int(n.get("max_words", 16))
     style, rule = str(n.get("style", "")), str(pc.get("language_rule", ""))
     pool = LinePool(lambda theme, avoid, count: persona.fresh_lines(theme, examples, avoid, count, max_words, style=style, language_rule=rule),
@@ -159,7 +161,7 @@ def build_pool(args, pc, persona, log_path, lang="pl"):
                     said_path=None if args.no_log else os.path.join(folder, "said.jsonl"),
                     min_pool=p.get("min_pool", 8), batch=p.get("batch", 20), max_said=p.get("max_said", 2000),
                     similarity=p.get("similarity", 0.8), max_words=max_words, seed=seed, banned_words=p.get("banned_words"),
-                    retired=p.get("retired"))
+                    retired=p.get("retired"), recycle_hours=p.get("recycle_hours", 3))
     return pool
 
 
@@ -306,6 +308,18 @@ def build(args):
         merged = pc if lang == "pl" else deep_merge(pc, pc["languages"][lang])
         controller.pools[lang] = build_pool(args, merged, persona, log_path, lang)
     controller.pool = controller.pools.get("pl")
+    sc = pc.get("narration", {}).get("scene") or {}
+    if controller.persona is not None and sc.get("enabled", True) and sc and not getattr(args, "no_narration", False):
+        # the video: MultiFunPlayer sends its media status (Buttplug output target, "media status to port"), the
+        # timeline next to the film says what happens when; narration follows it
+        from scene import SceneTracker
+        tracker = SceneTracker(sc.get("dirs") or [], options=sc.get("tracker"))
+        if tracker.start(int(sc.get("port", 23556))):
+            controller.scene = tracker
+            print(f"  scene: following the video (media status on 127.0.0.1:{int(sc.get('port', 23556))}, "
+                  f"timelines from {', '.join(sc.get('dirs') or []) or 'next to the video'})")
+        else:
+            print(f"  scene: port {sc.get('port', 23556)} taken ({tracker.last_error}) - narration does not follow the video")
     s = cfg.get("stt", {})
     stt = CloudStt(s.get("base_url", "https://api.openai.com/v1"), s.get("model", "whisper-1"), s.get("language", "pl"),
                    api_key_env=s.get("api_key_env", "OPENAI_API_KEY"), timeout=s.get("timeout", 15), prompt=stt_prompt(intents, wake_words))
@@ -604,9 +618,35 @@ def main():
         recent_lines.append((time.monotonic(), line))
         voice.say(line, stage, meta, pcm=pcm)
         if pcm and controller.pool is not None:
-            controller.audio_cache.warm(controller.pool, controller.persona_cfg.get("narration", {}).get("themes", []))
+            controller.audio_cache.warm(controller.pool, cache_keys())
 
     controller.speak_ex = speak
+
+    def cache_keys():
+        """what the audio cache synthesizes ahead: the themes, and the scene banks at the level of the stage (the key
+        moments of a video must not wait for a voice)"""
+        n = controller.persona_cfg.get("narration", {})
+        keys = list(n.get("themes", []))
+        if controller.scene is not None:
+            from scene import CUM_ACTS
+            level = controller._scene_level(controller.stage())
+            acts = ["cum_soon", *dict.fromkeys(CUM_ACTS.values()), *((n.get("scene") or {}).get("seed") or {})]
+            keys = [controller.scene_key(a, level) for a in dict.fromkeys(acts)] + keys
+        return keys
+
+    def cache_meta(line, theme):
+        from scene import scene_theme
+        meta = {"tone": "ostry" if controller.stage() >= 3 else "czuły", "kind": "narration", "stage": controller.stage(), "theme": theme}
+        labels = (controller.persona_cfg.get("narration", {}).get("scene") or {}).get("labels")
+        if theme.startswith(scene_theme("cum_soon", labels)):
+            meta.update(moment="cum_soon", tone="ostry")
+        elif theme.startswith("scena: cum_"):
+            meta.update(moment="cum", tone="ostry")
+        elif theme.startswith(scene_theme("faster", labels)):
+            meta.update(moment="faster", tone="ostry")
+        elif theme.startswith(scene_theme("slower", labels)):
+            meta.update(moment="slower", tone="czuły")
+        return meta
 
     # the narration cache: pool lines synthesized ahead with the expressive model (v3 + audio tags), v2 as a fallback
     ac = tcfg.get("audio_cache", {})
@@ -624,13 +664,13 @@ def main():
             except TtsError:
                 return el.synthesize(line, meta)              # the expressive model refused / failed: the live model
         controller.audio_cache = AudioCache(os.path.join(os.path.dirname(os.path.abspath(args.config)), "audio_cache"), synth,
-                                            meta_for=lambda line, theme: {"tone": "ostry" if controller.stage() >= 3 else "czuły",
-                                                                          "kind": "narration", "stage": controller.stage(), "theme": theme},
+                                            meta_for=cache_meta,
                                             prefetch=ac.get("prefetch", 6), max_bytes=int(ac.get("max_mb", 200)) * 1024 * 1024)
         controller.audio_cache.prune()
     controller.busy = lambda: muted["value"] or voice.speaking() or gate.speaking()
 
     def barge_in():
+        controller.heard_voice()            # you started talking: her narration waits until you are done
         heard_over_her["value"] = headphones and lis.get("echo_filter", True) and (gate.speaking() or voice.speaking())
         # your voice cuts her off only with listen.barge_in "always"; by default ("safe_word") only the safe word does
         if headphones and lis.get("barge_in", "safe_word") == "always":
@@ -638,9 +678,16 @@ def main():
     controller.on_halt = voice.interrupt
 
     def toggle_mute():
-        muted["value"] = not muted["value"]
-        print("  listening", "OFF (muted)" if muted["value"] else "ON")
-        beep("error" if muted["value"] else "ok")
+        # the mute key = listen only: she goes on talking, you are not heard (the safe word still is)
+        controller.toggle_listen_only(via="key")
+
+    def on_listen_only(on):
+        print("  listen only:", "ON - she talks, you are not heard (say 'trąbka mikrofon' or press the mute key to talk)"
+              if on else "OFF - she hears you again")
+        beep("error" if on else "ok")
+    controller.on_listen_only = on_listen_only
+    if lis.get("listen_only"):
+        controller.listen_only_cfg = dict(controller.listen_only_cfg, **lis["listen_only"])
 
     def on_key(intent_id):
         outcome = controller.press(intent_id)
@@ -664,7 +711,7 @@ def main():
             if controller.pool is not None:
                 controller.pool.warm_up(cfg.get("persona", {}).get("narration", {}).get("themes", []))
                 if controller.audio_cache is not None:
-                    controller.audio_cache.warm(controller.pool, controller.persona_cfg.get("narration", {}).get("themes", []))
+                    controller.audio_cache.warm(controller.pool, cache_keys())
             def nudger():
                 while True:
                     time.sleep(1.0)
@@ -677,7 +724,7 @@ def main():
                         if manager["m"] is not None and manager["m"].mode == "agents":
                             continue                 # the agent speaks for her: narration goes through its proxy
                         if not args.no_narration:
-                            controller.idle_narration()
+                            controller.scene_moment() or controller.idle_narration()   # a key moment in the video first
                         if not args.no_nudge:
                             controller.idle_nudge()
                     except Exception:

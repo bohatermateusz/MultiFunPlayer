@@ -257,6 +257,8 @@ class Persona:
                   + " słów, bez pytań, bez numeracji), które mówisz do niej w trakcie sesji. Temat: " + theme
                   + ". Rejestr pokazują przykłady (nie kopiuj ich): " + " | ".join(examples)
                   + ". To ma być całkowite wyuzdanie: dosadnie, pewnie, bez cenzury, po polsku, każda kwestia inna w budowie i słowach. "
+                  + "Każda kwestia ma brzmieć jak naturalna mowa żywej osoby: poprawna gramatyka i odmiana, do niej zawsze w rodzaju żeńskim, "
+                  + "proste konkretne obrazy - żadnych dziwnych metafor, poetyckich ozdobników ani kalek z angielskiego. "
                   + "Świat: VR, mężczyźni ją biorą - nigdy nie nazywaj sprzętu (maszyna, dildo, silnik, launcher, tryb, skrypt); zawsze 'on', 'oni', 'jego rytm', 'jego sperma'. Nigdy 'suka', 'suczka', 'bitch'. "
                   + ("Styl: " + style + " " if style else "")
                   + ("JĘZYK: " + language_rule + " " if language_rule else "")

@@ -137,5 +137,79 @@ class Pool(unittest.TestCase):
         self.assertEqual(p.left("A"), 5)
 
 
+
+class Recycle(unittest.TestCase):
+    """When the fresh lines of a theme are spent (and the model wrote none), a line said more than 3 h ago may come
+    back - never sooner, never while fresh ones are left."""
+    LINES = ["Klęcz i ssij powoli.", "Należysz do nich bez reszty.", "Twoje nie już nic nie znaczy."]
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.now = [1_800_000_000.0]
+        self.paths = (os.path.join(self.tmp.name, "p.json"), os.path.join(self.tmp.name, "s.jsonl"))
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def make(self, seed=None):
+        return LinePool(lambda *a: [], *self.paths, min_pool=0, background=False, clock=lambda: self.now[0],
+                        seed=seed if seed is not None else {"A": list(self.LINES)})
+
+    def spend(self, p):
+        said = [p.take("A") for _ in self.LINES]
+        self.assertIsNone(p.take("A"))
+        return said
+
+    def test_nothing_comes_back_while_fresh_lines_are_left(self):
+        p = self.make()
+        p.take("A")
+        self.now[0] += 4 * 3600
+        self.assertIsNone(p.recycle("A"))
+
+    def test_a_line_comes_back_only_after_three_hours(self):
+        p = self.make()
+        said = self.spend(p)
+        self.now[0] += 2.9 * 3600
+        self.assertIsNone(p.recycle("A"))
+        self.now[0] += 0.2 * 3600
+        line = p.recycle("A")
+        self.assertIn(line, said)
+        self.assertNotIn(line, {p.recycle("A") for _ in range(5)})   # said again just now: not before 3 h more
+
+    def test_the_history_survives_a_restart(self):
+        self.spend(self.make())
+        with open(self.paths[1], encoding="utf-8") as f:
+            self.assertIn('"theme": "A"', f.read())
+        self.now[0] += 3.5 * 3600
+        p = self.make()
+        self.assertIsNone(p.take("A"))
+        self.assertIn(p.recycle("A"), self.LINES)
+
+    def test_lines_said_before_the_themes_were_logged_come_back_by_their_seed(self):
+        with open(self.paths[1], "w", encoding="utf-8") as f:
+            for line in self.LINES:
+                f.write(f'{{"time": "2020-01-01 10:00:00", "line": "{line}"}}\n')
+        p = self.make()
+        self.assertIsNone(p.take("A"))                           # all said long ago: nothing fresh
+        self.assertIn(p.recycle("A"), self.LINES)
+
+    def test_the_bank_starts_over_from_the_line_said_longest_ago(self):
+        p = self.make({"A": ["Pierwsza kwestia tutaj.", "Druga zupełnie inna."], "B": ["Trzecia z innego tematu."]})
+        for key in ("A", "A", "B"):
+            p.take(key)
+            self.now[0] += 600
+        self.now[0] += 3 * 3600
+        order = [p.recycle_any(["A", "B"])[0] for _ in range(3)]
+        self.assertEqual(order, ["Pierwsza kwestia tutaj.", "Druga zupełnie inna.", "Trzecia z innego tematu."])
+        self.assertEqual(p.recycle_any(["A", "B"]), (None, None))    # all said again just now: 3 h more
+
+    def test_off_when_zero(self):
+        p = LinePool(lambda *a: [], *self.paths, min_pool=0, background=False, clock=lambda: self.now[0],
+                     seed={"A": list(self.LINES)}, recycle_hours=0)
+        self.spend(p)
+        self.now[0] += 10 * 3600
+        self.assertIsNone(p.recycle("A"))
+
+
 if __name__ == "__main__":
     unittest.main()

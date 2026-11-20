@@ -29,15 +29,18 @@ def _with_meta(provider):
     return lambda line, stage, meta=None: provider(line, stage)
 
 
-PRIORITY = {"answer": 3, "affirmation": 3, "aftercare": 3, "task": 2, "nudge": 2, "narration": 1}
+# what is kept when too many lines wait: her narration (the bank, the video, her orders) first, then her answers,
+# a nudge last. Nothing waiting is dropped otherwise, and the order is the order they came in.
+PRIORITY = {"narration": 3, "task": 3, "affirmation": 3, "aftercare": 3, "answer": 2, "nudge": 1}
 
 
 class Voice:
-    """Lines are spoken one after another: a new line waits until the one playing has ended (cut_previous=True
-    restores the old behaviour: a new line cuts the previous one). Waiting narration is dropped when an answer comes;
-    at most max_pending lines wait. interrupt() stops the line playing and drops everything waiting."""
+    """Lines are spoken one after another, in the order they came: a new line waits until the one playing has ended -
+    nothing cuts a line in the middle but interrupt() (the safe word). cut_previous=True restores the old behaviour (a
+    new line cuts the previous one). At most max_pending lines wait; above that a nudge goes first, then an answer,
+    never her narration while anything else waits."""
 
-    def __init__(self, providers, order, play, gate=None, muted=lambda: False, log=print, cut_previous=False, max_pending=2):
+    def __init__(self, providers, order, play, gate=None, muted=lambda: False, log=print, cut_previous=False, max_pending=3):
         self.providers = providers          # name -> open(line, stage[, meta])
         self.order = [n for n in order if n in providers]
         self.play = play                    # play(stream, stop) -> plays until the end or until stop() is true
@@ -69,13 +72,6 @@ class Voice:
                 self._stop = True
                 previous = self._thread
             else:
-                if prio > PRIORITY["narration"]:
-                    kept = [p for p in self._pending if p[0] > PRIORITY["narration"]]
-                    self.dropped += len(self._pending) - len(kept)
-                    self._pending = kept                         # an answer beats a comment that has not started yet
-                elif any(p[0] > prio for p in self._pending):
-                    self.dropped += 1
-                    return                                       # a comment never queues behind an answer
                 self._pending.append((prio, target, args))
                 while len(self._pending) > self.max_pending:
                     i = min(range(len(self._pending)), key=lambda k: (self._pending[k][0], -k))
@@ -97,8 +93,7 @@ class Voice:
             with self._qlock:
                 if not self._pending:
                     return
-                self._pending.sort(key=lambda p: -p[0])
-                _, target, args = self._pending.pop(0)
+                _, target, args = self._pending.pop(0)          # first come, first spoken
                 self._stop = False
             target(*args)
 

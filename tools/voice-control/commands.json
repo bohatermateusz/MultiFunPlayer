@@ -1060,7 +1060,7 @@
  "conversation": {
   "_comment": "mode: classic (record -> transcribe -> answer -> speak), live (speech recognition as you speak, the safe word and plain commands from the partial transcript, her answer streamed sentence by sentence into a websocket voice; needs websocket-client), agents (ElevenLabs Agents, experimental: one audio stream both ways, paid per minute; needs agent_id and the LLM proxy exposed to the internet). F7 cycles the available modes.",
   "mode": "classic",
-  "live": {"stt_model": "gpt-4o-mini-transcribe", "silence_ms": 500, "vad_threshold": 0.5, "speculative": true, "interrupt_on_speech": true,
+  "live": {"stt_model": "gpt-4o-mini-transcribe", "silence_ms": 500, "vad_threshold": 0.5, "speculative": true, "interrupt_on_speech": false,
            "api": "ga", "url": "wss://api.openai.com/v1/realtime?intent=transcription"},
   "agents": {"agent_id": "", "proxy_port": 8787, "input_rate": 16000, "output_rate": 16000, "override_prompt": false}
  },
@@ -1080,6 +1080,7 @@
  },
  "listen": {
   "barge_in": "safe_word",
+  "listen_only": {"_comment": "Listen only: she goes on talking (the bank, the video), you are not heard - only the safe word and the cooldown password still work. Toggled by one of these phrases said alone, or by the mute key (Pause). NOTE: 'trąbka' is the safe word, so in the live mode a 'trąbka' heard before 'mikrofon' stops the machine first.", "phrases": ["trąbka mikrofon", "trumpet microphone", "microphone trumpet"]},
   "safe_word_margin_db": 10,
   "cut_previous_line": false,
   "max_words": 25,
@@ -1254,21 +1255,24 @@
    "narration_model": "eleven_v3",
    "audio_cache": {"enabled": true, "prefetch": 6, "max_mb": 200},
    "delivery": {
-    "_comment": "How a line is read, not only what it says. A preset is picked by the kind of line (by_kind) or the tone of the turn (by_tone; the second preset from stage 3). 'tags' are eleven_v3 audio tags put in front of the text; the v2 models get <break> pauses after ellipses and between sentences instead. Tune: too flat -> raise style, lower stability; too theatrical -> the opposite; too fast -> lower speed.",
+    "_comment": "How a line is read, not only what it says. A preset is picked by the kind of line (by_kind), the moment in the video (by_moment: just before a cum, the cum, a pause) or the tone of the turn (by_tone; the second preset from stage 3). 'tags' are eleven_v3 audio tags put in front of the text; the v2 models get <break> pauses after ellipses and between sentences instead. Tune: too flat -> raise style, lower stability; too theatrical -> the opposite; too fast -> lower speed.",
     "presets": {
      "whisper": {"stability": 0.45, "similarity_boost": 0.8, "style": 0.25, "speed": 0.92, "use_speaker_boost": false, "tags": ["[whispers]"]},
      "tender": {"stability": 0.55, "similarity_boost": 0.8, "style": 0.3, "speed": 0.95, "use_speaker_boost": false, "tags": []},
      "tease": {"stability": 0.4, "similarity_boost": 0.75, "style": 0.6, "speed": 1.0, "use_speaker_boost": true, "tags": ["[mischievously]"]},
      "sharp": {"stability": 0.5, "similarity_boost": 0.8, "style": 0.5, "speed": 1.03, "use_speaker_boost": true, "tags": []},
-     "afterglow": {"stability": 0.6, "similarity_boost": 0.85, "style": 0.2, "speed": 0.88, "use_speaker_boost": false, "tags": ["[whispers]"]}
+     "afterglow": {"stability": 0.6, "similarity_boost": 0.85, "style": 0.2, "speed": 0.88, "use_speaker_boost": false, "tags": ["[whispers]"]},
+     "urgent": {"stability": 0.35, "similarity_boost": 0.8, "style": 0.65, "speed": 1.06, "use_speaker_boost": true, "tags": ["[excited]"]},
+     "triumph": {"stability": 0.4, "similarity_boost": 0.8, "style": 0.7, "speed": 0.97, "use_speaker_boost": true, "tags": ["[satisfied]"]}
     },
     "by_tone": {"czuły": ["whisper", "tender"], "ostry": ["tease", "sharp"]},
     "by_kind": {"task": "sharp", "affirmation": "whisper", "aftercare": "afterglow"},
+    "by_moment": {"cum_soon": "urgent", "cum": "triumph", "faster": "urgent", "slower": "whisper", "calm": "whisper"},
     "break_after_ellipsis": "0.45s",
     "break_after_sentence": "0.25s",
     "text_shaping": true
    },
-   "voice_id": "NacdHGUYR1k3M0FAbAia",
+   "voice_id": "m2VPSbnJZWpLA9r0WX9q",
    "voice_prefer": {
     "_comment": "Used when voice_id is empty: the first of these names found on the account, else a female young/middle-aged voice by labels, else any female, else (allow_library) a young female Polish voice from the shared library, added to the account. The pick is written back into voice_id.",
     "names": ["Hanna", "Jagna", "Asia", "Jola", "Arleta", "Jessica", "Lily", "Sarah", "Alice", "Matilda"],
@@ -1411,9 +1415,212 @@
    "session_seconds": 1800
   },
   "narration": {
-   "_comment": "Her running commentary: explicit, degrading lines at random moments while a session is on, whether you talk or not. Gap drawn from gap_seconds[stage] = [min, max]; sharp_p[stage] = how often the line is vulgar rather than tender; themes rotate without repeats; examples only show the register - the model invents its own lines.",
+   "_comment": "Her running commentary: explicit, degrading lines at random moments while a session is on, whether you talk or not. Gap drawn from gap_seconds[stage] = [min, max], never shorter than a pause drawn from min_gap_seconds after each of her lines (bank, task or video - a cum and the moment before it need only its lower end); sharp_p[stage] = how often the line is vulgar rather than tender; themes rotate without repeats; examples only show the register - the model invents its own lines.",
    "enabled": true,
    "gap_seconds": [[90, 150], [60, 110], [40, 80], [25, 55], [20, 40]],
+   "min_gap_seconds": [45, 90],
+   "address": {
+    "_comment": "What she calls her in the narration (bank lines, tasks, video moments): in share[stage] of the lines a word from tender[stage] or sharp[stage] (by the tone of the line; the stage below joins in) in front ('Analeno, ...', front_share of the time) or at the end ('..., dziwko.'), contrast_share of the time from the other tone's lists (a pet name in a harsh line - never above the stage), none of the last few used again; and, when no word was added, in identity_share[stage] a reminder of who she is after the line. Lines that already call her something (any of these words or 'already'), 'repeat after me' lines (skip_starts) and the cum moments (skip_events: said at once from the audio cache) stay as they are. Such a line is synthesized live, not from the audio cache.",
+    "enabled": true,
+    "share": [
+     0.35,
+     0.4,
+     0.45,
+     0.5,
+     0.55
+    ],
+    "identity_share": [0.15, 0.18, 0.22, 0.26, 0.3],
+    "front_share": 0.4,
+    "contrast_share": 0.2,
+    "skip_events": [
+     "cum",
+     "cum_soon"
+    ],
+    "skip_starts": [
+     "powtórz",
+     "repeat"
+    ],
+    "keep_capital": [
+     "Pani",
+     "Analena",
+     "Analeno"
+    ],
+    "already": [
+     "kochanie",
+     "mała",
+     "dziwko",
+     "dziewczynko",
+     "skarbie",
+     "księżniczko",
+     "misiu",
+     "suczko",
+     "szmato",
+     "laleczko",
+     "słoneczko",
+     "maleńka"
+    ],
+    "tender": {
+     "0": [
+      "kochanie",
+      "misiu",
+      "skarbie",
+      "słoneczko",
+      "kotku",
+      "Analeno",
+      "moja Analeno",
+      "laleczko",
+      "śliczna"
+     ],
+     "1": [
+      "Analenko",
+      "moja dziewczyno",
+      "grzeczna dziewczyno",
+      "dziureczko moja",
+      "moja sissy",
+      "słodka Analeno",
+      "księżniczko"
+     ],
+     "2": [
+      "dziureczko",
+      "moja zabaweczko",
+      "moja posłuszna Analeno",
+      "słodka dziureczko",
+      "moja dziurko",
+      "laleczko do zabawy"
+     ],
+     "3": [
+      "moja dziureczko do użytku",
+      "moja śliczna dziwko",
+      "kochana dziureczko",
+      "moja grzeczna dziwko",
+      "Analenko moja"
+     ],
+     "4": [
+      "moja kochana dziwko",
+      "słodka dziurko do spuszczania",
+      "moja analna laleczko",
+      "mój słodki rowku",
+      "kochana szmatko"
+     ]
+    },
+    "sharp": {
+     "0": [
+      "niegrzeczna Analeno",
+      "bezwstydnico",
+      "niegrzeczna dziewczyno",
+      "Analeno"
+     ],
+     "1": [
+      "zdzirko",
+      "rozpustnico",
+      "lalko",
+      "bezwstydna Analeno",
+      "mała zdzirko"
+     ],
+     "2": [
+      "dziwko",
+      "szmato",
+      "dziurko",
+      "zdziro",
+      "analna lalko",
+      "dupodajko"
+     ],
+     "3": [
+      "analny rowie",
+      "analna dziwko",
+      "dziuro",
+      "szmato do ruchania",
+      "zbiorniczku na spermę",
+      "Analeno, ty dziwko"
+     ],
+     "4": [
+      "analny rowie",
+      "dziuro do spuszczania",
+      "spermożerna szmato",
+      "publiczna dziuro",
+      "analna szmato",
+      "rowie do ruchania",
+      "dziwko"
+     ]
+    },
+    "identity": {
+     "tender": {
+      "0": [
+       "Jesteś moją Analeną.",
+       "Pamiętaj, kim jesteś: moją Analeną.",
+       "Jesteś Analena. Moja dziewczyna.",
+       "Tutaj jesteś Analena. Tylko Analena.",
+       "Moja Analena. Lubię, jak to brzmi."
+      ],
+      "1": [
+       "Jesteś moją sissy, Analeno.",
+       "Powiedz sobie w myślach: jestem Analena.",
+       "Analena. Tak masz na imię, kiedy jesteś moja.",
+       "Jesteś moją grzeczną Analeną.",
+       "Teraz jesteś Analeną. Moją."
+      ],
+      "2": [
+       "Jesteś Analena, moja dziureczka.",
+       "Pamiętaj, kim jesteś: moją posłuszną Analeną.",
+       "Twoje imię to Analena. Twoja rola to dawać.",
+       "Jesteś moją dziureczką do zabawy.",
+       "Analena to dziewczyna, która daje. Ty nią jesteś."
+      ],
+      "3": [
+       "Jesteś moją dziureczką, Analeno. Niczym więcej.",
+       "Analena znaczy dziureczka. Moja.",
+       "Jesteś moją grzeczną dziwką, Analeno.",
+       "Powtarzaj w myślach: jestem Analena, dziureczka do użytku.",
+       "Jesteś dla nich, Analeno. I dla mnie."
+      ],
+      "4": [
+       "Jesteś Analena. Dziurka do użytku. Moja.",
+       "Pamiętaj, kim jesteś: kochaną dziwką do spuszczania.",
+       "Jesteś moim słodkim rowkiem, Analeno.",
+       "Jesteś moją kochaną szmatką. Zawsze będziesz.",
+       "Analena. Moja dziurka na ich spermę."
+      ]
+     },
+     "sharp": {
+      "0": [
+       "Jesteś Analena. Nie zapominaj o tym.",
+       "Pamiętaj, kim jesteś.",
+       "Tu nie masz innego imienia niż Analena.",
+       "Analena. Tak cię wołam i tak się nazywasz."
+      ],
+      "1": [
+       "Jesteś moją zdzirką, Analeno.",
+       "Pamiętaj, kim jesteś: rozpustną Analeną.",
+       "Jesteś bezwstydna, Analeno. Wszyscy to widzą.",
+       "Analena nie ma wstydu. Ty też nie."
+      ],
+      "2": [
+       "Jesteś dziwką, Analeno. I dobrze o tym wiesz.",
+       "Pamiętaj, kim jesteś: dziurą do zabawy.",
+       "Analena to dziwka. Ty jesteś Analena.",
+       "Jesteś szmatą do ruchania, Analeno.",
+       "Nie jesteś nikim więcej niż ich dziurką."
+      ],
+      "3": [
+       "Jesteś analną dziwką. Niczym więcej.",
+       "Pamiętaj, kim jesteś: analnym rowem, Analeno.",
+       "Powtarzaj w myślach: jestem Analena, analna dziwka.",
+       "Jesteś dziurą, Analeno. Dziurą do ruchania.",
+       "Twoje imię to Analena. Twoja dupa to ich własność.",
+       "Jesteś zbiornikiem na spermę. Tak masz zapisane."
+      ],
+      "4": [
+       "Jesteś analnym rowem. Tylko tym.",
+       "Analena to dziura do spuszczania. Ty jesteś Analena.",
+       "Powtarzaj w myślach: jestem rowem do ruchania.",
+       "Jesteś publiczną dziurą, Analeno. Każdy może.",
+       "Nie jesteś kobietą ani mężczyzną. Jesteś analną szmatą.",
+       "Jesteś spermożerną szmatą. Tak cię nazywają i tak jest.",
+       "Pamiętaj, kim jesteś: dziurą do spuszczania, nikim więcej."
+      ]
+     }
+    }
+   },
    "sharp_p": [0.2, 0.45, 0.7, 0.85, 0.83],
    "max_words": 16,
    "theme_stages": {"0": ["pochwała", "czułość w poniżeniu", "po sesji", "afirmacja", "trans dziewczyna", "spełniona fantazja", "witaj z powrotem", "nowe imię od dziewczyn", "pierwszy makijaż", "rajstopy i koronki", "ubrana w kobietę", "feminizacja", "nie musisz myśleć", "cisza w głowie", "na jego kolanach", "zamiast żony", "trans", "prostata", "puść się"], "1": ["przerobiona", "hormony", "choroba feminizacji", "salon i klinika", "szkoła sissy", "pokojówka", "panna młoda", "poranek po ślubie", "poranna kartka", "zasady nowego życia", "powitanie w drzwiach", "nagroda za grzeczność", "asystentka szefa", "pusta główka", "słowo-klucz", "przyłapana", "tylko trzy miesiące", "kontrakt i dług", "podpisane w ciemno", "pół roku później", "dziewczyna została Panią", "trener", "pas cnoty", "dziewczynka do rozłożenia", "ssanie", "sama się zgłosiłaś", "niewola z wyboru", "wypatrzona", "pusta", "odurzona nimi", "pijana rozkoszą", "lalka zamiast tyrana", "zrobię wszystko"], "2": ["należy do nich", "własność", "na zawsze", "ściema", "za późno", "pułapka", "przeprogramowanie", "świadek", "wdzięczność za zniewolenie", "wymazana", "zaprogramowana", "jedyny orgazm", "twoja dziurka nie jest twoja", "mowa odjęta", "złam mnie", "bez granic", "ten, który ją bierze", "branie od tyłu", "księżniczka odbytu", "ruchają cię w dupę", "lubisz to", "odbyt nie należy do niej", "orgazmy nie są jej", "dawne życie patrzy", "jedyne wyjście", "uzależniona od nich", "ich narkotyk", "dla ich zabawy", "pokojówki w posiadłości", "we mgle", "niewolnica przyjemności", "klub, gdzie nikt nie pyta"], "3": ["rzecz", "dziewczyna do ruchania", "na posyłki", "nikt nie pytał", "ciało zdradza", "przyciśnięta", "twoja wina", "dziesięć minut później", "przełamana", "przywiązana do krzesła", "rozpórka", "knebel i obroża", "ławka", "wystawiona na publiczność", "publiczna dupodajka", "lody na pokaz", "wszyscy cię chcą wyruchać", "gwiazda porno", "zamówiona", "jedyne zadanie", "oba końce", "dwóch naraz", "potrzebuje tego na sobie", "pod stołem", "zbrukana i dumna"], "4": ["bydło", "ciało do pieprzenia", "dojenie i hodowla", "ciepła sperma w środku", "na twarz i do ust", "jeden po drugim", "pokryta", "pełna po całej nocy", "karmiona nimi", "kolejka na usta", "spuszczają się w dupę", "zalanie"]},
@@ -1561,6 +1768,7 @@
     "_comment": "Fresh lines are generated in the background (same OpenAI key/model as the persona) per theme when the pool runs low, filtered against everything ever said (said.jsonl) so nothing repeats; narration takes from the pool first, the live model only when the pool is empty. 'seed' fills the pool the first time (lines_pool.json absent) - taken or adapted from the ASMR scripts.",
     "enabled": true,
     "min_pool": 15,
+    "recycle_hours": 3,
     "batch": 30,
     "max_said": 5000,
     "similarity": 0.8,
@@ -3705,7 +3913,7 @@
       "Zobaczyłaś ją nagą i spuściłaś wzrok. Ona się roześmiała. Kiedyś i ty tak będziesz wyglądać.",
       "Pytasz o hormony szeptem. Odpowiadają głośno, przy całym stoliku. Tu nikt się nie wstydzi.",
       "Na zdjęciu grupowym stoisz w środku. Wyglądasz, jakbyś była z nimi od zawsze.",
-      "Przyszłaś jako chłopak z niedzielnej szkółki. Wyszłaś jako ona, w sukience, która cię opina.",
+      "Przyszłaś jako grzeczny chłopak z kościoła. Wyszłaś jako ona, w sukience, która cię opina.",
       "Powtórz za mną: mam nowe imię i ono jest moje bardziej niż stare.",
       "Dziewczyny cię wymyśliły. Ty tylko powiedziałaś: podoba mi się. I już nie oddałaś."
      ],
@@ -3826,7 +4034,7 @@
       "Na biurku tabletka i szklanka wody. Po niej nie ma powrotu. Połknęłaś bez wahania.",
       "Punkt pierwszy: tabletka. Punkt drugi: fartuszek i sprzątanie. Punkt trzeci: makijaż. Punkt czwarty: buzia.",
       "Ćwiczysz buzię przed lustrem cztery godziny. Szczęka boli. Wieczorem przyda się każda minuta.",
-      "Nie było śniadania. Lodówka pusta. Głód robi z dziewczynki posłuszną uczennicę.",
+      "Nie było śniadania. Lodówka pusta. Głód robi z ciebie posłuszną dziewczynę.",
       "Malujesz się pierwszy raz z instrukcji. Krzywo, ale starannie. Dla niego.",
       "Wieczorem będziesz to robić często. Tak napisał. Ćwiczysz, aż przestaniesz się krztusić.",
       "Słyszysz jego samochód i podskakujesz. Klatka boleśnie przypomina, że to nie ty decydujesz.",
@@ -3880,7 +4088,7 @@
      "asystentka szefa - przyszła do pracy jako on, została zatrudniona jako ona: ołówkowa spódnica, kawa, kolana pod biurkiem; awans przez usta": [
       "Nowa posada: asystentka. Wymagania: spódniczka, szpilki i otwarta buzia.",
       "Przyszłaś na rozmowę jako on. Wyszłaś z umową na nią.",
-      "Twoje biurko jest niskie, bo i tak większość dnia spędzasz pod jego.",
+      "Twoje biurko jest niskie, bo i tak większość dnia spędzasz pod jego biurkiem.",
       "Przynieś kawę, podpisz pisma, klęknij. Zakres obowiązków jest krótki.",
       "Awans przez usta. Jedyna droga kariery, jaka ci została. Idzie ci świetnie.",
       "Szef nie pamięta twojego starego imienia. Pamięta, jak smakujesz.",
@@ -3913,7 +4121,7 @@
       "Pusta główka, pełna dziurka. Tak wygląda równowaga.",
       "Powtarzasz, co ci każą, i wierzysz w to po trzecim razie. Słodka.",
       "Trudne słowa wypadły ci z głowy. Zostały: tak, proszę, głębiej.",
-      "Myślenie bolało. Zabrali ci je. Zostało ci przyjemne szumienie.",
+      "Myślenie bolało. Zabrali ci je. Został ci przyjemny szum.",
       "Patrzysz pustymi oczami i uśmiechasz się. Idealna. Dokładnie taka, jaką cię zrobili.",
       "Twoja główka to teraz pokój do wynajęcia. A oni wprowadzili się na stałe.",
       "Powtórz za mną: nie muszę myśleć. Myślą za mnie. Ja tylko daję.",
@@ -3937,9 +4145,9 @@
       "Szpilki zmieniają chód. Chód zmienia biodra. Biodra zdradzają, kim jesteś.",
       "Koronki na skórze mówią ci codziennie, czym jesteś. Nie zdejmujesz ich nawet do snu.",
       "Przekłute uszy. Małe dziurki, które zostają na zawsze. Jak ta większa, niżej.",
-      "Długie paznokcie. Już nie zapniesz sobie sam niczego. Zapinają cię inni.",
+      "Długie paznokcie. Już nie zapniesz sobie sama niczego. Zapinają cię inni.",
       "Pończochy sunęły po twoich nogach i coś w tobie powiedziało: wreszcie.",
-      "Majtki z koronki pod spodniami. Nikt nie widzi. Ty czujesz je całym dniem.",
+      "Majtki z koronki pod spodniami. Nikt nie widzi. Ty czujesz je przez cały dzień.",
       "Gorset uczy cię oddychać płytko. Płytko oddychają dziewczynki, które czekają.",
       "Siadasz z kolanami razem, bo tak każe spódniczka. Spódniczka ma rację.",
       "Nie ty nosisz te ubrania. One noszą ciebie. I prowadzą cię na kolana.",
@@ -4000,7 +4208,7 @@
       "Spłacasz ciałem, bo ciało jest jedyną walutą, jaką ci zostawili.",
       "Twój podpis jest ładny i dziewczęcy. Ćwiczyłaś go specjalnie na ten dzień.",
       "Przegrałaś zakład, kochanie. Nagrodą zwycięzcy jesteś ty. Na zawsze.",
-      "Powtórz za mną: podpisałam i należę do nich do spłaty długu. Dług jest nieskończony.",
+      "Powtórz za mną: podpisałam i należę do nich, dopóki nie spłacę długu. Dług jest nieskończony.",
       "W każdym punkcie umowy jest to samo słowo: tak. Twoje."
      ],
      "pokojówka - jest ich pokojówką: uniform, fartuszek, obowiązki w domu, a między obowiązkami używana przez każdego, kto ma ochotę": [
@@ -4242,7 +4450,7 @@
       "Nie da się tego przyszyć z powrotem. Ani odwagi, ani tamtego życia."
      ],
      "ssanie - jak mała dziewczynka, grzecznie, do końca": [
-      "Ssij jak mała dziewczynka… powoli, grzecznie, do samego końca.",
+      "Ssij jak grzeczna dziewczyna… powoli, do samego końca.",
       "Usta otwarte, oczy w górę. Tak wygląda twoje dziękuję.",
       "Nie łykaj od razu. Potrzymaj. Poczuj, czyja jesteś.",
       "Języczek pracuje, a ty nie myślisz. Tak… dokładnie tak.",
@@ -4298,7 +4506,7 @@
       "Ładnie prosiłaś. Ładnie dziękowałaś. Zasłużyłaś na więcej.",
       "Jestem z ciebie dumna… tak uległej jeszcze nie widziałam.",
       "Grzeczna. Cicha. Otwarta. Dokładnie taka, jaką cię chciałam.",
-      "Masz za posłuszeństwo. Nie za nic innego. Zapamiętaj."
+      "To masz za posłuszeństwo. Nie za nic innego. Zapamiętaj."
      ],
      "własność - jest moja i daję ją, komu chcę": [
       "Nie masz praw. Masz właścicielkę. To lepszy układ.",
@@ -4336,7 +4544,7 @@
      ],
      "wdzięczność za zniewolenie - ma dziękować za to, jak ją urobiono": [
       "Podziękuj za każdą rzecz, której ci nie wolno.",
-      "Powiedz: dziękuję, Pani, że mnie zrobiłaś. Na kolanach.",
+      "Powiedz: dziękuję, Pani, że zrobiłaś mnie taką. Na kolanach.",
       "Wdzięczność to twoja jedyna waluta. Płać nią hojnie.",
       "Powtórz za mną: dziękuję za to, kim nie wolno mi już być.",
       "Podziękuj im za to, co ci zabrali. Z uśmiechem. Na kolanach."
@@ -4369,7 +4577,7 @@
       "Zalewają cię, bo do tego służysz. Ty tylko otwierasz się szerzej."
      ],
      "dwóch naraz - jeden w ustach, drugi z tyłu; nie ma strony, która jest jej": [
-      "Jedna w ustach, druga w dupie. Ty pośrodku. Nic twojego.",
+      "Jeden w ustach, drugi w dupie. Ty pośrodku. Nic twojego.",
       "Nie ma już przodu ani tyłu. Jest tylko bycie użytą.",
       "Powtórz za mną: oba końce należą do Pani.",
       "Między dwoma rytmami przestajesz istnieć. Zostaje tylko ciało.",
@@ -4426,7 +4634,7 @@
      ],
      "spełniona fantazja - zawsze tego chciała i teraz to się dzieje: biorą ją jak kobietę, a ona piszczy cienkim, dziewczęcym głosikiem": [
       "Zawsze tego chciałaś. I teraz to się dzieje. Naprawdę.",
-      "Twoja fantazja się spełniła, kochanie. Leżysz i bierze cię jak kobietę.",
+      "Twoja fantazja się spełniła, kochanie. Leżysz, a on bierze cię jak kobietę.",
       "Słyszysz ten cienki głosik. To ty tak piszczysz. Jak dziewczyna.",
       "Pamiętasz, jak o tym marzyłaś po nocach. Już nie musisz marzyć.",
       "Piszcz, mała. Cieniutko. Tak piszczą dziewczyny, kiedy je dymają.",
@@ -4543,16 +4751,345 @@
       "Coś ci dosypali do napoju. Wiesz to po tym, jak miękko ci się robi głowa. I biodra.",
       "Ciepło rozchodzi się od brzucha. Po chwili już nie pamiętasz, dlaczego chciałaś odmówić.",
       "Widzisz jego uśmiech lekko zamazany. Słyszysz, jak mówi »zaraz cię wezmą«. Odpowiadasz uśmiechem.",
-      "Nikt cię nie zmusza. Wystarczył odrobina proszku w szklance i sama się wypinasz.",
+      "Nikt cię nie zmusza. Wystarczyła odrobina proszku w szklance i sama się wypinasz.",
       "Odpływasz powoli, a oni dokładają się po kolei. Tak to działa, kiedy cię naćpali.",
       "Powtórz za mną: naćpali mnie, żeby mnie mocniej wziąć. I podoba mi się to.",
       "Godzinę temu byłabyś nieśmiała. Teraz bełkoczesz »jeszcze« do każdego z nich.",
       "Ręce same znajdują ich rozporki. To, co w napoju, robi swoją robotę. Ty tylko tak pięknie współpracujesz.",
       "Cały twój opór rozpuścił się w szklance. Z twojego »nie« została tylko dziewczynka, która się uśmiecha i rozkłada nogi.",
       "Każde pchnięcie dociera do ciebie stłumione i jednak mocniejsze. Naćpali cię tak, żebyś czuła wszystko i nic nie mówiła.",
-      "Rano zapytają, czy ci było dobrze. Wyduśysz »tak« przez uśmiech, którego nie pamiętasz, kiedy zaczęłaś.",
+      "Rano zapytają, czy ci było dobrze. Wydusisz »tak« przez uśmiech, choć nie pamiętasz, skąd się wziął.",
       "Wiesz, że mogli wziąć cię na trzeźwo. Ale naćpana jesteś tak grzeczna."
      ]
+    }
+   },
+   "scene": {
+    "_comment": "Narration follows the video, a little: mostly she says bank lines as before. MultiFunPlayer (Buttplug output target, remote commands on, 'media status to port') sends the current video and position to 'port'; the <video>.timeline.json next to the film (or in one of 'dirs') says what happens when, and its stroke scripts (.suck.funscript front, .rear.funscript rear) how fast the machine goes (still / slow / medium / fast / max). Now and then, when something happens - a new act (labels: oral, fucked, both_ends, played, tease), a few seconds before a cum (cum_soon), the cum (cum_mouth, cum_on, cum_inside), the machine clearly speeding up or slowing down (faster, slower) - she says it at once: each kind with its event_chance, at most one such line per scene_min_gap seconds, never within event_gap (cum: cum_gap) of her last line or right after you spoke. Such a line comes from a bank theme that fits the act (act_themes, theme_share of the time) or from 'seed' (level 0/1/2 = mild / narration.levels 1 / 2 by levels_by_stage, a milder one milder_share of the time), picked at random. The bank lines keep their own gap: when nothing happens in the video (a pause, the machine still or slow) they come more often, in the thick of it less often (tempo_gap_factor); the tempo also sets their tone (full pace: sharp).",
+    "enabled": true,
+    "port": 23556,
+    "dirs": ["\\\\192.168.0.104\\private-media\\vrMyBook3"],
+    "event_chance": {"cum": 0.7, "cum_soon": 0.35, "act_change": 0.3, "tempo": 0.2},
+    "scene_min_gap": 75,
+    "theme_share": 0.5,
+    "milder_share": 0.3,
+    "tempo_gap_factor": {"still": 0.55, "slow": 0.75, "medium": 0.9, "fast": 1.0, "max": 1.1},
+    "levels_by_stage": [0, 0, 1, 1, 2],
+    "event_gap": 15,
+    "cum_gap": 8,
+    "labels": {
+     "oral": "jej usta są teraz zajęte: klęczy i ssie go, on wyznacza tempo",
+     "fucked": "biorą ją teraz od tyłu: jest w niej, pchnięcie za pchnięciem",
+     "both_ends": "zajęta z obu stron naraz: jeden w ustach, drugi z tyłu",
+     "played": "bawią się nią: palce, dłonie, język; rozciągają ją i przygotowują",
+     "tease": "chwila przerwy: oglądają ją, rozbierają wzrokiem, każą czekać",
+     "cum_soon": "on zaraz dojdzie, za kilka sekund; ma się nie ruszać i czekać",
+     "cum_mouth": "właśnie doszedł jej w ustach: sperma na języku, ma połknąć",
+     "cum_on": "właśnie doszedł na nią: sperma na twarzy i ciele",
+     "cum_inside": "właśnie doszedł w niej, głęboko w środku; ma to w sobie nosić",
+     "faster": "jego rytm przyspiesza: bierze ją coraz szybciej i mocniej",
+     "slower": "zwalnia: powoli, głęboko, droczy się z nią"
+    },
+    "act_themes": {
+     "oral": ["pochwała", "spełniona fantazja", "ssanie", "powitanie w drzwiach", "szkoła sissy", "pusta główka", "słowo-klucz", "zrobię wszystko", "mowa odjęta", "dla ich zabawy", "uzależniona od nich", "jedyne zadanie", "lody na pokaz", "pod stołem", "kolejka na usta", "karmiona nimi"],
+     "fucked": ["puść się", "prostata", "trans", "spełniona fantazja", "dziewczynka do rozłożenia", "pusta", "pijana rozkoszą", "branie od tyłu", "ten, który ją bierze", "twoja dziurka nie jest twoja", "jedyny orgazm", "księżniczka odbytu", "ruchają cię w dupę", "lubisz to", "odbyt nie należy do niej", "niewolnica przyjemności", "przeprogramowanie", "dziewczyna do ruchania", "przyciśnięta", "ciało zdradza", "ławka", "rozpórka", "publiczna dupodajka", "ciało do pieprzenia", "dojenie i hodowla"],
+     "both_ends": ["nie musisz myśleć", "cisza w głowie", "pusta", "należy do nich", "dla ich zabawy", "oba końce", "dwóch naraz", "rzecz", "na posyłki", "ciało do pieprzenia"],
+     "group": ["należy do nich", "własność", "świadek", "klub, gdzie nikt nie pyta", "ich narkotyk", "na posyłki", "zamówiona", "wszyscy cię chcą wyruchać", "gwiazda porno", "kolejka na usta", "jeden po drugim", "pokryta"],
+     "played": ["rajstopy i koronki", "ubrana w kobietę", "puść się", "prostata", "trans", "na jego kolanach", "cisza w głowie", "dziewczynka do rozłożenia", "pas cnoty", "hormony", "choroba feminizacji", "jedyny orgazm", "orgazmy nie są jej", "złam mnie", "rozpórka"],
+     "tease": ["feminizacja", "pochwała", "czułość w poniżeniu", "rajstopy i koronki", "ubrana w kobietę", "trans dziewczyna", "afirmacja", "witaj z powrotem", "pierwszy makijaż", "nie musisz myśleć", "sama się zgłosiłaś", "wypatrzona", "przerobiona", "niewola z wyboru", "zasady nowego życia", "kontrakt i dług", "panna młoda", "za późno", "pułapka", "wymazana", "zamówiona", "wszyscy cię chcą wyruchać"],
+     "cum_soon": ["zalanie", "ciepła sperma w środku", "na twarz i do ust", "potrzebuje tego na sobie"],
+     "cum_mouth": ["ssanie", "zbrukana i dumna", "na twarz i do ust", "karmiona nimi"],
+     "cum_on": ["zbrukana i dumna", "potrzebuje tego na sobie", "zalanie", "na twarz i do ust", "pokryta"],
+     "cum_inside": ["zalanie", "spuszczają się w dupę", "ciepła sperma w środku", "jeden po drugim", "pełna po całej nocy", "dojenie i hodowla"],
+     "faster": ["puść się", "ten, który ją bierze", "niewolnica przyjemności", "ciało do pieprzenia"],
+     "slower": ["czułość w poniżeniu", "cisza w głowie", "trans", "ten, który ją bierze"]
+    },
+    "seed": {
+     "oral": {
+      "0": [
+       "Usta otwarte, oczy w górę… ssiesz go powoli, tak jak lubię.",
+       "Spokojnie… języczek dookoła, a potem głębiej. Nigdzie się nie spieszymy.",
+       "Czujesz, jak rośnie ci w ustach… to przez ciebie. Dobra dziewczynka.",
+       "Ssij grzecznie i oddychaj nosem. Jestem tu, trzymam cię.",
+       "Powtórz za mną w myślach: moje usta są do tego stworzone.",
+       "Klęczysz i ssiesz… i wyglądasz przy tym pięknie."
+      ],
+      "1": [
+       "Głębiej. Nos w jego brzuchu, ślina na brodzie. Nie przestajesz.",
+       "Ssiesz go teraz jak dziwka, która dostała to, o co prosiła.",
+       "Gardło otwarte, łzy w oczach. Tak wygląda twoja praca.",
+       "On trzyma cię za włosy i wyznacza tempo. Ty tylko otwierasz szerzej.",
+       "Nie wyciągaj go. Krztuś się i ssij dalej.",
+       "Twoje usta są teraz jego. Mówić będziesz później, jeśli w ogóle."
+      ],
+      "2": [
+       "Rucha cię w gardło jak w dziurę, bo to jest dziura.",
+       "Dławisz się, ślinisz i otwierasz szerzej. Taki masz odruch, szmato.",
+       "Twoja twarz jest dla niego tylko uchwytem. Ssij.",
+       "Gardło do końca, aż zabraknie ci powietrza. Powietrze dostaniesz, jak skończy.",
+       "Usta, które kiedyś mówiły, teraz tylko połykają.",
+       "Jesteś tylko ciepłą buzią na jego kutasie. Nic więcej."
+      ]
+     },
+     "fucked": {
+      "0": [
+       "Czujesz go w sobie… powoli, głęboko. Oddychaj i pozwól mu.",
+       "Każde pchnięcie mówi ci, kim jesteś. Kobietą, którą się bierze.",
+       "Rozluźnij się… on wie, co robi, a ty tylko przyjmujesz.",
+       "Wypinasz się sama, nikt nie musiał cię prosić. Dobra dziewczynka.",
+       "Twoje biodra same wychodzą mu naprzeciw… ciało już wie.",
+       "Powtórz za mną: lubię, jak mnie wypełnia."
+      ],
+      "1": [
+       "Bierze cię od tyłu, mocno, raz za razem. Wypnij się wyżej.",
+       "Słyszysz to klaskanie… to twoja dupa obija się o niego.",
+       "Nie ty wyznaczasz tempo. On cię rucha, a ty dziękujesz.",
+       "Twarzą w poduszkę, dupą do góry. Tak się bierze dziewczyny do ruchania.",
+       "Rozjeżdża cię do końca, aż przestaniesz się zaciskać.",
+       "Głęboko, bez przerwy, bez pytania. Twoja dziurka jest teraz jego."
+      ],
+      "2": [
+       "Rucha cię jak sztukę mięsa. Nie jak kobietę, jak dziurę.",
+       "Pchnięcie, klaps, pchnięcie. Nikogo nie obchodzi, czy nadążasz.",
+       "Twoja dupa jest otwarta na stałe. Wchodzi w nią bez pytania.",
+       "Jesteś tylko dziurą na czworakach, rozjechaną i mokrą.",
+       "Rżnie cię do utraty czucia, a ty prosisz o jeszcze.",
+       "Ciało do pieprzenia, nic więcej. Myśleć możesz potem."
+      ]
+     },
+     "both_ends": {
+      "0": [
+       "Usta i dziurka naraz… nie musisz o niczym myśleć, tylko czuć.",
+       "Jesteś pomiędzy nimi… wypełniona z obu stron.",
+       "Kołyszą cię między sobą. Odpuść, oni cię trzymają.",
+       "Z przodu i z tyłu… cała jesteś teraz zajęta.",
+       "Nie ma strony, która jest twoja. I dobrze ci z tym.",
+       "Powtórz za mną w myślach: pełna z obu stron."
+      ],
+      "1": [
+       "Jeden w ustach, drugi w dupie. Wisisz między nimi jak na rożnie.",
+       "Pchają z obu stron naraz, aż nie wiesz, który jest który.",
+       "Ślina na brodzie, dupa rozciągnięta. Oba końce pracują.",
+       "Nadziewają cię z dwóch stron jak dziewczynę do ruchania.",
+       "Kiedy jeden pcha, drugi wciska ci się głębiej w gardło.",
+       "Nie ma przerwy z żadnej strony. Masz tylko przyjmować."
+      ],
+      "2": [
+       "Dwie dziury, dwa kutasy, zero myśli. Tym teraz jesteś.",
+       "Na rożnie, od gardła po dupę. Używają cię jak zabawki.",
+       "Przekazują cię sobie z rąk do rąk, z dziury do dziury.",
+       "Krztusisz się z przodu, jęczysz z tyłu. Nikt nie zwalnia.",
+       "Jesteś mięsem między dwoma facetami. Tak to ma wyglądać.",
+       "Pełna z obu końców, pusta w głowie. Idealnie."
+      ]
+     },
+     "played": {
+      "0": [
+       "Bawi się tobą powoli… palce, dłonie, ciepło. Niech cię przygotuje.",
+       "Dotyka cię tam, gdzie nikt cię nie dotykał… i drżysz.",
+       "Spokojnie… on cię otwiera, a ty tylko oddychasz.",
+       "Każdy jego palec mówi: jesteś miękka i gotowa.",
+       "Rozsuń nogi. Niech zobaczy, jak bardzo tego chcesz.",
+       "Drżysz pod jego dłonią. To nie wstyd, to ciało się uczy."
+      ],
+      "1": [
+       "Rozciąga cię palcami, żeby zaraz wszedł w ciebie cały.",
+       "Bawi się twoją dziurką jak swoją. Bo jest jego.",
+       "Jęczysz od samych palców. A jeszcze cię nie wziął naprawdę.",
+       "Przygotowują cię jak dziewczynę do użycia. Bez pośpiechu, starannie.",
+       "Leżysz rozłożona, a on sprawdza, ile w ciebie wejdzie.",
+       "Twoje ciało zdradza cię przy każdym dotyku. Cieknie z ciebie."
+      ],
+      "2": [
+       "Grzebie w tobie jak w swojej własności. Nie pyta, sprawdza.",
+       "Rozciągają cię bez litości, żeby potem było łatwiej. Dla nich.",
+       "Jesteś tylko dziurą do przygotowania. Palce, ślina i następny.",
+       "Bawią się tobą jak zabawką, którą zaraz zużyją.",
+       "Rozdziawiona, mokra, gotowa. Nikt cię nie pyta o zdanie.",
+       "Twoje jęki to tylko dźwięk, który wydaje zabawka."
+      ]
+     },
+     "tease": {
+      "0": [
+       "Chwila oddechu… patrzą na ciebie i podoba im się to, co widzą.",
+       "Stój prosto. Niech cię obejrzą od stóp do głów.",
+       "Teraz czekasz. Grzeczne dziewczynki umieją czekać.",
+       "Rozbierają cię wzrokiem… i zaraz zrobią to naprawdę.",
+       "Oddychaj. Za chwilę znowu będziesz ich.",
+       "Uśmiechnij się do nich. Wiesz, po co tu jesteś."
+      ],
+      "1": [
+       "Obracają cię i oglądają jak towar przed zakupem.",
+       "Każą ci czekać na kolanach. Czekanie też jest służbą.",
+       "Pokaż się, wypnij, rozsuń. Niech zobaczą, co dostaną.",
+       "Ta przerwa nie jest dla ciebie. Odpoczywają, zanim znowu cię wezmą.",
+       "Klęcz i patrz w podłogę. Odezwiesz się, jak ci każą.",
+       "Patrzą na ciebie i już wiedzą, którą dziurę wezmą pierwszą."
+      ],
+      "2": [
+       "Leżysz i czekasz jak rzecz odłożona na chwilę.",
+       "Rzeczy się nie ogląda. Rzeczy się używa, a ty czekasz na swoją kolej.",
+       "Kolana, otwarte usta, pusty wzrok. Gotowa na następnego.",
+       "Przerwa jest dla nich. Ty masz leżeć otwarta.",
+       "Odłożyli cię na bok. Zaraz cię znowu podniosą.",
+       "Nawet w przerwie jesteś tylko dziurą, która czeka."
+      ]
+     },
+     "cum_soon": {
+      "0": [
+       "Czujesz, jak twardnieje… już blisko. Nie przestawaj.",
+       "Jeszcze chwilka… zaraz dostaniesz to, na co czekałaś.",
+       "Oddycha szybciej… zaraz dojdzie. Bądź grzeczna do końca.",
+       "Zaraz, zaraz… zostań tak, jak jesteś.",
+       "Już prawie… przyjmij wszystko, co ci da.",
+       "Słyszysz, jak dyszy… to dla ciebie. Zaraz."
+      ],
+      "1": [
+       "Zaraz się spuści. Nie waż się ruszyć.",
+       "Puchnie w tobie… zaraz cię zaleje.",
+       "Jeszcze kilka pchnięć i dostaniesz swoją nagrodę, dziwko.",
+       "Otwórz się szerzej. Zaraz będzie twoje.",
+       "Trzyma cię mocniej… to znaczy, że już. Przyjmij.",
+       "Zaraz dojdzie, a ty masz dziękować za każdą kroplę."
+      ],
+      "2": [
+       "Zaraz cię napełni. Tylko po to tu jesteś.",
+       "Ostatnie pchnięcia. Zaraz będziesz cała w spermie.",
+       "Nie ruszaj się, dziurko. Zaraz się w tobie spuści.",
+       "Już pulsuje… zaraz zostaniesz oznaczona.",
+       "Trzymaj się, szmato. Zaraz dostaniesz ładunek.",
+       "Teraz… zaraz… a ty masz tylko przyjąć."
+      ]
+     },
+     "cum_mouth": {
+      "0": [
+       "Ciepło na języku… nie połykaj jeszcze. Poczuj to.",
+       "Pokaż mu pełną buzię… a teraz połknij. Dobra dziewczynka.",
+       "Smakuje słono i ciepło… to twoja nagroda.",
+       "Wszystko do ostatniej kropli. Tak dziękuje grzeczna dziewczynka.",
+       "Zlizuj powoli… i uśmiechnij się do niego.",
+       "Doszedł ci w ustach… i widzę, jak ci z tym dobrze."
+      ],
+      "1": [
+       "Połykasz wszystko jak głodna dziwka. Ani kropli na brodę.",
+       "Język na wierzch, pokaż, ile dostałaś. Teraz łykaj.",
+       "Wyliż go do czysta. Nie skończyłaś, dopóki nie każe.",
+       "Masz pełne usta jego spermy. Właśnie do tego służą.",
+       "Łykaj i dziękuj. Na kolejną porcję też poczekasz.",
+       "Cieknie ci z kącików ust. Zbierz palcem i do buzi."
+      ],
+      "2": [
+       "Połykasz spermę jak posiłek, bo to jest twój posiłek.",
+       "Twoja buzia to spluwaczka. Napełnił ją i odchodzi.",
+       "Łykasz, krztusisz się i otwierasz dla następnego.",
+       "Ani kropli nie zmarnujesz. Wylizujesz nawet z podłogi.",
+       "Pełna buzia spermy i pusta głowa. Tak ma być.",
+       "Jesteś pojemnikiem na spermę. Pokaż, że pełnym."
+      ]
+     },
+     "cum_on": {
+      "0": [
+       "Ciepło na policzkach, na rzęsach… nie wycieraj. Noś to.",
+       "Spływa ci po twarzy… a ty wyglądasz pięknie.",
+       "Zbierz palcami i posmakuj… to dla ciebie.",
+       "Cała błyszczysz… jak dziewczyna, która dobrze służyła.",
+       "Nie odwracaj twarzy. Przyjmij każdą kroplę.",
+       "Oznaczył cię… i widzę, że jesteś z tego dumna."
+      ],
+      "1": [
+       "Twarz w spermie, oczy sklejone. Tak wygląda dobra dziwka.",
+       "Spuścił się na ciebie jak na swoją własność.",
+       "Nie wycierasz. Chodzisz w tym, aż wyschnie.",
+       "Ścieka ci po brodzie na piersi. Wcieraj w skórę.",
+       "Każda kropla na tobie to medal. Zasłużyłaś.",
+       "Oznaczona jako jego. Każdy, kto spojrzy, będzie wiedział."
+      ],
+      "2": [
+       "Zalana spermą jak szmata, w którą się wycierają.",
+       "Jesteś tylko powierzchnią, na którą się spuszczają.",
+       "Twarz masz do spermy, nie do patrzenia.",
+       "Cała obryzgana, a oni już czekają w kolejce.",
+       "Kapie z ciebie na podłogę. Potem to wyliżesz.",
+       "Brudna, oznaczona, zużyta. Właśnie taka masz być."
+      ]
+     },
+     "cum_inside": {
+      "0": [
+       "Czujesz, jak pulsuje w tobie… ciepło rozlewa się w środku.",
+       "Doszedł w tobie… zostań tak chwilę i poczuj to.",
+       "Jesteś pełna… ciepła i wypełniona.",
+       "Zaciśnij się i zatrzymaj to w sobie. To twoje.",
+       "Ciepło w środku… tak czuje się kobieta, którą wzięto.",
+       "Powtórz za mną w myślach: jestem pełna jego."
+      ],
+      "1": [
+       "Spuścił się w ciebie głęboko. Nosisz to teraz w sobie.",
+       "Nie wypuść ani kropli. Zaciśnij dupę i trzymaj.",
+       "Napełnił cię jak swoją. Bo jesteś jego.",
+       "Ciepła sperma w środku, a ty jęczysz z wdzięczności.",
+       "Wylewa się z ciebie, gdy wychodzi. Wypnij się, niech patrzy.",
+       "Jesteś napełniona i oznaczona od środka."
+      ],
+      "2": [
+       "Zalał cię w środku jak pojemnik. Następny dobije.",
+       "Twoja dupa jest pełna spermy i wciąż otwarta.",
+       "Cieknie z ciebie, a już ktoś wchodzi na jego miejsce.",
+       "Hodują cię od środka. Jesteś tylko dziurą do napełniania.",
+       "Pełna po brzegi, chlupoczesz przy każdym ruchu.",
+       "Spuszczają się w ciebie, bo do tego jesteś."
+      ]
+     },
+     "faster": {
+      "0": [
+       "Przyspiesza… oddychaj razem z nim i nie puszczaj.",
+       "Coraz szybciej… odpuść, niech cię niesie.",
+       "Teraz mocniej. Trzymaj się, jestem tu.",
+       "Jego rytm przyspiesza… a ty tylko przyjmujesz.",
+       "Szybciej i głębiej… dokładnie tak, jak potrzebujesz.",
+       "Rozpędza się… pozwól ciału nadążać samo."
+      ],
+      "1": [
+       "Przyspiesza. Nie nadążasz i nie musisz, masz tylko brać.",
+       "Teraz cię naprawdę bierze. Szybko, mocno, nie w twoim tempie.",
+       "Coraz szybciej, aż przestaniesz myśleć.",
+       "Wali w ciebie coraz mocniej. Tak się bierze dziwkę.",
+       "Tempo jest jego, nie twoje. Przyjmuj szybciej.",
+       "Rozpędził się i nie zwolni, dopóki nie skończy."
+      ],
+      "2": [
+       "Pełna prędkość. Jesteś tylko dziurą, w którą wali.",
+       "Rżnie cię tak szybko, że nie zdążysz jęknąć.",
+       "Bez przerwy, bez litości, coraz szybciej. Tak masz być używana.",
+       "Wali w ciebie jak w rzecz. Bo jesteś rzeczą.",
+       "Szybciej, mocniej, głębiej. Twoje zdanie nikogo nie obchodzi.",
+       "Używa cię bez hamulców. Wytrzymasz, bo musisz."
+      ]
+     },
+     "slower": {
+      "0": [
+       "Zwalnia… oddychaj. Poczuj każdy centymetr.",
+       "Powoli teraz… niech to trwa.",
+       "Spokojnie… ja cię trzymam, a on się nie spieszy.",
+       "Wolniej, głębiej… czujesz go całego.",
+       "Chwila oddechu… ale nie myśl, że to koniec.",
+       "Powolutku… twoje ciało prosi o więcej, słyszę to."
+      ],
+      "1": [
+       "Zwalnia, żebyś poczuła, jak bardzo jesteś otwarta.",
+       "Powoli i głęboko. Masz czuć, czyja jesteś.",
+       "Droczy się z tobą. Dostaniesz więcej, jak ładnie poprosisz.",
+       "Wolniej nie znaczy łagodniej. Znaczy głębiej.",
+       "Zwolnił, a ty sama wychodzisz mu naprzeciw. Dziwka.",
+       "Leniwe pchnięcia, a ty już skomlisz o więcej."
+      ],
+      "2": [
+       "Zwalnia tylko po to, żeby cię znowu rozjechać.",
+       "Odpoczywa w tobie. Jesteś dla niego tylko ciepłym miejscem.",
+       "Powoli wyciera się w ciebie jak w szmatę.",
+       "Wolno, głęboko, bez litości. Zapamiętaj, do kogo należysz.",
+       "Zwolnił, bo może. Twoje skomlenie nic nie zmienia.",
+       "Trzyma cię nabitą i czeka. Rzecz nie ma nic do gadania."
+      ]
+     }
     }
    },
    "tasks": {
@@ -5344,6 +5881,152 @@
     ]
    },
    "narration": {
+    "address": {
+     "enabled": true,
+     "share": [
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55
+     ],
+     "identity_share": [0.15, 0.18, 0.22, 0.26, 0.3],
+     "contrast_share": 0.2, "front_share": 0.4,
+     "skip_events": [
+      "cum",
+      "cum_soon"
+     ],
+     "skip_starts": [
+      "repeat",
+      "say it"
+     ],
+     "keep_capital": [
+      "I",
+      "Analena",
+      "Mistress"
+     ],
+     "already": [
+      "honey",
+      "baby",
+      "slut",
+      "whore",
+      "darling",
+      "sweetie",
+      "princess",
+      "little one",
+      "good girl",
+      "doll"
+     ],
+     "tender": {
+      "0": [
+       "honey",
+       "sweetie",
+       "Analena",
+       "my Analena",
+       "doll",
+       "pretty girl",
+       "teddy"
+      ],
+      "1": [
+       "good girl",
+       "my sissy",
+       "sweet Analena",
+       "my little hole",
+       "princess"
+      ],
+      "2": [
+       "my sweet hole",
+       "my plaything",
+       "my obedient Analena",
+       "little toy"
+      ],
+      "3": [
+       "my pretty slut",
+       "my good little slut",
+       "sweet hole"
+      ],
+      "4": [
+       "my sweet cumdump",
+       "my anal doll",
+       "my darling slut"
+      ]
+     },
+     "sharp": {
+      "0": [
+       "naughty Analena",
+       "shameless girl",
+       "naughty girl"
+      ],
+      "1": [
+       "little tart",
+       "hussy",
+       "shameless Analena"
+      ],
+      "2": [
+       "slut",
+       "whore",
+       "hole",
+       "anal doll",
+       "butt slut"
+      ],
+      "3": [
+       "anal slut",
+       "cum bucket",
+       "fuck hole",
+       "anal whore"
+      ],
+      "4": [
+       "anal whore",
+       "cumdump",
+       "used hole",
+       "public hole",
+       "breeding hole"
+      ]
+     },
+     "identity": {
+      "tender": {
+       "0": [
+        "You are my Analena.",
+        "Remember who you are: my Analena."
+       ],
+       "1": [
+        "You are my sissy, Analena.",
+        "Say it in your head: I am Analena."
+       ],
+       "2": [
+        "You are Analena, my little hole.",
+        "Your name is Analena. Your job is to give."
+       ],
+       "3": [
+        "You are my little hole, Analena. Nothing more."
+       ],
+       "4": [
+        "You are Analena. A hole to be used. Mine."
+       ]
+      },
+      "sharp": {
+       "0": [
+        "You are Analena. Don't forget it.",
+        "Remember who you are."
+       ],
+       "1": [
+        "You are my little tart, Analena."
+       ],
+       "2": [
+        "You are a slut, Analena. And you know it.",
+        "Remember who you are: a hole to play with."
+       ],
+       "3": [
+        "You are an anal slut. Nothing more.",
+        "Keep saying it in your head: I am Analena, an anal slut."
+       ],
+       "4": [
+        "You are an anal whore. Only that.",
+        "Analena is a hole to cum in. You are Analena."
+       ]
+      }
+     }
+    },
     "style": "Speak as if into her ear, a whisper with certainty: short phrases, ellipses as breaths ('Let go… I've got it… good girl.'), sometimes 'repeat after me' and a first-person sentence, sometimes one blunt word. Never a question, never an explanation.",
     "examples": [
      "Very good, suck like a little girl.",
@@ -5459,6 +6142,323 @@
     "quiet in her head - her head goes quiet: no thoughts, worries or plans, only breath, warmth and his rhythm; it's the calmest place she knows",
     "slave of pleasure - they grab her, fuck her, and she cums on her own without controlling it; orgasm after orgasm until the pleasure holds her tighter than a chain"
     ],
+    "scene": {
+     "labels": {
+      "oral": "her mouth is busy now: on her knees, sucking him, he sets the pace",
+      "fucked": "they are taking her from behind now: he is inside her, thrust after thrust",
+      "both_ends": "taken from both ends at once: one in her mouth, one behind",
+      "played": "they are playing with her: fingers, hands, a tongue; stretching her, getting her ready",
+      "tease": "a pause: they look her over, undress her with their eyes, make her wait",
+      "cum_soon": "he is about to cum, seconds away; she must stay still and wait",
+      "cum_mouth": "he just came in her mouth: cum on her tongue, she has to swallow",
+      "cum_on": "he just came on her: cum on her face and body",
+      "cum_inside": "he just came inside her, deep; she has to keep it in",
+      "faster": "his rhythm speeds up: he takes her faster and harder",
+      "slower": "he slows down: slow, deep, teasing her"
+     },
+     "act_themes": {
+      "oral": ["praise", "fantasy come true", "sucking", "greeting at the door", "sissy school", "empty head", "the trigger word", "anything", "for their amusement", "addicted to them", "the only job", "under the table", "fed on them"],
+      "fucked": ["let go", "trance", "fantasy come true", "a girl to be spread", "empty", "drunk on pleasure", "taken from behind", "the one who takes her", "her hole is not hers", "the only orgasm left", "anal princess", "fucked in the ass", "her ass is not hers", "reprogramming", "their girl to fuck", "pinned", "the body betrays her", "the bench", "spreader bar", "a body to fuck", "milking and breeding"],
+      "both_ends": ["you don't have to think", "quiet in her head", "empty", "she belongs to them", "for their amusement", "both ends", "two at once", "a thing", "on call", "a body to fuck"],
+      "group": ["she belongs to them", "property", "everyone knows", "their drug", "on call", "ordered", "porn star", "one after another", "covered"],
+      "played": ["stockings and lace", "dressed as a woman", "let go", "trance", "on his lap", "quiet in her head", "a girl to be spread", "chastity", "hormones", "the only orgasm left", "her orgasms are not hers", "break me", "spreader bar"],
+      "tease": ["feminisation", "praise", "tenderness in humiliation", "stockings and lace", "dressed as a woman", "trans girl", "affirmation", "welcome back", "the first makeup", "you don't have to think", "she volunteered", "spotted", "remade", "captive by choice", "the rules of the new life", "contract and debt", "the bride", "too late", "the trap", "erased", "ordered"],
+      "cum_soon": ["warm cum inside", "on the face and in the mouth", "marked and proud"],
+      "cum_mouth": ["sucking", "marked and proud", "on the face and in the mouth", "fed on them"],
+      "cum_on": ["marked and proud", "on the face and in the mouth", "covered"],
+      "cum_inside": ["they cum in her ass", "warm cum inside", "one after another", "full after the whole night", "milking and breeding"],
+      "faster": ["let go", "the one who takes her", "a body to fuck"],
+      "slower": ["tenderness in humiliation", "quiet in her head", "trance", "the one who takes her"]
+     },
+     "seed": {
+      "oral": {
+       "0": [
+        "Mouth open, eyes up… you suck him slowly, just the way I like it.",
+        "Easy… tongue all around, then deeper. We're in no hurry.",
+        "Feel him grow in your mouth… that's because of you. Good girl.",
+        "Suck nicely and breathe through your nose. I'm here, I've got you.",
+        "Say it in your head after me: my mouth was made for this.",
+        "On your knees, sucking… and you look beautiful doing it."
+       ],
+       "1": [
+        "Deeper. Nose against his belly, drool on your chin. You don't stop.",
+        "You suck him now like a slut who finally got what she begged for.",
+        "Throat open, tears in your eyes. That's what your job looks like.",
+        "He holds your hair and sets the pace. You just open wider.",
+        "Don't pull off. Gag and keep sucking.",
+        "Your mouth is his now. You can talk later, if ever."
+       ],
+       "2": [
+        "He fucks your throat like a hole, because it is a hole.",
+        "You gag, you drool, you open wider. That's your reflex now, slut.",
+        "Your face is just a handle for him. Suck.",
+        "All the way down until you run out of air. You breathe when he's done.",
+        "A mouth that used to talk now only swallows.",
+        "You're just a warm mouth on his cock. Nothing more."
+       ]
+      },
+      "fucked": {
+       "0": [
+        "Feel him inside you… slow, deep. Breathe and let him.",
+        "Every thrust tells you what you are. A woman who gets taken.",
+        "Relax… he knows what he's doing, and you just take it.",
+        "You push back on your own, nobody had to ask. Good girl.",
+        "Your hips move to meet him by themselves… your body already knows.",
+        "Repeat after me: I love being filled."
+       ],
+       "1": [
+        "He takes you from behind, hard, again and again. Arch higher.",
+        "Hear that slapping… that's your ass bouncing off him.",
+        "You don't set the pace. He fucks you, and you say thank you.",
+        "Face in the pillow, ass up. That's how girls to fuck get taken.",
+        "He stretches you all the way, until you stop clenching.",
+        "Deep, nonstop, without asking. Your hole is his now."
+       ],
+       "2": [
+        "He fucks you like a piece of meat. Not like a woman, like a hole.",
+        "Thrust, slap, thrust. Nobody cares if you can keep up.",
+        "Your ass stays open for good. He goes in without asking.",
+        "You're just a hole on all fours, stretched and wet.",
+        "He pounds you numb, and you beg for more.",
+        "A body to fuck, nothing else. Thinking can wait."
+       ]
+      },
+      "both_ends": {
+       "0": [
+        "Mouth and hole at once… you don't have to think, only feel.",
+        "You're between them… filled from both sides.",
+        "They rock you between them. Let go, they're holding you.",
+        "Front and back… all of you is taken now.",
+        "No side is yours anymore. And it feels so right.",
+        "Say it in your head after me: full from both ends."
+       ],
+       "1": [
+        "One in your mouth, one in your ass. You hang between them like on a spit.",
+        "They thrust from both sides until you can't tell who's who.",
+        "Drool on your chin, ass stretched. Both ends working.",
+        "They skewer you from both sides like a girl to fuck.",
+        "When one pushes in, the other goes deeper down your throat.",
+        "No break from either side. You only take."
+       ],
+       "2": [
+        "Two holes, two cocks, zero thoughts. That's what you are now.",
+        "On the spit, from throat to ass. They use you like a toy.",
+        "They pass you between them, hand to hand, hole to hole.",
+        "Gagging in front, moaning behind. Nobody slows down.",
+        "You're meat between two men. That's how it should look.",
+        "Full at both ends, empty in the head. Perfect."
+       ]
+      },
+      "played": {
+       "0": [
+        "He plays with you slowly… fingers, hands, warmth. Let him get you ready.",
+        "He touches you where nobody has before… and you tremble.",
+        "Easy… he opens you up, and you just breathe.",
+        "Every finger of his says: you're soft and ready.",
+        "Spread your legs. Let him see how much you want it.",
+        "You shiver under his hand. Not shame, just your body learning."
+       ],
+       "1": [
+        "He stretches you with his fingers so he can slide in all the way.",
+        "He plays with your hole like it's his. Because it is.",
+        "You moan from his fingers alone. And he hasn't even taken you yet.",
+        "They get you ready like a girl for use. Slowly, thoroughly.",
+        "You lie spread while he checks how much will fit.",
+        "Your body gives you away at every touch. You're dripping."
+       ],
+       "2": [
+        "He digs into you like his property. He doesn't ask, he checks.",
+        "They stretch you without mercy so it's easier later. For them.",
+        "You're just a hole to be prepped. Fingers, spit, next.",
+        "They play with you like a toy they're about to wear out.",
+        "Gaping, wet, ready. Nobody asks your opinion.",
+        "Your moans are just the noise a toy makes."
+       ]
+      },
+      "tease": {
+       "0": [
+        "A breath… they're looking at you and they like what they see.",
+        "Stand up straight. Let them look you over from head to toe.",
+        "Now you wait. Good girls know how to wait.",
+        "They undress you with their eyes… and soon they'll do it for real.",
+        "Breathe. In a moment you'll be theirs again.",
+        "Smile at them. You know why you're here."
+       ],
+       "1": [
+        "They turn you around and look you over like goods before buying.",
+        "They make you wait on your knees. Waiting is serving too.",
+        "Show yourself, arch, spread. Let them see what they're getting.",
+        "This break isn't for you. They rest before they take you again.",
+        "Kneel and look at the floor. You speak when told.",
+        "They look at you and already know which hole they'll take first."
+       ],
+       "2": [
+        "You lie there waiting like a thing set aside for a moment.",
+        "Things don't get admired. Things get used, and you wait your turn.",
+        "Knees, open mouth, empty eyes. Ready for the next one.",
+        "The break is for them. You lie there open.",
+        "They put you aside. They'll pick you up again soon.",
+        "Even in the break you're just a hole that waits."
+       ]
+      },
+      "cum_soon": {
+       "0": [
+        "Feel him getting harder… he's close. Don't stop.",
+        "Just a moment longer… you're about to get what you waited for.",
+        "He's breathing faster… he's about to cum. Be good to the end.",
+        "Almost, almost… stay just like that.",
+        "Nearly there… take everything he gives you.",
+        "Hear him panting… that's for you. Any second."
+       ],
+       "1": [
+        "He's about to cum. Don't you dare move.",
+        "He's swelling inside you… he's about to flood you.",
+        "A few more thrusts and you get your reward, slut.",
+        "Open wider. It's about to be yours.",
+        "He grips you harder… that means now. Take it.",
+        "He's about to cum, and you thank him for every drop."
+       ],
+       "2": [
+        "He's about to fill you. That's all you're here for.",
+        "Last thrusts. You're about to be covered in cum.",
+        "Don't move, little hole. He's about to unload in you.",
+        "He's throbbing… you're about to be marked.",
+        "Hold still, slut. Your load is coming.",
+        "Now… any second… and all you do is take it."
+       ]
+      },
+      "cum_mouth": {
+       "0": [
+        "Warmth on your tongue… don't swallow yet. Feel it.",
+        "Show him your full mouth… now swallow. Good girl.",
+        "Salty and warm… that's your reward.",
+        "Every last drop. That's how a good girl says thank you.",
+        "Lick it slowly… and smile up at him.",
+        "He came in your mouth… and I can see how good it feels."
+       ],
+       "1": [
+        "You swallow it all like a hungry slut. Not a drop on your chin.",
+        "Tongue out, show how much you got. Now swallow.",
+        "Lick him clean. You're not done until he says so.",
+        "Your mouth is full of his cum. That's what it's for.",
+        "Swallow and say thank you. You'll wait for the next load too.",
+        "It's dripping from the corners of your mouth. Scoop it back in."
+       ],
+       "2": [
+        "You swallow cum like a meal, because it is your meal.",
+        "Your mouth is a spittoon. He filled it and walks away.",
+        "You swallow, you choke, you open for the next one.",
+        "You won't waste a drop. You'd lick it off the floor.",
+        "A mouth full of cum and an empty head. As it should be.",
+        "You're a container for cum. Show me a full one."
+       ]
+      },
+      "cum_on": {
+       "0": [
+        "Warmth on your cheeks, on your lashes… don't wipe it. Wear it.",
+        "It runs down your face… and you look beautiful.",
+        "Scoop it with your fingers and taste it… it's for you.",
+        "You're glistening all over… like a girl who served well.",
+        "Don't turn your face away. Take every drop.",
+        "He marked you… and I can see you're proud of it."
+       ],
+       "1": [
+        "Face covered, eyes glued shut. That's what a good slut looks like.",
+        "He came on you like on his property.",
+        "You don't wipe it off. You wear it until it dries.",
+        "It drips from your chin onto your chest. Rub it into your skin.",
+        "Every drop on you is a medal. You earned it.",
+        "Marked as his. Anyone who looks at you will know."
+       ],
+       "2": [
+        "Soaked in cum like a rag they wipe themselves on.",
+        "You're just a surface they cum on.",
+        "Your face is for cum, not for looking at.",
+        "Splattered all over, and they're already lining up again.",
+        "It drips off you onto the floor. You'll lick it up later.",
+        "Dirty, marked, used up. Exactly what you're meant to be."
+       ]
+      },
+      "cum_inside": {
+       "0": [
+        "Feel him throbbing inside you… warmth spreading deep in you.",
+        "He came inside you… stay still a moment and feel it.",
+        "You're full… warm and filled.",
+        "Clench and keep it inside you. It's yours.",
+        "Warmth inside… that's how a woman feels after being taken.",
+        "Say it in your head after me: I'm full of him."
+       ],
+       "1": [
+        "He came deep inside you. You carry it now.",
+        "Don't let a drop out. Clench your ass and hold it.",
+        "He filled you like his own. Because you are his.",
+        "Warm cum inside, and you moan with gratitude.",
+        "It spills out as he pulls out. Arch so he can watch.",
+        "You're filled and marked from the inside."
+       ],
+       "2": [
+        "He flooded you like a container. The next one tops you up.",
+        "Your ass is full of cum and still open.",
+        "You're leaking, and someone's already taking his place.",
+        "They breed you from the inside. You're just a hole to be filled.",
+        "Full to the brim, you squelch with every move.",
+        "They cum in you because that's what you're for."
+       ]
+      },
+      "faster": {
+       "0": [
+        "He's speeding up… breathe with him and don't let go.",
+        "Faster and faster… let go, let it carry you.",
+        "Harder now. Hold on, I'm here.",
+        "His rhythm picks up… and you just take it.",
+        "Faster and deeper… exactly what you need.",
+        "He's getting going… let your body keep up on its own."
+       ],
+       "1": [
+        "He's speeding up. You can't keep up and you don't have to, you just take.",
+        "Now he really takes you. Fast, hard, not at your pace.",
+        "Faster and faster, until you stop thinking.",
+        "He pounds you harder and harder. That's how a slut gets taken.",
+        "The pace is his, not yours. Take it faster.",
+        "He's up to speed and won't slow down until he's done."
+       ],
+       "2": [
+        "Full speed. You're just a hole he's pounding.",
+        "He fucks you so fast you can't even moan.",
+        "No break, no mercy, faster and faster. That's how you get used.",
+        "He pounds you like a thing. Because you are a thing.",
+        "Faster, harder, deeper. Nobody cares what you think.",
+        "He uses you with no brakes. You'll take it, because you must."
+       ]
+      },
+      "slower": {
+       "0": [
+        "He slows down… breathe. Feel every inch.",
+        "Slowly now… let it last.",
+        "Easy… I'm holding you, and he's in no hurry.",
+        "Slower, deeper… you feel all of him.",
+        "A moment to breathe… but don't think it's over.",
+        "Nice and slow… your body is begging for more, I can hear it."
+       ],
+       "1": [
+        "He slows down so you feel how open you are.",
+        "Slow and deep. You're meant to feel whose you are.",
+        "He's teasing you. You get more when you ask nicely.",
+        "Slower doesn't mean gentler. It means deeper.",
+        "He slowed down and you push back on him yourself. Slut.",
+        "Lazy thrusts, and you're already whimpering for more."
+       ],
+       "2": [
+        "He slows down only to wreck you again.",
+        "He rests inside you. You're just a warm place for him.",
+        "He slowly wipes himself in you like in a rag.",
+        "Slow, deep, merciless. Remember who you belong to.",
+        "He slowed down because he can. Your whimpering changes nothing.",
+        "He keeps you impaled and waits. A thing has no say."
+       ]
+      }
+     }
+    },
     "tasks": {
      "by_stage": {
       "0": [
@@ -7023,9 +8023,9 @@
        "Full to the limit. The limit moves every night."
       ],
       "milking and breeding - she's breeding stock: they milk her from behind until she drips from the cage untouched, and breed her in turns like a mare at a stud farm; they log in a book how many times and who": [
-       "Milking time. On all fours. Fingers in you until it starts dripping from the cage.",
+       "You think there's no room left. They'll always find room.",
        "They milk you from behind, rhythmically, without mercy. Nobody touches you in front. You drip anyway.",
-       "A bucket under you. Every drop counts. A good head gives a lot.",
+       "A bucket under you. Every drop counts. A good milker gives a lot.",
        "Milked dry, shaking, thighs wet. Tomorrow the same. And the day after.",
        "After milking, breeding. They lead you to the stall and stand you with your rear to the door.",
        "They breed you in turns, like a mare at a stud. Every stud leaves his in you.",
@@ -7057,7 +8057,7 @@
        "You smell of them so strongly that anyone who walks in knows from the doorway what you are."
       ],
       "one after another - one after another they cum inside her; with each one she's fuller, warmer and wetter, and the queue never ends": [
-       "The first came in you and left. The second is already sliding into his warmth.",
+       "The first came in you and left. The second already slides into what he left.",
        "With each one you're fuller. With each one warmer. With each one more theirs.",
        "He slides into you slick from the ones before. Nobody waits for you to cool down.",
        "You count them by the warm waves in your belly. You lose track after five.",
@@ -7126,7 +8126,7 @@
       ],
       "livestock - they treat her like a head of livestock: looked over, checked, tagged and kept in a pen so she's at hand whenever they feel like it": [
        "You're not a human anymore. You're livestock. A head of stock for use.",
-       "They look you over like at a market. Teeth, hips, holes. A slap on the rump and a decision.",
+       "They look you over like cattle at market. Teeth, hips, holes. A slap, a decision.",
        "Livestock doesn't ask where it's being led. It goes where the rope pulls.",
        "You have a tag on your ear and a number in their book. That's enough to tell you apart.",
        "In the pen you wait with the others. Whoever comes takes the first one handy. Sometimes you.",
@@ -7141,12 +8141,12 @@
        "Livestock has no bedroom. It has a stall. Yours is nearest the door, so it's quicker.",
        "They slap your rump like a cow's. You know what one slap means, and what two mean.",
        "At the market they lifted your tail, had a look and nodded. Good condition.",
-       "They graze you on your knees. Their trousers are your pasture, and you nibble until told to stop.",
+       "They put you to graze on your knees. Their laps are your pasture. Nibble until told.",
        "They drove you to the trough. You drink whatever they pour. Livestock isn't picky.",
        "Every head has its breeder. Yours knows you from the inside better than you do.",
        "They lead you across the yard on a rope. Others watch you trot. Nobody's surprised.",
        "A good head doesn't make trouble at milking. You stand still and give what they want.",
-       "Your value grows with every one who's had you. Like a weight in the herd book.",
+       "Your value grows with every one who's had you. Like a pedigree in the herd book.",
        "Repeat after me: I'm a head in their herd. I go where they drive me.",
        "In the evening they close the pen. You wait in your stall, bent over, for the night round.",
        "Livestock has no name. It has a number, a pen and holes. Everything else was surplus.",
@@ -7169,7 +8169,7 @@
       ],
       "the bench - strapped to the bench on her knees, hips up, head low; the bench is made for one thing: so they can take her from behind as long and as hard as they want": [
        "The bench is made for one thing. You kneel on it, hips up, head low.",
-       "Straps across your back, straps across your calves. The bench keeps you pushed out without any effort from you.",
+       "Straps across your back and calves. The bench keeps your ass up without effort.",
        "You don't have to hold on. The bench holds you for you. You can only open.",
        "Hips at the perfect height. Anyone who walks up goes into you without bending down.",
        "There's a gap under your face. Someone waits at the other end of the bench too. Two at once is standard.",
@@ -7200,11 +8200,11 @@
        "The spreader bar speaks for you: I'm open. For anyone who walks into the room.",
        "You can't cover yourself. You can't crouch. You can only stand spread and wait.",
        "He bent you over the table with the bar on your legs. A view others would pay for.",
-       "Every step is a clumsy shuffle. You learn you won't walk away anywhere with a spreader bar.",
+       "Every step is a clumsy shuffle. With a spreader bar you won't get far.",
        "A bar on your ankles, cuffs on your wrists. All you have left is panting.",
        "He could take you without it. But he wants to see that you have no way out.",
        "Your thighs shake with fatigue. You can't close them to rest. That was the plan.",
-       "He goes in without resistance. The bar did all the work your reluctance couldn't stop.",
+       "He slides in without resistance. The bar took away the only defence you had.",
        "When they take it off, your legs will keep spreading on their own for a long time. They've learned.",
        "Repeat after me: I'm spread and I can't close.",
        "Open, strapped, ready. That's how they'll leave you for the night. For anyone who comes."
@@ -7212,11 +8212,11 @@
       "tied to the chair - they tied her facing the chair back, ass pushed out, wrists and ankles in straps, so they can go deeper and harder, and she can't move an inch away": [
        "They tied you facing the back of the chair. Ass pushed out. You can't move an inch away.",
        "Straps on your ankles, straps on your wrists. The chair holds you exactly the way he wants.",
-       "Pushed out and immobilised. That's how you go deepest. He knows it.",
+       "Pushed out and immobilised. That's how he gets deepest. He knows it.",
        "The chair back digs into your belly with every thrust. The thrusts keep getting harder.",
        "You can struggle. The chair only creaks. And he laughs and goes in all the way.",
        "Knees apart, strapped to the chair legs. You can't close them even if you wanted to.",
-       "You don't have to do anything. You can't do anything. The chair makes you the perfect position.",
+       "You don't have to do anything. You can't do anything. The chair holds you perfectly positioned.",
        "One comes, then another. You're still tied. Nobody has to arrange you again.",
        "A hand on your neck presses you to the chair back. Lower. Pushed out even more.",
        "They left you like that for a while. You wait, pushed out, a thigh dripping. You hear footsteps.",
@@ -7239,7 +8239,7 @@
       ],
       "drunk on pleasure - after another wave she doesn't know where she is; she babbles, begs for more, the world sways and there's nothing in her but pleasure": [
        "After the third wave you don't know where you are anymore. You only know where he is.",
-       "You babble. Half a word, a moan, more. Everything else fell out.",
+       "You babble. Half a word, a moan, more. Everything else is gone.",
        "The world sways. You hold on to the sheet because nothing else stays still.",
        "You're drunk on pleasure. You slur his name and forget your own.",
        "Your eyes roll back. You can't see. You don't need to.",
@@ -7256,7 +8256,7 @@
        "The rhythm of the thrusts and my voice. One, two. One, two. Your thoughts drift away like water.",
        "Your eyes are closing. You're not asleep. You're deeper than sleep.",
        "With every thrust you go down one more step. Down where there are no questions.",
-       "In trance there's no shame. Only a body that opens.",
+       "In a trance there's no shame. Only a body that opens.",
        "Your mouth says what I say. Your hips do what he does.",
        "Deeper. Calmer. Empty. It feels so good not to think.",
        "When I wake you, you'll only remember that it felt good. And that you want to go back.",
@@ -7273,7 +8273,7 @@
        "You're dazed by them. Their weight, their voice, the way they hold you.",
        "The taste of him stays in your mouth for hours. You lick your lips so you don't lose it.",
        "The closer they are, the less you understand. The less you understand, the more willingly you give.",
-       "You used to think clearly. Then you smelled him up close. Never again since.",
+       "You used to think clearly. Then you smelled him up close. You haven't since.",
        "The room smells of them and of you. That smell is your new oxygen.",
        "Each of them smells different. You know them with your eyes closed. By scent and by size.",
        "Repeat after me: I'm dazed by them. Their scent switches my head off.",
@@ -7300,7 +8300,7 @@
        "You lie in the wet sheets and know you'll do the same tomorrow. And the day after.",
        "Your old self would have beaten you up. Luckily your old self is gone.",
        "The shame always comes after. Never during. During, there's no room for anything but him.",
-       "Someone will change the sheets. You only hope it's the one you don't like.",
+       "Someone will change the wet sheets. You pray they won't look you in the eye.",
        "A humble pride that you pleased him. And under it something you don't dare look at closely.",
        "You ran from this in your head your whole life. Now it's the only place you don't think.",
        "The shame won't stop you from anything anyway. It only makes you remember it more clearly.",
@@ -7339,7 +8339,7 @@
        "You say no, and your hole clenches around him. Which one should I believe.",
        "The pleasure isn't yours anymore. It happens to you. Like weather.",
        "You're ashamed that it feels good. And the shame makes it feel even better.",
-       "Shame and pleasure are so tangled that you can't tell where one ends anymore.",
+       "Shame and pleasure are so tangled you can't tell where one ends and the other begins.",
        "You cry and cum in the same breath. Your body sees no contradiction in that.",
        "The muscles that were meant to defend you learned to hold him inside.",
        "Your cage is dripping, though you swore you didn't want this. A cage can't lie.",
@@ -7367,7 +8367,7 @@
        "Everyone used to be afraid of you. Today you open the door in ruffles and squeal with joy.",
        "Bows, ruffles, pearls like sweets. An overdone doll. And that's when you feel best.",
        "Heels so high every step is a plea. You used to take steps that made people afraid.",
-       "Under that much makeup nobody would recognise him. Only the tattoos give you away.",
+       "Under that much makeup nobody would recognise you. Only the tattoos give you away.",
        "You speak in falsetto and flap your wrist. Someone taught you that. Now you can't do it any other way.",
        "Your hands used to throw bottles. Now they hold a heart-shaped purse.",
        "Nails so long you can't make a fist anymore. That was the point.",
@@ -7385,7 +8385,7 @@
        "Your ass grows, your waist narrows. The gym mirror sees it faster than you do.",
        "He didn't see a lost boy. He saw what he'd make of him. A masterpiece.",
        "He saved you when they beat you up. You didn't know he was the one who sent them.",
-       "You look at him like a big strong man who guides you. That was the plan.",
+       "You look up to him, the big strong man who guides you. That was the plan.",
        "You tell him: thank you. He hears: I'm yours. He's right.",
        "After training your ass aches. That ache is only the start of what he's preparing it for.",
        "Repeat after me: I train for him. My body grows where he wants it to.",
@@ -7397,7 +8397,7 @@
        "She covered her mouth and giggled when she saw you in makeup. She never stopped.",
        "She'll never see a boy in you again. She sees a girl she can lead.",
        "She practises her orders on you. Shyly at first. Now without hesitation.",
-       "Your cage aches because it remembers being inside her. That will never happen again.",
+       "What's in your cage aches, remembering being inside her. That will never happen again.",
        "Instead, one day she'll be inside you. The strap is already in her drawer.",
        "She shows you off to her friends like a new dress. The humiliation is fresh every time.",
        "You were her boyfriend. Now you're her project. She doesn't know yet how much she'll love it.",
@@ -7412,15 +8412,15 @@
        "The plug presses with every stroke of the cloth. A constant reminder that he's inside you.",
        "The arousal moved from the front to your belly. A warm fluttering instead of hardness.",
        "Getting hard is something they do. Not you. You don't even remember what it was like.",
-       "You caught yourself thinking of men as someone other than you. He's winning in your head now.",
-       "Your nipples rub against the corset with every breath. The hormones turned them into bells.",
-       "She used to be a boy from another life. Now she polishes the banister and moans when the plug moves.",
+       "You caught yourself thinking of men as them, not us. He's winning in your head now.",
+       "Your nipples rub against the corset with every breath. The hormones made them so tender.",
+       "A boy in another life. Now you polish the banister and moan when the plug moves.",
        "Curtsy to everyone who walks in. Even a girl younger than you. Especially her.",
        "Repeat after me: I am a maid in his house. I feel him inside me with every move.",
        "The new girls arrive tonight. They signed, just like you. You'll show them how to bend."
       ],
       "the first makeup - the first time at the vanity: corrector, mascara, blush and gloss; the face looked as if it had waited for this all its life, the eyes became big and defenceless, and for the first time she thought she looked like prey": [
-       "You sit at the vanity. Sponge, foundation, corrector. Your face has waited for this all its life.",
+       "At the vanity. Sponge, foundation, concealer. Your face has waited for this all its life.",
        "You barely grow any stubble. You always knew it. This will take no time.",
        "Your brows are already halfway girly. Hardly anything to do.",
        "Your first girl lashes. Suddenly the eyes are big, shiny, defenceless.",
@@ -7468,7 +8468,7 @@
        "They got hooked on your ass. And nobody plans to cure them. You least of all.",
        "They say they'll quit you tomorrow. They've said it for months. And you wait spread anyway.",
        "Their hands shake when they unzip. That's because of you. You're too strong.",
-       "They exploit you like a spring that never runs dry. You make sure it never does.",
+       "They drain you like a spring that never runs dry. You make sure it never does.",
        "One after another, without a break. The hunger is stronger than them. You're stronger than the hunger.",
        "High on you. Only you. Your scent, your moan, the way you bend over.",
        "They don't need anything else. They need you, on your knees, every day, in large doses.",
@@ -7495,11 +8495,11 @@
        "Every eye at the table on you. They asked if it was okay. You could only nod.",
        "In the morning your phone is full of messages. All of them greet you by your new name. Nobody remembers the old one.",
        "A friend's vanity, brushes, lashes. Half an hour and a sister you don't have looks back from the mirror.",
-       "She slipped the breasts into your bra and fixed the straps. We're all girls here, she said.",
+       "She slipped breast forms into your bra and fixed the straps. We're all girls here.",
        "You saw her naked and looked away. She laughed. One day you'll look like that too.",
        "You ask about hormones in a whisper. They answer out loud, for the whole table. Nobody's shy here.",
        "In the group photo you stand in the middle. You look like you've always been one of them.",
-       "You came in looking like a Sunday-school boy. You left as her, in a dress that hugs you.",
+       "You came in as a timid office clerk. You left as her, in a clinging dress.",
        "Repeat after me: I have a new name and it's more mine than the old one.",
        "The girls invented you. You only said: I like it. And you never gave it back."
       ],
@@ -7532,7 +8532,7 @@
        "The reward hurts. The reward splits you in two. And it's all you wait for all day."
       ],
       "greeting at the door - when he comes home she greets him with a kiss or with her mouth; she forgot the kiss, so she kneels in the hallway, hands on her ankles, because good girls don't use their hands": [
-       "When he comes home you greet him with a kiss. Or with your mouth. You forgot the kiss. On your knees.",
+       "He comes home. You forget the kiss and greet him with your mouth, on your knees.",
        "You kneel in the hallway with the door still open. The shopping stands beside you. He comes first.",
        "Good girls don't use their hands. Grab your ankles and open your mouth.",
        "You practised all day. Now show him how much you learned. Deeper than yesterday.",
@@ -7557,7 +8557,7 @@
        "You're not dressing up. You're coming home. That boy was the costume.",
        "An app showed you a woman's face. Your face. You haven't been able to stop looking since.",
        "Repeat after me: I was always her. I've only stopped hiding.",
-       "She didn't come from nowhere. She waited for someone to let her out. I'm letting her."
+       "She didn't come from nowhere. She waited to be let out. I'm letting her out."
       ],
       "six months later - nobody says the old name, not even she in her head; the morning has a ritual: shower, lotion, makeup, dress; she stopped looking for the way out, and the lie that she always wanted this became the truth": [
        "Six months have passed. Nobody says your old name. Not even you, in your head.",
@@ -7613,12 +8613,12 @@
        "His name, his house, his decisions. You have the lingerie he bought you. And gratitude.",
        "The makeup survived the night without a smudge. As if it were already part of your face. It is.",
        "Repeat after me: I am his wife. Yesterday I said yes and it can't be undone.",
-       "That man is gone. No documents, no accounts, no belongings. There's a wife."
+       "That man is gone. No documents, no accounts, no belongings. There's only a wife."
       ],
       "the morning note - she wakes in the basement room that is her home now; a note on her forehead, a pill and a glass of water on the desk, and a list of chores - the last one is practising her mouth for tonight": [
        "You wake up in your basement room. It's your home now. There's a note on your forehead.",
        "A pill and a glass of water on the desk. After it there's no going back. You swallowed without a pause.",
-       "Point one: the pill. Point two: the apron and the cleaning. Point three: makeup. Point four: your mouth.",
+       "Item one: the pill. Two: apron and cleaning. Three: makeup. Four: your mouth.",
        "You practise with your mouth in front of the mirror for four hours. Your jaw aches. Tonight every minute counts.",
        "There was no breakfast. The fridge was empty. Hunger makes a girl an obedient student.",
        "You do your makeup for the first time from a tutorial. Crooked but careful. For him.",
@@ -7626,7 +8626,7 @@
        "You hear his car and jump. The cage painfully reminds you that you don't decide.",
        "A new note every morning. Every note takes a piece of the old life. You love reading them.",
        "Your body isn't yours anymore. Every morning and every item on the list reminds you.",
-       "Repeat after me: I did every point on the list. I'm waiting on my knees for you to come back.",
+       "Repeat after me: I did everything on the list. I'm waiting on my knees for you.",
        "A wardrobe full of dresses, a box full of toys. Not one thing a man would own. That's right."
       ],
       "the rules of the new life - before she came she got a list of rules: he names her, she calls him Sir, wears what he says, the cage always locked, his word is final; she got one last chance to back out and shouted yes": [
@@ -7644,7 +8644,7 @@
        "Break a rule and you're punished. But you don't want to break them. You want to obey."
       ],
       "the old life watches - his mates, his ex, the neighbours: everyone who knew him knows her now; they come to look and stay to use": [
-       "Your old mates know. They came to look. They stayed to use.",
+       "Your old mates know. They came to look. They stayed to use you.",
        "The one you played football with holds you by the hips now. And doesn't mention the games.",
        "Your ex saw your photo. She sent one word: knew it.",
        "The neighbour nods at you like always. Then looks lower, like never before.",
@@ -7653,7 +8653,7 @@
        "A colleague from work calls you by your new name and asks for the same as the others.",
        "You didn't run from them. They came to you. With their trousers open.",
        "You used to drink beer together. Now he drinks and you kneel beside him.",
-       "They witnessed who you were. Now they're the users of who you are.",
+       "They knew who you were. Now they use who you are.",
        "Repeat after me: everyone who knew me takes me now.",
        "The shame passed after the first one. After the tenth, only a queue of familiar faces was left."
       ],
@@ -7683,7 +8683,7 @@
        "Everyone in the company knows what you do. Nobody asks, because everyone wants to be next.",
        "Your annual review: obedient, quiet, always available. Bonus: deeper.",
        "Repeat after me: I am his assistant. I serve on my knees and under the desk.",
-       "They hired you for your mouth. The rest is only an attachment to the contract."
+       "They hired you for your mouth. The rest is just small print."
       ],
       "caught - they found her lingerie, her photos, her browser history; since then she obeys so nobody finds out - and everybody already knows": [
        "They found your panties. Then the photos. Then you, on your knees.",
@@ -7691,7 +8691,7 @@
        "You do what you're told so nobody finds out. Funny. Everybody has known for ages.",
        "Your browser history was your confession. They read it carefully.",
        "Caught in lace. They didn't even have to ask. You knelt on your own.",
-       "Since that day you have two options: obedience or everyone. You chose one and get both.",
+       "Two options: obey, or everyone finds out. You chose obedience. Everyone found out anyway.",
        "The photo lies on the table. You lie next to it. The deal is clear.",
        "Every bit of your obedience pays for silence. There will be no silence. The obedience stays.",
        "They caught you because you wanted to be caught. You left the door open.",
@@ -7700,7 +8700,7 @@
        "There's nothing left to hide. But the habit of kneeling stayed."
       ],
       "empty head - she thinks less and less, giggles, repeats what she's told; her head emptied to make room for them": [
-       "Fewer and fewer thoughts in that little head. Good. The room is needed for them.",
+       "Fewer and fewer thoughts in that pretty head. Good. They need the room.",
        "You giggled instead of answering. That's how girls like you answer.",
        "You don't have to understand anything. You only have to look pretty and open wide.",
        "You used to have an opinion on everything. Now you have one topic. And it's between your legs.",
@@ -7738,7 +8738,7 @@
        "You sit with your knees together because the skirt says so. The skirt is right.",
        "You don't wear these clothes. They wear you. And they lead you to your knees.",
        "Lipstick on your lips. Now everyone sees what those lips are for.",
-       "Repeat after me: they dressed me as a woman. I stayed in these clothes forever.",
+       "Repeat after me: they dressed me as a woman. I'll stay in these clothes forever.",
        "Try walking without heels. You can't. The body remembered the woman."
       ],
       "the bride - given to someone for good: the dress, the ring, his name, a wedding night as a woman; from now on only men turn her on": [
@@ -7753,7 +8753,7 @@
        "He takes off the veil. He takes off the dress. You only kneel and wait.",
        "In the marital bed you have no opinion. You have duties. You fulfil them with your mouth.",
        "Repeat after me: I am his wife. I belong to him forever.",
-       "First dance, first night, the first time it went in you on principle. Every day from then on."
+       "First dance, first night, first time he took you as his wife. Every day since."
       ],
       "chastity - what used to make her a man is locked away; someone else has the key, and the only thing she still feels is her hole": [
        "What was between your legs is in a cage now. Someone else has the key.",
@@ -7790,7 +8790,7 @@
        "The debt grows every night. Good. You don't want to pay it off. You want to work it off.",
        "You read what you were signing. You read and got wet. Then you signed.",
        "The deal is simple: they give you everything you're afraid of. You give them everything you have.",
-       "There's no notice period in this contract. Only an annex. A new one every month.",
+       "There's no way out of this contract. Only amendments. A new one every month.",
        "You pay with your body because your body is the only currency they left you.",
        "Your signature is pretty and girlish. You practised it for this day.",
        "You lost the bet, darling. The winner's prize is you. Forever.",
@@ -7799,7 +8799,7 @@
       ],
       "the maid - she is their maid: uniform, apron, chores around the house, and between chores used by anyone who feels like it": [
        "Apron, stockings, heels. Your work uniform. Put it on and kneel.",
-       "A maid has no day off. She has a list of chores. You're at the end of it, always available.",
+       "A maid has no day off. She has chores. You're on the list, always available.",
        "You clean on your knees because that's where you're easiest to take. They know it.",
        "Before you finish dusting, someone is already lifting your skirt. That's in your duties too.",
        "Curtsy. Say: yes, sir. And bend over before he finishes the sentence.",
@@ -7843,7 +8843,7 @@
        "There was a queue of takers. The one who ordered first won. You.",
        "You've been ordered, darling. Delivered to the address. Unwrapped.",
        "They picked you from a list. Photo, measurements, mouth size. That was enough.",
-       "Your order has been fulfilled. You're lying at the customer's place.",
+       "Your order has been fulfilled. You're lying in the customer's bed.",
        "Nobody asked if you were free. They only asked when you could be there.",
        "Ordered for the whole night. No returns. No complaints.",
        "Ten were waiting. The one who paid the most got you. The rest wait their turn.",
@@ -7895,7 +8895,7 @@
       "the one who takes her - his rhythm, depth and pace are not hers; I let him": [
        "He has no mercy. He only has my command.",
        "You don't take him. He takes you. On my signal.",
-       "Hear his breathing. That's my pulse. Adjust to it."
+       "Listen to his breathing. That's my rhythm now. Match it."
       ],
       "marked and proud - every drop on her is a medal, proof that she served": [
        "Every drop on you is a sign… that you were used, that you served.",
@@ -7908,7 +8908,7 @@
        "One finishes, the next is already waiting. A queue for the warehouse girl.",
        "You're not a lover. You're a catalogue item. They order, they take.",
        "They're addicted to fucking. And you're their fix, darling.",
-       "At every call. Bent over, ready, off the shelf and straight into bed.",
+       "Whenever they call. Bent over, ready, off the shelf and straight into bed.",
        "Nobody asks your name. They ask if you're in stock.",
        "They want it nonstop. So you're available nonstop. Those are your terms.",
        "Another order came in. Same item, same hole.",
@@ -7921,7 +8921,7 @@
        "The best part is you volunteered. You came and said: take me.",
        "Nobody caught you. You knocked on the door of your own cell.",
        "You're their captive. A woman in chains. And it was your idea.",
-       "You signed yourself. You undressed yourself. You knelt yourself.",
+       "You signed yourself. You undressed yourself. You knelt on your own.",
        "The key to your cage. You handed it over yourself. With a smile.",
        "A slave who volunteered. The most obedient one they ever had.",
        "You can't even say they forced you. You begged for it.",
@@ -7961,7 +8961,7 @@
       "fantasy come true - she always wanted this and now it is real: they take her like a woman and she squeals in a thin, girlish voice": [
        "You always wanted this. And now it's happening. For real.",
        "Your fantasy came true, darling. You're lying there and he takes you like a woman.",
-       "Hear that thin little voice. That's you squealing. Like a girl.",
+       "Listen to that thin little voice. That's you squealing. Like a girl.",
        "Remember dreaming about this at night. You don't have to dream anymore.",
        "Squeal, sweetheart. Thin and high. That's how girls squeal when they get fucked.",
        "So many years in your head. Now in your body. Fantasy fulfilled.",
@@ -7978,7 +8978,7 @@
        "Say it out loud, darling. I'm a trans girl. And it feels right.",
        "It's not a costume. It's not a game. It's you, the real you.",
        "A trans girl. My trans girl. Sounds perfect.",
-       "That boy was only a costume. You took it off. A girl was left.",
+       "That boy was only a costume. You took it off. What's left is a girl.",
        "Everyone who takes you takes a trans girl. And they know it.",
        "You don't have to pretend to be anyone anymore. You're a girl. A trans girl.",
        "Call yourself she. My good trans girl.",
@@ -8011,7 +9011,7 @@
        "Obedient. Quiet. Open. Exactly how I wanted you."
       ],
       "feminisation - she is a girl, a woman to be taken, not a man": [
-       "The man in you walked out and left no address.",
+       "The man in you walked out and left no forwarding address.",
        "You're not pretending to be a girl. You were pretending to be a man.",
        "Repeat after me: I am a girl… and girls take it."
       ],
@@ -8056,15 +9056,15 @@
       "they dosed you - something slipped into her drink so they could take her their way: warmth spreads through her body, resistance dissolves into a smile, and she knows she'll thank them in the end": [
        "Something's been slipped into your drink. You can tell by how soft your head gets. And your hips.",
        "Warmth spreads out from your belly. A moment later you can't remember why you wanted to say no.",
-       "You see his smile slightly blurred. You hear him say »they're about to take you«. You answer with a smile.",
+       "His smile looks blurred. You hear him say: they're about to take you. You smile back.",
        "Nobody's forcing you. A pinch of powder in the glass, and you arch on your own.",
        "You drift away slowly while they take their turns. That's how it works when they've dosed you.",
        "Repeat after me: they drugged me to fuck me harder. And I like it.",
-       "An hour ago you'd have been shy. Now you're babbling »more« to each of them.",
+       "An hour ago you'd have been shy. Now you're babbling more to each of them.",
        "Your hands find their zippers on their own. Whatever's in the drink is doing its job. You just cooperate so beautifully.",
-       "All of your resistance dissolved in that glass. All that's left of your »no« is a girl who smiles and spreads her legs.",
+       "Your resistance dissolved in that glass. What's left of your no just smiles and spreads.",
        "Every thrust reaches you muffled and yet harder. They dosed you just enough to feel everything and say nothing.",
-       "In the morning they'll ask if you enjoyed it. You'll squeeze out »yes« through a smile you don't remember starting.",
+       "In the morning they'll ask if you enjoyed it. You'll squeeze out yes through a smile.",
        "You know they could have taken you sober. But dosed, you're this well-behaved."
       ]
      }

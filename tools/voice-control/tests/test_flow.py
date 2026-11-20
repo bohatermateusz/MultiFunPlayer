@@ -51,19 +51,34 @@ class Queue(unittest.TestCase):
             time.sleep(0.02)
         self.assertEqual(r.played, [("pierwsza", 10), ("druga", 10)])         # both whole, in order
 
-    def test_waiting_narration_is_dropped_for_an_answer_and_never_queues_behind_one(self):
+    def test_nothing_cuts_a_line_and_narration_is_never_dropped_for_an_answer(self):
         r = Rec()
         v = Voice({"e": slow()}, ["e"], r.play)
-        v.say("pierwsza", 0, {"kind": "answer"})
-        time.sleep(0.02)
         v.say("komentarz", 0, {"kind": "narration"})
+        time.sleep(0.02)
         v.say("odpowiedź", 0, {"kind": "answer"})
         v.say("drugi komentarz", 0, {"kind": "narration"})
-        for _ in range(100):
+        for _ in range(200):
             if not v.speaking():
                 break
             time.sleep(0.02)
-        self.assertEqual([p[0] for p in r.played], ["pierwsza", "odpowiedź"])
+        self.assertEqual(r.played, [("komentarz", 10), ("odpowiedź", 10), ("drugi komentarz", 10)])   # whole, in order
+        self.assertEqual(v.dropped, 0)
+
+    def test_when_too_many_wait_a_nudge_then_an_answer_goes_first(self):
+        r = Rec()
+        v = Voice({"e": slow()}, ["e"], r.play, max_pending=2)
+        v.say("gra", 0, {"kind": "narration"})
+        time.sleep(0.02)
+        v.say("zaczepka", 0, {"kind": "nudge"})
+        v.say("bank", 0, {"kind": "narration"})
+        v.say("odpowiedź", 0, {"kind": "answer"})                # 3 waiting: the nudge goes
+        v.say("film", 0, {"kind": "narration"})                  # 3 waiting again: the answer goes, the narration stays
+        for _ in range(200):
+            if not v.speaking():
+                break
+            time.sleep(0.02)
+        self.assertEqual([p[0] for p in r.played], ["gra", "bank", "film"])
         self.assertEqual(v.dropped, 2)
 
     def test_interrupt_cuts_the_line_and_clears_the_queue(self):

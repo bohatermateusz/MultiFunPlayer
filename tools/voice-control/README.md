@@ -23,7 +23,9 @@ then do steps 1 and 3 below. Start it with `run.bat` (dry run, only shows what i
 
 1. MultiFunPlayer fork: in the Buttplug.io output, switch on **Remote commands** (127.0.0.1, port 23555).
    It only listens on this computer and only accepts a few action families (`<target>::Hismith::*`,
-   `Script::Loop::*`, `Media::PlayPause::*`).
+   `Script::Loop::*`, `Media::PlayPause::*`). With the switch on, MultiFunPlayer also sends the current video,
+   position and play/pause state to **media status to port** (default 23556) once a second - her narration follows
+   the scene with it (see *Narration follows the video* below).
 2. `pip install -r requirements.txt` (the tests and `text` mode need nothing).
 3. Set the key: `set OPENAI_API_KEY=...` (any OpenAI-compatible `/audio/transcriptions` endpoint works;
    change `stt.base_url` and `stt.model` in `commands.json`). Set your headset microphone as the
@@ -179,10 +181,35 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
 * **Running commentary** (`persona.narration`): while a session is on she comments at random moments whether you talk
   or not - explicit, degrading lines on a rotating theme (sucking like a little girl, a bitch to be spread, belonging
   to them, the only job, forever, feminisation, taken from behind, praise, ownership, tenderness in humiliation). The
-  gap is drawn from `gap_seconds[stage]` (90-150 s at stage 0 down to 20-40 s at stage 4), `sharp_p[stage]` picks
+  gap is drawn from `gap_seconds[stage]` (90-150 s at stage 0 down to 20-40 s at stage 4), but after every one of her lines - bank, task or video moment - at least a pause drawn from `min_gap_seconds` (45-90 s) passes first (a cum and the moment just before it need only the lower end, 45 s). `narration.address` decides what she calls her: in part of the lines (more with the stage) a pet name or an insult - from "kochanie", "misiu", "Analeno" to "dziwko", "analny rowie" at the top, by the tone of the line - in front or at the end, and now and then a reminder of who she is ("Jesteś moją Analeną."); such lines are synthesized live, not from the audio cache, `sharp_p[stage]` picks
   vulgar vs tender-in-humiliation, `examples` only set the register - the model invents its own lines, never a
   question, never a command, never right after her last line. `--no-narration` turns it off; the log tags it
   `[narration]` with the theme.
+* **Narration follows the video** (`persona.narration.scene`): next to many films there is a `<film>.timeline.json`
+  (what happens when: oral / rear / both / a pause, the cum moments) and the stroke scripts (`.suck.funscript` for
+  the front machine, `.rear.funscript` for the rear one). The tool finds them next to the video or in `scene.dirs`
+  (by the film's name) and follows the position MultiFunPlayer sends to `scene.port`.
+  * The act on screen, seen from her side (the front machine is her mouth, the rear one her hole): `oral`, `fucked`,
+    `both_ends`, `played` (fingers, hands, a tongue), `tease` (a pause); around a cum `cum_soon`, `cum_mouth`,
+    `cum_on`, `cum_inside`. The tempo: strokes per minute of the machine that works now (`still` < 10, `slow` < 50,
+    `medium` < 85, `fast` < 115, `max`).
+  * **When something happens she says what is happening, at once**, outside the gap: a new act (once it has lasted
+    6 s), 4-12 s before a cum ("he is about to"), the cum itself (in her mouth / on her / inside), the machine clearly
+    speeding up (to fast / max) or slowing down (to slow / still, at most once per 40 s). The lines come from
+    `scene.seed[act]`, written from the bank's fantasies at three levels (mild, harsher, harshest; `levels_by_stage`).
+    Never over her own voice, never right after you spoke (`quiet_after_user`), never within `event_gap` (15 s;
+    `cum_gap` 8 s for a cum and the seconds before it) of her last line; only pool lines, pre-synthesized in
+    `audio_cache` - a live model call would come too late. The log tags them `narration (scene)` with `act`,
+    `event` and `moment`.
+  * **While nothing new happens** (five minutes of the same blowjob) she says bank lines as before, in the scene's
+    mood: at full pace sharp and more often, when slow tender and less often (`tempo_gap_factor`).
+  * Intonation (`tts.delivery.by_moment`): `urgent` just before a cum and when he speeds up, `triumph` at the cum,
+    `whisper` when he slows down or in a tender pause; full pace is always said in the sharp tone.
+  * No timeline, a paused video or MultiFunPlayer gone quiet for 5 s: narration works exactly as before. A seek is
+    not a change of pace; seeking back brings the moments ahead back.
+  * Preview without MultiFunPlayer, a voice or an API key: `python scene.py "<film or its .timeline.json>"` prints the
+    film act by act - the tempo, what she says at each key moment (with her pauses, as if you stayed quiet) and how
+    often she says bank lines between them; `--stage 0-4`, `--lang en`, `--at 2:20` for one act.
 * **Wishes, not phrases** (`shots`, `program` in her answer): she understands quantity ("zalej mnie" = 3-4 shots, "całą" = 5;
   `persona.lube.max_shots`, one roll for all of them, run through `LubeLauncher::FireMany`) and timing: "zmieniaj tryby co
   3 minuty" (a random mode every 180 s, `Hismith::Mode::Random`), "za pięć minut zwolnij", "na minutę szybciej" (and back),
@@ -297,6 +324,9 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   "sama się zgłosiłaś", "wymazana", "zaprogramowana", "oba końce", "jedyny orgazm", "zbrukana i dumna", "rajstopy",
   "złam mnie", "bez granic", "puść się", "prostata", "klub"...), 36 themes, 30 fresh lines per refill, 5000 lines of
   history. `narration.style` asks for whisper-like delivery (ellipses as breaths, "powtórz za mną" affirmations).
+  Only when a theme's fresh lines are spent and the model wrote none (no key, no network) may an old line of that
+  theme come back - one last said more than `pool.recycle_hours` ago (3; 0 = never), picked at random, tagged
+  `recycled: true` in the log. `said.jsonl` keeps the theme of each line for this.
   Skipped on purpose from those repos: the substance timeline, and the blackmail / prison / trafficking scripts.
 * **The world is VR, the gear is never named**: in her words the machines are the men who take her ("on", "oni", "ten,
   który cię bierze", "jego rytm", "jego sperma"), never "maszyna", "dildo", "silnik", "launcher", "tryb", "skrypt". The

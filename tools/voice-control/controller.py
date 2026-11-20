@@ -20,7 +20,7 @@ NO = {"nie", "anuluj", "stop", "odwolaj"}
 LLM_DEFAULTS = {"min_confidence": 0.8, "max_words": 14, "prefilter_similarity": 0.5, "prefilter_min_length": 5, "context": 3,
                 "max_steps": 4, "max_faster": 3, "max_deeper": 3, "max_lube": 1}
 REPLACE_WHOLE = {("narration", "pool", "seed"), ("narration", "pool", "seed_up"), ("narration", "tasks", "by_stage"), ("narration", "tasks", "care"),
-                 ("vocabulary",), ("address",)}
+                 ("narration", "scene", "seed"), ("narration", "scene", "act_themes"), ("narration", "address"), ("vocabulary",), ("address",)}
 
 
 POLISH_MARK = re.compile(r"[ąćęłńśźżó]|\b(nie|jeszcze|proszę|poproś|przeproś|dostajesz|jesteś|mała|teraz|ładniej|kim|powiedz|dziękuj)\b", re.I)
@@ -210,6 +210,8 @@ class Controller:
         self._retry = set()               # requests that were refused at the last second: the next ask is likelier
         self._program = None              # her running program (e.g. a random mode every 3 minutes), see tick()
         self._narration_due = 0.0         # when her next unprompted line is due (0 = not drawn yet)
+        self._pause_from = -1e9           # when her last unprompted line (bank, task, video) was said ...
+        self._pause_until = 0.0           # ... and the pause after it (narration.min_gap_seconds), before any other one
         self.pool = None                  # LinePool of the current language (see pools / set_language)
         self._said_recent = []            # her last lines (any kind), handed to the model as "do not repeat"
         # her mood now: drawn at the start, again whenever another woman takes over (new_mood from the voice rotation)
@@ -232,6 +234,14 @@ class Controller:
         self._last_demand = None          # (request id, demand) of her last refusal: what she wants before she gives it
         self._beg_met = None              # a request whose "ask nicer" demand he has just met (a bonus on the dice)
         self._cooldown_until = 0.0        # "uspokój mnie": until then she is only tender, her program waits
+        self.scene = None                 # SceneTracker: what is happening in the video now (set by the main loop)
+        self._last_scene_line = -1e9      # when she last said something about the video
+        # listen only ("trąbka mikrofon" / the mute key): she goes on talking, you are not heard - only the safe word,
+        # the cooldown password and the toggle itself still work
+        self.listen_only = False
+        self.listen_only_cfg = {"phrases": ["trąbka mikrofon", "trumpet microphone", "microphone trumpet"]}
+        self.on_listen_only = None        # on_listen_only(state): the main loop beeps / prints
+        self._mic_toggled_at = -1e9
 
     @property
     def persona_cfg(self):
@@ -295,7 +305,63 @@ class Controller:
         with open(self.log_path, "a", encoding="utf-8") as f:
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
+    # ---- listen only: the microphone switched off for her, by voice or by key ------------------------------------
+    def is_mic_toggle(self, transcript) -> bool:
+        """the toggle phrase said (nearly) alone: every word of one of listen_only.phrases, at most 2 other words"""
+        words = normalize(transcript).split()
+        for phrase in self.listen_only_cfg.get("phrases") or []:
+            need = normalize(phrase).split()
+            if need and len(words) <= len(need) + 2 and all(any(_sim(w, x) >= 0.75 for x in words) for w in need):
+                return True
+        return False
+
+    def toggle_listen_only(self, state=None, via="voice"):
+        """listen only on / off (state None: the other way round). On: she is not listening but goes on talking, and
+        the session stays on however long you keep quiet. -> Outcome"""
+        with self._lock:
+            now = self.clock()
+            self.listen_only = (not self.listen_only) if state is None else bool(state)
+            self._mic_toggled_at = now
+            if self.listen_only:
+                self._last_user = self._last_user or now        # a session that nobody started yet starts now
+            else:
+                self._last_user = now                           # back to talking: the usual session clock from here
+            on = self.listen_only
+        if self.on_listen_only:
+            try:
+                self.on_listen_only(on)
+            except Exception:
+                pass
+        o = Outcome("executed", "listen only: on (she talks, you are not heard)" if on else "listen only: off (she hears you)",
+                    "listen_only", 1.0, via, {"listen_only": on})
+        self._log("[listen only]", o)
+        return o
+
+    def _mic_gate(self, transcript):
+        """-> an Outcome when the utterance is the listen-only toggle or must be ignored because she is not listening;
+        None when it is handled as usual (always for the safe word and the cooldown password)"""
+        if self.is_mic_toggle(transcript):
+            if self.clock() - self._mic_toggled_at < 3.0:
+                return Outcome("ignored", "listen-only toggle heard twice", "listen_only", 1.0, "fast")
+            return self.toggle_listen_only()
+        if self.listen_only and not self.mentions_safe_word(transcript) and self._match_no_wake(transcript) is None:
+            o = Outcome("ignored", "listen only: she is not listening (say the toggle phrase again to talk)", "", 0.0, "fast",
+                        {"listen_only": True})
+            self._log(transcript, o)
+            return o
+        return None
+
+    def heard_voice(self):
+        """your voice has just started (the microphone's speech detector): her narration waits until you are done
+        (narration.quiet_after_user) - unless she is not listening anyway"""
+        if not self.listen_only:
+            with self._lock:
+                self._last_heard = self.clock()
+
     def handle(self, transcript: str) -> Outcome:
+        gate = self._mic_gate(transcript)
+        if gate is not None:
+            return gate
         with self._lock:
             self._last_heard = self.clock()
             words = self.side_of(transcript)
@@ -447,7 +513,11 @@ class Controller:
     def prepare(self, transcript):
         """the first half of handle(): -> ("outcome", Outcome) when it is settled (and spoken), ("persona", _NeedPersona)
         or ("llm", _NeedLlm) when a model has to answer (the live mode streams that answer)"""
+        gate = self._mic_gate(transcript)
+        if gate is not None:
+            return "outcome", gate
         with self._lock:
+            self._last_heard = self.clock()
             result = self._handle(transcript)
             if isinstance(result, Outcome):
                 self._log(transcript, result)
@@ -493,10 +563,215 @@ class Controller:
         labels = self.persona_cfg["narration"].get("levels") or {}
         for level in range(self._level_of(theme, stage, soft), -1, -1):
             key = level_key(theme, labels.get(str(level)) if level else "")
-            line = self.pool.take(key)
+            line = self.pool.take(key, self.rng)
             if line:
                 return line, key
         return None, level_key(theme, labels.get(str(self._level_of(theme, stage, soft))) if self._level_of(theme, stage, soft) else "")
+
+    def _take_fresh(self, theme, themes, stage, soft=False):
+        """a fresh pool line of the theme; when the theme is spent, of another theme she may use now (the ones offered
+        first, then any the stage has reached) - the whole bank is used up before anything comes back.
+        -> (line, key, theme)"""
+        line, key = self._take_line(theme, stage, soft)
+        if line:
+            return line, key, theme
+        cfg = self.persona_cfg["narration"]
+        reached = [t for t in cfg["themes"] if self.theme_stage(t, cfg) <= stage] if not soft else list(themes)
+        others = [t for t in themes if t != theme]
+        rest = [t for t in reached if t != theme and t not in others]
+        for t in self.rng.sample(others, len(others)) + self.rng.sample(rest, len(rest)):
+            line, k = self._take_line(t, stage, soft)
+            if line:
+                return line, k, t
+        return None, key, theme
+
+    def _recycle_line(self, keys):
+        """the last resort when every fresh line is spent and the model wrote none: a line of one of the pool keys
+        said more than pool.recycle_hours ago. -> (line, key) or (None, None)"""
+        if self.pool is None or not hasattr(self.pool, "recycle_any"):
+            return None, None
+        return self.pool.recycle_any(keys, self.rng)
+
+    def _bank_keys(self, theme, stage, soft=False):
+        """the pool keys the bank may start over from: the theme's first, then every theme the stage has reached"""
+        cfg = self.persona_cfg["narration"]
+        reached = [t for t in cfg["themes"] if self.theme_stage(t, cfg) <= stage] if not soft else [theme]
+        return self._theme_keys(theme, stage, soft) + [k for t in reached if t != theme for k in self._theme_keys(t, stage, soft)]
+
+    def _theme_keys(self, theme, stage, soft=False):
+        """the pool keys of a theme from the level of this moment down to the theme itself"""
+        from lines import level_key
+        labels = self.persona_cfg["narration"].get("levels") or {}
+        return [level_key(theme, labels.get(str(lv)) if lv else "") for lv in range(self._level_of(theme, stage, soft), -1, -1)]
+
+    # ---- the scene on screen (scene.py): narration follows the video ------------------------------------------
+    def _scene_cfg(self):
+        return self.persona_cfg.get("narration", {}).get("scene") or {}
+
+    def _scene_now(self):
+        """the act on screen now ({"act", "intensity", "group", "summary", ...}), or None (no video / no timeline)"""
+        if self.scene is None or not self._scene_cfg().get("enabled", True):
+            return None
+        try:
+            return self.scene.now()
+        except Exception:                  # a broken timeline must never break her narration
+            return None
+
+    def scene_key(self, act, level=0):
+        """the pool key of the scene bank for an act at an intensity level (like a theme's harsher version)"""
+        from lines import level_key
+        from scene import scene_theme
+        labels = self.persona_cfg["narration"].get("levels") or {}
+        return level_key(scene_theme(act, self._scene_cfg().get("labels")), labels.get(str(level)) if level else "")
+
+    def _scene_level(self, stage, soft=False):
+        """how harsh the scene lines are at this stage (scene.levels_by_stage); never while winding down"""
+        if soft:
+            return 0
+        levels = self._scene_cfg().get("levels_by_stage") or [0, 0, 1, 1, 2]
+        return int(levels[max(0, min(stage, len(levels) - 1))])
+
+    def _take_scene_line(self, act, stage, soft=False):
+        """a random line of the scene bank for the act: mostly at the level of the stage, now and then a milder one
+        (scene.milder_share), else whatever level has lines left. -> (line, key)"""
+        if self.pool is None:
+            return None, None
+        top = self._scene_level(stage, soft)
+        start = top - 1 if top and self.rng.random() < float(self._scene_cfg().get("milder_share", 0.3)) else top
+        for level in [*range(start, -1, -1), *range(start + 1, top + 1)]:
+            key = self.scene_key(act, level)
+            line = self.pool.take(key, self.rng)
+            if line:
+                return line, key
+        return None, self.scene_key(act, top)
+
+    def _act_themes(self, scene, cfg):
+        """the narration themes that fit the act on screen (scene.act_themes: act -> theme names before " - ")"""
+        mapping = self._scene_cfg().get("act_themes") or {}
+        names = list(mapping.get(scene["act"], []))
+        if scene.get("group"):
+            names += list(mapping.get("group", []))
+        names = {str(n).strip().lower() for n in names}
+        return [t for t in cfg["themes"] if t.split(" - ")[0].strip().lower() in names]
+
+    @staticmethod
+    def _moment_of(scene):
+        """how a line should be read in this scene: "cum" right after a cum, "climax" at the peak (the machine at full
+        pace, or the timeline's climax when there is no stroke script), "calm" when it is slow, still or a pause"""
+        if not scene:
+            return None
+        if scene.get("moment"):
+            return scene["moment"]
+        tempo = scene.get("tempo")
+        if tempo == "max" or (tempo is None and scene.get("intensity") in ("climax", "intense")):
+            return "climax"
+        if tempo in ("still", "slow") or scene.get("act") == "tease" or (tempo is None and scene.get("intensity") == "calm"):
+            return "calm"
+        return None
+
+    def _scene_state(self):
+        """the scene for the model's state ("scena"): what is happening to her now"""
+        scene = self._scene_now()
+        if not scene:
+            return None
+        labels = self._scene_cfg().get("labels") or {}
+        return {"akt": labels.get(scene["act"], scene["act"]), "intensywnosc": scene.get("intensity"),
+                "tempo": scene.get("tempo"), "grupa": bool(scene.get("group")), "opis": scene.get("summary", "")}
+
+    def scene_moment(self):
+        """Called about once a second by the main loop (before idle_narration). When something happens in the video (a
+        new act, the seconds before a cum, the cum itself, the machine clearly speeding up or slowing down) she says
+        what is happening, at once, outside the narration gap - but never over her own voice, right after the user
+        spoke or within scene.event_gap (a cum: cum_gap) of her last line. Only pool lines (they may be
+        pre-synthesized): a live model call would come too late. -> the line, or None."""
+        cfg = self._scene_cfg()
+        ncfg = self.persona_cfg.get("narration", {})
+        if (self.scene is None or not cfg.get("enabled", True) or self.pool is None or not self.persona_active()
+                or not ncfg.get("enabled") or self.busy() or self.cooldown_active()):
+            return None
+        try:
+            event = self.scene.pending()
+        except Exception:
+            return None
+        if event is None:
+            return None
+        now = self.clock()
+        with self._lock:
+            if not self._session_on(now):
+                return None
+            urgent = event["event"] in ("cum", "cum_soon")
+            gap = float(cfg.get("cum_gap", 8)) if urgent else float(cfg.get("event_gap", 15))
+            # the pause after her last line: the cum (and the moment before it) needs only its lower end
+            pause = now - self._pause_from < self._min_gap()[0] if urgent else now < self._pause_until
+            if pause or now - self._last_line < gap or now - self._last_heard < float(ncfg.get("quiet_after_user", 20)):
+                return None                       # the moment stays pending while its window lasts
+            if self._owed is not None and now - self._last_line < 25.0:
+                return None
+            stage = self.stage()
+            # most moments pass without a word: each kind has its chance (scene.event_chance), and the video gets at
+            # most one line per scene.scene_min_gap - the bank is what she mostly says
+            chance = float((cfg.get("event_chance") or {}).get(event["event"], 1.0))
+            if now - self._last_scene_line < float(cfg.get("scene_min_gap", 0)) or self.rng.random() >= chance:
+                self.scene.consume(event)
+                return None
+        act = event["act"]
+        fits = [t for t in self._act_themes({"act": act}, ncfg) if self.theme_stage(t, ncfg) <= stage]
+        line = key = None
+        if fits and self.rng.random() < float(cfg.get("theme_share", 0.5)):
+            # a line of a bank theme that fits the moment: the big, ever refilled pool, so it does not sound the same
+            for t in self.rng.sample(fits, len(fits)):
+                line, key = self._take_line(t, stage)
+                if line:
+                    break
+        if not line:
+            line, key = self._take_scene_line(act, stage)
+        if not line:
+            for t in self.rng.sample(fits, len(fits)):
+                line, key = self._take_line(t, stage)
+                if line:
+                    break
+        recycled = False
+        if not line:
+            keys = [self.scene_key(act, lv) for lv in range(self._scene_level(stage), -1, -1)]
+            keys += [k for t in self.rng.sample(fits, len(fits)) for k in self._theme_keys(t, stage)]
+            line, key = self._recycle_line(keys)
+            recycled = bool(line)
+        theme = key
+        self.scene.consume(event)
+        if not line:
+            return None
+        if event["event"] in ("cum", "cum_soon"):
+            moment = event["event"]
+        elif event["event"] == "tempo":
+            moment = event["act"]                  # "faster" / "slower"
+        else:
+            moment = self._moment_of(self._scene_now())
+        sharp = ncfg["sharp_p"]
+        tone = "ostry" if self.rng.random() < float(sharp[max(0, min(stage, len(sharp) - 1))]) else "czuły"
+        if moment in ("climax", "faster", "cum_soon", "cum") and stage >= 1 or moment == "climax":
+            tone = "ostry"                         # the peak, the push and the cum are never whispered
+        elif moment == "slower":
+            tone = "czuły"
+        harsh = (3 if stage >= 4 else 2) if tone == "ostry" else 0
+        line, called = self._addressed(line, tone, stage, event=event["event"])
+        with self._lock:
+            self._tone_now = (tone, harsh)
+            self._history.append(("assistant", line))
+            del self._history[:-24]
+            self._window_until = self.clock() + float(self.persona_cfg["reply_window"])
+            self._last_line = self._last_scene_line = self.clock()   # the bank keeps its own clock
+            self._paused(self._last_line)
+            extra = {"say": line, "stage": stage, "tone": tone, "harsh": harsh, "theme": theme, "source": "pool",
+                     "act": act, "event": event["event"], "moment": moment, "pool_left": self.pool.left(key),
+                     "voice": stage + (5 if tone == "ostry" else 0)}
+            if recycled:
+                extra["recycled"] = True
+            if called:
+                extra["address"] = called
+            outcome = Outcome("talk", "narration (scene)", "", 0.0, "persona", extra)
+            self._log("[narration]", outcome)
+        self._say(outcome)
+        return line
 
     def _narration_themes(self, cfg, soft=False, stage=None):
         """the themes she may comment on now (not the ones used lately); while winding down only the tender ones.
@@ -531,6 +806,7 @@ class Controller:
             soft = self.cooldown_active()
             if soft:
                 self._tone_now = ("czuły", 0)
+            scene = None if soft else self._scene_now()
             themes = self._narration_themes(cfg, soft, stage)
             theme = self.rng.choice(themes)
             self._themes_recent.append(theme)
@@ -540,8 +816,12 @@ class Controller:
             line, source = None, "pool"
             if tasks.get("enabled") and not soft and self.rng.random() < float(share[max(0, min(stage, len(share) - 1))]):
                 line, source = self._draw_task(stage), "task"
+        recycled = False
         if not line and self.pool is not None:
-            line, _ = self._take_line(theme, stage, soft)
+            line, _, theme = self._take_fresh(theme, themes, stage, soft)
+            if not line:
+                line, key = self._recycle_line(self._bank_keys(theme, stage, soft))
+                recycled = bool(line)
         if not line:
             return None, None
         with self._lock:
@@ -551,10 +831,15 @@ class Controller:
             tone, harsh = self._tone_now
             extra = {"say": line, "stage": stage, "tone": tone, "harsh": harsh, "theme": theme, "source": source,
                      "kind": "task" if source == "task" else self._kind_of(line, {"source": source, "theme": theme})}
+            if scene is not None:
+                extra["act"], extra["moment"] = scene["act"], self._moment_of(scene)
+            if recycled:
+                extra["recycled"] = True
             self._log("[narration]", Outcome("talk", "narration (agent)", "", 0.0, "persona", extra))
             if source == "task":
                 self._remember_said(line)
-        return line, {"tone": extra["tone"], "kind": extra["kind"], "stage": stage, "theme": theme, "language": self.language}
+        return line, {"tone": extra["tone"], "kind": extra["kind"], "stage": stage, "theme": theme, "language": self.language,
+                      "moment": extra.get("moment")}
 
     def handle_partial(self, item, text):
         """A transcript still being written (live mode). Only strict matches, no dice: the safe word runs at once, an
@@ -572,7 +857,10 @@ class Controller:
                     return None
             else:
                 m = self._match_no_wake(text)
-            if m is not None and (m.intent.id == "halt" or m.score >= 0.95):
+            if m is not None and m.intent.id != "halt" and self.is_mic_toggle(text):
+                return None                                  # "trąbka mikrofon": the final transcript switches the mic
+            if m is not None and (m.intent.id == "halt" or m.score >= 0.95) and not (
+                    m.intent.id == "halt" and self.is_mic_toggle(text) and item not in self._consumed):
                 self._consumed[item] = (m.intent.id, text)
                 words = self.side_of(text)
                 self._turn_side = words if words in ("front", "rear") else None
@@ -580,6 +868,8 @@ class Controller:
                 o = self._run_match(m, now)
                 self._log(f"[partial] {text}", o)
                 return self._say(o)
+            if self.listen_only or self.is_mic_toggle(text):
+                return None                                  # not listening: only the safe word and the password above
             text = self._carry_wake(text, consume=False)
             command = self.strip_wake_word(text)
             if command is None or not command.strip():
@@ -601,6 +891,11 @@ class Controller:
 
     def handle_final(self, item, text):
         """the completed transcript of a turn (live mode): what a partial already ran is not run again"""
+        if self.is_mic_toggle(text):
+            with self._lock:
+                self._consumed.pop(item, None)
+                self._speculated.pop(item, None)
+            return self._mic_gate(text)                       # ("trąbka" alone may have stopped the machine already)
         with self._lock:
             done = self._consumed.pop(item, None)
             self._speculated.pop(item, None)
@@ -802,7 +1097,7 @@ class Controller:
             if "kind" not in extra:
                 extra["kind"] = self._kind_of(line, extra)
             meta = {"tone": extra.get("tone", self._tone_now[0]), "kind": extra["kind"], "stage": extra.get("stage", self.stage()),
-                    "theme": extra.get("theme", ""), "language": self.language}
+                    "theme": extra.get("theme", ""), "language": self.language, "moment": extra.get("moment")}
             try:
                 if self.speak_ex:
                     try:
@@ -1012,13 +1307,104 @@ class Controller:
         return True
 
     def _session_on(self, now):
+        if self.listen_only and self._last_user:
+            return True                          # you only listen: she goes on as long as you like
         ini = self.persona_cfg["initiative"]
         return bool(self._last_user) and now - self._last_user <= float(ini["session_seconds"]) + float(ini["idle_prompt_seconds"]) * (int(ini["max_nudges"]) + 1)
 
     def _draw_narration_gap(self, stage):
+        """the pause before her next bank line: gap_seconds[stage] times scene.tempo_gap_factor of the pace on screen -
+        when nothing happens in the video (a pause, the machine still or slow) she fills it with bank lines more often,
+        in the thick of it she leaves more room to the video"""
         gaps = self.persona_cfg["narration"]["gap_seconds"]
         lo, hi = gaps[max(0, min(stage, len(gaps) - 1))]
-        return self.rng.uniform(float(lo), float(hi))
+        scene = self._scene_now()
+        pace = (scene or {}).get("tempo") or ("still" if (scene or {}).get("act") == "tease" else "")
+        factor = float((self._scene_cfg().get("tempo_gap_factor") or {}).get(pace, 1.0))
+        return self.rng.uniform(float(lo), float(hi)) * factor
+
+    def _min_gap(self):
+        lo, hi = (self.persona_cfg["narration"].get("min_gap_seconds") or [15, 15])[:2]
+        return float(lo), float(hi)
+
+    def _paused(self, now):
+        """after each of her unprompted lines (bank, task, video) a pause drawn from narration.min_gap_seconds
+        passes before the next one, whatever the stage, the tempo or the video"""
+        self._pause_from = now
+        lo, hi = self._min_gap()
+        self._pause_until = now + (self.rng.uniform(lo, hi) if hi > lo else lo)
+        self._narration_due = max(self._narration_due, self._pause_until)
+
+    def _epithets(self, cfg, tone, stage, soft):
+        """the words she may call her by now: tender or sharp lists by stage; the stage below joins in (variety), in the
+        cooldown only the tender words of the first stages"""
+        if soft:
+            tone, stage = "czuły", min(stage, 1)
+        elif self.rng.random() < float(cfg.get("contrast_share", 0.0)):
+            # the contrast: a pet name in a harsh line, a harsh word in a tender one (never harsher than the stage)
+            tone, stages = ("czuły" if tone == "ostry" else "ostry"), range(0, stage + 1)
+            lists = cfg.get("sharp" if tone == "ostry" else "tender") or {}
+            return [w for s in stages for w in lists.get(str(s), [])]
+        lists = cfg.get("sharp" if tone == "ostry" else "tender") or {}
+        words = []
+        for s in (stage - 1, stage):
+            words += list(lists.get(str(max(0, s)), []))
+        return words
+
+    def _fresh_pick(self, options):
+        """one of the options, not one of the last few she used (narration.address)"""
+        recent = getattr(self, "_called_recent", [])
+        fresh = [o for o in options if o.lower() not in recent] or options
+        pick = self.rng.choice(fresh)
+        self._called_recent = (recent + [pick.lower()])[-int(len(options) * 0.6) - 4:]
+        return pick
+
+    def _addressed(self, line, tone, stage, soft=False, event=None):
+        """the line with what she calls her (narration.address): sometimes a word in front or at the end ('Analeno, ...',
+        '..., dziwko.'), sometimes a reminder of who she is after it; milder or harsher with the stage and the tone.
+        Lines that already call her something, 'repeat after me' lines and the cum moments (said from the audio cache,
+        at once) stay as they are. -> (line, what was added or None)"""
+        cfg = self.persona_cfg["narration"].get("address") or {}
+        if not cfg.get("enabled") or not line or event in (cfg.get("skip_events") or []):
+            return line, None
+        low = " " + re.sub(r"[^\w ]", " ", line.lower()) + " "
+        if low.strip().startswith(tuple(cfg.get("skip_starts", []))):
+            return line, None
+        def pick(key):
+            share = cfg.get(key) or [0.0]
+            return self.rng.random() < float(share[max(0, min(stage, len(share) - 1))])
+        known = {w.lower() for v in list((cfg.get("tender") or {}).values()) + list((cfg.get("sharp") or {}).values()) for w in v}
+        known |= {w.lower() for w in cfg.get("already", [])}
+        called = any(" " + w + " " in low for w in known)
+        added = []
+        if not called and pick("share"):
+            words = self._epithets(cfg, tone, stage, soft)
+            if words:
+                word = self._fresh_pick(words)
+                body = line.rstrip()
+                if self.rng.random() < float(cfg.get("front_share", 0.4)):
+                    first = body.split(" ", 1)[0]
+                    keep = first[:1].isupper() and (first in cfg.get("keep_capital", []) or first.isupper() and len(first) > 1)
+                    line = word[:1].upper() + word[1:] + ", " + (body if keep else body[:1].lower() + body[1:])
+                else:
+                    m = re.search(r"([.!…]+|\.\.\.)$", body)
+                    end = m.group(0) if m else "."
+                    core = body[:len(body) - len(m.group(0))] if m else body
+                    line = core.rstrip(" ,;:–—-") + ", " + word + end
+                added.append(word)
+        if not added and pick("identity_share"):          # one or the other: never "dziwko ... Jesteś dziwką."
+            soft_tone = "czuły" if soft else tone
+            lists = (cfg.get("identity") or {}).get("sharp" if soft_tone == "ostry" else "tender") or {}
+            pool = []
+            for s_ in (stage - 1, stage):
+                pool += list(lists.get(str(max(0, min(1, s_) if soft else s_)), []))
+            pool = [x for x in pool if x.lower() not in line.lower()]
+            if pool:
+                who = self._fresh_pick(pool)
+                body = line.rstrip()
+                line = body + ("" if body[-1:] in ".!…" else ".") + " " + who
+                added.append(who)
+        return line, (" + ".join(added) or None)
 
     def _idle_side(self):
         self._turn_side = self._last_side
@@ -1039,7 +1425,7 @@ class Controller:
             if not self._narration_due:
                 self._narration_due = now + self._draw_narration_gap(stage)
                 return None
-            if now < self._narration_due or now - self._last_line < 15.0:
+            if now < self._narration_due or now < self._pause_until or now - self._last_line < 15.0:
                 return None
             if now - self._last_heard < float(cfg.get("quiet_after_user", 20)):
                 return None                       # he has just spoken: she answers first, the comment waits
@@ -1047,7 +1433,11 @@ class Controller:
                 return None                       # she is waiting for what she demanded
             sharp = self.persona_cfg["narration"]["sharp_p"]
             soft = self.cooldown_active()          # winding down: only tender, aftercare themes, no orders
+            scene = None if soft else self._scene_now()   # nothing new on screen: a bank line, read in the scene's mood
+            moment = self._moment_of(scene)
             tone = "ostry" if not soft and self.rng.random() < float(sharp[max(0, min(stage, len(sharp) - 1))]) else "czuły"
+            if moment == "climax" and not soft:
+                tone = "ostry"                     # the peak of the scene is never whispered
             harsh = (3 if stage >= 4 and self.rng.random() < 0.4 else 2) if tone == "ostry" else 0
             self._tone_now = (tone, harsh)
             self._tones.append(tone)
@@ -1071,7 +1461,7 @@ class Controller:
                 source, theme = "task", "polecenie"
         topic = theme
         if not line and self.pool is not None:
-            line, topic = self._take_line(theme, stage, soft)
+            line, topic, theme = self._take_fresh(theme, themes, stage, soft)
             if line:
                 source, left = "pool", self.pool.left(topic)
         if not line:
@@ -1080,21 +1470,36 @@ class Controller:
                     line = self.persona.narrate(state, history, topic, list(cfg.get("examples", [])), int(cfg.get("max_words", 16)),
                                                 str(cfg.get("style", "")), self.persona_cfg.get("language_rule", ""))
                 except Exception:
-                    return None
+                    line = None                    # no model (no key, no network): an old line may still come back
+                    break
                 if line and not self.is_repeat(line) and not self.is_banned(line):
                     break
-                line = None                        # a repeat / names the gear: one more try, then silence
+                line = None                        # a repeat / names the gear: one more try, then an old line or silence
+        recycled = False
+        if not line and source != "task":
+            line, key = self._recycle_line(self._bank_keys(theme, stage, soft))
+            if line:
+                source, recycled, left = "pool", True, None
+                theme = key.split(" || ")[0]
         if not line:
             return None
+        line, called = self._addressed(line, tone, stage, soft)
         with self._lock:
             self._history.append(("assistant", line))
             del self._history[:-24]
             self._window_until = self.clock() + float(self.persona_cfg["reply_window"])
             self._last_line = self.clock()
+            self._paused(self._last_line)
             extra = {"say": line, "stage": stage, "tone": tone, "harsh": harsh, "theme": theme, "source": source,
                      "voice": stage + (5 if tone == "ostry" else 0)}
             if left is not None:
                 extra["pool_left"] = left
+            if scene is not None:
+                extra["act"], extra["moment"] = scene["act"], moment
+            if recycled:
+                extra["recycled"] = True
+            if called:
+                extra["address"] = called
             outcome = Outcome("talk", "narration", "", 0.0, "persona", extra)
             self._log("[narration]", outcome)
         self._say(outcome)
@@ -1104,8 +1509,8 @@ class Controller:
         """Called about once a second by the main loop. When a session is on and the user has been silent for
         idle_prompt_seconds, she says something herself (no commands). -> the line spoken, or None."""
         ini = self.persona_cfg["initiative"]
-        if not self.persona_active() or not ini.get("enabled", True) or self.busy():
-            return None
+        if not self.persona_active() or not ini.get("enabled", True) or self.busy() or self.listen_only:
+            return None                          # (listening only: you are meant to be quiet, no "say something")
         now = self.clock()
         with self._lock:
             if not self._last_user or now - self._last_user > float(ini["session_seconds"]) + float(ini["idle_prompt_seconds"]) * (int(ini["max_nudges"]) + 1):
@@ -1174,7 +1579,7 @@ class Controller:
                 "blokada_5_min": self.lock_remaining() > 0, "wyciszanie": self.cooldown_active(),
                 "ostatnie_komendy": list(self._recent), "program_aktywny": self.program_summary(),
                 "nie_powtarzaj": list(self._said_recent[-30:]), "jezyk": self.language,
-                "nastroj_teraz": self.session_mood,
+                "nastroj_teraz": self.session_mood, "scena": self._scene_state(),
                 "regula_jezyka": self.persona_cfg.get("language_rule", "")}
 
     def _need_persona(self, transcript, plain=None):

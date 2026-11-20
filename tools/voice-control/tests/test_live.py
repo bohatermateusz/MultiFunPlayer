@@ -537,7 +537,7 @@ class Agents(ChatBase):
 
     def test_proxy_narration_trigger_takes_a_pool_line(self):
         class Pool:
-            def take(s, theme):
+            def take(s, theme, rng=None):
                 return "Z puli."
 
             def left(s, theme):

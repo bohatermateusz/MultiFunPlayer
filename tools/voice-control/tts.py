@@ -49,9 +49,12 @@ DELIVERY_DEFAULTS = {
         "tease":     {"stability": 0.4, "similarity_boost": 0.75, "style": 0.6, "speed": 1.0, "use_speaker_boost": True, "tags": ["[mischievously]"]},
         "sharp":     {"stability": 0.5, "similarity_boost": 0.8, "style": 0.5, "speed": 1.03, "use_speaker_boost": True, "tags": []},
         "afterglow": {"stability": 0.6, "similarity_boost": 0.85, "style": 0.2, "speed": 0.88, "use_speaker_boost": False, "tags": ["[whispers]"]},
+        "urgent":    {"stability": 0.35, "similarity_boost": 0.8, "style": 0.65, "speed": 1.06, "use_speaker_boost": True, "tags": ["[excited]"]},
+        "triumph":   {"stability": 0.4, "similarity_boost": 0.8, "style": 0.7, "speed": 0.97, "use_speaker_boost": True, "tags": ["[satisfied]"]},
     },
     "by_tone": {"czuły": ["whisper", "tender"], "ostry": ["tease", "sharp"]},
     "by_kind": {"task": "sharp", "affirmation": "whisper", "aftercare": "afterglow"},
+    "by_moment": {"cum_soon": "urgent", "cum": "triumph", "faster": "urgent", "slower": "whisper", "calm": "whisper"},
     "break_after_ellipsis": "0.45s",
     "break_after_sentence": "0.25s",
     "text_shaping": True,
@@ -62,11 +65,16 @@ SPEAKER_KEYS = ("stability", "similarity_boost", "style", "speed", "use_speaker_
 
 def choose_delivery(delivery, meta):
     """-> (preset name, voice_settings, tags) for a line: by its kind (an order, an affirmation, aftercare) first,
-    else by the tone of the turn, the second preset of a tone from stage 3 on. meta: {tone, kind, stage}"""
+    then by the moment in the video (just before a cum, the cum, a pause), else by the tone of the turn, the second
+    preset of a tone from stage 3 on. meta: {tone, kind, stage, moment}"""
     cfg = dict(DELIVERY_DEFAULTS, **(delivery or {}))
     presets = dict(DELIVERY_DEFAULTS["presets"], **cfg.get("presets", {}))
     meta = meta or {}
     name = cfg.get("by_kind", {}).get(meta.get("kind", ""))
+    if not name and meta.get("moment"):
+        name = cfg.get("by_moment", {}).get(meta["moment"])
+        if name == "whisper" and meta.get("tone") == "ostry":
+            name = None                    # a pause is whispered only when the turn is tender anyway
     if not name:
         tone = meta.get("tone", "czuły")
         choices = cfg.get("by_tone", {}).get(tone) or DELIVERY_DEFAULTS["by_tone"].get(tone, ["tender"])
