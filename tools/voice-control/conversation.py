@@ -174,6 +174,10 @@ class LiveLoop:
                     self._unclear_logged = text
                     self.log(f'  "{text}" -> ignored (safe word not said clearly: {above:.0f} dB above the noise, '
                              f'needs {self.safe_word_margin_db:g})')
+                    try:
+                        self.c.log_dropped(text, f"safe word not said clearly ({above:.0f} dB above the noise)")
+                    except AttributeError:
+                        pass
                 return None
         if not self.reject(text):
             return text
@@ -220,6 +224,10 @@ class LiveLoop:
         heard, text = text, self._screen(text)
         if text is None:
             self.log(f'  "{heard[:60]}..." -> ignored (speech-to-text hallucination)')
+            try:
+                self.c.log_dropped(heard, "speech-to-text hallucination")
+            except AttributeError:
+                pass
             return None
         kind, result = self.c.prepare(text) if not self.c._consumed.get(item) else ("outcome", self.c.handle_final(item, text))
         if kind == "outcome":

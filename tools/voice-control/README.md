@@ -246,6 +246,16 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
 * **Another woman every 10 minutes** (`tts.rotate_minutes`): the next voice of the list takes over and introduces herself
   with a line from `tts.handover_lines` ("Teraz ja się tobą zajmę, misiaczku."), never the same twice in a row; F9 still
   switches by hand.
+* **A refusal always says what to do**: often (`manners.task_demands.chance` per stage) it is an order that fits the
+  request - a body position for the machine ("Wypnij pupę. Wyżej.", "Rozłóż nogi szerzej."), the mouth or the face for
+  the Lube Launcher ("Połykaj.", "Noś to w ustach i nie waż się połknąć.") - followed by "Powiedz mi, kiedy to zrobisz."
+  Say it is done ("wypinam", "gotowe", "zrobione", "tak, Pani"; also while she is speaking) and she gives what you asked.
+  Asking again without doing it rolls the dice once more and, on a no, repeats the same order. A refusal the model gives
+  without any demand ("Nie. I nie dąsaj się.") is replaced by an "ask nicer" line.
+* **No wake word for commands** (`wake.optional_for_commands`, on): a command from the list works said plainly
+  ("ruchaj mnie mocniej", "włącz tryb ósmy"), also over her voice unless it is her own words coming back; loose talk
+  still needs "kochanie" / "Pani" or her reply window. Utterances dropped as her echo or as a speech-to-text
+  hallucination are now logged too (`voice_log.jsonl`, status "ignored").
 * **No endless "ask nicer"**: what she demanded is remembered; doing it roughly is enough (a polite word after "ask
   nicer" adds `manners.beg_met_bonus` 0.35 and continues the same ask even if you do not repeat it; "dziękuję" after
   "thank me", a "jestem ..." after "say what you are", a close repetition after "repeat" - she gives it). Her refusal is

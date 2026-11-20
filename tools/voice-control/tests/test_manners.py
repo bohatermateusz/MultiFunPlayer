@@ -15,6 +15,7 @@ from test_persona import Clock, FakePani, turn  # noqa: E402
 from voice_control import load_config  # noqa: E402
 
 CFG, INTENTS = load_config(os.path.join(os.path.dirname(__file__), "..", "commands.json"))
+CFG["persona"]["manners"].setdefault("task_demands", {})["enabled"] = False   # orders on refusal: test_tasks.py
 P = CFG["persona"]
 M = P["manners"]
 

@@ -285,6 +285,7 @@ def build(args):
                             lock_cfg=cfg.get("lock"), persona=persona, persona_cfg=pc, wake_words_by_lang=by_lang)
     controller.speak = lambda line: print(f"  Pani: {line}")
     controller.wake_carry = float(wake.get("carry_seconds", 6.0))     # "kochanie ... (pause) szybciej"
+    controller.wake_cfg_optional_for_commands = bool(wake.get("optional_for_commands", True))   # "ruchaj mnie mocniej" alone works
     if log_path and os.path.exists(log_path):
         # her lines of the last sessions count as said: a new evening does not start with the same sentences
         try:
@@ -434,6 +435,7 @@ def main():
             halt = next((i for i in controller.intents if i.id == "halt" and i.phrases), None)
             if halt is None or not controller.mentions_safe_word(text):
                 print(f'  "{text[:60]}..." -> ignored (speech-to-text hallucination)')
+                controller.log_dropped(text, "speech-to-text hallucination")
                 return
             text = halt.phrases[0]            # the safe word inside a hallucination still stops everything
         # with headphones the microphone stays on while she speaks, and the headset's open speakers leak her voice into
@@ -442,9 +444,11 @@ def main():
         # that she is not saying herself
         her_lines = [line for at, line in recent_lines if time.monotonic() - at < 30]
         over_her_ok = (controller.mentions_safe_word(text) or controller.addressed_to_her(text)
-                       or controller.short_answer_over_her(text, her_lines, lis.get("over_her_words", OVER_HER_WORDS)))
+                       or controller.short_answer_over_her(text, her_lines, list(lis.get("over_her_words", OVER_HER_WORDS)) + controller.task_done_words())
+                       or (controller.wake_cfg_optional_for_commands and controller.command_over_her(text, her_lines)))
         if heard_over_her["value"] and not over_her_ok:
             print(f'  "{text[:60]}" -> ignored (started while she was speaking: her own voice)')
+            controller.log_dropped(text, "started while she was speaking (echo filter)")
             return
         outcome = controller.handle(text)
         report(outcome, text)

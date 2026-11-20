@@ -804,6 +804,14 @@
    "id": "hard",
    "phrases": [
     "ruchaj mnie",
+    "ruchaj mnie mocniej",
+    "wyruchaj mnie mocno",
+    "wyruchaj mnie mocniej",
+    "ruchaj mnie ostro",
+    "pierdol mnie",
+    "pierdol mnie mocniej",
+    "zerżnij mnie mocno",
+    "dymaj mnie mocniej",
     "wyruchaj mnie",
     "ruchaj mnie mocno",
     "dymaj mnie",
@@ -1065,6 +1073,8 @@
   "agents": {"agent_id": "", "proxy_port": 8787, "input_rate": 16000, "output_rate": 16000, "override_prompt": false}
  },
  "wake": {
+  "_comment_optional": "optional_for_commands: a command from the list ('ruchaj mnie mocniej') works without the wake word, also while she speaks (unless it is her own words coming back); loose talk still needs 'kochanie' / 'Pani' or her reply window.",
+  "optional_for_commands": true,
   "words": [
    "kochanie",
    "Pani"
@@ -9230,6 +9240,241 @@
   }
   },
   "manners": {
+   "task_demands": {
+    "_comment": "A refusal can be an order instead of 'ask nicer': with chance[stage] she tells him to do something that fits the request (kinds: the machine -> a body position, the Lube Launcher -> the mouth / the face; 'any' for both), says how to report it, and grants the request as soon as he says he did it (one of the order's 'done' words, done_words, or obey_phrases). Until then her reminders repeat the order. Polish only (no orders in an English session).",
+    "enabled": true,
+    "chance": [
+     0.35,
+     0.45,
+     0.5,
+     0.55,
+     0.6
+    ],
+    "kinds": {
+     "machine": [
+      "hard",
+      "faster",
+      "deeper",
+      "use_me",
+      "mode_",
+      "fill",
+      "tease",
+      "surprise",
+      "sequence_",
+      "normal",
+      "script",
+      "improvise"
+     ],
+     "lube": [
+      "lube_"
+     ]
+    },
+    "openers": [
+     "Jeszcze nie.",
+     "Nie tak szybko.",
+     "Najpierw zasłuż.",
+     "Nie za darmo.",
+     "Dostaniesz. Ale najpierw to."
+    ],
+    "reminders": [
+     "Czekam.",
+     "Nie słyszę, żebyś to zrobiła.",
+     "Najpierw to, potem reszta.",
+     "Nic nie dostaniesz, dopóki tego nie zrobisz."
+    ],
+    "tail": "Powiedz mi, kiedy to zrobisz.",
+    "done_words": [
+     "gotowe",
+     "zrobione",
+     "zrobiłam",
+     "zrobiłem",
+     "już",
+     "wykonane",
+     "jestem gotowa",
+     "tak pani",
+     "tak kochanie",
+     "robię"
+    ],
+    "tasks": {
+     "machine": [
+      {
+       "line": "Wypnij pupę. Wyżej.",
+       "done": [
+        "wypinam",
+        "wypięta",
+        "wypięłam",
+        "wypięty"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Rozłóż nogi szerzej. Jeszcze szerzej.",
+       "done": [
+        "rozkładam",
+        "rozłożone",
+        "rozłożyłam",
+        "szerzej"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Rozluźnij nogi bardziej. Niech wchodzi swobodnie.",
+       "done": [
+        "rozluźniam",
+        "rozluźniona",
+        "rozluźniłam",
+        "luźno"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Zegnij się niżej. Twarz w dół, pupa w górę.",
+       "done": [
+        "zginam",
+        "schylam",
+        "schylona",
+        "pupa w górze"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Klęknij. Kolana szeroko.",
+       "done": [
+        "klęczę",
+        "klęknęłam",
+        "kolana szeroko"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Wypchnij biodra do niego. Pokaż, że chcesz.",
+       "done": [
+        "wypycham",
+        "pcham",
+        "pokazuję"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Rozchyl się rękami i trzymaj.",
+       "done": [
+        "rozchylam",
+        "rozchylona",
+        "trzymam"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Ściśnij go pięć razy. Licz na głos.",
+       "done": [
+        "pięć",
+        "ściskam",
+        "policzyłam"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Nabij się na niego sama. Do końca.",
+       "done": [
+        "nabijam",
+        "nabiłam",
+        "do końca"
+       ],
+       "min_stage": 2
+      }
+     ],
+     "lube": [
+      {
+       "line": "Otwórz usta szeroko i pokaż język.",
+       "done": [
+        "otwieram",
+        "otwarte",
+        "pokazuję",
+        "język"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Wystaw język i czekaj.",
+       "done": [
+        "wystawiam",
+        "czekam"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Podstaw twarz. Oczy otwarte.",
+       "done": [
+        "podstawiam",
+        "patrzę",
+        "oczy otwarte"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Połykaj. Wszystko, co masz w ustach.",
+       "done": [
+        "połykam",
+        "połknęłam",
+        "przełknęłam",
+        "łykam"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Wyliż usta do czysta.",
+       "done": [
+        "liżę",
+        "wylizałam",
+        "oblizuję",
+        "oblizałam"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Noś to w ustach i nie waż się połknąć.",
+       "done": [
+        "trzymam",
+        "noszę",
+        "nie połykam",
+        "w ustach"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Noś to na twarzy. Nie wycieraj.",
+       "done": [
+        "noszę",
+        "nie wycieram",
+        "zostawiam",
+        "na twarzy"
+       ],
+       "min_stage": 1
+      }
+     ],
+     "any": [
+      {
+       "line": "Jęknij dla mnie. Głośno.",
+       "done": [
+        "ach",
+        "och",
+        "mmm",
+        "aaa",
+        "jęczę"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Zamknij oczy i policz do pięciu na głos.",
+       "done": [
+        "pięć",
+        "jeden dwa trzy cztery pięć"
+       ],
+       "min_stage": 0
+      }
+     ]
+    }
+   },
    "plain_lines": ["Mhm… mów dalej, mała.", "Słucham cię. Uważnie.", "Grzecznie. Tak lubię.", "Jestem tu. Patrzę na ciebie.", "Dobrze. Oddychaj i czekaj.", "Wiem, mała. Wiem."],
    "beg_met_bonus": 0.35,
    "grants": ["Masz. Grzeczna.", "No proszę, jak ładnie błagasz. Dostajesz.", "Niech ci będzie, mała.", "Teraz tak, jak chciałaś. Dziękuj.", "Widzisz? Wystarczyło poprosić.", "Dostajesz, bo dziś jesteś posłuszna.", "Dobrze. Ale pamiętaj, czyja to łaska.", "Bierz. I ani słowa skargi.", "Zasłużyłaś. Tym razem.", "Tak lubię. Masz swoje.", "Ładnie prosiłaś, więc dostajesz.", "Proszę bardzo, moja mała. Czuj.", "Zgoda. Tylko nie zapomnij podziękować.", "Niech będzie po twojemu… na chwilę.", "Moja grzeczna laleczka. Masz.", "Skoro tak ładnie… dostaniesz.", "Tak. Teraz oddychaj i bierz.", "Pozwalam. Ale to ja decyduję, jak długo.", "Mhm. Tego właśnie chciałaś, prawda?", "Dobrze, kochanie. Rozluźnij się i bierz.", "Wiedziałam, że w końcu poprosisz jak trzeba.", "Masz, czego chciałaś. Pokaż mi, że to doceniasz.", "Za to błaganie - nagroda.", "Teraz mi się podobasz. Dostajesz.", "Błagałaś tak ładnie, że aż twoja dziurka zacisnęła się z dumy. Dostajesz. Głęboko.", "Dostajesz. I nie waż się dojść, zanim nie podziękujesz.", "Zgoda. Ale to ja decyduję, jak długo.", "Uzasadniłaś to ustami. Teraz uzasadnij to gardłem."],

@@ -16,6 +16,7 @@ from voice_control import load_config  # noqa: E402
 
 CONFIG = os.path.join(os.path.dirname(__file__), "..", "commands.json")
 CFG, INTENTS = load_config(CONFIG)
+CFG["persona"]["manners"].setdefault("task_demands", {})["enabled"] = False   # orders on refusal: test_tasks.py
 NOMANNERS = dict(CFG["persona"]["manners"], politeness_factor=1.0, ignore_demand_factor=1.0, beg_met_bonus=0.0)   # these tests are about the dice, not the manners
 STEP_IDS = [i.id for i in INTENTS if i.improvise]
 

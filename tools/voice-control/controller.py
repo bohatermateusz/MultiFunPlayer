@@ -190,6 +190,8 @@ class Controller:
         # "kochanie" said alone, then a pause, then the command: the live recognition cuts the turn on the pause, so
         # for wake_carry seconds after a lone wake word the next utterance counts as if it started with it
         self.wake_carry = 6.0
+        # a command from the list counts without the wake word ("ruchaj mnie mocniej"); loose talk still needs it
+        self.wake_cfg_optional_for_commands = False
         self._wake_until = 0.0
         self._asks = {}                   # request id -> how many times it was denied so far
         self._last_ask = 0.0
@@ -232,6 +234,7 @@ class Controller:
         self._last_heard = 0.0            # last time anything was heard from the user (narration keeps quiet after it)
         self._repeat_target = None        # the sentence she told him to repeat ("Powtórz za mną: ...")
         self._last_demand = None          # (request id, demand) of her last refusal: what she wants before she gives it
+        self._task = None                 # the order of a "task" refusal ({"line", "done"}): do it, say so, and she gives it
         self._beg_met = None              # a request whose "ask nicer" demand he has just met (a bonus on the dice)
         self._cooldown_until = 0.0        # "uspokój mnie": until then she is only tender, her program waits
         self.scene = None                 # SceneTracker: what is happening in the video now (set by the main loop)
@@ -293,6 +296,11 @@ class Controller:
             self._last_line = self.clock()
             self._log("[key]", outcome)
         self._say(outcome)
+
+    def log_dropped(self, transcript, reason):
+        """an utterance dropped before it reached the controller (echo of her voice, speech-to-text hallucination):
+        logged too, so that "I said it and nothing happened" can be traced"""
+        self._log(transcript, Outcome("ignored", detail=reason))
 
     def _log(self, transcript, outcome):
         if not self.log_path:
@@ -414,6 +422,8 @@ class Controller:
         from lines import similar
         if not line or outcome.status not in ("executed", "dry-run", "denied") or outcome.via != "persona":
             return line
+        if outcome.extra.get("task"):
+            return line                    # her order said again on purpose: he has to hear what to do
         if self.language != "pl" or outcome.intent in self.persona_cfg.get("never_gated", []):
             return line                    # the variants are Polish; fixed lines (cooldown, safe word) stay as they are
         recent = [t for r, t in self._history[-12:] if r == "assistant"] + self._said_recent[-40:]
@@ -436,6 +446,8 @@ class Controller:
         """her refusal must not be the same sentence over and over: a line too close to one of her last ones is swapped
         for a variant from manners.denials[demand] that she has not said lately"""
         from lines import similar
+        if demand == "task" and self._task:
+            return self._task_line(self._task, reminder=True)      # the order she gave, said again: he must know what to do
         recent = [t for r, t in self._history[-12:] if r == "assistant"]
         if line and not any(similar(line, t) >= 0.75 for t in recent):
             return line
@@ -445,6 +457,61 @@ class Controller:
         if fresh:
             return self.rng.choice(fresh)
         return line or (options[0] if options else "")
+
+    def _task_kind(self, request_id):
+        cfg = self.persona_cfg["manners"].get("task_demands") or {}
+        for kind, ids in (cfg.get("kinds") or {}).items():
+            if any(str(request_id).startswith(i) for i in ids):
+                return kind
+        return "any"
+
+    def _draw_task_demand(self, request_id, stage):
+        """on a refusal, with task_demands.chance[stage]: an order that fits the request (a body position for the
+        machine, the mouth / the face for the Lube Launcher), not one given lately -> {"line", "done"} or None"""
+        cfg = self.persona_cfg["manners"].get("task_demands") or {}
+        if not cfg.get("enabled", False) or self.language != "pl":
+            return None
+        chances = cfg.get("chance") or [0.0]
+        if self.rng.random() >= float(chances[max(0, min(stage, len(chances) - 1))]):
+            return None
+        tasks = cfg.get("tasks") or {}
+        kind = self._task_kind(request_id)
+        pool = [t for t in list(tasks.get(kind) or []) + list(tasks.get("any") or []) if int(t.get("min_stage", 0)) <= stage]
+        used = getattr(self, "_task_demands_used", [])
+        fresh = [t for t in pool if t["line"] not in used] or pool
+        if not fresh:
+            return None
+        task = dict(self.rng.choice(fresh))
+        self._task_demands_used = (used + [task["line"]])[-12:]
+        return task
+
+    def _task_line(self, task, reminder=False):
+        """the order, then how to tell her it is done - he always knows what she wants"""
+        cfg = self.persona_cfg["manners"].get("task_demands") or {}
+        openers = cfg.get("reminders" if reminder else "openers") or [""]
+        tail = cfg.get("tail", "")
+        return " ".join(x for x in (self.rng.choice(openers), task["line"], tail) if x).strip()
+
+    def task_done_words(self):
+        """the words that report her order done ("wypinam", "gotowe"): short answers that count while she speaks"""
+        if not (self._last_demand and self._last_demand[1] == "task"):
+            return []
+        cfg = self.persona_cfg["manners"].get("task_demands") or {}
+        return [w for w in list((self._task or {}).get("done") or []) + list(cfg.get("done_words") or []) if len(w.split()) == 1]
+
+    def command_over_her(self, transcript, her_lines) -> bool:
+        """a command from the list ("ruchaj mnie mocniej") said while she speaks: it counts, unless it is her own
+        words coming back through the headphones"""
+        if self.mentions_safe_word(transcript):
+            return True
+        command = self.strip_wake_word(transcript) or transcript
+        m, _ = match(command, self.intents)
+        if m is None:
+            return False
+        for line in her_lines:
+            if similar(transcript, line) >= 0.6 or all(t in set(normalize(line).split()) for t in normalize(command).split()):
+                return False
+        return True
 
     def _demand_met(self, transcript):
         """did he do what she demanded last? beg -> a polite word; thank -> thanks; confess -> a confession ("jestem ...");
@@ -462,6 +529,12 @@ class Controller:
         if dem == "confess":
             return (low.startswith(("jestem", "i am", "i m", "należę", "naleze")) or "jestem" in words
                     or self._says_any(transcript, self.persona_cfg["confession_phrases"], 0.6))
+        if dem == "task":
+            cfg = self.persona_cfg["manners"].get("task_demands") or {}
+            done = list((self._task or {}).get("done") or []) + list(cfg.get("done_words") or [])
+            singles = {normalize(d) for d in done if len(normalize(d).split()) == 1}
+            return bool(words & singles) or self._says_any(transcript, [d for d in done if normalize(d) not in singles], 0.8) \
+                or self._says_any(transcript, self.persona_cfg["obey_phrases"], 0.88)
         if dem == "repeat":
             from lines import similar
             target = self._repeat_target or ""
@@ -1575,7 +1648,9 @@ class Controller:
                 "inspiracja": self._inspiration(stage, tone, harsh),
                 "zwroty_do_ciebie": list(address.get("titles", [])),
                 "zwroty_do_niej": list(address.get("names", [])), "prosby_bez_zgody": dict(self._asks),
-                "nalezy_sie_po_wykonaniu_zadania": self._owed, "kara_sekundy": round(self.penalty_remaining()),
+                "nalezy_sie_po_wykonaniu_zadania": self._owed,
+                "czekam_az_wykona": (self._task or {}).get("line") if self._last_demand and self._last_demand[1] == "task" else None,
+                "kara_sekundy": round(self.penalty_remaining()),
                 "blokada_5_min": self.lock_remaining() > 0, "wyciszanie": self.cooldown_active(),
                 "ostatnie_komendy": list(self._recent), "program_aktywny": self.program_summary(),
                 "nie_powtarzaj": list(self._said_recent[-30:]), "jezyk": self.language,
@@ -1649,7 +1724,8 @@ class Controller:
         if listed is not None and listed.score >= 0.95 and str(turn.request) not in ("none", "") and turn.request != listed.intent.id:
             turn.request = listed.intent.id
         extra = {"persona_raw": turn.raw, "latency_ms": turn.latency_ms}
-        if not turn.addressed:
+        if not turn.addressed and listed is None:
+            # (a command from the list - "ruchaj mnie mocniej" - is said to her even without "kochanie")
             return Outcome("ignored", "persona: not said to her", via="persona", extra=extra)
 
         now = self.clock()
@@ -1666,8 +1742,9 @@ class Controller:
             # he did what she asked - roughly is enough (the recognition is not exact): the ask goes on, with credit
             rid, dem = self._last_demand
             extra_met = {"demand_met": dem}
-            if dem in ("thank", "confess", "repeat"):
+            if dem in ("thank", "confess", "repeat", "task"):
                 self._owed, turn.thanked = rid, True          # the demand done: she gives it
+                self._task = None
             elif dem == "beg":
                 self._beg_met = rid
             bare = str(turn.request) in ("none", "", "improvise")
@@ -1694,6 +1771,7 @@ class Controller:
             self._penalty_until = now + float(m["penalty_seconds"])
             self._asks.clear()                               # an open refusal wipes the progress of the asks
             self._owed = None
+            self._task = None                                # and her order: now she wants an apology
         self._history.append(("user", transcript))
         del self._history[:-24]
         self._last_user, self._nudges = now, 0
@@ -1811,10 +1889,25 @@ class Controller:
             return spoken(turn.line_if_granted, self._grant(intent, turn.grant_actions, extra, now, "granted", override))
 
         self._asks[request_id] = self._asks.get(request_id, 0) + 1
-        if turn.demand in ("thank", "repeat", "confess"):
+        # asked again without doing her order: the dice said no again, and she repeats the same order
+        pending_task = self._task if (self._task and self._last_demand and self._last_demand[1] == "task"
+                                      and same_ask(self._last_demand[0], request_id) and self.penalty_remaining() <= 0) else None
+        task = pending_task or (None if extra.get("last_second") or self.penalty_remaining() > 0
+                                else self._draw_task_demand(request_id, stage))
+        if task is not None:
+            # an order instead of "ask nicer": do it, say so ("wypinam", "gotowe"), and she gives what was asked
+            self._task = task
             self._owed = request_id
-        self._last_demand = (request_id, turn.demand if turn.demand in ("beg", "thank", "repeat", "confess") else "beg")
-        turn.line_if_denied = self._varied_denial(turn.line_if_denied, self._last_demand[1])
+            self._last_demand = (request_id, "task")
+            extra["task"] = task["line"]
+            turn.line_if_denied = self._task_line(task, reminder=pending_task is not None)
+        else:
+            if turn.demand in ("thank", "repeat", "confess"):
+                self._owed = request_id
+            known = turn.demand in ("beg", "thank", "repeat", "confess")
+            self._last_demand = (request_id, turn.demand if known else "beg")
+            # a refusal must say what to do: the model's "Nie. I nie dąsaj się." (no demand) becomes a line that does
+            turn.line_if_denied = self._varied_denial(turn.line_if_denied if known else "", self._last_demand[1])
         o = Outcome("denied", f"persona: {turn.demand}", request_id, 0.0, "persona", extra)
         if not locked and self._tease_roll(stage):
             steps, used = self._persona_steps(turn.tease_actions, set(self.persona_cfg["tease_allowed"]))
@@ -2147,6 +2240,17 @@ class Controller:
             m = self._match_no_wake(transcript)
             if m is not None:
                 return self._run_match(m, now)
+            if self.wake_cfg_optional_for_commands:
+                # a plain request ("ruchaj mnie mocniej") needs no "kochanie": a command from the list counts as said to her
+                m, _ = match(transcript, self.intents)
+                if m is None and self.sides_enabled:
+                    bare = strip_side_words(transcript)
+                    if bare and bare != normalize(transcript):
+                        m, _ = match(bare, self.intents)
+                if m is not None:
+                    if self._gated(m.intent.id):
+                        return self._need_persona(transcript, m)
+                    return self._run_match(m, now)
             if self.persona_active() and self.in_reply_window():
                 # an answer to her: strict commands that are not hers to decide still work without the wake word
                 m, _ = match(transcript, self.intents)
