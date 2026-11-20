@@ -593,3 +593,18 @@ class FourthSession(Server):
         for needle in ("Już nie masz chuja", "Masz cycki i piękne nogi", "Oni się nigdy nie zaspokoją",
                        "nie mogą przestać", "Naćpali ciebie i siebie", "Uwielbiają cię ruchać w dupcię", "Sprzedałam cię"):
             self.assertIn(needle, seed)
+
+
+class EaseOff(Server):
+    def test_too_much_brings_calm_even_without_mode_words(self):
+        # 14:28:37 "Kurwa, to jest zbyt mocne dla mnie." -> calm was dropped by the mode rule
+        self.c.persona_cfg = dict(P, base_p=1.0, max_p=1.0, base_p_overrides={},
+                                  manners=dict(P["manners"], politeness_factor=1.0, ignore_demand_factor=1.0))
+        o = self.say("kochanie, to jest zbyt mocne dla mnie", request="calm")
+        self.assertEqual((o.status, o.intent), ("executed", "calm"))
+
+    def test_a_mode_named_by_its_number_counts(self):
+        from controller import MODE_WORDS
+        for text in ("włącz ósmy", "daj czwarty", "kochanie, szósty proszę", "tryb 3"):
+            self.assertTrue(MODE_WORDS.search(text), text)
+        self.assertFalse(MODE_WORDS.search("proszę cię, ładnie"))

@@ -89,7 +89,10 @@ NOT_A_REFUSAL = re.compile(r"\bnie\s+(oszczędzaj|oszczedzaj|przestawaj|zwalniaj
 MODE_ACTIONS = re.compile(r"::(Mode|Sequence|Surprise|Calm|Cooldown|Halt)\b|Media::PlayPause|Script::Loop")
 # his words that ask for a mode change ("włącz tryb ósmy", "wróć do filmu", "skrypt", "sekwencja", "losowy")
 MODE_WORDS = re.compile(r"tryb|program|film|skrypt|sekwenc|normaln|niespodzian|losow|zatrzymaj|stop|pauz|uspok|wycisz|"
+                        r"pierwsz|drug|trzec|czwart|piąt|szóst|siódm|ósm|\b[1-8]\b|\b[ab]\b|"
                         r"\bmode\b|script|movie|video|sequence|surpris|random|pause|calm", re.I)
+# a request to ease off is always his to make, whatever the words ("to jest zbyt mocne dla mnie" -> calm, 14:28)
+EASE_OFF = {"calm", "cooldown", "halt", "pause"}
 # her talk line saying the machine changes now ("przyspieszam", "tryb ósmy od teraz") while nothing ran
 MACHINE_CLAIM = re.compile(r"przyspiesz|zwalniam|zwolnię|tryb\w*\s+\w+|wracam do filmu|wracamy do filmu|głębiej wchodz|"
                            r"rytm|podwójne|szybciej|wolniej", re.I)
@@ -2129,7 +2132,7 @@ class Controller:
         # a mode changes only when HE asks for it: the model reading "proszę" as "tryb ósmy" (11:32) is not enough
         self._mode_wish = bool(MODE_WORDS.search(transcript)) or (listed is not None and self._changes_mode(listed.intent))
         wanted = next((i for i in self.intents if i.id == turn.request), None)
-        if self._changes_mode(wanted) and not self._mode_wish:
+        if self._changes_mode(wanted) and not self._mode_wish and turn.request not in EASE_OFF:
             extra_mode = {"mode_request_dropped": turn.request}
             turn.request = "none"
         else:
