@@ -115,6 +115,60 @@ class Bank(Server):
         self.assertTrue(all(0 <= t.get("min_stage", 0) <= 4 for v in TD["tasks"].values() for t in v))
 
 
+class Rewards(Server):
+    def order(self, line="Wypnij pupę. Wyżej.", done=("wypinam",), until=1e9):
+        self.c._spont_task = {"line": line, "done": list(done), "side": self.c._order_side(line), "until": until}
+
+    def test_reporting_her_own_order_pays_a_shot_or_a_push(self):
+        kinds = set()
+        for seed in range(12):
+            self.c.rng.seed(seed)
+            self.runs.clear()
+            self.order()
+            o = self.say("wypinam")
+            self.assertEqual((o.status, o.intent), ("executed", "task_reward"))
+            kinds.add(o.extra["reward"])
+            actions = [st["action"] for steps in self.runs for st in steps]
+            if o.extra["reward"] == "lube":
+                self.assertEqual(actions, ["{target}::Hismith::Rear::LubeLauncher::Fire"])
+            else:
+                self.assertEqual(actions, ["{target}::Hismith::Rear::Speed::Faster"] * 2)
+                self.assertTrue(10 <= o.extra["seconds"] <= 15)
+                for t in self.c._reward_timers:
+                    t.cancel()
+            self.assertTrue(o.extra["say"])
+        self.assertEqual(kinds, {"lube", "push"})
+
+    def test_the_push_goes_back_after_its_time(self):
+        self.c.persona_cfg = dict(P, narration=dict(P["narration"], tasks=dict(P["narration"]["tasks"],
+                                  rewards=dict(P["narration"]["tasks"]["rewards"], lube_p={"rear": 0.0}, push_seconds=[0.05, 0.05]))))
+        self.order()
+        o = self.say("gotowe")
+        self.assertEqual(o.extra["reward"], "push")
+        self.c._reward_timers[-1].join(2)
+        actions = [st["action"] for steps in self.runs for st in steps]
+        self.assertEqual(actions, ["{target}::Hismith::Rear::Speed::Faster"] * 2 + ["{target}::Hismith::Rear::Speed::Slower"] * 2)
+
+    def test_a_mouth_order_is_the_front_one(self):
+        self.assertEqual(self.c._order_side("Otwórz usta szeroko i pokaż język."), "front")
+        self.assertEqual(self.c._order_side("Ściskaj! Puść! Ssij głębiej!"), "front")
+        self.assertEqual(self.c._order_side("Rozłóż nogi szerzej."), "rear")
+
+    def test_too_late_or_unrelated_pays_nothing(self):
+        self.order(until=0)
+        self.assertNotEqual(self.say("gotowe").intent, "task_reward")
+        self.order()
+        self.assertNotEqual(self.say("kochanie, szybciej").intent, "task_reward")
+        self.assertIsNotNone(self.c._spont_task)
+
+    def test_her_refusal_order_comes_first(self):
+        self.c.persona_cfg = cfg(1.0)
+        self.say("kochanie, ruchaj mnie mocniej", request="hard")
+        self.order()
+        o = self.say(self.c._task["done"][0], request="none")
+        self.assertEqual(o.intent, "hard")
+
+
 class InstructiveRefusal(Server):
     def test_a_refusal_without_a_demand_says_what_to_do(self):
         # 08:48:32 "Nie. I nie dąsaj się." - no hint that asking again, nicer, would work
@@ -150,3 +204,45 @@ class NoWakeWord(Server):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class OrdersInNarration(Server):
+    def setUp(self):
+        super().setUp()
+        import copy
+        self.c.persona_cfg = copy.deepcopy(P)
+        n = self.c.persona_cfg["narration"]
+        n["min_gap_seconds"] = [0, 0]
+        n["address"]["enabled"] = False
+        n["tasks"]["enabled"] = True                             # (another test module switches them off in the shared config)
+        n["tasks"]["rewards"]["enabled"] = True
+        n["tasks"]["share"] = [1.0]                              # every line an order
+        self.c.persona.narrate = lambda *a, **k: "Linia."
+        self.say("kochanie, jestem twoja", request="none")      # a session is on
+        self.said.clear()
+
+    def first_line(self):
+        for _ in range(400):
+            self.clock.t += 1
+            line = self.c.idle_narration()
+            if line:
+                return line
+        self.fail("no narration")
+
+    def test_her_order_says_it_pays_and_is_remembered(self):
+        rewards = self.c.persona_cfg["narration"]["tasks"]["rewards"]
+        line = self.first_line()
+        self.assertTrue(line.endswith(rewards["tail"]), line)
+        self.assertIsNotNone(self.c._spont_task)
+        self.assertIn(self.c._spont_task["line"], line)
+        o = self.say("gotowe")
+        self.assertEqual(o.intent, "task_reward")
+        for t in self.c._reward_timers:
+            t.cancel()
+
+    def test_bank_orders_carry_their_own_done_words(self):
+        self.c.persona_cfg["narration"]["tasks"]["rewards"]["bank_share"] = 1.0
+        self.first_line()
+        bank = [t["line"] for v in TD["tasks"].values() for t in v]
+        self.assertIn(self.c._spont_task["line"], bank)
+        self.assertTrue(self.c._spont_task["done"])

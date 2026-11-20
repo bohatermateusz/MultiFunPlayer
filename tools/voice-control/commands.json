@@ -5104,6 +5104,38 @@
    },
    "tasks": {
     "_comment": "Physical orders she gives at random (adapted from the session-controller instruction list), mixed into the narration with share[stage]; drawn without repeats within a session; gentle ones early, harder ones late. 'care' lines are never dropped from the draw.",
+    "rewards": {
+     "_comment": "A reward for doing an order she gave by herself: the order ends with 'tail'; saying it is done within window_seconds ('gotowe', 'wypinam', 'tak, Pani' - the order's own done words when it comes from the refusal bank, task_demands.done_words, obey_phrases) earns a Lube Launcher shot on the order's side (lube_p: front = orders for the mouth / the face, rear = the rest) or the machine of that side faster by push_steps for push_seconds, then back. No speed reward while the lock or the cooldown is on (then a shot). bank_share = how many of her orders come from the refusal bank (manners.task_demands, with their done words) instead of by_stage.",
+     "enabled": true,
+     "window_seconds": 60,
+     "bank_share": 0.5,
+     "tail": "Zrób to i powiedz mi, a dostaniesz nagrodę.",
+     "lube_p": {
+      "front": 0.6,
+      "rear": 0.35
+     },
+     "push_seconds": [
+      10,
+      15
+     ],
+     "push_steps": 2,
+     "praise": {
+      "lube": [
+       "Grzeczna. Masz swoją nagrodę.",
+       "Tak się słucha. Łap.",
+       "Dobra dziewczynka dostaje swoją porcję.",
+       "Widzisz? Posłuszeństwo smakuje.",
+       "Za to, że zrobiłaś. Bierz."
+      ],
+      "push": [
+       "Grzeczna. Teraz cię mocniej weźmie.",
+       "Za posłuszeństwo dostajesz szybciej. Trzymaj się.",
+       "Tak się słucha. Niech cię teraz porządnie wyrucha.",
+       "Masz nagrodę. Czujesz, jak przyspiesza?",
+       "Dobra dziewczynka. Teraz mocniej, na chwilę."
+      ]
+     }
+    },
     "enabled": true,
     "share": [0.15, 0.25, 0.35, 0.4, 0.4],
     "by_stage": {

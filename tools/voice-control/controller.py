@@ -235,6 +235,8 @@ class Controller:
         self._repeat_target = None        # the sentence she told him to repeat ("Powtórz za mną: ...")
         self._last_demand = None          # (request id, demand) of her last refusal: what she wants before she gives it
         self._task = None                 # the order of a "task" refusal ({"line", "done"}): do it, say so, and she gives it
+        self._spont_task = None           # an order she gave by herself ({"line", "done", "side", "until"}): done -> a reward
+        self._reward_timers = []          # the pending "back to normal" of a speed reward
         self._beg_met = None              # a request whose "ask nicer" demand he has just met (a bonus on the dice)
         self._cooldown_until = 0.0        # "uspokój mnie": until then she is only tender, her program waits
         self.scene = None                 # SceneTracker: what is happening in the video now (set by the main loop)
@@ -494,10 +496,95 @@ class Controller:
 
     def task_done_words(self):
         """the words that report her order done ("wypinam", "gotowe"): short answers that count while she speaks"""
-        if not (self._last_demand and self._last_demand[1] == "task"):
+        refusal = self._last_demand and self._last_demand[1] == "task"
+        spont = self._spont_task is not None and self.clock() <= self._spont_task["until"]
+        if not (refusal or spont):
             return []
         cfg = self.persona_cfg["manners"].get("task_demands") or {}
-        return [w for w in list((self._task or {}).get("done") or []) + list(cfg.get("done_words") or []) if len(w.split()) == 1]
+        own = list((self._task or {}).get("done") or []) if refusal else []
+        own += list((self._spont_task or {}).get("done") or []) if spont else []
+        return [w for w in own + list(cfg.get("done_words") or []) if len(w.split()) == 1]
+
+    def _rewards_cfg(self):
+        return self.persona_cfg.get("narration", {}).get("tasks", {}).get("rewards") or {}
+
+    MOUTH_WORDS = ("usta", "ust", "ssij", "ssać", "połyk", "łyk", "język", "twarz", "gardł", "buzi", "warg")
+
+    def _order_side(self, line):
+        """an order for the mouth / the face is the front's, any other (pupa, nogi, dziurka) the rear's"""
+        low = (line or "").lower()
+        return "front" if any(w in low for w in self.MOUTH_WORDS) else "rear"
+
+    def _draw_spontaneous_order(self, stage):
+        """an order of hers from the refusal bank (with the words that report it done), share bank_share of her orders"""
+        rewards = self._rewards_cfg()
+        cfg = self.persona_cfg["manners"].get("task_demands") or {}
+        if not rewards.get("enabled") or self.language != "pl" or self.rng.random() >= float(rewards.get("bank_share", 0.0)):
+            return None
+        tasks = cfg.get("tasks") or {}
+        pool = [t for k in ("machine", "lube", "any") for t in tasks.get(k) or [] if int(t.get("min_stage", 0)) <= stage]
+        used = getattr(self, "_task_demands_used", [])
+        fresh = [t for t in pool if t["line"] not in used]
+        if not fresh:
+            return None
+        order = dict(self.rng.choice(fresh))
+        self._task_demands_used = (used + [order["line"]])[-12:]
+        return order
+
+    def _spontaneous_order_done(self, transcript, now):
+        """he says he did the order she gave by herself (within rewards.window_seconds): she rewards him - a Lube
+        Launcher shot on the order's side, or the machine faster for push_seconds -> Outcome, else None"""
+        task = self._spont_task
+        if not task or now > task["until"]:
+            self._spont_task = None
+            return None
+        if self._last_demand and self._last_demand[1] == "task":
+            return None                                      # her refusal's order comes first
+        cfg = self.persona_cfg["manners"].get("task_demands") or {}
+        done = list(task.get("done") or []) + list(cfg.get("done_words") or [])
+        singles = {normalize(d) for d in done if len(normalize(d).split()) == 1}
+        words = set(normalize(transcript).split())
+        if not (words & singles or self._says_any(transcript, [d for d in done if normalize(d) not in singles], 0.8)
+                or self._says_any(transcript, self.persona_cfg["obey_phrases"], 0.88)):
+            return None
+        self._spont_task = None
+        rewards = self._rewards_cfg()
+        side = task["side"]
+        lube_p = float((rewards.get("lube_p") or {}).get(side, 0.5))
+        can_push = self.lock_remaining() <= 0 and not self.cooldown_active()
+        kind = "lube" if (not can_push or self.rng.random() < lube_p) else "push"
+        tag = "Front" if side == "front" else "Rear"
+        extra = {"reward": kind, "side": side, "order": task["line"]}
+        if kind == "lube":
+            steps = [{"action": f"{{target}}::Hismith::{tag}::LubeLauncher::Fire", "args": []}]
+            if not self.dry_run:
+                self._run_raw(steps)
+        else:
+            lo, hi = rewards.get("push_seconds", [10, 15])
+            seconds = self.rng.uniform(float(lo), float(hi))
+            n = int(rewards.get("push_steps", 2))
+            up = [{"action": f"{{target}}::Hismith::{tag}::Speed::Faster", "args": []}] * n
+            down = [{"action": f"{{target}}::Hismith::{tag}::Speed::Slower", "args": []}] * n
+            extra["seconds"] = round(seconds, 1)
+            if not self.dry_run:
+                self._run_raw(up)
+                timer = threading.Timer(seconds, self._run_raw, args=(down,))
+                timer.daemon = True
+                timer.start()
+                self._reward_timers = [t for t in self._reward_timers if t.is_alive()] + [timer]
+        praise = list(rewards.get("praise", {}).get(kind) or []) or ["Grzeczna."]
+        from lines import similar
+        recent = [t for r, t in self._history[-12:] if r == "assistant"]
+        fresh = [x for x in praise if not any(similar(x, t) >= 0.75 for t in recent)] or praise
+        line = self.rng.choice(fresh)
+        stage = self.stage()
+        self._heat_up("granted")
+        self._history.append(("user", transcript))
+        self._history.append(("assistant", line))
+        self._window_until = self.clock() + float(self.persona_cfg["reply_window"])
+        self._last_line = self._last_user = self.clock()
+        extra.update(say=line, stage=stage, voice=stage + (5 if self._tone_now[0] == "ostry" else 0))
+        return Outcome("executed", f"order done: {kind}", "task_reward", 1.0, "persona", extra)
 
     def command_over_her(self, transcript, her_lines) -> bool:
         """a command from the list ("ruchaj mnie mocniej") said while she speaks: it counts, unless it is her own
@@ -1527,9 +1614,11 @@ class Controller:
         tasks = cfg.get("tasks", {})
         share = tasks.get("share", [0.0])
         line = None
+        spont = None
         if tasks.get("enabled") and not soft and self.rng.random() < float(share[max(0, min(stage, len(share) - 1))]):
             with self._lock:
-                line = self._draw_task(stage)
+                spont = self._draw_spontaneous_order(stage)
+                line = spont["line"] if spont else self._draw_task(stage)
             if line:
                 source, theme = "task", "polecenie"
         topic = theme
@@ -1557,7 +1646,15 @@ class Controller:
         if not line:
             return None
         line, called = self._addressed(line, tone, stage, soft)
+        rewards = self._rewards_cfg()
+        if source == "task" and rewards.get("enabled") and self.language == "pl":
+            order = spont or {"line": line, "done": []}
+            line = " ".join(x for x in (line, rewards.get("tail", "")) if x)   # he knows it pays to do it
         with self._lock:
+            if source == "task" and rewards.get("enabled") and self.language == "pl":
+                self._spont_task = {"line": order["line"], "done": list(order.get("done") or []),
+                                    "side": self._order_side(order["line"]),
+                                    "until": self.clock() + float(rewards.get("window_seconds", 60))}
             self._history.append(("assistant", line))
             del self._history[:-24]
             self._window_until = self.clock() + float(self.persona_cfg["reply_window"])
@@ -2233,6 +2330,9 @@ class Controller:
         safe = self._safe_word_first(transcript)
         if safe is not None:
             return self._run_match(safe, now)                # "trąbka ..." stops, whatever follows
+        reward = self._spontaneous_order_done(transcript, now)
+        if reward is not None:
+            return reward                                    # "gotowe" after her order: the reward
         transcript = self._carry_wake(transcript, consume=True)
         command = self.strip_wake_word(transcript)
         if command is None:

@@ -252,6 +252,10 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   Say it is done ("wypinam", "gotowe", "zrobione", "tak, Pani"; also while she is speaking) and she gives what you asked.
   Asking again without doing it rolls the dice once more and, on a no, repeats the same order. A refusal the model gives
   without any demand ("Nie. I nie dąsaj się.") is replaced by an "ask nicer" line.
+* **Her own orders pay** (`narration.tasks.rewards`): an order she gives by herself in the narration ends with "Zrób to
+  i powiedz mi, a dostaniesz nagrodę." Say it is done within 60 s ("gotowe", "wypinam", "tak, Pani") and you get a
+  Lube Launcher shot on the order's side (mouth / face orders: the front one, 60 %; the rest: the rear one, 35 %) or the
+  machine of that side faster (+2 speed steps) for 10-15 s, then back. Half of her orders come from the refusal bank.
 * **No wake word for commands** (`wake.optional_for_commands`, on): a command from the list works said plainly
   ("ruchaj mnie mocniej", "włącz tryb ósmy"), also over her voice unless it is her own words coming back; loose talk
   still needs "kochanie" / "Pani" or her reply window. Utterances dropped as her echo or as a speech-to-text
