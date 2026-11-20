@@ -227,6 +227,7 @@ internal sealed partial class ButtplugOutputTarget
             0 => "funscript",
             ModeA => st.MaxDepthAB ? "A max" : "A",
             ModeB => st.MaxDepthAB ? "B max" : "B",
+            ModeC => "C (full stroke)",
             ModeHalt => "STOPPED",
             ModeCalm => "CALM",
             ModeCooldown => st.CooldownRemaining > 0 ? $"COOLDOWN {TimeSpan.FromSeconds(Math.Ceiling(st.CooldownRemaining)):m\\:ss} left" : "COOLDOWN done (micro strokes)",

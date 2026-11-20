@@ -299,6 +299,18 @@
                     <Button Style="{StaticResource MaterialDesignOutlinedButton}"
                             MinWidth="44"
                             Padding="8 0"
+                            Command="{s:Action OnHismithModeButton}" CommandParameter="14"
+                            Content="C"
+                            ToolTip="Mode C: the full stroke (shallowest to deepest) at an even pace; faster / slower change the pace"/>
+                    <TextBlock HorizontalAlignment="Center"
+                               FontSize="10"
+                               Opacity="0.7"
+                               Text=" "/>
+                </StackPanel>
+                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            MinWidth="44"
+                            Padding="8 0"
                             Click="{s:Action HismithModeScript}"
                             Content="Script"
                             ToolTip="Back to the funscripts"/>

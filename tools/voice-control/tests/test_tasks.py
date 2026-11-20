@@ -703,3 +703,14 @@ class StoryMovesOn(Server):
             self.clock.t += 15 * 60                                            # past storyline_minutes
             stories.add(tuple(self.c._refresh_storyline()))
         self.assertGreater(len(stories), 3)
+
+
+class ModeC(Server):
+    def test_mode_c_is_the_full_stroke(self):
+        from matcher import match
+        for text in ("tryb c", "włącz tryb ce", "pełny ruch", "pełny zakres", "na całą długość"):
+            m, _ = match(text, INTENTS_ALL)
+            self.assertEqual(m.intent.id if m else None, "mode_c", text)
+        c = next(i for i in INTENTS_ALL if i.id == "mode_c")
+        self.assertEqual(c.steps, [{"action": "{target}::Hismith::Mode::Set", "args": [14]}])
+        self.assertIn("mode_c", P["gated"])

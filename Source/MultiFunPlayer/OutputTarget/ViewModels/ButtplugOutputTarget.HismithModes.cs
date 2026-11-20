@@ -20,6 +20,7 @@ internal sealed partial class ButtplugOutputTarget
     private const int ModeCalm = 12;               // slowest speed, medium depth: "enough" without stopping
     private const int ModeHalt = 11;               // speed 0, the script is held back for the machine until another mode
     private const int ModeCooldown = 13;           // the wind-down: slower, deeper, a narrower stroke, then micro strokes
+    private const int ModeC = 14;                  // the full stroke at an even pace: shallowest to deepest, no script
     private const int SmallestStrokeWidth = 10;
     private const int MaxDepthAB = 80;             // "max tryb A / B": A or B at this depth
     private const int PresetStartSpeed = 50;      // the speed that wakes a stopped machine before a built-in mode
@@ -550,7 +551,7 @@ internal sealed partial class ButtplugOutputTarget
 
     private void SetHismithModeCore(int mode, bool fromSurprise, bool maxDepth = false)
     {
-        mode = Math.Clamp(mode, 0, ModeCalm);
+        mode = mode == ModeC ? ModeC : Math.Clamp(mode, 0, ModeCalm);
         if (mode == ModeHalt)
             HismithLockClear();    // Stop always works and releases the hold
         else if (!fromSurprise && RejectedByLock($"mode {mode}"))
@@ -691,6 +692,18 @@ internal sealed partial class ButtplugOutputTarget
                 await SendQuickActuatorsAsync(DepthDescription, 50, 100);
                 await SetSpeedSurelyAsync(Math.Max(CalmSpeeds[state.CalmLevel], _hismithSlowestSpeed));
             }
+            else if (mode == ModeC)
+            {
+                // C: the whole travel at an even pace - the widest window around the middle, the speed the side has
+                // (faster / slower change it from here, as in the other modes). User, 2026-11-20.
+                await SendQuickActuatorsAsync(WidthDescription, 100, 100);
+                state.Depth = 50;
+                NotifyOfPropertyChange(nameof(HismithDepth));
+                await SendQuickActuatorsAsync(DepthDescription, 50, 100);
+                var speed = Math.Max(state.Speed, PresetStartSpeed);
+                Logger.Info("Mode C (full stroke) on the {0} side at speed {1}", _sideScope.Value?.ToString() ?? "every", speed);
+                await SetSpeedSurelyAsync(speed);
+            }
             else
             {
                 // A and B: the smallest stroke at the depth the built-in modes get (the script's, as at the start),
@@ -718,7 +731,7 @@ internal sealed partial class ButtplugOutputTarget
 
     private void RegisterHismithModeActions(IShortcutManager s)
     {
-        s.RegisterAction<int>($"{Identifier}::Hismith::Mode::Set", s => s.WithLabel("Mode (0 = funscript, 1-8 built-in, 9 = A, 10 = B, 11 = stop, 12 = calm)"), SetHismithMode);
+        s.RegisterAction<int>($"{Identifier}::Hismith::Mode::Set", s => s.WithLabel("Mode (0 = funscript, 1-8 built-in, 9 = A, 10 = B, 11 = stop, 12 = calm, 14 = C full stroke)"), SetHismithMode);
         s.RegisterAction<int>($"{Identifier}::Hismith::Mode::SetMax", s => s.WithLabel("Mode A (9) / B (10) at 80% depth"), SetHismithModeMax);
         s.RegisterAction($"{Identifier}::Hismith::Mode::Script", HismithModeScript);
         s.RegisterAction($"{Identifier}::Hismith::Mode::Random", HismithModeRandom);
@@ -872,7 +885,7 @@ internal sealed partial class ButtplugOutputTarget
                 // (user, 2026-11-20). An older stop still starts from the slowest.
                 if (previous == ModeHalt && Environment.TickCount64 - state.HaltedAt <= HaltThenCooldownMs)
                     previous = state.PreHaltMode;
-                startSpeed = previous == ModeHalt ? _hismithSlowestSpeed : previous is >= 1 and <= ModeCalm ? state.Speed : 60;
+                startSpeed = previous == ModeHalt ? _hismithSlowestSpeed : previous is (>= 1 and <= ModeCalm) or ModeC ? state.Speed : 60;
                 startDepth = state.Depth;
                 state.Mode = ModeCooldown;      // the script output to this side's machine is suppressed from here on
                 NotifyModeChanged();

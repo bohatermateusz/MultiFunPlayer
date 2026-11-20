@@ -257,6 +257,8 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   the sentence is doing it). Say it is done within 60 s ("zrobione", "gotowe", "wypinam", "tak, Pani") and you get a
   Lube Launcher shot on the order's side (mouth / face orders: the front one, 60 %; the rest: the rear one, 35 %) or the
   machine of that side faster (+2 speed steps) for 10-15 s, then back. Half of her orders come from the refusal bank.
+* **Mode C** (MFP button C, Mode::Set 14; voice "tryb C", "pełny ruch", "pełny zakres", "na całą długość"): the full
+  stroke, shallowest to deepest, at an even pace without the script; faster / slower change the pace.
 * **Deeper / shallower keep the strokes** (MFP): the film's whole stroke window is shifted and cut at the machine's
   ends (a full-width script gets the same rhythm, only shallower / deeper), not just its centre moved.
 * **"trąbka uspakajająca" after "trąbka"**: the live mode hears "trąbka" first and stops; the password within 8 s
