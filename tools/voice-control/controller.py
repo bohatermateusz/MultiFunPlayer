@@ -3,6 +3,7 @@
 Two ways to a command: the strict matcher (wake word + closed list of phrases; offline, instant) and,
 when that finds nothing, an optional LLM that guesses which configured command was meant (see llm.py).
 The LLM only picks one of the configured commands; the tool validates the pick and runs its steps."""
+import collections
 import copy
 import json
 import random
@@ -250,6 +251,9 @@ class Controller:
         self._repeat_target = None        # the sentence she told him to repeat ("Powtórz za mną: ...")
         self._last_demand = None          # (request id, demand) of her last refusal: what she wants before she gives it
         self._mode_wish = False           # his words in this turn ask for a mode change (only then may a mode change)
+        self._her_spoken = collections.deque(maxlen=12)   # (time, line) of what she said lately: her echo is not him
+        self._already = None              # a command that ran at once (certain grant); she only comments it
+        self._cum_rolled = False          # the cum side of this turn is decided already
         self._task = None                 # the order of a "task" refusal ({"line", "done"}): do it, say so, and she gives it
         self._spont_task = None           # an order she gave by herself ({"line", "done", "side", "until"}): done -> a reward
         self._reward_timers = []          # the pending "back to normal" of a speed reward
@@ -384,10 +388,20 @@ class Controller:
             with self._lock:
                 self._last_heard = self.clock()
 
+    def _echo_outcome(self, transcript):
+        if self.is_her_echo(transcript):
+            o = Outcome("ignored", "her own voice (echo)")
+            self._log(transcript, o)
+            return o
+        return None
+
     def handle(self, transcript: str) -> Outcome:
         gate = self._mic_gate(transcript)
         if gate is not None:
             return gate
+        echo = self._echo_outcome(transcript)
+        if echo is not None:
+            return echo
         with self._lock:
             self._last_heard = self.clock()
             words = self.side_of(transcript)
@@ -542,9 +556,12 @@ class Controller:
 
     def _roll_cum_side(self):
         """where a cum goes when nobody said: behind with lube.rear_share (0.5), else in her mouth / on her face"""
-        share = self.persona_cfg.get("lube", {}).get("rear_share", 0.5)
+        lube = self.persona_cfg.get("lube", {})
+        share = lube.get("rear_share", 0.5)
         if share is None:
             return None                                       # off: the old way (her choice / every launcher)
+        if self.rng.random() < float(lube.get("both_share", 0.0) or 0.0):
+            return "both"                                     # both launchers at once
         return "rear" if self.rng.random() < float(share) else "front"
 
     TEASE_UNDO = {"Speed::Slower": "Speed::Faster", "Depth::Shallower": "Depth::Deeper"}
@@ -674,6 +691,32 @@ class Controller:
         extra.update(say=line, stage=stage, voice=stage + (5 if self._tone_now[0] == "ostry" else 0))
         return Outcome("executed", f"order done: {kind}", "task_reward", 1.0, "persona", extra)
 
+    def note_spoken(self, line):
+        """she said this (her echo comes back through the microphone a moment later)"""
+        if line:
+            self._her_spoken.append((self.clock(), line))
+
+    def is_her_echo(self, transcript, window=45.0):
+        """her own words picked up by the microphone (12:37-12:47: ten minutes of her answering herself, "mocniej" run
+        fourteen times): close to a line she said within window seconds, or (3+ words) all of them in one such line.
+        Repeating the sentence she told him to repeat is not an echo."""
+        words = normalize(transcript).split()
+        if not words or self.mentions_safe_word(transcript):
+            return False
+        targets = [t for t in (self._repeat_target, repeat_target((self._spont_task or {}).get("line") or "")) if t]
+        if any(similar(transcript, t) >= 0.55 for t in targets):
+            return False
+        now = self.clock()
+        for at, line in list(self._her_spoken):
+            if now - at > window:
+                continue
+            if similar(transcript, line) >= 0.6:
+                return True
+            said = set(normalize(line).split())
+            if len(words) >= 3 and sum(1 for w in words if w in said) >= max(3, int(0.8 * len(words))):
+                return True
+        return False
+
     def command_over_her(self, transcript, her_lines) -> bool:
         """a command from the list ("ruchaj mnie mocniej") said while she speaks: it counts, unless it is her own
         words coming back through the headphones"""
@@ -764,6 +807,9 @@ class Controller:
         gate = self._mic_gate(transcript)
         if gate is not None:
             return "outcome", gate
+        echo = self._echo_outcome(transcript)
+        if echo is not None:
+            return "outcome", echo
         with self._lock:
             self._last_heard = self.clock()
             result = self._handle(transcript)
@@ -1093,6 +1139,8 @@ class Controller:
         """A transcript still being written (live mode). Only strict matches, no dice: the safe word runs at once, an
         ungated complete command runs at once (and is remembered, so the final transcript does not run it twice); a
         gated request is returned as a _NeedPersona for a speculative call. -> Outcome | _NeedPersona | None"""
+        if self.is_her_echo(text):
+            return None
         with self._lock:
             now = self.clock()
             if item in self._consumed:
@@ -1201,6 +1249,7 @@ class Controller:
                                                           "stage": outcome.extra.get("stage", self.stage()), "language": self.language}, True)
                         with self._lock:
                             self._remember_said(fixed)
+                            self.note_spoken(fixed)
                     elif chosen is None:
                         outcome.extra.pop("say", None)
                     meta = {"tone": outcome.extra.get("tone", self._tone_now[0]), "kind": "answer",
@@ -1226,6 +1275,7 @@ class Controller:
                         speak_sentence(_scrub(rest)[0], meta, True)
                         line = _scrub(line)[0]
                         with self._lock:
+                            self.note_spoken(line)
                             outcome.extra["say"] = line
                             outcome.extra["kind"] = self._kind_of(line, outcome.extra)
                             self._history = [(r, line if t in (G, D) else t) for r, t in self._history]
@@ -1286,6 +1336,14 @@ class Controller:
         side = self._turn_side
         if side in ("front", "rear"):
             self._last_side = side
+        if side in ("front", "rear") and not getattr(self, "_turn_side_from_words", False):
+            # a mode / the script / boosts go to every machine unless his words name one: "wróć do filmu" went to
+            # the front only (the side of the last cum) and the rear machine stayed in mode B (12:32)
+            out = []
+            for st in steps:
+                keep = MODE_ACTIONS.search(st.get("action", "")) or "::Boost::" in st.get("action", "")
+                out += self._sided([st], None if keep else side)
+            return self._run_raw(out)
         return self._run_raw(self._sided(steps, side))
 
     def is_banned(self, line):
@@ -1350,6 +1408,8 @@ class Controller:
             if self.is_banned(line):
                 outcome.extra["names_gear"] = True # the model named the hardware; logged, so the prompt can be tightened
             self._remember_said(line)      # pool lines are recorded by the pool itself
+        if line:
+            self.note_spoken(line)
         if line and (self.speak or self.speak_ex) and not self.external_voice:
             extra = outcome.extra
             if "kind" not in extra:
@@ -1589,7 +1649,8 @@ class Controller:
 
     def _fire_lube_surprise(self, extra):
         if self._turn_side is None:
-            self._turn_side = self._roll_cum_side() or self._last_side or "front"   # an unasked shot: behind or in her face
+            side = self._roll_cum_side() or self._last_side or "front"   # an unasked shot: behind, in her face or both
+            self._turn_side = None if side == "both" else side
         intent = next((i for i in self.intents if i.id == "lube_fire"), None)
         if intent is None:
             return False
@@ -1847,6 +1908,8 @@ class Controller:
         line, plan = result if isinstance(result, tuple) else (result, [])
         if not line:
             return None
+        if self.is_repeat(line) or self.is_banned(line):
+            return None                          # said already / about "Pani": silence is better than the same line again
         with self._lock:
             self._nudges += 1
             tone, harsh = self._tone_now
@@ -1894,13 +1957,52 @@ class Controller:
                 "nastroj_teraz": self.session_mood, "scena": self._scene_state(),
                 "regula_jezyka": self.persona_cfg.get("language_rule", "")}
 
+    def _certain(self, intent_id):
+        """everything asked is granted (max_p and its chance 1.0, no factors, no punishment): then the command runs at
+        once and she only comments it - no 2-3 s wait for the model (12:18-12:47: 1.3-2.9 s per command)"""
+        c = self.persona_cfg
+        if intent_id in (c.get("not_at_once") or ["use_me", "improvise", "surprise", "surprise_again"]):
+            return False                    # "jestem twoja" is mostly a confession: she reads it first
+        m = c["manners"]
+        base = float(c["base_p_overrides"].get(intent_id, c["base_p"]))
+        return (float(c.get("max_p", 0.95)) >= 1.0 and base >= 1.0 and float(m.get("politeness_factor", 1)) >= 1.0
+                and float(m.get("ignore_demand_factor", 1)) >= 1.0 and self.penalty_remaining() <= 0
+                and not c.get("last_second", {}).get("enabled") and float(c.get("difficulty", 1.0)) >= 1.0)
+
+    def _run_then_persona(self, transcript, m, now):
+        """a certain grant: the command runs now, her line follows (the model is told it is done)"""
+        if not self._certain(m.intent.id) or self.lock_remaining() > 0:
+            return self._need_persona(transcript, m)
+        if m.intent.id.startswith("lube_") and not getattr(self, "_turn_side_from_words", False):
+            side = self._roll_cum_side()
+            if m.intent.id == "lube_many" and side:
+                side = "both"
+            self._cum_side, self._cum_rolled = side, True
+            if side:
+                self._turn_side = None if side == "both" else side
+        if self._changes_mode(m.intent):
+            self._mode_wish = True
+        o = self._run_match(m, now)
+        if o.status not in ("executed", "dry-run"):
+            return o
+        o.extra["decision"] = "at once"
+        self._already = o
+        need = self._need_persona(transcript, m)
+        need.state["juz_zrobione"] = m.intent.id      # it ran: she only comments it
+        return need
+
     def _need_persona(self, transcript, plain=None):
         self._last_plain = plain
         state = self._persona_state()
-        # a cum he asks for without saying where: rolled here, so that her line and the launcher agree
-        self._cum_side = self._roll_cum_side() if not getattr(self, "_turn_side_from_words", False) else None
+        # a cum he asks for without saying where: rolled here (or when it ran at once), so that her line and the
+        # launcher agree; "zalej mnie" is both at once
+        if not self._cum_rolled:
+            self._cum_side = self._roll_cum_side() if not getattr(self, "_turn_side_from_words", False) else None
+            if plain is not None and plain.intent.id == "lube_many" and self._cum_side:
+                self._cum_side = "both"
+        self._cum_rolled = False
         if self._cum_side:
-            state["wytrysk_gdzie"] = "tyl" if self._cum_side == "rear" else "przod"
+            state["wytrysk_gdzie"] = {"rear": "tyl", "front": "przod", "both": "obie strony naraz"}[self._cum_side]
         return _NeedPersona(transcript, state, list(self._history), plain)
 
     def _ask_persona(self, need: _NeedPersona):
@@ -1954,6 +2056,27 @@ class Controller:
 
     def _finish_persona(self, transcript, turn) -> Outcome:
         listed, self._last_plain = getattr(self, "_last_plain", None), None
+        already, self._already = self._already, None
+        if already is not None:
+            # it ran when he said it: her line is the comment (unreachable model: the command stays done, no line)
+            if isinstance(turn, tuple):
+                return already
+            self._history.append(("user", transcript))
+            self._last_user, self._nudges = self.clock(), 0
+            self._heat_up("granted")
+            line = turn.line_if_granted or turn.line_if_denied
+            if line and MACHINE_CLAIM.search(line) and not already.intent.startswith(("faster", "slower", "hard", "use_me", "tease", "mode_", "script", "normal")):
+                line = ""
+            if line:
+                tone, harsh = self._tone_now
+                stage = self.stage()
+                already.extra.update(say=line, stage=stage, tone=tone, harsh=harsh, voice=stage + (5 if tone == "ostry" else 0),
+                                     persona_raw=turn.raw, latency_ms=turn.latency_ms)
+                self._history.append(("assistant", line))
+                self._window_until = self.clock() + float(self.persona_cfg["reply_window"])
+                self._last_line = self.clock()
+            already.via = "persona"
+            return already
         if isinstance(turn, tuple):
             error, plain = turn
             if plain is not None and plain.intent.id in self.persona_cfg["fallback_plain"]:
@@ -1989,7 +2112,7 @@ class Controller:
         if not getattr(self, "_turn_side_from_words", False) and getattr(turn, "side", "auto") in ("front", "rear", "both"):
             self._turn_side = None if turn.side == "both" else turn.side          # she chose the side from the context
         if not getattr(self, "_turn_side_from_words", False) and self._cum_side and str(turn.request).startswith("lube_"):
-            self._turn_side = self._cum_side                                      # the cum goes where it was rolled
+            self._turn_side = None if self._cum_side == "both" else self._cum_side   # the cum goes where it was rolled
         m = self.persona_cfg["manners"]
         met = self._demand_met(transcript)
         if met:
@@ -2516,7 +2639,7 @@ class Controller:
                         m, _ = match(bare, self.intents)
                 if m is not None:
                     if self._gated(m.intent.id):
-                        return self._need_persona(transcript, m)
+                        return self._run_then_persona(transcript, m, now)
                     return self._run_match(m, now)
             if self.persona_active() and self.in_reply_window():
                 # an answer to her: strict commands that are not hers to decide still work without the wake word
@@ -2524,7 +2647,9 @@ class Controller:
                 if m is not None and not self._gated(m.intent.id):
                     return self._run_match(m, now)
                 if len(normalize(transcript).split()) <= int(self.persona_cfg["max_words"]):
-                    return self._need_persona(transcript, m if m is not None and self._gated(m.intent.id) else None)
+                    if m is not None and self._gated(m.intent.id):
+                        return self._run_then_persona(transcript, m, now)
+                    return self._need_persona(transcript, None)
             return self._maybe_llm(transcript, Outcome("ignored", "no wake word"))
         if not command.strip():
             self._wake_until = now + float(self.wake_carry)
@@ -2538,7 +2663,7 @@ class Controller:
         if m is None:
             return self._maybe_llm(transcript, Outcome("ignored", reason))
         if self._gated(m.intent.id):
-            return self._need_persona(transcript, m)   # hers to decide
+            return self._run_then_persona(transcript, m, now)   # hers to decide (certain: runs at once)
 
         return self._run_match(m, now)
 

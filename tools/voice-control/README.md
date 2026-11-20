@@ -257,6 +257,17 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   the sentence is doing it). Say it is done within 60 s ("zrobione", "gotowe", "wypinam", "tak, Pani") and you get a
   Lube Launcher shot on the order's side (mouth / face orders: the front one, 60 %; the rest: the rear one, 35 %) or the
   machine of that side faster (+2 speed steps) for 10-15 s, then back. Half of her orders come from the refusal bank.
+* **Her echo is not him**: what the microphone hears that is close to a line she said in the last 45 s is dropped
+  ("her own voice (echo)" in the log) - on 2026-11-20 she answered herself for ten minutes and "mocniej" ran 14 times.
+  Repeating the sentence she asked for still counts.
+* **At once**: a request that is certain (everything granted) runs the moment it is heard; her line is only the
+  comment (the model is told "juz_zrobione"). Before, every command waited 1.3-2.9 s for the model. Confessions that
+  are also commands ("jestem twoja" = use_me) still wait for her (`not_at_once`).
+* **Modes reach every machine** unless his words name a side ("wróć do filmu" had gone to the front only).
+* **Cums**: 5 shots one right after the other (MFP: 250 ms apart, was 1 s); "zalej mnie" from both launchers;
+  `lube.both_share` 0.3 of the others double. Whispers louder (`presets.whisper.gain_db` 10 dB, afterglow 8 dB).
+* **She does not own her - they do**: her character and the prompt hand the girl over to them / him / her (she was
+  sold - theme "sprzedana"); narration bans "Pani", "należysz do mnie", "jesteś moja"; a repeated nudge is not said.
 * **Everything asked is granted** (since 2026-11-20 11:50: `base_p` / overrides / `max_p` 1.0, no politeness or ignored-demand
   factor, no punishment, no "last second"). Her orders in the narration and her surprise shots stay.
 * **Only he changes the mode**: script <-> a built-in mode, a sequence, a surprise, calm / cool-down never run from her

@@ -40,7 +40,7 @@ class BankTests(unittest.TestCase):
 
     def test_the_users_examples_are_in_the_bank(self):
         flat = " | ".join(t for levels in VOC.values() for items in levels.values() for t in items).lower()
-        for needle in ("sssij", "połykaj", "spójrz na siebie", "należysz do mnie"):
+        for needle in ("sssij", "połykaj", "spójrz na siebie", "należysz do nich"):
             self.assertIn(needle, flat)
 
     def test_stage_zero_is_gentle_and_the_sharp_words_come_later(self):

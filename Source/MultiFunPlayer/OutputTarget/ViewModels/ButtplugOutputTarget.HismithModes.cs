@@ -233,6 +233,10 @@ internal sealed partial class ButtplugOutputTarget
             Interlocked.Exchange(ref state.LubeBurst, null)?.Cancel();
     }
 
+    // the pause between the shots of a burst: one right after the other (user, 2026-11-20; it was 1 s); with the
+    // 150 ms of one shot (1, then 0) a burst of 5 takes about 1.6 s
+    private const int LubeShotGapMs = 250;
+
     private async Task FireLubeLauncherManyAsync(int count)
     {
         var state = Cur;
@@ -245,7 +249,7 @@ internal sealed partial class ButtplugOutputTarget
             {
                 await FireLubeLauncherAsync();
                 if (i < count - 1)
-                    await Task.Delay(1000, source.Token);
+                    await Task.Delay(LubeShotGapMs, source.Token);
             }
         }
         catch (OperationCanceledException) { }

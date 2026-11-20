@@ -106,6 +106,7 @@ class RealtimeStt:
                 ws.send(json.dumps(self.session_update()))
                 self.connected = True
                 delay = 1.0
+                self._keepalive(ws)
                 self._read(ws)
             except Exception as e:
                 self.failures += 1
@@ -117,6 +118,22 @@ class RealtimeStt:
                 break
             time.sleep(delay)
             delay = min(delay * 2, 15.0)
+
+    def _keepalive(self, ws, every=15.0):
+        """a ping now and then, so that a quiet stretch (she talks, he listens) does not let the connection go idle
+        ("Connection to remote host was lost"); the server still ends a session after its time limit - then the
+        reader reconnects within a second and the local detector covers the gap"""
+        def run():
+            while not self._stop.is_set() and self._ws is ws and self.connected:
+                time.sleep(every)
+                if self._ws is not ws or not self.connected:
+                    break
+                try:
+                    ws.ping()
+                except Exception:
+                    break
+        if hasattr(ws, "ping"):
+            threading.Thread(target=run, daemon=True).start()
 
     def _read(self, ws):
         while not self._stop.is_set():

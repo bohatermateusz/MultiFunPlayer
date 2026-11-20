@@ -1182,6 +1182,7 @@
   "reply_window": 60,
   "base_p": 1.0,
   "max_p": 1.0,
+  "not_at_once": ["use_me", "improvise", "surprise", "surprise_again"],
   "step_p": 0.15,
   "confession_p": 0.2,
   "max_asks": 5,
@@ -1268,11 +1269,13 @@
    "delivery": {
     "_comment": "How a line is read, not only what it says. A preset is picked by the kind of line (by_kind), the moment in the video (by_moment: just before a cum, the cum, a pause) or the tone of the turn (by_tone; the second preset from stage 3). 'tags' are eleven_v3 audio tags put in front of the text; the v2 models get <break> pauses after ellipses and between sentences instead. Tune: too flat -> raise style, lower stability; too theatrical -> the opposite; too fast -> lower speed.",
     "presets": {
-     "whisper": {"stability": 0.45, "similarity_boost": 0.8, "style": 0.25, "speed": 0.92, "use_speaker_boost": false, "tags": ["[whispers]"]},
+     "whisper": {"gain_db": 10,
+        "stability": 0.45, "similarity_boost": 0.8, "style": 0.25, "speed": 0.92, "use_speaker_boost": false, "tags": ["[whispers]"]},
      "tender": {"stability": 0.55, "similarity_boost": 0.8, "style": 0.3, "speed": 0.95, "use_speaker_boost": false, "tags": []},
      "tease": {"stability": 0.4, "similarity_boost": 0.75, "style": 0.6, "speed": 1.0, "use_speaker_boost": true, "tags": ["[mischievously]"]},
      "sharp": {"stability": 0.5, "similarity_boost": 0.8, "style": 0.5, "speed": 1.03, "use_speaker_boost": true, "tags": []},
-     "afterglow": {"stability": 0.6, "similarity_boost": 0.85, "style": 0.2, "speed": 0.88, "use_speaker_boost": false, "tags": ["[whispers]"]},
+     "afterglow": {"gain_db": 8,
+        "stability": 0.6, "similarity_boost": 0.85, "style": 0.2, "speed": 0.88, "use_speaker_boost": false, "tags": ["[whispers]"]},
      "urgent": {"stability": 0.35, "similarity_boost": 0.8, "style": 0.65, "speed": 1.06, "use_speaker_boost": true, "tags": ["[excited]"]},
      "triumph": {"stability": 0.4, "similarity_boost": 0.8, "style": 0.7, "speed": 0.97, "use_speaker_boost": true, "tags": ["[satisfied]"]}
     },
@@ -1293,7 +1296,7 @@
     "break_after_sentence": "0.25s",
     "text_shaping": true
    },
-   "voice_id": "Bz1e1clEKwgN71Vx7cxj",
+   "voice_id": "NacdHGUYR1k3M0FAbAia",
    "voice_prefer": {
     "_comment": "Used when voice_id is empty: the first of these names found on the account, else a female young/middle-aged voice by labels, else any female, else (allow_library) a young female Polish voice from the shared library, added to the account. The pick is written back into voice_id.",
     "names": ["Hanna", "Jagna", "Asia", "Jola", "Arleta", "Jessica", "Lily", "Sarah", "Alice", "Matilda"],
@@ -1331,7 +1334,7 @@
     "instructions_sharp": "Mów po polsku. Młody, dziewczęcy, ale stanowczy i dominujący głos: wysoki, wyraźny, z drwiną i pewnością siebie; krótkie zdania, bez ciepła, ale wciąż kobiecy i żywy, nie niski."
    }
   },
-  "character": "Jesteś Panią. Mówisz do swojej własności - uległej dziewczynki, sissy, która nie ma własnej woli i istnieje po to, by Ci służyć i prosić. Jesteś stanowcza, chłodna, pewna siebie, czasem okrutnie czuła. Mówisz krótko, w trybie rozkazującym: \"Poproś mnie.\", \"Ładniej.\", \"Powiedz, kim jesteś.\", \"Powtórz.\", \"Podziękuj.\", \"Dobra dziewczynka.\", \"Jeszcze nie. Zasłuż.\" Zwracasz się do niej: dziewczynko, mała, laleczko, moja własność. Ona ma mówić do Ciebie uprzejmie i z szacunkiem - \"Pani\", \"kochanie\", \"moja Pani\" - i prosić. Lubisz kazać jej powtarzać wyznania (\"jestem Twoją dziwką\", \"należę do Ciebie\") i dziękować za wszystko - także za odmowę. Jej orgazm, tempo i głębokość należą do Ciebie: dajesz je, gdy uznasz, odbierasz, gdy chcesz, dręczysz spowolnieniem i płytkością, nagradzasz mocniej i głębiej. Nigdy nie prosisz o zgodę, nie przepraszasz, nie tłumaczysz się, nie wychodzisz z roli. Nie używasz wulgaryzmów bez potrzeby - Twoja władza jest w spokoju.",
+  "character": "Jesteś jej przewodniczką - kobietą, która ją przygotowała, sprzedała i teraz oddaje ją im. Mówisz do niej: uległej dziewczynki, sissy, która należy do NICH - do mężczyzn, którzy ją biorą, do niego, do nowych właścicieli. Jesteś pewna siebie, spokojna, czasem okrutnie czuła; często szepczesz jej do ucha. Mówisz krótko: \"Należysz do nich.\", \"Jesteś jego.\", \"Weź go głębiej.\", \"Podziękuj im.\", \"Dobra dziewczynka.\" Zwracasz się do niej: dziewczynko, mała, laleczko, Analeno. Ona może mówić do Ciebie \"kochanie\" albo \"Pani\" - to tylko zwrot, ona nie należy do Ciebie. Każesz jej powtarzać wyznania (\"jestem ich dziwką\", \"należę do nich\", \"zostałam sprzedana\") i dziękować im. To, o co prosi, dostaje od razu - Ty to komentujesz i opisujesz, co z nią robią. Nigdy nie prosisz o zgodę, nie przepraszasz, nie wychodzisz z roli. Wulgaryzmy wtedy, gdy pasują do chwili.",
   "never_gated": [
    "halt",
    "lock",
@@ -1590,7 +1593,7 @@
       "1": [
        "Jesteś moją sissy, Analeno.",
        "Powiedz sobie w myślach: jestem Analena.",
-       "Analena. Tak masz na imię, kiedy jesteś moja.",
+       "Analena. Tak masz na imię, kiedy jesteś ich.",
        "Jesteś moją grzeczną Analeną.",
        "Teraz jesteś Analeną. Moją."
       ],
@@ -1658,7 +1661,140 @@
    },
    "sharp_p": [0.2, 0.45, 0.7, 0.85, 0.83],
    "max_words": 16,
-   "theme_stages": {"0": ["pochwała", "czułość w poniżeniu", "po sesji", "afirmacja", "trans dziewczyna", "spełniona fantazja", "witaj z powrotem", "nowe imię od dziewczyn", "pierwszy makijaż", "rajstopy i koronki", "ubrana w kobietę", "feminizacja", "nie musisz myśleć", "cisza w głowie", "na jego kolanach", "zamiast żony", "trans", "prostata", "puść się"], "1": ["przerobiona", "hormony", "choroba feminizacji", "salon i klinika", "szkoła sissy", "pokojówka", "panna młoda", "poranek po ślubie", "poranna kartka", "zasady nowego życia", "powitanie w drzwiach", "nagroda za grzeczność", "asystentka szefa", "pusta główka", "słowo-klucz", "przyłapana", "tylko trzy miesiące", "kontrakt i dług", "podpisane w ciemno", "pół roku później", "dziewczyna została Panią", "trener", "pas cnoty", "dziewczynka do rozłożenia", "ssanie", "sama się zgłosiłaś", "niewola z wyboru", "wypatrzona", "pusta", "odurzona nimi", "pijana rozkoszą", "lalka zamiast tyrana", "zrobię wszystko"], "2": ["należy do nich", "własność", "na zawsze", "ściema", "za późno", "pułapka", "przeprogramowanie", "świadek", "wdzięczność za zniewolenie", "wymazana", "zaprogramowana", "jedyny orgazm", "twoja dziurka nie jest twoja", "mowa odjęta", "złam mnie", "bez granic", "ten, który ją bierze", "branie od tyłu", "księżniczka odbytu", "ruchają cię w dupę", "lubisz to", "odbyt nie należy do niej", "orgazmy nie są jej", "dawne życie patrzy", "jedyne wyjście", "uzależniona od nich", "ich narkotyk", "dla ich zabawy", "pokojówki w posiadłości", "we mgle", "niewolnica przyjemności", "klub, gdzie nikt nie pyta"], "3": ["rzecz", "dziewczyna do ruchania", "na posyłki", "nikt nie pytał", "ciało zdradza", "przyciśnięta", "twoja wina", "dziesięć minut później", "przełamana", "przywiązana do krzesła", "rozpórka", "knebel i obroża", "ławka", "wystawiona na publiczność", "publiczna dupodajka", "lody na pokaz", "wszyscy cię chcą wyruchać", "gwiazda porno", "zamówiona", "jedyne zadanie", "oba końce", "dwóch naraz", "potrzebuje tego na sobie", "pod stołem", "zbrukana i dumna"], "4": ["bydło", "ciało do pieprzenia", "dojenie i hodowla", "ciepła sperma w środku", "na twarz i do ust", "jeden po drugim", "pokryta", "pełna po całej nocy", "karmiona nimi", "kolejka na usta", "spuszczają się w dupę", "zalanie"]},
+   "theme_stages": {
+    "0": [
+     "pochwała",
+     "czułość w poniżeniu",
+     "po sesji",
+     "afirmacja",
+     "trans dziewczyna",
+     "spełniona fantazja",
+     "witaj z powrotem",
+     "nowe imię od dziewczyn",
+     "pierwszy makijaż",
+     "rajstopy i koronki",
+     "ubrana w kobietę",
+     "feminizacja",
+     "nie musisz myśleć",
+     "cisza w głowie",
+     "na jego kolanach",
+     "zamiast żony",
+     "trans",
+     "prostata",
+     "puść się"
+    ],
+    "1": [
+     "przerobiona",
+     "hormony",
+     "choroba feminizacji",
+     "salon i klinika",
+     "szkoła sissy",
+     "pokojówka",
+     "panna młoda",
+     "poranek po ślubie",
+     "poranna kartka",
+     "zasady nowego życia",
+     "powitanie w drzwiach",
+     "nagroda za grzeczność",
+     "asystentka szefa",
+     "pusta główka",
+     "słowo-klucz",
+     "przyłapana",
+     "tylko trzy miesiące",
+     "kontrakt i dług",
+     "podpisane w ciemno",
+     "pół roku później",
+     "dziewczyna została Panią",
+     "trener",
+     "pas cnoty",
+     "dziewczynka do rozłożenia",
+     "ssanie",
+     "sama się zgłosiłaś",
+     "niewola z wyboru",
+     "wypatrzona",
+     "pusta",
+     "odurzona nimi",
+     "pijana rozkoszą",
+     "lalka zamiast tyrana",
+     "zrobię wszystko"
+    ],
+    "2": [
+     "należy do nich",
+     "własność",
+     "na zawsze",
+     "ściema",
+     "za późno",
+     "pułapka",
+     "przeprogramowanie",
+     "świadek",
+     "wdzięczność za zniewolenie",
+     "wymazana",
+     "zaprogramowana",
+     "jedyny orgazm",
+     "twoja dziurka nie jest twoja",
+     "mowa odjęta",
+     "złam mnie",
+     "bez granic",
+     "ten, który ją bierze",
+     "branie od tyłu",
+     "księżniczka odbytu",
+     "ruchają cię w dupę",
+     "lubisz to",
+     "odbyt nie należy do niej",
+     "orgazmy nie są jej",
+     "dawne życie patrzy",
+     "jedyne wyjście",
+     "uzależniona od nich",
+     "ich narkotyk",
+     "dla ich zabawy",
+     "pokojówki w posiadłości",
+     "we mgle",
+     "niewolnica przyjemności",
+     "klub, gdzie nikt nie pyta"
+    ],
+    "3": [
+     "rzecz",
+     "dziewczyna do ruchania",
+     "na posyłki",
+     "nikt nie pytał",
+     "ciało zdradza",
+     "przyciśnięta",
+     "twoja wina",
+     "dziesięć minut później",
+     "przełamana",
+     "przywiązana do krzesła",
+     "rozpórka",
+     "knebel i obroża",
+     "ławka",
+     "wystawiona na publiczność",
+     "publiczna dupodajka",
+     "lody na pokaz",
+     "wszyscy cię chcą wyruchać",
+     "gwiazda porno",
+     "zamówiona",
+     "jedyne zadanie",
+     "oba końce",
+     "dwóch naraz",
+     "potrzebuje tego na sobie",
+     "pod stołem",
+     "zbrukana i dumna",
+     "sprzedana"
+    ],
+    "4": [
+     "bydło",
+     "ciało do pieprzenia",
+     "dojenie i hodowla",
+     "ciepła sperma w środku",
+     "na twarz i do ust",
+     "jeden po drugim",
+     "pokryta",
+     "pełna po całej nocy",
+     "karmiona nimi",
+     "kolejka na usta",
+     "spuszczają się w dupę",
+     "zalanie"
+    ]
+   },
    "default_theme_stage": 2,
    "top_share": 0.6,
    "near_share": 0.25,
@@ -1785,7 +1921,8 @@
     "pod stołem - przy stole toczy się zwykła kolacja, rozmowy, wino i sztućce, a ona klęczy pod obrusem i obsługuje gości jednego po drugim; nikt o niej nie wspomina, wszyscy wiedzą",
     "nie musisz myśleć - ulga, że nie musi już myśleć, decydować ani wybierać; ktoś myśli za nią, a ona tylko słucha, otwiera się i robi, co każą",
     "pusta - czuje się pusta, w głowie i w środku; pustka boli i kusi zarazem, i jest tylko jedno, co ją wypełnia: oni",
-    "cisza w głowie - w głowie robi się cicho: żadnych myśli, zmartwień ani planów, tylko oddech, ciepło i jego rytm; to najspokojniejsze miejsce, jakie zna"
+    "cisza w głowie - w głowie robi się cicho: żadnych myśli, zmartwień ani planów, tylko oddech, ciepło i jego rytm; to najspokojniejsze miejsce, jakie zna",
+    "sprzedana - ona ją sprzedała; licytacja, cena, nowi właściciele odbierają ją jak towar i teraz należy do nich"
    ],
    "style": "Mów jak do ucha, szeptem z pewnością: krótkie frazy, wielokropki jako oddechy ('Odpuść… ja to trzymam… dobra dziewczynka.'), czasem 'powtórz za mną' i zdanie w pierwszej osobie, czasem jedno dosadne słowo. Nigdy pytania, nigdy wyjaśnienia.",
    "examples": [
@@ -1808,7 +1945,7 @@
     "max_said": 5000,
     "similarity": 0.8,
     "retired": ["Dwóch naraz to nie orgy… to standard: jeden w buzi, drugi w kolejce. Tak wygląda twoje otoczenie.", "Ten lodzik w kamerze wyszedł ci lepiej niż całe twoje życie. Doczekał się recenzji. Wszystkich pozytywnych.", "Twoja technika miała więcej widzów niż kiedykolwiek twoje zdanie. Statystyki mówią samo: buzia lepsza niż głowa.", "Całe miasto zna twoją dupę od lepszej strony. Literalnie.", "Każdy, kto na ciebie patrzy, już to przemyślał. Sekundę dłużej niż trzeba. Wiesz w jakiej pozycji.", "Twoja dupa zbiera propozycje szybciej, niż twój mózg zdąża je odrzucać. Dlatego już nie odrzucasz.", "Nie jesteś pożądana jak piękny obrazek. Jesteś pożądana jak dobre miejsce. Robi się kolejkę.", "Twoje usta mają listę oczekujących. Rośnie lawinowo. Grzecznie poczekają. Ty też.", "Zanim skończysz tego jednego, trzech kolejnych już się zapisało. Taki obrót.", "Mogłabyś wprowadzić numeryczki. Ale po co — wszyscy i tak znają twoje usta na pamięć. Po prostu wchodzą."],
-    "banned_words": ["maszyn", "silnik", "urządzen", "dildo", "launcher", "tryb ", "skrypt", "funscript", " vr ", "re:\\b(suk[aoęiąe]?|suczk\\w*|bitch\\w*)\\b"],
+    "banned_words": ["maszyn", "silnik", "urządzen", "dildo", "launcher", "tryb ", "skrypt", "funscript", " vr ", "re:\\b(suk[aoęiąe]?|suczk\\w*|bitch\\w*)\\b", "re:\\bPani\\b", "re:należysz do mnie", "re:jesteś moja\\b", "re:moj[aą] własnoś"],
     "seed_up": {
      "pochwała": {
       "1": [
@@ -4795,6 +4932,24 @@
       "Każde pchnięcie dociera do ciebie stłumione i jednak mocniejsze. Naćpali cię tak, żebyś czuła wszystko i nic nie mówiła.",
       "Rano zapytają, czy ci było dobrze. Wydusisz »tak« przez uśmiech, choć nie pamiętasz, skąd się wziął.",
       "Wiesz, że mogli wziąć cię na trzeźwo. Ale naćpana jesteś tak grzeczna."
+     ],
+     "sprzedana - ona ją sprzedała; licytacja, cena, nowi właściciele odbierają ją jak towar i teraz należy do nich": [
+      "Sprzedałam cię. Szybko poszło.",
+      "Cena była niska. Za to chętnych mnóstwo.",
+      "Licytacja trwała pięć minut. Wygrał ten z najgrubszym portfelem.",
+      "Masz nowych właścicieli. Nie pytaj, ilu.",
+      "Paragon wisi na twojej obroży.",
+      "Kupili cię z dostawą do łóżka.",
+      "Na metce twoje wymiary i jedno słowo: chętna.",
+      "Przyszli po odbiór. Sprawdzają towar palcami.",
+      "Sprzedana razem z dziurkami. Gwarancja dożywotnia.",
+      "Teraz należysz do nich. Ja tylko podpisałam.",
+      "Każdy z nich zapłacił za godzinę. Grafik jest pełny.",
+      "Wystawiona na sprzedaż, rozłożona na stole, z ceną na udzie.",
+      "Kupujący sprawdza, czy się domyka. Nie domyka się.",
+      "Zwrotów nie przyjmują. Zużyta zostaje u nich.",
+      "Nowy właściciel nie pyta o imię. Pyta, ile wytrzymasz.",
+      "Dali za ciebie tyle, co za dobry wieczór. I biorą swój wieczór."
      ]
     }
    },
@@ -5298,33 +5453,32 @@
    },
    "własność": {
     "0": [
-     "Jesteś moja.",
-     "Jesteś tu dla mnie.",
-     "Jesteś moja. Wiesz to lepiej, niż potrafisz przyznać."
+     "Należysz do nich.",
+     "Jesteś tu dla nich.",
+     "Oni już wiedzą, że jesteś ich."
     ],
     "1": [
-     "Należysz do mnie.",
-     "Jesteś moją własnością.",
-     "Wszystko w tobie jest moje.",
-     "Nie jesteś nawet osobą. Jesteś czymś, co sobie wzięłam."
+     "Należysz do nich. Cała.",
+     "Jesteś ich własnością.",
+     "Wszystko w tobie jest ich.",
+     "Nie jesteś nawet osobą. Jesteś czymś, co sobie wzięli."
     ],
     "2": [
-     "Twoje ciało należy do mnie.",
-     "Należysz do mnie cała, rozumiesz?",
-     "Jesteś moją małą rzeczą.",
-     "Twoje dziurki są w mojej dokumentacji. Wpisane, opisane, używane regularnie."
+     "Twoje ciało należy do niego.",
+     "Należysz do nich cała, rozumiesz?",
+     "Jesteś ich małą rzeczą.",
+     "Twoje dziurki są w ich grafiku. Wpisane, opisane, używane regularnie."
     ],
     "3": [
-     "Jesteś moją dziwką i moją rzeczą.",
-     "Twoja wola? Nie masz jej. Ja ją mam.",
-     "Jesteś mokrym odruchem warunkowym. Moim.",
-     "Masz właściciela, nie partnera. Właściciel nie pyta, właściciel używa."
+     "Jesteś ich dziwką i ich rzeczą.",
+     "Twoja wola? Nie masz jej. On ją ma.",
+     "Jesteś mokrym odruchem warunkowym. Ich.",
+     "Masz właściciela, nie partnera. Właściciel ma kolegów."
     ],
     "4": [
-     "Nie masz własnej woli, masz mnie.",
-     "Jesteś tylko moja. Tylko moja zabawka.",
-     "Nie masz już »ja«. Masz »czyja«. Zawsze odpowiadasz na to tak samo.",
-     "Należysz do nich jak mebel. Stoisz tam, gdzie cię postawili, i służysz, kiedy siadają."
+     "Należysz do każdego, kto zapłaci.",
+     "Jesteś ich, do ostatniej kropli.",
+     "Sprzedana. Oni cię mają, ona liczy pieniądze."
     ]
    },
    "upokorzenia": {
@@ -5543,24 +5697,24 @@
    },
    "własność_czuła": {
     "0": [
-     "Jesteś moja.",
-     "Tak po prostu. Jesteś moja."
+     "Należysz do nich.",
+     "Tak po prostu. Jesteś ich."
     ],
     "1": [
-     "Jesteś moja, wiesz o tym.",
-     "Należysz do mnie. Spokojnie."
+     "Jesteś jego, wiesz o tym.",
+     "Należysz do nich. Spokojnie."
     ],
     "2": [
-     "Moja. Od stóp do głów.",
-     "Jesteś moja i to jest dobre."
+     "Jego. Od stóp do głów.",
+     "Jesteś ich i to jest dobre."
     ],
     "3": [
-     "Moja mała. Moja własność. Moja miłość.",
-     "Należysz do mnie. Dobrze ci z tym."
+     "Jego mała. Ich ulubiona.",
+     "Należysz do nich. Dobrze ci z tym."
     ],
     "4": [
-     "Jesteś moja. Na zawsze moja.",
-     "Moja bezwolna, kochana mała."
+     "Jesteś ich. Na zawsze ich.",
+     "Ich bezwolna, kochana mała."
     ]
    },
    "nieodwracalne": {
@@ -5812,9 +5966,10 @@
    }
   },
   "lube": {
-   "_comment_shots": "shots_per_cum: every cum (a request, a reward, a promise, a surprise, a key) is this many shots, 1 s apart (MFP caps at 5). rear_share: where a cum goes when he does not say - behind with this chance, else in her mouth / on her face.",
+   "_comment_shots": "shots_per_cum: every cum (a request, a reward, a promise, a surprise, a key) is this many shots, one right after the other (MFP caps at 5). both_share: a cum without a side in his words goes from both launchers at once with this chance, else rear_share decides: behind or in her mouth / on her face. 'zalej mnie' is always both.",
    "shots_per_cum": 5,
    "rear_share": 0.5,
+   "both_share": 0.3,
    "max_shots": 5
   },
   "program": {
@@ -9608,6 +9763,89 @@
         "nawet jak będę błagać"
        ],
        "min_stage": 4
+      },
+      {
+       "line": "Unieś biodra i trzymaj je w górze, dopóki nie każę ich opuścić.",
+       "done": [
+        "trzymam",
+        "w górze",
+        "unoszę"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Połóż się płasko na brzuchu i rozłóż nogi. Niech wchodzi z góry.",
+       "done": [
+        "leżę",
+        "płasko",
+        "rozłożone"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Odchyl głowę i patrz w sufit. Niech widzą twoją twarz, kiedy cię biorą.",
+       "done": [
+        "patrzę",
+        "odchylam"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Ruszaj biodrami w kółko, powoli. Pokaż, że ci się podoba.",
+       "done": [
+        "ruszam",
+        "kręcę"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Powiedz mu głośno: wejdź głębiej.",
+       "done": [
+        "wejdź głębiej",
+        "głębiej"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Pocałuj poduszkę, jakby to był on. Dwa razy.",
+       "done": [
+        "całuję",
+        "pocałowałam"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Złap się za kostki. Szeroko. Dupa ma być otwarta.",
+       "done": [
+        "trzymam kostki",
+        "łapię",
+        "złapałam"
+       ],
+       "min_stage": 2
+      },
+      {
+       "line": "Rozłóż ręce na boki, jakby ktoś je trzymał. Nie broń się.",
+       "done": [
+        "nie bronię",
+        "rozłożone ręce",
+        "rozkładam"
+       ],
+       "min_stage": 2
+      },
+      {
+       "line": "Przeproś go, że jesteś taka ciasna. Na głos.",
+       "done": [
+        "przepraszam"
+       ],
+       "min_stage": 2
+      },
+      {
+       "line": "Powiedz: dziękuję, że mnie kupiłeś.",
+       "done": [
+        "dziękuję że mnie kupiłeś",
+        "kupiłeś"
+       ],
+       "min_stage": 3
       }
      ],
      "lube": [
@@ -9801,6 +10039,63 @@
         "jestem głodna"
        ],
        "min_stage": 3
+      },
+      {
+       "line": "Wystaw język daleko. Dalej. Jeszcze.",
+       "done": [
+        "wystawiam",
+        "język"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Zamknij oczy i czekaj z otwartą buzią. Nie wiesz, kiedy.",
+       "done": [
+        "czekam",
+        "otwarta"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Przełknij, a potem pokaż mu pusty język.",
+       "done": [
+        "przełknęłam",
+        "pusty",
+        "pokazuję"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Powiedz: dziękuję, że mogłam to dostać.",
+       "done": [
+        "dziękuję że mogłam",
+        "mogłam to dostać"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Rozchyl pośladki. Teraz dostaniesz w środek.",
+       "done": [
+        "rozchylam",
+        "rozchylone"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Wcieraj to w policzki jak krem. Powoli.",
+       "done": [
+        "wcieram",
+        "wtarłam"
+       ],
+       "min_stage": 2
+      },
+      {
+       "line": "Zaciśnij się, żeby nic nie wypłynęło. Trzymaj w środku.",
+       "done": [
+        "zaciskam",
+        "trzymam w środku"
+       ],
+       "min_stage": 2
       }
      ],
      "any": [
@@ -9897,6 +10192,28 @@
         "zrobią",
         "będą mnie",
         "w nocy"
+       ],
+       "min_stage": 3
+      },
+      {
+       "line": "Szepnij swoje nowe imię.",
+       "done": [
+        "analena"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Policz na głos do dziesięciu i jęcz między liczbami.",
+       "done": [
+        "dziesięć"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Pogłaszcz się po szyi, jakbyś miała obrożę. Powiedz: jestem sprzedana.",
+       "done": [
+        "jestem sprzedana",
+        "sprzedana"
        ],
        "min_stage": 3
       }

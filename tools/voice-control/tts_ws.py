@@ -6,7 +6,7 @@ import json
 import re
 import threading
 
-from tts import SPEAKER_KEYS, TtsError, choose_delivery, shape_text
+from tts import SPEAKER_KEYS, TtsError, amplify, choose_delivery, preset_gain, shape_text
 
 SENTENCE_END = re.compile(r"(?<=[.!?…])\s+")
 
@@ -55,9 +55,19 @@ class ElevenLabsWsSpeaker:
             raise TtsError("no voice_id")
         url, model = self._url()
         settings = sp._settings(int((meta or {}).get("stage", 0) or 0))
-        tags = []
+        tags, gain = [], 0.0
         if sp.delivery is not None and meta:
-            _, settings, tags = choose_delivery(sp.delivery, meta)
+            chosen, settings, tags = choose_delivery(sp.delivery, meta)
+            gain = preset_gain(sp.delivery, chosen)
+        if gain:
+            # a whisper is quiet by nature: louder by its preset's gain_db (the rest of this method yields the chunks)
+            yield from amplify(self._say_stream_raw(sentences, meta, stop, settings, tags), gain)
+            return
+        yield from self._say_stream_raw(sentences, meta, stop, settings, tags)
+
+    def _say_stream_raw(self, sentences, meta, stop, settings, tags):
+        sp = self.speaker
+        url, model = self._url()
         try:
             ws = self.connect(url, {"xi-api-key": sp.api_key})
         except Exception as e:

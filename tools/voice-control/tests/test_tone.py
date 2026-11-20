@@ -299,15 +299,15 @@ class Unsolicited(Server):
         self.assertEqual((runs, e["unsolicited"]), ([], "reward"))
 
     def test_she_may_act_when_she_speaks_first(self):
-        self.c.persona.nudge = lambda state, history, step_ids=None: (("Odpuść. Jesteś moja.", [{"step": "slower", "times": 1}])
-                                                                       if step_ids else "Odpuść. Jesteś moja.")
+        self.c.persona.nudge = lambda state, history, step_ids=None: (("Odpuść. Jesteś ich.", [{"step": "slower", "times": 1}])
+                                                                       if step_ids else "Odpuść. Jesteś ich.")
         FakePani.table["kochanie, szybciej"] = turn(request="faster")
         self.c.clock.t += 1
         self.c.handle("kochanie, szybciej")
         self.runs.clear()
         self.c.clock.t += 40
         line = self.c.idle_nudge()
-        self.assertEqual(line, "Odpuść. Jesteś moja.")
+        self.assertEqual(line, "Odpuść. Jesteś ich.")
         self.assertEqual(self.actions(), ["Hismith::Speed::Slower"])
 
     def test_she_does_not_act_when_the_chance_says_no(self):

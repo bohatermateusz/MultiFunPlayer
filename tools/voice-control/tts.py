@@ -92,6 +92,33 @@ def choose_delivery(delivery, meta, roll=None):
     return name, settings, list(preset.get("tags", []))
 
 
+def preset_gain(delivery, name):
+    """extra loudness of a preset in dB (presets.<name>.gain_db): a whisper is quiet by nature and the film drowns it"""
+    presets = dict(DELIVERY_DEFAULTS["presets"], **((delivery or {}).get("presets") or {}))
+    return float((presets.get(name) or {}).get("gain_db", 0) or 0)
+
+
+def amplify(chunks, gain_db):
+    """16-bit PCM chunks made louder by gain_db, clipped at full scale (odd bytes carried to the next chunk)"""
+    if not gain_db:
+        yield from chunks
+        return
+    factor = 10 ** (float(gain_db) / 20.0)
+    import array
+    carry = b""
+    for chunk in chunks:
+        data = carry + chunk
+        usable = len(data) - len(data) % 2
+        carry = data[usable:]
+        samples = array.array("h", data[:usable])
+        for i, v in enumerate(samples):
+            v = int(v * factor)
+            samples[i] = 32767 if v > 32767 else -32768 if v < -32768 else v
+        yield samples.tobytes()
+    if carry:
+        yield carry
+
+
 def shape_text(text, model="eleven_multilingual_v2", delivery=None, tags=None):
     """the line as the voice model should read it: v3 gets the audio tags in front (it paces by punctuation itself),
     the v2 family gets <break> tags after ellipses and between sentences"""
@@ -183,7 +210,8 @@ class ElevenLabsSpeaker:
         except (urllib.error.URLError, TimeoutError, OSError) as e:
             raise TtsError(f"request failed: {e}") from e
         self.last_response = resp
-        return self._chunks(resp)
+        gain = preset_gain(self.delivery, chosen) if self.delivery is not None and chosen else 0.0
+        return amplify(self._chunks(resp), gain)
 
     def stream_auto(self, text, stage=0, meta=None, preset=None, tags=None):
         """stream() with the voice chosen automatically: the configured voice first, then the candidates (a library

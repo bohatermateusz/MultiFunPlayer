@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from test_manners import CFG, P, Server  # noqa: E402
-from test_persona import FakePani  # noqa: E402
+from test_persona import FakePani, turn  # noqa: E402
 
 TD = P["manners"]["task_demands"]
 
@@ -455,3 +455,88 @@ class FilmStage(Server):
         self.c.scene = None
         self.c._heat = 1000.0
         self.assertEqual(self.c.stage(), 4)
+
+
+class ThirdSession(Server):
+    """from the session 2026-11-20 12:17-12:47"""
+
+    def live(self, **kw):
+        base = dict(base_p=1.0, max_p=1.0, base_p_overrides={}, last_second=dict(P["last_second"], enabled=False),
+                    manners=dict(P["manners"], politeness_factor=1.0, ignore_demand_factor=1.0, penalty_seconds=0,
+                                 task_demands=dict(TD, enabled=False)),
+                    lube=dict(P["lube"], rear_share=0.5, both_share=0.0))
+        base.update(kw)
+        self.c.persona_cfg = dict(P, **base)
+        self.c.shots_per_cum = 5
+
+    def actions(self):
+        return [st["action"] for steps in self.runs for st in steps]
+
+    def test_her_own_words_coming_back_are_dropped(self):
+        # 12:37-12:47: she answered herself for ten minutes and "mocniej" ran fourteen times
+        self.live()
+        self.c.note_spoken("Masz, moja dzika. Teraz się nie zatrzymuj.")
+        o = self.say("Masz moja dzika, teraz nie zatrzymuj.", request="hard")
+        self.assertEqual(o.detail, "her own voice (echo)")
+        self.assertEqual(self.runs, [])
+        self.assertEqual(FakePani.calls, [])
+
+    def test_repeating_what_she_asked_is_not_an_echo(self):
+        self.live()
+        self.c.note_spoken("Powtórz za mną: jestem ich dziwką.")
+        self.c._repeat_target = "jestem ich dziwką."
+        self.assertFalse(self.c.is_her_echo("Jestem ich dziwką."))
+
+    def test_back_to_the_film_reaches_every_machine(self):
+        # 12:32 "wróć do filmu" went to Front::Mode::Script (the side of the last cum): the rear stayed in mode B
+        self.live()
+        self.say("kochanie, spuść mi się na twarz", request="lube_fire")
+        self.runs.clear()
+        self.clock.t += 30
+        self.say("kochanie, wróć do filmu", request="script")
+        modes = [a for a in self.actions() if "Mode::" in a or "Boost::" in a]
+        self.assertTrue(modes)
+        self.assertTrue(all("::Front::" not in a and "::Rear::" not in a for a in modes), modes)
+
+    def test_a_certain_request_runs_before_she_answers(self):
+        self.live()
+        FakePani.table["kochanie, pieprz mnie mocniej"] = turn(request="hard", granted="Masz. Bierz.")
+        self.clock.t += 1
+        result = self.c._handle("kochanie, pieprz mnie mocniej")
+        self.assertTrue(self.runs, "it ran at once, before the model")
+        self.assertEqual(result.state.get("juz_zrobione"), "hard")
+        o = self.c._finish_persona("kochanie, pieprz mnie mocniej", self.c._ask_persona(result))
+        self.assertEqual((o.status, o.intent, o.extra["say"]), ("executed", "hard", "Masz. Bierz."))
+        self.assertEqual(len(self.runs), 1)                      # not twice
+
+    def test_zalej_mnie_fires_both_launchers(self):
+        self.live()
+        self.clock.t += 30
+        self.say("kochanie, zalej mnie", request="lube_many")
+        lube = [a for a in self.actions() if "LubeLauncher" in a]
+        self.assertEqual(lube, ["{target}::Hismith::LubeLauncher::FireMany"])   # no side = every launcher
+
+    def test_some_cums_are_double(self):
+        self.live(lube=dict(P["lube"], rear_share=0.5, both_share=0.3))
+        sides = [self.c._roll_cum_side() for _ in range(300)]
+        self.assertGreater(sides.count("both"), 60)
+        self.assertGreater(sides.count("rear"), 60)
+        self.assertGreater(sides.count("front"), 60)
+
+    def test_a_repeated_nudge_is_not_said(self):
+        self.c._remember_said("Powiedz: jestem niczyja bez Pani.")
+        self.assertTrue(self.c.is_repeat("Powiedz: jestem niczyja bez Pani."))
+
+
+class LouderWhispers(unittest.TestCase):
+    def test_gain_makes_pcm_louder_and_clips(self):
+        import array
+        from tts import amplify
+        pcm = array.array("h", [1000, -1000, 30000]).tobytes()
+        out = array.array("h", b"".join(amplify([pcm[:3], pcm[3:]], 10)))
+        self.assertEqual(list(out)[:2], [3162, -3162])
+        self.assertEqual(out[2], 32767)
+
+    def test_the_whisper_preset_is_louder(self):
+        from tts import preset_gain
+        self.assertGreaterEqual(preset_gain(CFG["persona"]["tts"]["delivery"], "whisper"), 8)

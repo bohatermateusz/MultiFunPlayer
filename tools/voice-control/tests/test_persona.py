@@ -331,7 +331,7 @@ class PersonaTests(unittest.TestCase):
 class RequestShape(unittest.TestCase):
     def test_prompt_and_schema(self):
         prompt = build_system_prompt(CFG["persona"]["character"], INTENTS, STEP_IDS, {"x": 1})
-        self.assertIn("Jesteś Panią", prompt)
+        self.assertIn("należy do NICH", prompt)            # since 2026-11-20 she hands her over, the men own her
         self.assertIn("line_if_denied", prompt)
         schema = build_schema(INTENTS, STEP_IDS)["schema"]["properties"]
         self.assertIn("lube_fire", schema["request"]["enum"])

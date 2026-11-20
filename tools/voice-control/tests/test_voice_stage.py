@@ -273,7 +273,11 @@ class NudgeTests(EscalationTests):
         self.nudges = []
         FakePani.nudge_line = "Czemu milczysz? Poproś mnie."
         self.orig = self.persona.nudge
-        self.persona.nudge = lambda state, history: (self.nudges.append((state, history)) or FakePani.nudge_line)
+        # a new line each time (a repeated nudge is not said, since 2026-11-20); the first one is FakePani.nudge_line
+        self.persona.nudge = lambda state, history: (self.nudges.append((state, history)) or
+                                                     (FakePani.nudge_line if len(self.nudges) == 1 else
+                                                      ["Cisza ci nie pomoże.", "Oni czekają na twój głos.", "Słyszę, jak oddychasz. Mów.",
+                                                       "No dalej, laleczko.", "Tak cicho? Dziwne."][len(self.nudges) % 5]))
 
     def start_session(self):
         self.say("kochanie, spuść się na mnie", request="lube_fire")
