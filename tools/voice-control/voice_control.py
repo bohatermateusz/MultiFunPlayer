@@ -54,10 +54,10 @@ OVER_HER_WORDS = ("proszę", "błagam", "przepraszam", "dziękuję", "tak", "ple
 
 
 def stt_prompt(intents, wake_words=None):
-    # a short hint only: a long list of commands is what Whisper loops on noise ("tryb pięć, tryb pięć, ...")
-    wake = ", ".join(w for w in wake_words) + ". " if wake_words else ""
-    phrases = [i.phrases[0] for i in intents if i.phrases and i.id in STT_HINT_INTENTS]
-    return (wake + ", ".join(phrases))[:100]
+    # only the wake words: on unclear audio (moans, the film, the machine) the model wrote out the whole hint instead of
+    # his words - "Kochanie, Pani, spuść się na mnie, szybciej, wolniej, ..." ten times in 23 minutes (2026-11-20), and
+    # each time what he said was lost. The commands are matched loosely anyway.
+    return ", ".join(w for w in wake_words) + "." if wake_words else ""
 
 
 def save_voice_id(config_path, voice_id, lang="pl"):
@@ -196,7 +196,7 @@ def build_conversation(args, cfg, controller, stt, voice, speakers, muted, gate,
     from realtime_stt import RealtimeStt
     if RealtimeStt.available():
         s = cfg.get("stt", {})
-        rt = RealtimeStt(os.environ.get(s.get("api_key_env", "OPENAI_API_KEY"), ""), live.get("stt_model", "gpt-4o-mini-transcribe"),
+        rt = RealtimeStt(os.environ.get(s.get("api_key_env", "OPENAI_API_KEY"), ""), live.get("stt_model", "gpt-4o-transcribe"),
                          controller.language, stt.prompt, silence_ms=live.get("silence_ms", 500), threshold=live.get("vad_threshold", 0.5),
                          api=live.get("api", "ga"), url=live.get("url", "wss://api.openai.com/v1/realtime?intent=transcription"))
         from audio import SegmentDetector

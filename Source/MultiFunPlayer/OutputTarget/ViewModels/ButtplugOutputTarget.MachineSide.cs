@@ -22,7 +22,8 @@ internal sealed partial class ButtplugOutputTarget
 
     public bool HasMachineSideSwitch => AvailableDevices.ToList().Any(IsMachine);
     public bool MachineIsFront => MachineDevice() is { } d && RoleOf(d) == HismithSide.Front;
-    public string MachineSideLabel => MachineIsFront ? "S2: FRONT (mouth)" : "S2: REAR (from behind)";
+    // the button says what a click does, not where the machine is now (user, 2026-11-20)
+    public string MachineSideLabel => MachineIsFront ? "S2 \u2192 REAR (from behind)" : "S2 \u2192 FRONT (mouth)";
 
     private bool IsMachine(ButtplugDevice device)
         => device.ScalarActuators.Any(a => a.ActuatorType == ActuatorType.Position

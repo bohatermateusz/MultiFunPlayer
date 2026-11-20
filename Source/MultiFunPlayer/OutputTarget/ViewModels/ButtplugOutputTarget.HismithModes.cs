@@ -173,14 +173,24 @@ internal sealed partial class ButtplugOutputTarget
         return value;
     }
 
-    // The film's speed scaled by the boost level: standing stays standing (pause, a scene without this machine), and
-    // it never goes above BoostMaxSpeed when boosted up (the film itself is never cut).
+    // The film's speed scaled by the boost level, never above BoostMaxSpeed when boosted up (the film itself is never
+    // cut). A paused film stands. A scene where the film does not move this machine stands too - unless he asked for
+    // more ("szybciej" / "mocniej" did nothing there, 2026-11-20 15:20): then it runs from BoostIdleSpeed up.
+    // "Slower" never takes a moving film below BoostSlowestSpeed (two "zwolnij" looked like a stop).
+    private const double BoostIdleSpeed = 0.30;
+    private const double BoostSlowestSpeed = 0.15;
+
     private double BoostedSpeed(double value, int level)
     {
         if (value <= 0)
-            return value;
+        {
+            if (level <= 0 || !_mediaPlaying)
+                return value;
+            return Math.Min(BoostIdleSpeed * Math.Pow(1 + HismithSpeedStep / 100d, level - 1), BoostMaxSpeed / 100d);
+        }
         var boosted = value * Math.Pow(1 + HismithSpeedStep / 100d, level);
-        return level > 0 ? Math.Max(value, Math.Min(boosted, BoostMaxSpeed / 100d)) : Math.Clamp(boosted, 0.01, 1);
+        return level > 0 ? Math.Max(value, Math.Min(boosted, BoostMaxSpeed / 100d))
+                         : Math.Clamp(boosted, Math.Min(value, BoostSlowestSpeed), 1);
     }
 
     // Depth points added by the boost level: step, 2.5 step, 4.75 step, ... (each command 1.5x the one before).

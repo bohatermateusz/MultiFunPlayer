@@ -257,8 +257,18 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   the sentence is doing it). Say it is done within 60 s ("zrobione", "gotowe", "wypinam", "tak, Pani") and you get a
   Lube Launcher shot on the order's side (mouth / face orders: the front one, 60 %; the rest: the rear one, 35 %) or the
   machine of that side faster (+2 speed steps) for 10-15 s, then back. Half of her orders come from the refusal bank.
-* **The machine front <-> rear, live**: MFP has a MACHINE button (and the actions Hismith::MachineSide::Toggle / ::Set
-  for a key or the voice: "maszyna do przodu", "maszyna do tyłu", "zamień maszynę"). The S2's map rows move between the
+* **Speech recognition hint = the wake words only** ("kochanie, Pani."): the longer hint with commands was written
+  out instead of his words on unclear audio (10x in 23 min); live mode uses gpt-4o-transcribe; a single drop of the
+  realtime connection is silent (it reconnects in 1 s, the local detector covers the gap). A wake word at the end
+  ("Jesteś tam, kochanie?") counts.
+* **Every film its own story**: a new film (or session) draws a scenario - one theme from each of stages 1-4; half of
+  the narration and her answers follow it (`narration.storyline_share`, state "scenariusz_tego_filmu"); her comment
+  after a command is not the same sentence again.
+* **Faster on a still scene / slower never to a stop** (MFP): "szybciej" while the film does not move this machine
+  starts it at 30 % (x1.2 per press, up to 80); "wolniej" never takes a moving film below 15 %.
+* **The machine front <-> rear, live**: MFP has a MACHINE button showing where a click sends it ("S2 → FRONT (mouth)"),
+  and the actions Hismith::MachineSide::Toggle / ::Set for a key or the voice: "zamiana dupy z ustami", "zamień
+  maszynę", "maszyna do przodu", "maszyna do tyłu". The S2's map rows move between the
   rear scripts (rear_speed / rear_width / rear_depth on R1 / L1 / R0) and the front ones (suck_speed / suck_width /
   suck_depth on A1 / L2 / R2), and the S2 takes that side's role - the film keeps playing.
 * **A paused film silences her**: no narration or nudges while MFP says the film is paused; the line she is saying

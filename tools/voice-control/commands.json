@@ -241,7 +241,7 @@
   },
   {"id": "machine_front", "phrases": ["maszyna do przodu", "maszyna do ust", "maszyna z przodu", "przełóż maszynę do przodu", "przełącz maszynę do przodu", "maszyna na usta"], "phrases_en": ["machine to the front", "machine to the mouth"], "steps": [{"action": "{target}::Hismith::MachineSide::Set", "args": ["front"]}], "cooldown": 2, "description": "The S2 moves to the front while the film plays: it follows the front scripts (suck_speed / suck_width / suck_depth) and takes the front role (MFP: MACHINE switch)."},
   {"id": "machine_rear", "phrases": ["maszyna do tyłu", "maszyna od tyłu", "maszyna z tyłu", "przełóż maszynę do tyłu", "przełącz maszynę do tyłu", "maszyna w dupę"], "phrases_en": ["machine to the rear", "machine from behind"], "steps": [{"action": "{target}::Hismith::MachineSide::Set", "args": ["rear"]}], "cooldown": 2, "description": "The S2 moves back to the rear: rear scripts (rear_speed / rear_width / rear_depth), rear role."},
-  {"id": "machine_toggle", "phrases": ["zamień maszynę", "przełącz maszynę", "przełóż maszynę", "zmień stronę maszyny"], "phrases_en": ["switch the machine", "swap the machine"], "steps": [{"action": "{target}::Hismith::MachineSide::Toggle", "args": []}], "cooldown": 2, "description": "The S2 to the other side (front <-> rear)."},
+  {"id": "machine_toggle", "phrases": ["zamiana dupy z ustami", "zamień dupę z ustami", "zamień usta z dupą", "zamiana ust z dupą", "zamień maszynę", "przełącz maszynę", "przełóż maszynę", "zmień stronę maszyny"], "phrases_en": ["switch the machine", "swap the machine"], "steps": [{"action": "{target}::Hismith::MachineSide::Toggle", "args": []}], "cooldown": 2, "description": "The S2 to the other side (front <-> rear)."},
   {
    "id": "script",
    "phrases": [
@@ -1299,7 +1299,7 @@
     "break_after_sentence": "0.25s",
     "text_shaping": true
    },
-   "voice_id": "NacdHGUYR1k3M0FAbAia",
+   "voice_id": "Bz1e1clEKwgN71Vx7cxj",
    "voice_prefer": {
     "_comment": "Used when voice_id is empty: the first of these names found on the account, else a female young/middle-aged voice by labels, else any female, else (allow_library) a young female Polish voice from the shared library, added to the account. The pick is written back into voice_id.",
     "names": ["Hanna", "Jagna", "Asia", "Jola", "Arleta", "Jessica", "Lily", "Sarah", "Alice", "Matilda"],
@@ -1802,6 +1802,7 @@
    },
    "default_theme_stage": 2,
    "top_share": 0.6,
+   "storyline_share": 0.5,
    "near_share": 0.25,
    "levels": {"1": "WERSJA OSTRZEJSZA (sesja poszła dalej niż ten wątek): wulgarniej, mocniej, bardziej uprzedmiotawiająco, mniej czułości", "2": "WERSJA NAJOSTRZEJSZA (szczyt sesji): skrajnie wulgarnie, bez litości i bez czułości; ona jest już tylko rzeczą, dziurą i ciałem do użytku"},
    "themes": [

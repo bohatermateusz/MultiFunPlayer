@@ -254,6 +254,8 @@ class Controller:
         self._repeat_target = None        # the sentence she told him to repeat ("Powtórz za mną: ...")
         self._last_demand = None          # (request id, demand) of her last refusal: what she wants before she gives it
         self._mode_wish = False           # his words in this turn ask for a mode change (only then may a mode change)
+        self._storyline, self._storyline_key = [], None   # this film's scenario: a theme per stage (variety per film)
+        self._story_rng = random.Random()                 # its own dice: the other draws stay as they were
         self._her_spoken = collections.deque(maxlen=12)   # (time, line) of what she said lately: her echo is not him
         self._already = None              # a command that ran at once (certain grant); she only comments it
         self._cum_rolled = False          # the cum side of this turn is decided already
@@ -569,6 +571,20 @@ class Controller:
         except Exception:
             return False
 
+    def _wake_at_the_end(self, transcript):
+        """"Jesteś tam, kochanie?" is said to her as much as "kochanie, jesteś tam?" (15:02 it was ignored): a wake word
+        among the last two words is moved to the front"""
+        tokens = normalize(transcript).split()
+        if len(tokens) < 2 or not self.wake_words:
+            return transcript
+        if any(_sim(w, tokens[0]) >= self.wake_min_similarity for w in self.wake_words):
+            return transcript
+        for i in (len(tokens) - 1, len(tokens) - 2):
+            if i > 0 and any(_sim(w, tokens[i]) >= self.wake_min_similarity for w in self.wake_words):
+                rest = tokens[:i] + tokens[i + 1:]
+                return tokens[i] + ", " + " ".join(rest)
+        return transcript
+
     def _changes_mode(self, intent):
         return intent is not None and any(MODE_ACTIONS.search(st.get("action", "")) for st in intent.steps)
 
@@ -739,6 +755,10 @@ class Controller:
             return False
         targets = [t for t in (self._repeat_target, repeat_target((self._spont_task or {}).get("line") or "")) if t]
         if any(similar(transcript, t) >= 0.55 for t in targets):
+            return False
+        # saying what her order told him to say ("Szepnij trzy razy: tak, Pani") is doing it, not her echo
+        done = list((self._task or {}).get("done") or []) + list((self._spont_task or {}).get("done") or [])
+        if done and self._says_any(transcript, done, 0.8):
             return False
         now = self.clock()
         for at, line in list(self._her_spoken):
@@ -1103,6 +1123,27 @@ class Controller:
         self._say(outcome)
         return line
 
+    def _refresh_storyline(self):
+        """a new film (or a new session) draws a new scenario: one theme from each of stages 1-4, so that every film
+        tells another story (user, 2026-11-20: "the same scenario and the same lines after every film / restart")"""
+        cfg = self.persona_cfg["narration"]
+        try:
+            key = getattr(self.scene, "path", None) if self.scene is not None else None
+        except Exception:
+            key = None
+        key = key or ("session", int(self._last_user // 3600) if self._last_user else 0)
+        if key == self._storyline_key and self._storyline:
+            return self._storyline
+        stages = cfg.get("theme_stages") or {}
+        picks = []
+        for st in ("1", "2", "3", "4"):
+            names = list(stages.get(st) or [])
+            full = [t for t in cfg["themes"] if t.split(" - ")[0].strip() in names]
+            if full:
+                picks.append(self._story_rng.choice(full))
+        self._storyline, self._storyline_key = picks, key
+        return picks
+
     def _narration_themes(self, cfg, soft=False, stage=None):
         """the themes she may comment on now (not the ones used lately); while winding down only the tender ones.
         With narration.theme_stages only the themes of the stage reached so far, and mostly the harshest of them: the
@@ -1122,6 +1163,9 @@ class Controller:
             else:
                 pick = reached
             allowed = pick or reached
+            story = [t for t in self._refresh_storyline() if t in allowed and t not in self._themes_recent[-2:]]
+            if story and self._story_rng.random() < float(cfg.get("storyline_share", 0.5)):
+                allowed = story                        # this film's scenario
         recent = self._themes_recent[-max(1, len(allowed) - 2):]
         return [t for t in allowed if t not in recent] or allowed
 
@@ -1995,6 +2039,7 @@ class Controller:
                 "ostatnie_komendy": list(self._recent), "program_aktywny": self.program_summary(),
                 "nie_powtarzaj": list(self._said_recent[-30:]), "jezyk": self.language,
                 "nastroj_teraz": self.session_mood, "scena": self._scene_state(),
+                "scenariusz_tego_filmu": [t.split(" - ")[0] for t in self._refresh_storyline()],
                 "regula_jezyka": self.persona_cfg.get("language_rule", "")}
 
     def _certain(self, intent_id):
@@ -2105,6 +2150,8 @@ class Controller:
             self._last_user, self._nudges = self.clock(), 0
             self._heat_up("granted")
             line = turn.line_if_granted or turn.line_if_denied
+            already.via = "persona"
+            line = self._fresh_line(line, already)
             if line and MACHINE_CLAIM.search(line) and not already.intent.startswith(("faster", "slower", "hard", "use_me", "tease", "mode_", "script", "normal")):
                 line = ""
             if line:
@@ -2664,6 +2711,7 @@ class Controller:
         if reward is not None:
             return reward                                    # "gotowe" after her order: the reward
         transcript = self._carry_wake(transcript, consume=True)
+        transcript = self._wake_at_the_end(transcript)
         command = self.strip_wake_word(transcript)
         if command is None:
             # the safe word and the cooldown password need no wake word, ever ("trąbka", "trąbka uspakajająca")

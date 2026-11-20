@@ -7,7 +7,7 @@ import unittest
 sys.path.insert(0, os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from test_manners import CFG, P, Server  # noqa: E402
+from test_manners import CFG, INTENTS as INTENTS_ALL, P, Server  # noqa: E402
 from test_persona import FakePani, turn  # noqa: E402
 
 TD = P["manners"]["task_demands"]
@@ -362,7 +362,7 @@ class SecondSession(Server):
         self.assertFalse(any("Mode::" in st["action"] for steps in self.runs for st in steps))
 
     def test_his_own_mode_request_runs(self):
-        self.c.persona_cfg = cfg(0.0, base_p=1.0, max_p=1.0)
+        self.c.persona_cfg = cfg(0.0, base_p=1.0, max_p=1.0, manners=dict(P["manners"], politeness_factor=1.0, ignore_demand_factor=1.0))
         o = self.say("kochanie, włącz tryb ósmy", request="mode_8")
         self.assertEqual((o.status, o.intent), ("executed", "mode_8"))
         o = self.say("kochanie, wróć do filmu", request="script")
@@ -608,3 +608,38 @@ class EaseOff(Server):
         for text in ("włącz ósmy", "daj czwarty", "kochanie, szósty proszę", "tryb 3"):
             self.assertTrue(MODE_WORDS.search(text), text)
         self.assertFalse(MODE_WORDS.search("proszę cię, ładnie"))
+
+
+class FifthSession(Server):
+    """from the session 2026-11-20 15:02-15:25"""
+
+    def test_the_wake_word_at_the_end_counts(self):
+        # 15:02:41 "Jesteś tam, kochanie?" -> "no wake word"
+        o = self.say("Jesteś tam, kochanie?", request="none", granted="Jestem.")
+        self.assertNotEqual(o.detail, "no wake word")
+        self.assertEqual(self.c._wake_at_the_end("Jesteś tam, kochanie?"), "kochanie, jestes tam")
+
+    def test_the_stt_hint_is_only_the_wake_words(self):
+        from voice_control import stt_prompt
+        prompt = stt_prompt(INTENTS_ALL, CFG["wake"]["words"])
+        self.assertEqual(prompt, "kochanie, Pani.")
+        self.assertNotIn("szybciej", prompt)
+
+    def test_swap_ass_and_mouth_is_the_machine_toggle(self):
+        o = self.say("kochanie, zamiana dupy z ustami")
+        self.assertEqual((o.status, o.intent), ("executed", "machine_toggle"))
+        self.assertEqual(self.runs[-1], [{"action": "{target}::Hismith::MachineSide::Toggle", "args": []}])
+
+    def test_every_film_gets_its_own_scenario(self):
+        class Film:
+            path = "A.mp4"
+        self.c.scene = Film()
+        first = self.c._refresh_storyline()
+        self.assertEqual(len(first), 4)
+        self.assertEqual(self.c._refresh_storyline(), first)        # the same film keeps it
+        seen = {tuple(first)}
+        for i in range(8):
+            Film.path = f"B{i}.mp4"
+            seen.add(tuple(self.c._refresh_storyline()))
+        self.assertGreater(len(seen), 5)                             # another film, another story
+        self.assertIn("scenariusz_tego_filmu", self.c._persona_state())

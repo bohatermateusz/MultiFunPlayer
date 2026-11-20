@@ -337,8 +337,8 @@ class Live(ChatBase):
 
     def _with_echo_filter(self):
         from stt import echoes_prompt
-        from voice_control import stt_prompt
-        prompt = stt_prompt(self.c.intents, self.c.wake_words)
+        # the hint the tool used to send (since 2026-11-20 only the wake words are sent: this one was written out on noise)
+        prompt = "kochanie, Pani. spuść się na mnie, szybciej, wolniej, głębiej, płycej, trąbka, utrzymaj to"
         self.loop.reject = lambda text: echoes_prompt(text, prompt)
         return prompt
 

@@ -24,6 +24,7 @@ class RealtimeStt:
         self.connected = False
         self.turns = {}               # item_id -> partial text
         self.failures = 0
+        self._dropped = 0                 # drops in a row (one is normal: the server ends a session)
 
     @staticmethod
     def available():
@@ -105,13 +106,19 @@ class RealtimeStt:
                 self._ws = ws
                 ws.send(json.dumps(self.session_update()))
                 self.connected = True
+                if self._dropped >= 2:
+                    self.log("  realtime stt: connected again")
+                self._dropped = 0
                 delay = 1.0
                 self._keepalive(ws)
                 self._read(ws)
             except Exception as e:
                 self.failures += 1
-                if not self._stop.is_set():
-                    self.log(f"  realtime stt: {e} (reconnecting in {delay:.0f}s)")
+                self._dropped += 1
+                # the server ends a session now and then ("Connection to remote host was lost"): it reconnects within a
+                # second and the local detector covers the gap - only a reconnection that keeps failing is worth a line
+                if not self._stop.is_set() and self._dropped >= 2:
+                    self.log(f"  realtime stt: {e} (reconnecting in {delay:.0f}s, attempt {self._dropped})")
             self.connected = False
             self._ws = None
             if self._stop.is_set():

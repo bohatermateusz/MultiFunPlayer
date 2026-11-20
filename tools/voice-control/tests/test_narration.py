@@ -20,6 +20,7 @@ class Narration(Server):
         self.c.persona_cfg = copy.deepcopy(P)
         self.c.persona_cfg["narration"]["tasks"]["enabled"] = False     # the physical orders have their own tests
         self.c.persona_cfg["narration"]["tasks"]["rewards"]["enabled"] = False   # rewards for orders: test_tasks.py
+        self.c.persona_cfg["narration"]["storyline_share"] = 0.0   # the film's scenario: test_tasks.FifthSession
         self.c.persona_cfg["narration"]["min_gap_seconds"] = [0, 0]   # the pause between her lines: own tests (MinGap)
         self.c.persona_cfg["narration"]["address"]["enabled"] = False  # what she calls her: own tests (test_address)
         self.calls = []
