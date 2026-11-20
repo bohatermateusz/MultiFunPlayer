@@ -199,7 +199,7 @@ class PersonaTests(unittest.TestCase):
         self.assertEqual(self.runs, [])
         o = self.say("kochanie, błagam, dość", request="calm", denied="Nie.", granted="Dobrze. Odpocznij.")
         self.assertEqual(o.status, "executed")
-        self.assertEqual(self.actions(), ["Hismith::Calm"])
+        self.assertEqual(self.actions(), ["Hismith::Speed::Slower", "Hismith::Speed::Slower", "Hismith::Depth::Shallower"])   # calm = ease off
 
     def test_mild_requests_have_friendlier_odds(self):
         self.c.persona_cfg = dict(CFG["persona"], manners=NOMANNERS, base_p=0.0, base_p_overrides={"calm": 0.5}, step_p=0.0)
@@ -285,7 +285,7 @@ class PersonaTests(unittest.TestCase):
             o = self.say("kochanie, dość")
             self.assertEqual(o.status, "executed", mode)
             self.assertIn("ran plain", o.detail)
-            self.assertEqual(self.actions(), ["Hismith::Calm"])
+            self.assertEqual(self.actions(), ["Hismith::Speed::Slower", "Hismith::Speed::Slower", "Hismith::Depth::Shallower"])   # calm = ease off
             for text in ["kochanie, spuść się na mnie", "kochanie, pieprz mnie", "kochanie, tryb trzy", "kochanie, na maksa", "kochanie, szybciej"]:
                 o = self.say(text)
                 self.assertEqual(o.status, "ignored", text)

@@ -57,7 +57,7 @@ def stt_prompt(intents, wake_words=None):
     # only the wake words: on unclear audio (moans, the film, the machine) the model wrote out the whole hint instead of
     # his words - "Kochanie, Pani, spuść się na mnie, szybciej, wolniej, ..." ten times in 23 minutes (2026-11-20), and
     # each time what he said was lost. The commands are matched loosely anyway.
-    return ", ".join(w for w in wake_words) + "." if wake_words else ""
+    return ""   # even "kochanie, Pani." came back alone instead of his words (15:49-15:57): no hint at all
 
 
 def save_voice_id(config_path, voice_id, lang="pl"):

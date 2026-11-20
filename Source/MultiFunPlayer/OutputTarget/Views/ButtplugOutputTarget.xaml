@@ -341,18 +341,6 @@
                     <Button Style="{StaticResource MaterialDesignOutlinedButton}"
                             MinWidth="44"
                             Padding="8 0"
-                            Command="{s:Action OnHismithModeButton}" CommandParameter="12"
-                            Content="Calm"
-                            ToolTip="Calm: medium speed at medium depth; pressed again, slower each time (40, 25, 12, slowest). The machine keeps going."/>
-                    <TextBlock HorizontalAlignment="Center"
-                               FontSize="10"
-                               Opacity="0.7"
-                               Text="Home"/>
-                </StackPanel>
-                <StackPanel Margin="0 0 8 6" HorizontalAlignment="Center">
-                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
-                            MinWidth="44"
-                            Padding="8 0"
                             Foreground="{DynamicResource MaterialDesignErrorBrush}"
                             Command="{s:Action OnHismithModeButton}" CommandParameter="11"
                             Content="Stop"

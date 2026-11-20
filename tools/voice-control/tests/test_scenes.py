@@ -42,7 +42,7 @@ class StrictScenes(unittest.TestCase):
                  "głęboko w dupcię": "fill", "drażnij mnie": "tease", "pieść mnie": "tease", "użyj mnie": "use_me",
                  "jestem twoją sissy": "use_me", "jestem twoją suczką": "use_me", "jeszcze": "lock", "właśnie tak": "lock",
                  "nie przestawaj": "lock", "zalej mnie": "lube_many", "obryzgaj mnie kilka razy": "lube_many",
-                 "dość": "calm", "wystarczy": "calm", "stój": "calm", "przestań": "calm", "trąbka": "halt",
+                 "dość": "calm", "wystarczy": "calm", "stój": "pause", "przestań": "pause", "trąbka": "halt",
                  "wyłącz maszynę": "halt", "koniec pętli": "loop_off", "koniec sekwencji": "sequence_stop"}
         for text, intent in cases.items():
             m, reason = match(text, INTENTS)
@@ -62,12 +62,16 @@ class StrictScenes(unittest.TestCase):
             self.assertEqual(c.handle(t).status, "ignored", t)
         self.assertEqual(self.runs, [])
 
-    def test_enough_goes_to_calm_and_does_not_stop(self):
+    def test_enough_eases_off_and_stop_pauses(self):
+        # since 2026-11-20 there is no Calm mode: "dość" = two steps slower and one shallower; "stój" pauses the film
         c = self.make()
-        for text in ["kochanie, dość", "kochanie, wystarczy", "kochanie, starczy", "kochanie, przestań", "kochanie, stój"]:
+        for text in ["kochanie, dość", "kochanie, wystarczy", "kochanie, starczy"]:
             c._last.clear()
             self.assertEqual(c.handle(text).intent, "calm", text)
-            self.assertEqual(self.runs[-1], [{"action": "{target}::Hismith::Calm", "args": []}], text)
+            self.assertEqual(actions(self.runs[-1]), ["Hismith::Speed::Slower", "Hismith::Speed::Slower", "Hismith::Depth::Shallower"], text)
+        for text in ["kochanie, przestań", "kochanie, stój"]:
+            c._last.clear()
+            self.assertEqual(c.handle(text).intent, "pause", text)
 
     def test_only_the_safe_word_stops_everything(self):
         c = self.make()

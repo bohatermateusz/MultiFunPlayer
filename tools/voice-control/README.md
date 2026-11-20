@@ -257,6 +257,12 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   the sentence is doing it). Say it is done within 60 s ("zrobione", "gotowe", "wypinam", "tak, Pani") and you get a
   Lube Launcher shot on the order's side (mouth / face orders: the front one, 60 %; the rest: the rear one, 35 %) or the
   machine of that side faster (+2 speed steps) for 10-15 s, then back. Half of her orders come from the refusal bank.
+* **No Calm mode** (removed 2026-11-20): "dość", "wystarczy", "spokojnie", "za mocno" ease off (two steps slower, one
+  shallower, the film goes on); "stop", "stój", "przestań" pause the film ("graj" goes on). The MFP button is gone.
+* **The swap in any form**: a swap word (zamień / zamiana / zmień / przełóż / zamknij - a mishearing) with a word for
+  each side (dupa / tyłek / tył and usta / buzia / przód) is the machine toggle; she says where it is now
+  (`persona.machine_lines`), a second toggle within 15 s is the same wish, MFP reports the side in its status.
+* **Speech recognition without a hint**: even "kochanie, Pani." came back instead of his words.
 * **Speech recognition hint = the wake words only** ("kochanie, Pani."): the longer hint with commands was written
   out instead of his words on unclear audio (10x in 23 min); live mode uses gpt-4o-transcribe; a single drop of the
   realtime connection is silent (it reconnects in 1 s, the local detector covers the gap). A wake word at the end

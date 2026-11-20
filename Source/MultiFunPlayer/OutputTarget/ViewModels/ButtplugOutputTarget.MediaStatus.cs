@@ -114,6 +114,7 @@ internal sealed partial class ButtplugOutputTarget :
                 ["duration"] = Math.Round(_mediaDuration, 2),
                 ["playing"] = _mediaPlaying,
                 ["scripts"] = new JArray(_mediaScripts.Values.Distinct().Order()),
+                ["machine_side"] = MachineDevice() is null ? null : (MachineIsFront ? "front" : "rear"),
             }.ToString(Newtonsoft.Json.Formatting.None);
         }
     }

@@ -139,8 +139,7 @@ class Hallucinations(unittest.TestCase):
 
     def test_the_prompt_is_short(self):
         p = stt_prompt(INTENTS, CFG["wake"]["words"])
-        self.assertLessEqual(len(p), 100)
-        self.assertIn("kochanie", p)
+        self.assertEqual(p, "")                   # no hint at all since 2026-11-20 (it came back instead of his words)
         self.assertNotIn("tryb", p)
         self.assertNotIn("trąbka", p)            # a hinted word comes out on noise: a phantom safe word stops the machine
 

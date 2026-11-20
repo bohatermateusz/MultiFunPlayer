@@ -58,6 +58,7 @@ internal sealed partial class ButtplugOutputTarget
         NotifyOfPropertyChange(nameof(MachineIsFront));
         NotifyOfPropertyChange(nameof(MachineSideLabel));
         NotifyOfPropertyChange(nameof(HismithModeStatus));
+        SignalMediaStatus();               // the voice tool learns where the machine is now
     }
 
     // on (re)connect the switch wins over the engine's display name ("Hismith S2 Rear")

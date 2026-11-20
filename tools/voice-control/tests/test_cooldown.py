@@ -73,7 +73,7 @@ class Plain(unittest.TestCase):
 
     def test_calm_and_slower_stay_what_they_were(self):
         self.c.handle("kochanie, spokojnie")
-        self.assertEqual(actions(self.runs)[-1], "Hismith::Calm")
+        self.assertEqual(actions(self.runs)[-1], "Hismith::Depth::Shallower")   # calm = ease off since 2026-11-20
         self.clock.t += 20
         self.c.handle("kochanie, zwolnij")
         self.assertEqual(actions(self.runs)[-1], "Hismith::Speed::Slower")

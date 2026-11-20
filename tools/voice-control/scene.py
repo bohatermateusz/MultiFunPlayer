@@ -220,6 +220,7 @@ class SceneTracker:
         self._tempo, self._tempo_since, self._tempo_from, self._tempo_said = None, None, None, -1e9
         self._sock = None
         self.last_error = None
+        self.machine_side = None         # "front" / "rear" from MFP, None until it says
 
     # ---- input -----------------------------------------------------------------------------------
     def feed(self, path, position, playing, duration=None):
@@ -251,6 +252,8 @@ class SceneTracker:
             return False
         if not isinstance(msg, dict) or msg.get("event") != "media":
             return False
+        if msg.get("machine_side") in ("front", "rear"):
+            self.machine_side = msg["machine_side"]     # where MFP says the S2 is (its MACHINE switch)
         path = msg.get("path") or None
         film = film_from_scripts(msg.get("scripts"))
         if film and (not path or "://" in str(path)):

@@ -96,6 +96,10 @@ EASE_OFF = {"calm", "cooldown", "halt", "pause"}
 # her talk line saying the machine changes now ("przyspieszam", "tryb ósmy od teraz") while nothing ran
 MACHINE_CLAIM = re.compile(r"przyspiesz|zwalniam|zwolnię|tryb\w*\s+\w+|wracam do filmu|wracamy do filmu|głębiej wchodz|"
                            r"rytm|podwójne|szybciej|wolniej", re.I)
+# "zamień dupę z ustami" in all its forms (and the mishearings of "zamień"): a swap word with a word for each side
+SWAP_WORD = re.compile(r"\b(zamie\w*|zamia\w*|zamk\w*|zmie\w*|zmia\w*|przeł\w*|przel\w*|odwr\w*|swap\w*|switch\w*)\b", re.I)
+REAR_WORD = re.compile(r"\b(dup\w*|tył\w*|tyl\w*|tyłek|tyłka|odbyt\w*|rear|ass)\b", re.I)
+FRONT_WORD = re.compile(r"\b(ust\w*|usta|buzi\w*|buź\w*|przód|przod\w*|gardł\w*|mouth|front)\b", re.I)
 MOOD_MINUTES = (6, 14)   # her mood shifts on its own after this many minutes (random in the range)
 SAFE_WORD_COMPOUNDS = {"pętli", "petli", "sekwencji", "trybu", "blokady", "filmu", "loop", "sequence", "mode", "the"}
 
@@ -570,6 +574,15 @@ class Controller:
             return self.scene is not None and bool(self.scene.paused())
         except Exception:
             return False
+
+    def _machine_swap(self, transcript):
+        """"zamień dupę z ustami", "zamieńmy usta z dupą", "zamiana ust na dupę", "przełóż dupę do ust" ... -> the
+        machine_toggle intent; "Zamknij dupę z ustami" (a mishearing, 15:50) too. -> Match or None"""
+        text = transcript or ""
+        if not (SWAP_WORD.search(text) and REAR_WORD.search(text) and FRONT_WORD.search(text)):
+            return None
+        intent = next((i for i in self.intents if i.id == "machine_toggle"), None)
+        return Match(intent, 1.0, "[swap]") if intent else None
 
     def _wake_at_the_end(self, transcript):
         """"Jesteś tam, kochanie?" is said to her as much as "kochanie, jesteś tam?" (15:02 it was ignored): a wake word
@@ -2710,6 +2723,9 @@ class Controller:
         reward = self._spontaneous_order_done(transcript, now)
         if reward is not None:
             return reward                                    # "gotowe" after her order: the reward
+        swap = self._machine_swap(transcript)
+        if swap is not None:
+            return self._run_match(swap, now)                # the machine to the other side, said in any form
         transcript = self._carry_wake(transcript, consume=True)
         transcript = self._wake_at_the_end(transcript)
         command = self.strip_wake_word(transcript)
@@ -2859,4 +2875,30 @@ class Controller:
         self.run_steps(steps)
         self._remember(m.intent.id if m.intent.id != "improvise" else "improvised " + "+".join((extra or {}).get("plan", [])))
         outcome = Outcome("executed", "", m.intent.id, m.score, via, extra or {})
+        if m.intent.id.startswith("machine_"):
+            return self._comment_machine(outcome, m.intent.id)
         return self._comment_cooldown(outcome) if m.intent.id == "cooldown" else outcome
+
+    def _comment_machine(self, outcome, intent_id):
+        """the machine moved: she says where it is now, so that he does not ask twice and send it back (15:51, two
+        "zamień usta z dupą" 27 s apart switched it there and back). The side is tracked here (rear at the start)."""
+        side = {"machine_front": "front", "machine_rear": "rear"}.get(intent_id)
+        if side is None:
+            now_side = getattr(self, "_machine_side", "rear")
+            told = getattr(self.scene, "machine_side", None) if self.scene is not None else None
+            if told in ("front", "rear") and self.clock() - getattr(self, "_machine_moved_at", -1e9) > 3.0:
+                now_side = told                           # MFP knows (its button may have moved it meanwhile)
+            side = "rear" if now_side == "front" else "front"
+        self._machine_side, self._machine_moved_at = side, self.clock()
+        lines = (self.persona_cfg.get("machine_lines") or {}).get(side) or []
+        if lines and self.language == "pl":
+            from lines import similar
+            recent = [t for r, t in self._history[-12:] if r == "assistant"]
+            fresh = [x for x in lines if not any(similar(x, t) >= 0.75 for t in recent)] or lines
+            line = self.rng.choice(fresh)
+            stage = self.stage()
+            outcome.extra.update(say=line, stage=stage, side=side, voice=stage + (5 if self._tone_now[0] == "ostry" else 0))
+            self._history.append(("assistant", line))
+            self._window_until = self.clock() + float(self.persona_cfg["reply_window"])
+            self._last_line = self.clock()
+        return outcome

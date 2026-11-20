@@ -619,11 +619,10 @@ class FifthSession(Server):
         self.assertNotEqual(o.detail, "no wake word")
         self.assertEqual(self.c._wake_at_the_end("Jesteś tam, kochanie?"), "kochanie, jestes tam")
 
-    def test_the_stt_hint_is_only_the_wake_words(self):
+    def test_no_stt_hint(self):
         from voice_control import stt_prompt
         prompt = stt_prompt(INTENTS_ALL, CFG["wake"]["words"])
-        self.assertEqual(prompt, "kochanie, Pani.")
-        self.assertNotIn("szybciej", prompt)
+        self.assertEqual(prompt, "")                     # even the wake words alone came back instead of his words
 
     def test_swap_ass_and_mouth_is_the_machine_toggle(self):
         o = self.say("kochanie, zamiana dupy z ustami")
@@ -643,3 +642,49 @@ class FifthSession(Server):
             seen.add(tuple(self.c._refresh_storyline()))
         self.assertGreater(len(seen), 5)                             # another film, another story
         self.assertIn("scenariusz_tego_filmu", self.c._persona_state())
+
+
+class SixthSession(Server):
+    """from the session 2026-11-20 15:49-15:57"""
+
+    def test_every_form_of_the_swap(self):
+        for text in ("zamień dupę z ustami", "zamień usta z dupą", "Zamknij dupę z ustami.", "zamieńmy usta i dupę",
+                     "zamiana ust na dupę", "przełóż maszynę z dupy do ust", "kochanie, zamień tyłek z buzią",
+                     "zmień usta na dupę"):
+            self.clock.t += 20
+            o = self.say(text)
+            self.assertEqual(o.intent, "machine_toggle", text)
+        for text in ("ruchaj mnie w dupę", "spuść mi się do ust", "zamknij buzię"):
+            self.assertIsNone(self.c._machine_swap(text), text)
+
+    def test_she_says_where_the_machine_is_and_a_repeat_does_not_send_it_back(self):
+        self.clock.t += 20
+        o = self.say("kochanie, zamień usta z dupą")
+        self.assertEqual(o.status, "executed")
+        self.assertIn(o.extra["say"], P["machine_lines"]["front"])
+        self.clock.t += 5
+        again = self.say("kochanie, zamień usta z dupą")
+        self.assertEqual(again.status, "cooldown")                # 15:51: the second one switched it back
+        self.clock.t += 20
+        o = self.say("kochanie, zamień dupę z ustami")
+        self.assertIn(o.extra["say"], P["machine_lines"]["rear"])
+
+    def test_mfp_knows_where_it_is(self):
+        class S:
+            machine_side = "front"
+            def paused(self): return False
+            def progress(self): return None
+            def now(self): return None
+            def pending(self): return None
+        self.c.scene = S()
+        self.clock.t += 20
+        o = self.say("kochanie, zamiana dupy z ustami")
+        self.assertIn(o.extra["say"], P["machine_lines"]["rear"])    # it was in front (moved by the button)
+
+    def test_dosc_eases_off_and_stop_pauses(self):
+        from voice_control import load_config
+        live, intents = load_config(os.path.join(os.path.dirname(__file__), "..", "commands.json"))
+        calm = next(i for i in intents if i.id == "calm")
+        self.assertEqual([s["action"].split("::", 2)[-1] for s in calm.steps], ["Speed::Slower", "Speed::Slower", "Depth::Shallower"])
+        pause = next(i for i in intents if i.id == "pause")
+        self.assertIn("stop", pause.phrases)
