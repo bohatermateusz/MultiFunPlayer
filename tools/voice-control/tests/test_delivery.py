@@ -36,6 +36,7 @@ class Shaping(unittest.TestCase):
         self.assertEqual(shape_text("a… b", "x", dict(D, text_shaping=False)), "a… b")
 
     def test_presets_by_kind_then_by_tone_and_stage(self):
+        D = dict(globals()["D"], whisper_share=None, by_tone={"czuły": ["whisper", "tender"], "ostry": ["tease", "sharp"]})
         self.assertEqual(choose_delivery(D, {"kind": "task", "tone": "czuły", "stage": 0})[0], "sharp")
         self.assertEqual(choose_delivery(D, {"kind": "affirmation", "tone": "ostry", "stage": 4})[0], "whisper")
         self.assertEqual(choose_delivery(D, {"kind": "aftercare"})[0], "afterglow")
@@ -201,3 +202,17 @@ class ConfigShape(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class MoreWhispers(unittest.TestCase):
+    """user, 2026-11-20: more whispers - any line may be whispered (whisper_share[stage]), a cum moment stays loud"""
+
+    def test_a_roll_under_the_share_whispers_even_a_sharp_line(self):
+        self.assertEqual(choose_delivery(D, {"kind": "answer", "tone": "ostry", "stage": 4}, roll=0.0)[0], "whisper")
+        self.assertEqual(choose_delivery(D, {"kind": "answer", "tone": "ostry", "stage": 4}, roll=0.99)[0], "sharp")
+
+    def test_the_cum_moment_is_never_whispered(self):
+        self.assertEqual(choose_delivery(D, {"kind": "narration", "tone": "ostry", "stage": 4, "moment": "cum"}, roll=0.0)[0], "triumph")
+
+    def test_tender_lines_are_always_whispered(self):
+        self.assertEqual(choose_delivery(D, {"kind": "answer", "tone": "czuły", "stage": 4}, roll=0.99)[0], "whisper")

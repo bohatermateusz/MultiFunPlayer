@@ -83,6 +83,15 @@ REFUSAL_MARKERS = re.compile(r"\b(nie|nigdy|spierdalaj|spadaj|odwal|odpierdol|pi
 # "nie" that asks for more, not a refusal: "nie oszczędzaj mnie", "nie przestawaj", "nie zwalniaj"
 NOT_A_REFUSAL = re.compile(r"\bnie\s+(oszczędzaj|oszczedzaj|przestawaj|zwalniaj|żałuj|zaluj|zatrzymuj|czekaj|litu|lituj|"
                            r"wyjmuj|kończ|koncz|stop)\w*|\bdon'?t\s+(stop|spare|slow)", re.I)
+# what changes the machine's mode (script <-> a built-in mode, a sequence, a surprise, calm / cool-down / halt, the
+# player): only the user does that, by his own words or a key - never her improvising, her surprises or her tease
+MODE_ACTIONS = re.compile(r"::(Mode|Sequence|Surprise|Calm|Cooldown|Halt)\b|Media::PlayPause|Script::Loop")
+# his words that ask for a mode change ("włącz tryb ósmy", "wróć do filmu", "skrypt", "sekwencja", "losowy")
+MODE_WORDS = re.compile(r"tryb|program|film|skrypt|sekwenc|normaln|niespodzian|losow|zatrzymaj|stop|pauz|uspok|wycisz|"
+                        r"\bmode\b|script|movie|video|sequence|surpris|random|pause|calm", re.I)
+# her talk line saying the machine changes now ("przyspieszam", "tryb ósmy od teraz") while nothing ran
+MACHINE_CLAIM = re.compile(r"przyspiesz|zwalniam|zwolnię|tryb\w*\s+\w+|wracam do filmu|wracamy do filmu|głębiej wchodz|"
+                           r"rytm|podwójne|szybciej|wolniej", re.I)
 MOOD_MINUTES = (6, 14)   # her mood shifts on its own after this many minutes (random in the range)
 SAFE_WORD_COMPOUNDS = {"pętli", "petli", "sekwencji", "trybu", "blokady", "filmu", "loop", "sequence", "mode", "the"}
 
@@ -240,6 +249,7 @@ class Controller:
         self._last_heard = 0.0            # last time anything was heard from the user (narration keeps quiet after it)
         self._repeat_target = None        # the sentence she told him to repeat ("Powtórz za mną: ...")
         self._last_demand = None          # (request id, demand) of her last refusal: what she wants before she gives it
+        self._mode_wish = False           # his words in this turn ask for a mode change (only then may a mode change)
         self._task = None                 # the order of a "task" refusal ({"line", "done"}): do it, say so, and she gives it
         self._spont_task = None           # an order she gave by herself ({"line", "done", "side", "until"}): done -> a reward
         self._reward_timers = []          # the pending "back to normal" of a speed reward
@@ -510,6 +520,9 @@ class Controller:
         own = list((self._task or {}).get("done") or []) if refusal else []
         own += list((self._spont_task or {}).get("done") or []) if spont else []
         return [w for w in own + list(cfg.get("done_words") or []) if len(w.split()) == 1]
+
+    def _changes_mode(self, intent):
+        return intent is not None and any(MODE_ACTIONS.search(st.get("action", "")) for st in intent.steps)
 
     def _run_shots(self, steps):
         """each cum is shots_per_cum shots (user, 2026-11-20: "każde spuszczanie to 5 strzałów"): LubeLauncher::Fire and
@@ -1376,6 +1389,9 @@ class Controller:
         esc = self.persona_cfg["escalation"]
         if not esc.get("enabled", True):
             return 0
+        film = self._film_stage(esc)
+        if film is not None:
+            return film
         now = self.clock()
         if self._heat_last and now - self._heat_last > float(esc["heat_reset"]):
             self._heat = 0.0
@@ -1390,6 +1406,41 @@ class Controller:
                 self._heat_last = now
         stage = sum(1 for t in esc["thresholds"] if self._heat >= t) - 1
         return max(0, min(stage, int(esc["max_stage"]), len(esc["thresholds"]) - 1))
+
+    def _film_stage(self, esc):
+        """the stage from the film, when one is playing and known (user, 2026-11-20): gentle while it warms up (the first
+        warmup_share of it, between warmup_seconds), then from the middle of the scale up with the pace of the script
+        that drives the machine now (by_tempo: still / slow -> 2, medium -> 3, fast / max -> 4). Up at once, down
+        only after the slower pace has lasted drop_after_seconds. -> stage, or None (no film: the heat decides)"""
+        cfg = esc.get("film") or {}
+        if not cfg.get("enabled") or self.scene is None:
+            return None
+        try:
+            prog = self.scene.progress()
+        except Exception:
+            prog = None
+        if not prog:
+            self._film_peak = None
+            return None
+        pos, dur = prog
+        lo, hi = cfg.get("warmup_seconds", [180, 600])
+        warm = min(max(float(dur or 0) * float(cfg.get("warmup_share", 0.2)), float(lo)), float(hi))
+        top = int(esc.get("max_stage", 4))
+        if pos < warm:
+            self._film_peak = None
+            return min(0 if pos < warm / 2 else 1, top)
+        scene = self._scene_now()
+        tempo = (scene or {}).get("tempo")
+        target = int((cfg.get("by_tempo") or {}).get(tempo, cfg.get("default_stage", 2)))
+        now = self.clock()
+        peak = getattr(self, "_film_peak", None)
+        if peak is None or target >= peak[0]:
+            self._film_peak = (target, now)
+        elif now - peak[1] >= float(cfg.get("drop_after_seconds", 45)):
+            self._film_peak = (peak[0] - 1, now)          # one step down at a time
+        else:
+            self._film_peak = (peak[0], peak[1]) if target < peak[0] else (target, now)
+        return max(0, min(self._film_peak[0], top))
 
     def _heat_up(self, kind):
         points = float(self.persona_cfg["escalation"].get("points", {}).get(kind, 0))
@@ -1870,7 +1921,8 @@ class Controller:
         step = float(c["step_p_overrides"].get(request_id, c["step_p"]))
         m = c["manners"]
         p = base + step * asks + (float(c["confession_p"]) if turn.confession else 0.0)
-        p = min(p * float(c.get("difficulty", 1.0)), 0.95)
+        cap = float(c.get("max_p", 0.95))
+        p = min(p * float(c.get("difficulty", 1.0)), cap)
         if not polite:
             p *= float(m["politeness_factor"])              # being polite pays
         if self._owed is not None and not turn.thanked:
@@ -1887,8 +1939,8 @@ class Controller:
         roll = self.rng.random()
         return roll < p, p, roll
 
-    def _persona_steps(self, actions, allowed_ids=None):
-        steps, used = self._improvised_steps(actions)
+    def _persona_steps(self, actions, allowed_ids=None, allow_modes=False):
+        steps, used = self._improvised_steps(actions, allow_modes)
         if allowed_ids is not None:
             keep = [u for u in used if u.split("x")[0] in allowed_ids]
             if len(keep) != len(used):
@@ -1914,7 +1966,16 @@ class Controller:
         # as a neighbour (one shot); the model still decides yes / no and what she says
         if listed is not None and listed.score >= 0.95 and str(turn.request) not in ("none", "") and turn.request != listed.intent.id:
             turn.request = listed.intent.id
+        # a mode changes only when HE asks for it: the model reading "proszę" as "tryb ósmy" (11:32) is not enough
+        self._mode_wish = bool(MODE_WORDS.search(transcript)) or (listed is not None and self._changes_mode(listed.intent))
+        wanted = next((i for i in self.intents if i.id == turn.request), None)
+        if self._changes_mode(wanted) and not self._mode_wish:
+            extra_mode = {"mode_request_dropped": turn.request}
+            turn.request = "none"
+        else:
+            extra_mode = {}
         extra = {"persona_raw": turn.raw, "latency_ms": turn.latency_ms}
+        extra.update(extra_mode)
         if not turn.addressed and listed is None:
             # (a command from the list - "ruchaj mnie mocniej" - is said to her even without "kochanie")
             return Outcome("ignored", "persona: not said to her", via="persona", extra=extra)
@@ -2029,6 +2090,10 @@ class Controller:
             if not pending and self._promises_a_shot(turn.line_if_granted) and self._keep_promise(extra, now):
                 return spoken(turn.line_if_granted, Outcome("executed", "persona: promise kept", "lube_fire", 1.0, "persona", extra))
             line = (turn.line_if_denied or turn.line_if_granted) if pending else (turn.line_if_granted or turn.line_if_denied)
+            if line and MACHINE_CLAIM.search(line) and not self._promises_a_shot(line):
+                # "Tryb ósmy i podwójne przyspieszenie. Bierz." (11:35) - nothing changed: she must not say it did
+                extra["claim_dropped"] = line
+                line = self._line_in_language(Outcome("talk", "", "", 0.0, "persona", {})) or ""
             if pending and self._last_demand:
                 line = self._varied_denial(line, self._last_demand[1])
             extra.update(extra_met)
@@ -2057,7 +2122,7 @@ class Controller:
             self._asks.pop(request_id, None)
             self._owed = None
             if intent is None:   # "improvise": whatever she planned, bounded like a scene
-                steps, used = self._persona_steps(turn.grant_actions)
+                steps, used = self._persona_steps(turn.grant_actions, allow_modes=self._mode_wish)
                 if locked:
                     steps, used = self._persona_steps(turn.grant_actions, {"lube_fire"})
                 if not steps:
@@ -2149,7 +2214,7 @@ class Controller:
         plan = list(pr.get("plan") or [])
         if not plan and not random_modes and intent is not None:
             plan = [{"step": intent.id, "times": 1}]
-        steps, used = self._persona_steps(plan, self._program_allowed()) if plan else ([], [])
+        steps, used = self._persona_steps(plan, self._program_allowed(), allow_modes=self._mode_wish) if plan else ([], [])
         if random_modes:
             rnd = next((i for i in self.intents if i.id == "mode_random"), None)
             if rnd is not None:
@@ -2162,7 +2227,7 @@ class Controller:
             # "na minutę szybciej": the step now, and the opposite (slower) when the time is up
             back = {"faster": "slower", "slower": "faster", "deeper": "shallower", "shallower": "deeper"}
             undo = [{"step": back[u.split("x")[0]], "times": int(u.split("x")[1]) if "x" in u else 1} for u in used if u.split("x")[0] in back]
-            undo_steps, undo_used = self._persona_steps(undo, self._program_allowed()) if undo else ([], [])
+            undo_steps, undo_used = self._persona_steps(undo, self._program_allowed(), allow_modes=self._mode_wish) if undo else ([], [])
             self._program = {"next_at": now, "every": 0, "until": 0, "steps": steps, "used": used, "random_modes": False, "side": self._turn_side,
                              "then": {"at": now + duration, "steps": undo_steps, "used": undo_used}, "source": intent.id if intent else "program"}
         else:
@@ -2253,7 +2318,7 @@ class Controller:
     def _grant(self, intent, actions, extra, now, how, override=None):
         """run the request itself (its own steps), plus what she added, bounded like a scene"""
         steps = self._steps_for(intent, override) if override else copy.deepcopy(intent.steps)
-        added, used = self._persona_steps([a for a in actions if a.get("step") != intent.id])
+        added, used = self._persona_steps([a for a in actions if a.get("step") != intent.id], allow_modes=self._mode_wish)
         if self.lock_remaining() > 0:
             added, used = [], []
         if used:
@@ -2528,10 +2593,10 @@ class Controller:
         m = Match(intent, answer.confidence, "[llm]")
         return self._run_match(m, self.clock(), override, "llm", extra)
 
-    def _improvised_steps(self, plan):
+    def _improvised_steps(self, plan, allow_modes=False):
         """the model's plan -> (steps, [used step ids]); only commands flagged "improvise" are allowed, the number of
         steps and of speed / depth increases is capped, whatever the model asks for"""
-        by_id = {i.id: i for i in self.intents if i.improvise}
+        by_id = {i.id: i for i in self.intents if i.improvise and (allow_modes or not self._changes_mode(i))}
         steps, used = [], []
         increases = {"faster": 0, "deeper": 0}
         lube = 0

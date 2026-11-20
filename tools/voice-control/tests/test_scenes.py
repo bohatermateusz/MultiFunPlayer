@@ -165,8 +165,8 @@ class Improvise(unittest.TestCase):
     def test_plan_becomes_steps_of_the_allowed_commands(self):
         o = self.say("kochanie, jestem twoją małą dziwką do zabawy", [{"step": "faster", "times": 1}, {"step": "deeper", "times": 2}, {"step": "mode_3", "times": 1}])
         self.assertEqual((o.status, o.via), ("executed", "llm"))
-        self.assertEqual(actions(self.runs[-1]), ["Hismith::Speed::Faster", "Hismith::Depth::Deeper", "Hismith::Depth::Deeper", "Hismith::Mode::Set"])
-        self.assertEqual(self.runs[-1][-1]["args"], [3])
+        # her plan never changes the mode (user, 2026-11-20): "mode_3" is dropped
+        self.assertEqual(actions(self.runs[-1]), ["Hismith::Speed::Faster", "Hismith::Depth::Deeper", "Hismith::Depth::Deeper"])
 
     def test_the_model_cannot_use_forbidden_steps(self):
         o = self.say("kochanie, rób ze mną co ci się podoba", [{"step": "halt", "times": 1}, {"step": "calm", "times": 1},
@@ -174,10 +174,9 @@ class Improvise(unittest.TestCase):
         self.assertEqual(o.status, "ignored")
         self.assertEqual(self.runs, [])
 
-    def test_lube_and_modes_a_b_may_be_part_of_a_scene(self):
+    def test_lube_may_be_part_of_a_scene_but_not_a_mode(self):
         self.say("kochanie, zniszcz mnie i skończ we mnie", [{"step": "mode_a", "times": 1}, {"step": "lube_fire", "times": 1}])
-        self.assertEqual(actions(self.runs[-1]), ["Hismith::Mode::Set", "Hismith::LubeLauncher::Fire"])
-        self.assertEqual(self.runs[-1][0]["args"], [9])
+        self.assertEqual(actions(self.runs[-1]), ["Hismith::LubeLauncher::Fire"])   # the shot yes, the mode only on his word
 
     def test_at_most_one_shot_per_scene_and_forbidden_steps_are_dropped(self):
         self.say("kochanie, weź mnie jak chcesz", [{"step": "lube_fire", "times": 2}, {"step": "halt", "times": 1},

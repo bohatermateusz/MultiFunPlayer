@@ -2,6 +2,7 @@
 Returns raw 16-bit mono PCM at 24 kHz (response_format "pcm")."""
 import json
 import os
+import random
 import re
 import urllib.error
 import urllib.parse
@@ -63,7 +64,7 @@ DELIVERY_DEFAULTS = {
 SPEAKER_KEYS = ("stability", "similarity_boost", "style", "speed", "use_speaker_boost")
 
 
-def choose_delivery(delivery, meta):
+def choose_delivery(delivery, meta, roll=None):
     """-> (preset name, voice_settings, tags) for a line: by its kind (an order, an affirmation, aftercare) first,
     then by the moment in the video (just before a cum, the cum, a pause), else by the tone of the turn, the second
     preset of a tone from stage 3 on. meta: {tone, kind, stage, moment}"""
@@ -79,6 +80,13 @@ def choose_delivery(delivery, meta):
         tone = meta.get("tone", "czuły")
         choices = cfg.get("by_tone", {}).get(tone) or DELIVERY_DEFAULTS["by_tone"].get(tone, ["tender"])
         name = choices[min(len(choices) - 1, 1 if int(meta.get("stage", 0) or 0) >= 3 else 0)]
+    share = cfg.get("whisper_share")
+    if share and name not in ("whisper", "afterglow", "urgent", "triumph"):
+        # more whispers (user, 2026-11-20): any line may be whispered into her ear - a dirty one too - with
+        # whisper_share[stage]; the moments just before / at a cum stay loud
+        stage = max(0, min(int(meta.get("stage", 0) or 0), len(share) - 1))
+        if (random.random() if roll is None else roll) < float(share[stage]):
+            name = "whisper"
     preset = dict(presets.get(name) or presets["tender"])
     settings = {k: preset[k] for k in SPEAKER_KEYS if k in preset}
     return name, settings, list(preset.get("tags", []))

@@ -1180,7 +1180,8 @@
   "timeout": 8,
   "history_turns": 8,
   "reply_window": 60,
-  "base_p": 0.5,
+  "base_p": 1.0,
+  "max_p": 1.0,
   "step_p": 0.15,
   "confession_p": 0.2,
   "max_asks": 5,
@@ -1275,7 +1276,17 @@
      "urgent": {"stability": 0.35, "similarity_boost": 0.8, "style": 0.65, "speed": 1.06, "use_speaker_boost": true, "tags": ["[excited]"]},
      "triumph": {"stability": 0.4, "similarity_boost": 0.8, "style": 0.7, "speed": 0.97, "use_speaker_boost": true, "tags": ["[satisfied]"]}
     },
-    "by_tone": {"czuły": ["whisper", "tender"], "ostry": ["tease", "sharp"]},
+    "whisper_share": [0.6, 0.5, 0.4, 0.35, 0.3],
+     "by_tone": {
+      "czuły": [
+       "whisper",
+       "whisper"
+      ],
+      "ostry": [
+       "tease",
+       "sharp"
+      ]
+     },
     "by_kind": {"task": "sharp", "affirmation": "whisper", "aftercare": "afterglow"},
     "by_moment": {"cum_soon": "urgent", "cum": "triumph", "faster": "urgent", "slower": "whisper", "calm": "whisper"},
     "break_after_ellipsis": "0.45s",
@@ -1369,20 +1380,20 @@
    "loop_off"
   ],
   "base_p_overrides": {
-   "calm": 0.5,
-   "slower": 0.5,
-   "shallower": 0.5,
-   "pause": 0.5,
-   "play": 0.5,
-   "lube_fire": 0.5,
-   "lube_two": 0.5,
-   "lube_many": 0.5,
-   "hard": 0.5,
-   "fill": 0.5,
-   "use_me": 0.5,
-   "surprise": 0.5,
-   "mode_a": 0.5,
-   "improvise": 0.5
+   "calm": 1.0,
+   "slower": 1.0,
+   "shallower": 1.0,
+   "pause": 1.0,
+   "play": 1.0,
+   "lube_fire": 1.0,
+   "lube_two": 1.0,
+   "lube_many": 1.0,
+   "hard": 1.0,
+   "fill": 1.0,
+   "use_me": 1.0,
+   "surprise": 1.0,
+   "mode_a": 1.0,
+   "improvise": 1.0
   },
   "output": "headphones",
   "stages": [
@@ -1393,6 +1404,15 @@
    "etap 4 - ekstremum: bydło, ciało do pieprzenia, sperma, kolejki, hodowla; najbardziej wulgarna i bezlitosna, traktuje ją wyłącznie jak przedmiot; rzadka, krótka czułość tylko po to, żeby zabolało mocniej"
   ],
   "escalation": {
+   "film": {
+    "_comment": "While a film is playing and known (MFP media status: path or the names of its scripts): the first warmup_share of it (clamped to warmup_seconds) she is gentle - stage 0, then 1 in the second half of the warm-up; after that the stage follows the pace of the script that drives the machine now (by_tempo; default_stage when the pace is unknown), from the middle of the scale up. Up at once, down one step after drop_after_seconds of a slower pace. Without a film the heat (points, per_minute, thresholds) decides as before.",
+    "enabled": true,
+    "warmup_share": 0.2,
+    "warmup_seconds": [180, 600],
+    "by_tempo": {"still": 2, "slow": 2, "medium": 3, "fast": 4, "max": 4},
+    "default_stage": 2,
+    "drop_after_seconds": 45
+   },
    "enabled": true,
    "max_stage": 4,
    "points": {
@@ -1401,13 +1421,13 @@
     "confession": 2,
     "granted": 2
    },
-   "per_minute": 3.5,
+   "per_minute": 1.0,
    "thresholds": [
     0,
-    5,
-    12,
-    22,
-    35
+    8,
+    18,
+    30,
+    45
    ],
    "heat_reset": 1800,
    "tease_chance": [
@@ -5804,7 +5824,7 @@
    "lube_every_min": 60
   },
   "last_second": {
-   "enabled": true,
+   "enabled": false,
    "chance": 0.18,
    "min_stage": 1,
    "retry_bonus": 0.25,
@@ -9886,7 +9906,7 @@
    "beg_met_bonus": 0.35,
    "grants": ["Masz. Grzeczna.", "No proszę, jak ładnie błagasz. Dostajesz.", "Niech ci będzie, mała.", "Teraz tak, jak chciałaś. Dziękuj.", "Widzisz? Wystarczyło poprosić.", "Dostajesz, bo dziś jesteś posłuszna.", "Dobrze. Ale pamiętaj, czyja to łaska.", "Bierz. I ani słowa skargi.", "Zasłużyłaś. Tym razem.", "Tak lubię. Masz swoje.", "Ładnie prosiłaś, więc dostajesz.", "Proszę bardzo, moja mała. Czuj.", "Zgoda. Tylko nie zapomnij podziękować.", "Niech będzie po twojemu… na chwilę.", "Moja grzeczna laleczka. Masz.", "Skoro tak ładnie… dostaniesz.", "Tak. Teraz oddychaj i bierz.", "Pozwalam. Ale to ja decyduję, jak długo.", "Mhm. Tego właśnie chciałaś, prawda?", "Dobrze, kochanie. Rozluźnij się i bierz.", "Wiedziałam, że w końcu poprosisz jak trzeba.", "Masz, czego chciałaś. Pokaż mi, że to doceniasz.", "Za to błaganie - nagroda.", "Teraz mi się podobasz. Dostajesz.", "Błagałaś tak ładnie, że aż twoja dziurka zacisnęła się z dumy. Dostajesz. Głęboko.", "Dostajesz. I nie waż się dojść, zanim nie podziękujesz.", "Zgoda. Ale to ja decyduję, jak długo.", "Uzasadniłaś to ustami. Teraz uzasadnij to gardłem."],
    "denials": {"beg": ["Ładniej. Tak, żebym uwierzyła.", "Mało. Postaraj się bardziej.", "Słyszę cię… ale nie przekonujesz.", "Prawie. Jeszcze raz, z serca.", "Mów, jakbyś naprawdę tego potrzebowała.", "Za cicho. Błagaj.", "Grzecznie, mała. Od początku.", "Może. Jeśli poprosisz jak dziewczynka.", "Nie tak szybko, kochanie. Najpierw mnie przekonaj.", "Hm. To miała być prośba?", "Poczekasz. Lubię, jak czekasz.", "Nie dziś. Chyba że mnie zaskoczysz.", "Za łatwo by ci poszło.", "Prosisz jak ktoś, kto na to nie zasłużył.", "Nie słyszę w tym błagania.", "Najpierw pokaż, że umiesz być grzeczna.", "Oj, mała. Tak się nie prosi.", "Chcesz? To się postaraj.", "Zwolnij. To ja tu ustalam tempo.", "Nie. I nie dąsaj się.", "Czuję twoją dziurkę na odległość. Jest bardziej przekonująca niż twoje słowa. Niech to ona poprosi.", "Więcej jęku, mniej słów. To błaganie ma wyjść z brzucha, nie z mózgu.", "Prawie cię polubiłam. Potem otworzyłaś buzię, zamiast ją wypełnić. Jeszcze raz."], "confess": ["Najpierw powiedz, kim jesteś.", "Czyja jesteś? Głośno.", "Przyznaj się. Potem pogadamy.", "Chcę usłyszeć, kim dla mnie jesteś.", "Powiedz, czym jesteś. Całym zdaniem. I nie waż się powiedzieć »dziewczyna« zamiast »dziwka«. Znam różnicę."], "thank": ["Podziękuj. Za to, że w ogóle słucham.", "Gdzie dziękuję?", "Dziękuj, zanim cokolwiek dostaniesz.", "Najpierw wdzięczność.", "Podziękuj głośno, żeby on słyszał.", "Dziękuj za każdy cal, który w tobie siedzi."], "repeat": ["Powtórz. Wyraźnie.", "Jeszcze raz, tym razem z przekonaniem.", "Słowo w słowo. Dasz radę.", "Powtórz, aż w to uwierzysz.", "Powtórz to gardłem, nie głową. Jeszcze raz. Głębiej.", "Powtórz z zamkniętymi oczami. Chcę, żeby to usłyszało też twoje ciało."]},
-   "politeness_factor": 0.6,
+   "politeness_factor": 1.0,
    "polite_markers": [
     "proszę",
     "błagam",
@@ -9895,8 +9915,8 @@
     "dziękuje",
     "bardzo"
    ],
-   "ignore_demand_factor": 0.4,
-   "penalty_seconds": 90,
+   "ignore_demand_factor": 1.0,
+   "penalty_seconds": 0,
    "refusal_phrases": [
     "nie chcę",
     "nie powiem",

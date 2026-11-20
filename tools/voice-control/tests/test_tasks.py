@@ -348,3 +348,108 @@ class CumAndAddress(Server):
         self.assertEqual(scrub("Nie teraz, moja właścicielko. Czekaj.")[0], "Nie teraz, moja dziewczynko. Czekaj.")
         self.assertEqual(scrub("Jesteś moją własnością.")[0], "Jesteś moją własnością.")
         self.assertNotIn("moja własność", CFG["persona"]["address"]["names"])
+
+
+class SecondSession(Server):
+    """from the session 2026-11-20 11:28-11:37"""
+
+    def test_a_mode_she_reads_into_proszę_is_not_run(self):
+        # 11:32:29 "Proszę cię, ładnie." -> mode_8 ran (the model guessed it from the history)
+        self.c.persona_cfg = cfg(0.0, base_p=1.0, max_p=1.0)
+        o = self.say("kochanie, proszę cię, ładnie", request="mode_8")
+        self.assertNotEqual(o.intent, "mode_8")
+        self.assertEqual(o.extra.get("mode_request_dropped"), "mode_8")
+        self.assertFalse(any("Mode::" in st["action"] for steps in self.runs for st in steps))
+
+    def test_his_own_mode_request_runs(self):
+        self.c.persona_cfg = cfg(0.0, base_p=1.0, max_p=1.0)
+        o = self.say("kochanie, włącz tryb ósmy", request="mode_8")
+        self.assertEqual((o.status, o.intent), ("executed", "mode_8"))
+        o = self.say("kochanie, wróć do filmu", request="script")
+        self.assertEqual((o.status, o.intent), ("executed", "script"))
+
+    def test_her_plan_never_switches_the_mode(self):
+        # 11:34:44 "Uwielbiam, jak mnie jebią w dupę." -> improvise ran mode_8 + faster x2
+        self.c.persona_cfg = cfg(0.0, base_p=1.0, max_p=1.0)
+        self.say("kochanie, proszę, uwielbiam, jak mnie jebią w dupę", request="improvise",
+                 grant_actions=[{"step": "mode_8", "times": 1}, {"step": "faster", "times": 2}])
+        actions = [st["action"] for steps in self.runs for st in steps]
+        self.assertTrue(actions)
+        self.assertFalse(any("Mode::" in a for a in actions), actions)
+
+    def test_every_ask_is_granted_with_the_live_config(self):
+        from test_manners import CFG as _C  # noqa: F401  (the pinned test config is not the live one)
+        from voice_control import load_config
+        live, _ = load_config(os.path.join(os.path.dirname(__file__), "..", "commands.json"))
+        self.c.persona_cfg = live["persona"]
+        self.c.wake_cfg_optional_for_commands = True             # as in the tool (wake.optional_for_commands)
+        for text, req in (("kochanie, spuść się", "lube_fire"), ("kochanie, ruchaj mnie mocniej", "hard"),
+                          ("spuść się na mnie", "lube_fire"), ("kochanie, wróć do filmu", "script")):
+            self.clock.t += 60
+            o = self.say(text, request=req, demand="none")
+            self.assertEqual(o.status, "executed", (text, o.detail))
+
+    def test_a_claim_of_a_change_that_did_not_happen_is_not_said(self):
+        # 11:35:15 talk: "Masz, misiu. Tryb ósmy i podwójne przyspieszenie. Bierz." - nothing ran
+        o = self.say("kochanie, jestem ich dziwką", request="none", granted="Masz, misiu. Tryb ósmy i podwójne przyspieszenie. Bierz.")
+        self.assertEqual(o.status, "talk")
+        self.assertNotIn("Tryb", o.extra.get("say", ""))
+        self.assertTrue(o.extra.get("claim_dropped"))
+        self.assertEqual(self.runs, [])
+
+
+class FilmStage(Server):
+    """user, 2026-11-20: gentle while the film warms up, then from the middle of the scale up with the script's pace"""
+
+    class FakeScene:
+        def __init__(self):
+            self.pos, self.dur, self.tempo = 0.0, 1800.0, None
+
+        def progress(self):
+            return (self.pos, self.dur)
+
+        def now(self):
+            return {"act": "fucked", "tempo": self.tempo} if self.tempo else None
+
+        def pending(self):
+            return None
+
+    def setUp(self):
+        super().setUp()
+        import copy
+        self.c.persona_cfg = copy.deepcopy(self.c.persona_cfg)
+        esc = self.c.persona_cfg["escalation"]
+        esc["film"] = {"enabled": True, "warmup_share": 0.2, "warmup_seconds": [180, 600],
+                       "by_tempo": {"still": 2, "slow": 2, "medium": 3, "fast": 4, "max": 4}, "default_stage": 2,
+                       "drop_after_seconds": 45}
+        self.s = self.FakeScene()
+        self.c.scene = self.s
+
+    def test_gentle_while_it_warms_up(self):
+        self.c._heat = 1000.0                                   # however hot the talk was
+        self.s.pos = 60
+        self.assertEqual(self.c.stage(), 0)
+        self.s.pos = 300
+        self.assertEqual(self.c.stage(), 1)
+
+    def test_then_the_pace_decides_from_the_middle_up(self):
+        self.s.pos = 900
+        for tempo, stage in (("slow", 2), ("medium", 3), ("fast", 4)):
+            self.s.tempo = tempo
+            self.assertEqual(self.c.stage(), stage)
+
+    def test_it_comes_down_slowly(self):
+        self.s.pos, self.s.tempo = 900, "fast"
+        self.assertEqual(self.c.stage(), 4)
+        self.s.tempo = "slow"
+        self.clock.t += 10
+        self.assertEqual(self.c.stage(), 4)
+        self.clock.t += 50
+        self.assertEqual(self.c.stage(), 3)
+        self.clock.t += 50
+        self.assertEqual(self.c.stage(), 2)
+
+    def test_no_film_the_heat_decides(self):
+        self.c.scene = None
+        self.c._heat = 1000.0
+        self.assertEqual(self.c.stage(), 4)

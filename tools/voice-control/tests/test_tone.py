@@ -163,9 +163,15 @@ class Vocabulary(unittest.TestCase):
             self.assertEqual(len(set(seen[i:i + w])), w)
 
 
+# the dice mechanism (growing odds, difficulty, the sure last ask) is tested with the old, hard dice; the live config
+# grants everything (test_every_ask_is_granted)
+OLD_DICE = dict(base_p=0.12, max_p=0.95, base_p_overrides={"calm": 0.35, "slower": 0.35, "shallower": 0.35, "pause": 0.35,
+                                                            "play": 0.35, "lube_fire": 0.06, "lube_two": 0.06, "lube_many": 0.06})
+
+
 class HarderDice(unittest.TestCase):
     def asks_until_granted(self, request, n=1500, **cfg):
-        c = make(seed=11, **cfg)
+        c = make(seed=11, **dict(OLD_DICE, **cfg))
         total = 0
         for i in range(n):
             c._asks.clear()
@@ -179,11 +185,8 @@ class HarderDice(unittest.TestCase):
             total += asks
         return total / n
 
-    def test_the_lube_launcher_is_about_a_coin_flip(self):
-        # user, 2026-11-20: "zmień prawdopodobieństwa na 50% wszystkiego"
-        mean = self.asks_until_granted("lube_fire")
-        self.assertGreater(mean, 1.3)
-        self.assertLess(mean, 2.5)
+    def test_the_lube_launcher_is_granted_at_once(self):
+        self.assertAlmostEqual(self.asks_until_granted("lube_fire", base_p=1.0, max_p=1.0, base_p_overrides={}), 1.0, delta=0.01)
 
     def test_mild_requests_are_easier_than_the_lube_launcher(self):
         self.assertLess(self.asks_until_granted("calm"), 3.3)
@@ -195,10 +198,13 @@ class HarderDice(unittest.TestCase):
         self.assertLess(self.asks_until_granted("lube_fire", difficulty=2.0), base)
         self.assertAlmostEqual(self.asks_until_granted("lube_fire", difficulty=0.0, n=50), P["max_asks"], delta=0.3)
 
-    def test_every_first_ask_is_fifty_fifty(self):
-        self.assertEqual(P["base_p"], 0.5)
-        self.assertLessEqual(P["max_asks"], 5)              # not endless: the 5th ask is (almost) sure
-        self.assertEqual(set(P["base_p_overrides"].values()), {0.5})
+    def test_every_ask_is_granted(self):
+        # user, 2026-11-20 (second): "zmieniamy prawdopodobieństwa na 100% - dostaję zawsze to, o co proszę"
+        self.assertEqual((P["base_p"], P["max_p"]), (1.0, 1.0))
+        self.assertEqual(set(P["base_p_overrides"].values()), {1.0})
+        self.assertEqual((P["manners"]["politeness_factor"], P["manners"]["ignore_demand_factor"]), (1.0, 1.0))
+        self.assertEqual(P["manners"]["penalty_seconds"], 0)
+        self.assertFalse(P["last_second"]["enabled"])
         self.assertEqual(set(P["manners"]["task_demands"]["chance"]), {0.5})
         self.assertEqual(set(P["narration"]["tasks"]["share"]), {0.5})
         self.assertEqual(set(P["narration"]["tasks"]["rewards"]["lube_p"].values()), {0.5})

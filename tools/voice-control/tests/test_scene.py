@@ -552,3 +552,25 @@ class FollowsTheScene(Server):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FilmFromScripts(unittest.TestCase):
+    """2026-11-20: a Stash stream ("http://.../scene/414/stream") never found its timeline - the scripts name the film"""
+
+    def test_the_shared_stem_of_the_scripts(self):
+        from scene import film_from_scripts
+        names = ["TmwVRNet.Adult.Movies.Come.To.Life.Elena.Vedem.rear.funscript",
+                 "TmwVRNet.Adult.Movies.Come.To.Life.Elena.Vedem.rear_width.funscript",
+                 "TmwVRNet.Adult.Movies.Come.To.Life.Elena.Vedem.suck_speed.funscript",
+                 "TmwVRNet.Adult.Movies.Come.To.Life.Elena.Vedem.valve.funscript"]
+        self.assertEqual(film_from_scripts(names), "TmwVRNet.Adult.Movies.Come.To.Life.Elena.Vedem")
+        self.assertIsNone(film_from_scripts([]))
+
+    def test_a_stream_packet_is_looked_up_by_the_film(self):
+        from scene import SceneTracker
+        seen = []
+        t = SceneTracker(loader=lambda p: seen.append(p) or None, strokes_loader=lambda p: {})
+        t.handle_packet(json.dumps({"event": "media", "path": "http://192.168.0.108:9999/scene/414/stream", "position": 10,
+                                    "duration": 1900, "playing": True, "scripts": ["Film.X.rear.funscript", "Film.X.valve.funscript"]}))
+        self.assertEqual(seen, ["Film.X.mp4"])
+        self.assertEqual(t.progress()[1], 1900)

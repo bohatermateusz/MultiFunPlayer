@@ -63,6 +63,26 @@ def media_stem(path):
     return stem if ext and len(ext) <= 5 else name
 
 
+# the scripts scene-map writes next to a film: <film>.<part>.funscript (and <film>.funscript)
+SCRIPT_PARTS = ("rear", "rear_width", "rear_depth", "rear_speed", "suck", "suck_speed", "valve", "pump", "lube")
+
+
+def film_from_scripts(names):
+    """the film's name from the scripts MultiFunPlayer loaded ("Film.rear.funscript", "Film.suck_speed.funscript", ...):
+    the stem most of them share, or None - for a player that gives no file path (a Stash stream ".../scene/414/stream")"""
+    stems = []
+    for name in names or []:
+        base = re.split(r"[\\/]", str(name))[-1]
+        if not base.lower().endswith(".funscript"):
+            continue
+        base = base[: -len(".funscript")]
+        head, _, part = base.rpartition(".")
+        stems.append(head if head and part.lower() in SCRIPT_PARTS else base)
+    if not stems:
+        return None
+    return max(set(stems), key=lambda x: (stems.count(x), len(x)))
+
+
 def find_sidecar(path, dirs, suffix):
     """-> the path of <stem><suffix> next to the video or in one of dirs, or None"""
     stem = media_stem(path)
@@ -231,8 +251,20 @@ class SceneTracker:
             return False
         if not isinstance(msg, dict) or msg.get("event") != "media":
             return False
-        self.feed(msg.get("path") or None, float(msg.get("position") or 0.0), bool(msg.get("playing")), msg.get("duration"))
+        path = msg.get("path") or None
+        film = film_from_scripts(msg.get("scripts"))
+        if film and (not path or "://" in str(path)):
+            path = film + ".mp4"               # a stream URL says nothing: the scripts name the film (found in dirs)
+        self.feed(path, float(msg.get("position") or 0.0), bool(msg.get("playing")), msg.get("duration"))
         return True
+
+    def progress(self):
+        """-> (position s, duration s) of the film playing now, or None (nothing playing, the player went quiet)"""
+        now = self.clock()
+        with self._lock:
+            if not (self.playing and self._fed_at is not None and now - self._fed_at <= float(self.opt["stale_seconds"])):
+                return None
+            return self._pos(now), self.duration
 
     def start(self, port=23556, host="127.0.0.1"):
         """listens for the player's status in a background thread; -> True when the port could be bound"""

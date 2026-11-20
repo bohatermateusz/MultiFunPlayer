@@ -11,11 +11,14 @@ namespace MultiFunPlayer.OutputTarget.ViewModels;
 // Media status for the voice control tool: while remote commands are on, the current media path, position and
 // play/pause state go out as a UDP datagram to 127.0.0.1:RemoteStatusPort once a second and at once on every change
 // (a new file, play/pause, a seek), so the tool can follow what is happening in the video.
-// Message: {"event": "media", "path": "<path or null>", "position": <s>, "duration": <s>, "playing": <bool>}
+// Message: {"event": "media", "path": "<path or null>", "position": <s>, "duration": <s>, "playing": <bool>,
+//           "scripts": ["<name of the script loaded on an axis>", ...]}
+// The script names tell the tool which film it is when the path does not (a Stash stream: ".../scene/414/stream").
 internal sealed partial class ButtplugOutputTarget :
     IHandle<MediaPathChangedMessage>, IHandle<MediaPositionChangedMessage>,
-    IHandle<MediaPlayingChangedMessage>, IHandle<MediaDurationChangedMessage>
+    IHandle<MediaPlayingChangedMessage>, IHandle<MediaDurationChangedMessage>, IHandle<ScriptChangedMessage>
 {
+    private readonly Dictionary<DeviceAxis, string> _mediaScripts = [];
     private readonly object _mediaStatusLock = new();
     private readonly Stopwatch _mediaPositionClock = Stopwatch.StartNew();
     private string _mediaPath;
@@ -70,6 +73,19 @@ internal sealed partial class ButtplugOutputTarget :
         SignalMediaStatus();
     }
 
+    public void Handle(ScriptChangedMessage message)
+    {
+        lock (_mediaStatusLock)
+        {
+            if (message.Script?.Name is { Length: > 0 } name)
+                _mediaScripts[message.Axis] = name;
+            else
+                _mediaScripts.Remove(message.Axis);
+        }
+
+        SignalMediaStatus();
+    }
+
     public void Handle(MediaDurationChangedMessage message)
     {
         lock (_mediaStatusLock)
@@ -97,6 +113,7 @@ internal sealed partial class ButtplugOutputTarget :
                 ["position"] = Math.Round(CurrentMediaPosition(), 2),
                 ["duration"] = Math.Round(_mediaDuration, 2),
                 ["playing"] = _mediaPlaying,
+                ["scripts"] = new JArray(_mediaScripts.Values.Distinct().Order()),
             }.ToString(Newtonsoft.Json.Formatting.None);
         }
     }

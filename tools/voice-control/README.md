@@ -257,6 +257,18 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   the sentence is doing it). Say it is done within 60 s ("zrobione", "gotowe", "wypinam", "tak, Pani") and you get a
   Lube Launcher shot on the order's side (mouth / face orders: the front one, 60 %; the rest: the rear one, 35 %) or the
   machine of that side faster (+2 speed steps) for 10-15 s, then back. Half of her orders come from the refusal bank.
+* **Everything asked is granted** (since 2026-11-20 11:50: `base_p` / overrides / `max_p` 1.0, no politeness or ignored-demand
+  factor, no punishment, no "last second"). Her orders in the narration and her surprise shots stay.
+* **Only he changes the mode**: script <-> a built-in mode, a sequence, a surprise, calm / cool-down never run from her
+  plans, surprises, teases or programs; a mode request counts only when his words ask for one ("tryb", "program",
+  "film", "skrypt", "sekwencja", ...) - the model reading "proszę" as "tryb ósmy" is dropped. A talk line of hers that
+  says the machine changes ("przyspieszam", "tryb ósmy od teraz") while nothing ran is replaced by a plain line.
+* **Escalation follows the film** (`escalation.film`): gentle (stage 0, then 1) during the first 20 % of the film
+  (3-10 min), then from stage 2 up with the pace of the stroke script that drives the machine now (slow 2, medium 3,
+  fast 4), down one step after 45 s of a slower pace. MFP now sends the names of the loaded scripts, so a Stash stream
+  is recognised as its film. Without a film the old heat decides, more slowly (`per_minute` 1.0, thresholds up to 45).
+* **More whispers** (`tts.delivery.whisper_share` per stage, 60 % ... 30 %; tender lines always): any line may be
+  whispered, a dirty one too; the cum moments stay loud.
 * **Every cum is 5 shots, half of them behind** (`persona.lube.shots_per_cum`, `rear_share`): any Lube Launcher shot
   (a request, a reward, a promise, a surprise, a key) goes out as FireMany 5 (1 s apart). When he does not say where
   ("do ust", "w dupę"), the side is rolled 50/50 before she answers and given to her ("wytrysk_gdzie"), so her line and

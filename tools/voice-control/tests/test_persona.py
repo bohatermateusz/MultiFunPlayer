@@ -25,6 +25,11 @@ _pp.update(base_p=0.12, base_p_overrides={"calm": 0.35, "slower": 0.35, "shallow
                                           "use_me": 0.1, "surprise": 0.1, "mode_a": 0.1, "improvise": 0.1})
 _pp["escalation"]["tease_chance"] = [0.3, 0.5, 0.7, 0.85, 1.0]
 _pp["lube"]["rear_share"] = None                     # no rolled side: these tests fire "every launcher" (test_tasks: rolled)
+_pp.update(max_p=0.95)
+_pp["manners"].update(politeness_factor=0.6, ignore_demand_factor=0.4, penalty_seconds=90)
+_pp["last_second"]["enabled"] = True
+_pp["escalation"].update(per_minute=3.5, thresholds=[0, 5, 12, 22, 35])
+_pp["escalation"].setdefault("film", {})["enabled"] = False
 NOMANNERS = dict(CFG["persona"]["manners"], politeness_factor=1.0, ignore_demand_factor=1.0, beg_met_bonus=0.0)   # these tests are about the dice, not the manners
 STEP_IDS = [i.id for i in INTENTS if i.improvise]
 
@@ -161,6 +166,11 @@ class PersonaTests(unittest.TestCase):
         self.c.persona_cfg = dict(CFG["persona"], manners=NOMANNERS, base_p=1.0, base_p_overrides={})
         o = self.say("kochanie, użyj mnie jak chcesz", request="improvise", grant_actions=[{"step": "mode_a", "times": 1}, {"step": "deeper", "times": 1}])
         self.assertEqual(o.status, "executed")
+        # a mode only when he asks for one (user, 2026-11-20): her plan keeps "deeper", drops "mode_a"
+        self.assertEqual(self.actions(), ["Hismith::Depth::Deeper"])
+        self.clock.t += 120                                  # past the cool-down
+        o = self.say("kochanie, włącz tryb A i użyj mnie", request="improvise", grant_actions=[{"step": "mode_a", "times": 1}, {"step": "deeper", "times": 1}])
+        self.assertEqual(o.status, "executed", o.detail)
         self.assertEqual(self.actions(), ["Hismith::Mode::Set", "Hismith::Depth::Deeper"])
 
     # ---- what is not hers to decide ------------------------------------------------------------------
