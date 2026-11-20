@@ -93,6 +93,28 @@ class OrderAndDefiance(Server):
             self.assertIn(self.c._task["line"], o.extra["say"])   # the same order, said again
 
 
+class Bank(Server):
+    def test_every_order_is_met_by_each_of_its_own_done_phrases(self):
+        self.c.persona_cfg = cfg(1.0)
+        for kind, tasks in TD["tasks"].items():
+            for t in tasks:
+                for done in t["done"]:
+                    self.c._task, self.c._last_demand = t, ("hard", "task")
+                    self.assertTrue(self.c._demand_met(done), f"{kind}: {t['line']} <- {done!r}")
+                    self.assertTrue(self.c._demand_met("kochanie, " + done), f"{kind}: {t['line']} <- kochanie, {done!r}")
+
+    def test_an_unrelated_sentence_does_not_count_as_done(self):
+        self.c.persona_cfg = cfg(1.0)
+        t = next(t for t in TD["tasks"]["lube"] if t["line"].startswith("Złóż dłonie"))
+        self.c._task, self.c._last_demand = t, ("lube_fire", "task")
+        self.assertFalse(self.c._demand_met("kochanie, spuść się na mnie"))
+
+    def test_orders_are_unique_and_staged(self):
+        lines = [t["line"] for v in TD["tasks"].values() for t in v]
+        self.assertEqual(len(lines), len(set(lines)))
+        self.assertTrue(all(0 <= t.get("min_stage", 0) <= 4 for v in TD["tasks"].values() for t in v))
+
+
 class InstructiveRefusal(Server):
     def test_a_refusal_without_a_demand_says_what_to_do(self):
         # 08:48:32 "Nie. I nie dąsaj się." - no hint that asking again, nicer, would work

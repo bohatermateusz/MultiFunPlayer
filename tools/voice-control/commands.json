@@ -9381,6 +9381,173 @@
         "do końca"
        ],
        "min_stage": 2
+      },
+      {
+       "line": "Na kolana i łokcie. Pupa wysoko, plecy wygięte jak u kotki.",
+       "done": [
+        "wyginam",
+        "wygięta",
+        "jak kotka",
+        "na łokciach"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Połóż policzek nisko i trzymaj pupę w górze. Tak czeka grzeczna dziurka.",
+       "done": [
+        "pupa w górze",
+        "policzek",
+        "czekam"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Zsuń majtki tylko do kolan. Dziwki nie rozbierają się do końca.",
+       "done": [
+        "zsuwam",
+        "zsunięte",
+        "do kolan"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Rozsuń pośladki obiema rękami. Pokaż mu, gdzie ma wchodzić.",
+       "done": [
+        "rozsuwam",
+        "rozsunięte",
+        "pokazuję"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Kołysz biodrami w jego rytmie. Sama się na niego nadziewaj.",
+       "done": [
+        "kołyszę",
+        "nadziewam",
+        "nadziewam się"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Zaciśnij się na nim trzy razy i za każdym razem powiedz: dziękuję.",
+       "done": [
+        "dziękuję dziękuję dziękuję",
+        "zaciskam"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Jęcz przy każdym pchnięciu. Każde ma być słychać.",
+       "done": [
+        "jęczę",
+        "ach",
+        "och",
+        "aaa"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Nie ruszaj się. On bierze, ty tylko trzymasz dziurkę otwartą.",
+       "done": [
+        "nie ruszam",
+        "otwarta",
+        "trzymam otwartą"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Ręce za plecy, jakby były związane. Nie wolno ci się podpierać.",
+       "done": [
+        "ręce za plecami",
+        "związane",
+        "nie podpieram"
+       ],
+       "min_stage": 2
+      },
+      {
+       "line": "Załóż klipsy na sutki. Każde pchnięcie ma za nie ciągnąć.",
+       "done": [
+        "klipsy",
+        "założyłam",
+        "zakładam"
+       ],
+       "min_stage": 2
+      },
+      {
+       "line": "Kolana szerzej. Tak szeroko, żeby cały pokój widział, że jesteś otwarta.",
+       "done": [
+        "otwarta",
+        "szeroko",
+        "widać"
+       ],
+       "min_stage": 2
+      },
+      {
+       "line": "Wsuń sobie dwa palce do ust i ssij, jakby to był drugi. Dwie dziurki zajęte.",
+       "done": [
+        "ssę",
+        "palce w ustach",
+        "ssę palce"
+       ],
+       "min_stage": 2
+      },
+      {
+       "line": "Powiedz głośno: moja dupa jest do ruchania.",
+       "done": [
+        "moja dupa jest do ruchania",
+        "dupa jest do ruchania"
+       ],
+       "min_stage": 2
+      },
+      {
+       "line": "Złap prześcieradło i nie puszczaj, choćby było za głęboko.",
+       "done": [
+        "łapię",
+        "trzymam prześcieradło",
+        "nie puszczam"
+       ],
+       "min_stage": 2
+      },
+      {
+       "line": "Licz na głos następne dziesięć pchnięć. Zgubisz się, liczysz od nowa.",
+       "done": [
+        "dziesięć",
+        "osiem dziewięć dziesięć"
+       ],
+       "min_stage": 2
+      },
+      {
+       "line": "Wciśnij się w niego do samego końca i zostań tak pięć sekund.",
+       "done": [
+        "do końca",
+        "zostaję",
+        "wciskam"
+       ],
+       "min_stage": 3
+      },
+      {
+       "line": "Przyznaj na głos: jestem tu tylko po to, żeby mnie brali.",
+       "done": [
+        "jestem tu tylko po to żeby mnie brali",
+        "żeby mnie brali"
+       ],
+       "min_stage": 3
+      },
+      {
+       "line": "Wyobraź sobie, że za nim stoi kolejka. Powiedz następnemu: zaraz twoja kolej.",
+       "done": [
+        "zaraz twoja kolej",
+        "twoja kolej"
+       ],
+       "min_stage": 3
+      },
+      {
+       "line": "Poproś, żeby nie przestawał, nawet jak będziesz błagać. Powiedz to teraz.",
+       "done": [
+        "nie przestawaj",
+        "nawet jak będę błagać"
+       ],
+       "min_stage": 4
       }
      ],
      "lube": [
@@ -9450,6 +9617,130 @@
         "na twarzy"
        ],
        "min_stage": 1
+      },
+      {
+       "line": "Otwórz buzię i trzymaj. Nie zamykaj, dopóki nie skończy.",
+       "done": [
+        "otwarta",
+        "trzymam",
+        "nie zamykam"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Złóż dłonie pod brodą jak miseczkę. Nic nie może się zmarnować.",
+       "done": [
+        "miseczka",
+        "złożyłam",
+        "dłonie pod brodą"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Uklęknij i podnieś twarz. Grzeczne dziewczynki dostają na twarz.",
+       "done": [
+        "klęczę",
+        "podnoszę",
+        "twarz w górze"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Wystaw język płasko i powiedz: proszę, na język.",
+       "done": [
+        "proszę na język",
+        "na język"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Wypnij pupę do tylnej wyrzutni. Tym razem dostaniesz od tyłu.",
+       "done": [
+        "wypinam",
+        "wypięta",
+        "od tyłu"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Pokaż mi, co masz w ustach. Dopiero potem możesz połknąć.",
+       "done": [
+        "pokazuję",
+        "aaa",
+        "otwarte"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Rozsmaruj to palcem po ustach jak błyszczyk.",
+       "done": [
+        "rozsmarowuję",
+        "błyszczyk",
+        "rozsmarowałam"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Zbierz palcami, co spłynęło na brodę, i oblizuj do czysta.",
+       "done": [
+        "zbieram",
+        "oblizuję",
+        "zlizuję"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Przetocz to po języku i powiedz mi, jak smakuje.",
+       "done": [
+        "smakuje",
+        "słodko",
+        "słono",
+        "pyszne"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Podziękuj za każdą kroplę. Na głos.",
+       "done": [
+        "dziękuję za każdą kroplę",
+        "za każdą kroplę"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Nie wycieraj się do końca sceny. Mają widzieć, że byłaś używana.",
+       "done": [
+        "nie wycieram",
+        "zostawiam",
+        "byłam używana"
+       ],
+       "min_stage": 2
+      },
+      {
+       "line": "Powiedz: jestem waszą spermową laleczką.",
+       "done": [
+        "jestem waszą spermową laleczką",
+        "spermową laleczką"
+       ],
+       "min_stage": 2
+      },
+      {
+       "line": "Klęknij z otwartymi ustami i czekaj na następnego. Kolejka jest długa.",
+       "done": [
+        "czekam",
+        "czekam na następnego",
+        "otwarte usta"
+       ],
+       "min_stage": 3
+      },
+      {
+       "line": "Poproś o więcej, zanim ten skończył. Łapczywie, jak głodna.",
+       "done": [
+        "proszę o więcej",
+        "więcej",
+        "jestem głodna"
+       ],
+       "min_stage": 3
       }
      ],
      "any": [
@@ -9471,6 +9762,83 @@
         "jeden dwa trzy cztery pięć"
        ],
        "min_stage": 0
+      },
+      {
+       "line": "Popraw usta, jakbyś malowała je szminką. Dla niego masz być ładna.",
+       "done": [
+        "maluję",
+        "poprawiam",
+        "szminka"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Powiedz słodko: jestem grzeczną dziewczynką.",
+       "done": [
+        "jestem grzeczną dziewczynką",
+        "grzeczną dziewczynką"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Pogłaszcz się po udach od kolan w górę. Powoli, jak kobieta.",
+       "done": [
+        "głaszczę",
+        "głaszczę się"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Szepnij trzy razy: tak, Pani. Za każdym razem ciszej.",
+       "done": [
+        "tak pani tak pani",
+        "tak pani"
+       ],
+       "min_stage": 0
+      },
+      {
+       "line": "Wstrzymaj oddech na pięć sekund. Potem wypuść go z jękiem.",
+       "done": [
+        "wypuszczam",
+        "ach",
+        "och"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Ściśnij sutki palcami, aż zapiszczysz.",
+       "done": [
+        "ściskam",
+        "piszczę",
+        "ała"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Powiedz pełnym zdaniem, czyją jesteś dziurką.",
+       "done": [
+        "jestem twoją dziurką",
+        "twoją dziurką"
+       ],
+       "min_stage": 1
+      },
+      {
+       "line": "Wyobraź sobie obrożę na szyi. Pociągnij za smycz i powiedz: prowadź mnie.",
+       "done": [
+        "prowadź mnie",
+        "obroża",
+        "smycz"
+       ],
+       "min_stage": 2
+      },
+      {
+       "line": "Powiedz, co zrobią z tobą dziś w nocy. Ze szczegółami, bez wstydu.",
+       "done": [
+        "zrobią",
+        "będą mnie",
+        "w nocy"
+       ],
+       "min_stage": 3
       }
      ]
     }
