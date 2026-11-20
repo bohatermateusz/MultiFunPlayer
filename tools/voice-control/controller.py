@@ -89,7 +89,7 @@ NOT_A_REFUSAL = re.compile(r"\bnie\s+(oszczędzaj|oszczedzaj|przestawaj|zwalniaj
 MODE_ACTIONS = re.compile(r"::(Mode|Sequence|Surprise|Calm|Cooldown|Halt)\b|Media::PlayPause|Script::Loop")
 # his words that ask for a mode change ("włącz tryb ósmy", "wróć do filmu", "skrypt", "sekwencja", "losowy")
 MODE_WORDS = re.compile(r"tryb|program|film|skrypt|sekwenc|normaln|niespodzian|losow|zatrzymaj|stop|pauz|uspok|wycisz|"
-                        r"pierwsz|drug|trzec|czwart|piąt|szóst|siódm|ósm|\b[1-8]\b|\b[ab]\b|"
+                        r"pierwsz|drug|trzec|czwart|piąt|szóst|siódm|ósm|\b[1-8]\b|"
                         r"\bmode\b|script|movie|video|sequence|surpris|random|pause|calm", re.I)
 # a request to ease off is always his to make, whatever the words ("to jest zbyt mocne dla mnie" -> calm, 14:28)
 EASE_OFF = {"calm", "cooldown", "halt", "pause"}
