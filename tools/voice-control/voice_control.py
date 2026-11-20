@@ -717,6 +717,8 @@ def main():
                 controller.pool.warm_up(cfg.get("persona", {}).get("narration", {}).get("themes", []))
                 if controller.audio_cache is not None:
                     controller.audio_cache.warm(controller.pool, cache_keys())
+            was_paused = {"v": False}
+
             def nudger():
                 while True:
                     time.sleep(1.0)
@@ -728,6 +730,10 @@ def main():
                             next_voice()             # another woman takes over, every rotate_minutes
                         if manager["m"] is not None and manager["m"].mode == "agents":
                             continue                 # the agent speaks for her: narration goes through its proxy
+                        paused = controller.film_paused()
+                        if paused and not was_paused["v"]:
+                            voice.interrupt()        # the film stopped: her line stops too, mid-sentence
+                        was_paused["v"] = paused
                         if not args.no_narration:
                             controller.scene_moment() or controller.idle_narration()   # a key moment in the video first
                         if not args.no_nudge:

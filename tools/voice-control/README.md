@@ -257,6 +257,14 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   the sentence is doing it). Say it is done within 60 s ("zrobione", "gotowe", "wypinam", "tak, Pani") and you get a
   Lube Launcher shot on the order's side (mouth / face orders: the front one, 60 %; the rest: the rear one, 35 %) or the
   machine of that side faster (+2 speed steps) for 10-15 s, then back. Half of her orders come from the refusal bank.
+* **The machine front <-> rear, live**: MFP has a MACHINE button (and the actions Hismith::MachineSide::Toggle / ::Set
+  for a key or the voice: "maszyna do przodu", "maszyna do tyłu", "zamień maszynę"). The S2's map rows move between the
+  rear scripts (rear_speed / rear_width / rear_depth on R1 / L1 / R0) and the front ones (suck_speed / suck_width /
+  suck_depth on A1 / L2 / R2), and the S2 takes that side's role - the film keeps playing.
+* **A paused film silences her**: no narration or nudges while MFP says the film is paused; the line she is saying
+  is cut when it pauses. Her answers to him still come.
+* **The film's voice is not his**: an English transcript (or a Czech / Cyrillic garble of one) in a Polish session is
+  dropped ("the film's voice (not Polish)"); the safe word always counts.
 * **Her echo is not him**: what the microphone hears that is close to a line she said in the last 45 s is dropped
   ("her own voice (echo)" in the log) - on 2026-11-20 she answered herself for ten minutes and "mocniej" ran 14 times.
   Repeating the sentence she asked for still counts.

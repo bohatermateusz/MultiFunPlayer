@@ -450,6 +450,20 @@
             </WrapPanel>
 
             <StackPanel Margin="0 0 0 12"
+                        Orientation="Horizontal"
+                        Visibility="{Binding HasMachineSideSwitch, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Margin="0 0 15 0"
+                           VerticalAlignment="Center"
+                           FontWeight="Bold"
+                           Text="MACHINE"
+                           Typography.Capitals="AllSmallCaps"/>
+                <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                        Click="{s:Action ToggleMachineSide}"
+                        Content="{Binding MachineSideLabel}"
+                        ToolTip="Move the S2 between the rear and the front while the film plays: its rows take the other side's scripts (rear_* on R1/L1/R0 &lt;-&gt; suck_* on A1/L2/R2) and the device takes that side's role. Shortcut / voice: Hismith::MachineSide::Toggle"/>
+            </StackPanel>
+
+            <StackPanel Margin="0 0 0 12"
                         Visibility="{Binding HasDeviceRoles, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock Margin="0 0 0 4"
                            FontWeight="Bold"

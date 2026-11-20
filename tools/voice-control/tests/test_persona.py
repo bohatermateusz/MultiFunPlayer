@@ -347,7 +347,8 @@ class RequestShape(unittest.TestCase):
         gated, never = set(CFG["persona"]["gated"]), set(CFG["persona"]["never_gated"])
         self.assertEqual(never, {"halt", "lock", "cooldown", "mode_a_max", "mode_b_max", "mode_a_normal", "mode_b_normal"})
         self.assertFalse(gated & never)
-        self.assertEqual(gated | never, ids)
+        # the front / rear switch of the machine is his alone and not hers to decide (2026-11-20): neither list
+        self.assertEqual(gated | never, ids - {"machine_front", "machine_rear", "machine_toggle"})
         for x in ("calm", "slower", "shallower", "pause", "play", "script", "normal", "mode_3", "mode_b", "lube_fire", "surprise", "loop_on"):
             self.assertIn(x, gated, x)
         for x in CFG["persona"]["tease_allowed"] + CFG["persona"]["fallback_plain"]:

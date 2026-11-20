@@ -239,6 +239,9 @@
    "description": "BACK TO THE FILM, one command for all of it: the machine leaves any mode / A / B / modes in turn, every faster/slower/deeper/shallower is removed, and a paused video plays again ('normalnie', 'jak w filmie', 'wróć(my) do filmu', 'koniec trybu', 'graj', 'wznów'). Pausing is 'pause'.",
    "improvise": true
   },
+  {"id": "machine_front", "phrases": ["maszyna do przodu", "maszyna do ust", "maszyna z przodu", "przełóż maszynę do przodu", "przełącz maszynę do przodu", "maszyna na usta"], "phrases_en": ["machine to the front", "machine to the mouth"], "steps": [{"action": "{target}::Hismith::MachineSide::Set", "args": ["front"]}], "cooldown": 2, "description": "The S2 moves to the front while the film plays: it follows the front scripts (suck_speed / suck_width / suck_depth) and takes the front role (MFP: MACHINE switch)."},
+  {"id": "machine_rear", "phrases": ["maszyna do tyłu", "maszyna od tyłu", "maszyna z tyłu", "przełóż maszynę do tyłu", "przełącz maszynę do tyłu", "maszyna w dupę"], "phrases_en": ["machine to the rear", "machine from behind"], "steps": [{"action": "{target}::Hismith::MachineSide::Set", "args": ["rear"]}], "cooldown": 2, "description": "The S2 moves back to the rear: rear scripts (rear_speed / rear_width / rear_depth), rear role."},
+  {"id": "machine_toggle", "phrases": ["zamień maszynę", "przełącz maszynę", "przełóż maszynę", "zmień stronę maszyny"], "phrases_en": ["switch the machine", "swap the machine"], "steps": [{"action": "{target}::Hismith::MachineSide::Toggle", "args": []}], "cooldown": 2, "description": "The S2 to the other side (front <-> rear)."},
   {
    "id": "script",
    "phrases": [
@@ -1750,7 +1753,8 @@
      "pokojówki w posiadłości",
      "we mgle",
      "niewolnica przyjemności",
-     "klub, gdzie nikt nie pyta"
+     "klub, gdzie nikt nie pyta",
+     "jej ciało"
     ],
     "3": [
      "rzecz",
@@ -1778,7 +1782,8 @@
      "potrzebuje tego na sobie",
      "pod stołem",
      "zbrukana i dumna",
-     "sprzedana"
+     "sprzedana",
+     "nienasyceni"
     ],
     "4": [
      "bydło",
@@ -1922,7 +1927,9 @@
     "nie musisz myśleć - ulga, że nie musi już myśleć, decydować ani wybierać; ktoś myśli za nią, a ona tylko słucha, otwiera się i robi, co każą",
     "pusta - czuje się pusta, w głowie i w środku; pustka boli i kusi zarazem, i jest tylko jedno, co ją wypełnia: oni",
     "cisza w głowie - w głowie robi się cicho: żadnych myśli, zmartwień ani planów, tylko oddech, ciepło i jego rytm; to najspokojniejsze miejsce, jakie zna",
-    "sprzedana - ona ją sprzedała; licytacja, cena, nowi właściciele odbierają ją jak towar i teraz należy do nich"
+    "sprzedana - ona ją sprzedała; licytacja, cena, nowi właściciele odbierają ją jak towar i teraz należy do nich",
+    "jej ciało - nie ma już chuja, ma cipkę i dupę do ruchania, cycki i piękne nogi; jest tak piękna i ponętna, że oni nie mogą przestać",
+    "nienasyceni - oni się nigdy nie zaspokoją; naćpali ją i siebie, żeby lepiej ją wykorzystać; uwielbiają ją ruchać w dupcię"
    ],
    "style": "Mów jak do ucha, szeptem z pewnością: krótkie frazy, wielokropki jako oddechy ('Odpuść… ja to trzymam… dobra dziewczynka.'), czasem 'powtórz za mną' i zdanie w pierwszej osobie, czasem jedno dosadne słowo. Nigdy pytania, nigdy wyjaśnienia.",
    "examples": [
@@ -4950,6 +4957,35 @@
       "Zwrotów nie przyjmują. Zużyta zostaje u nich.",
       "Nowy właściciel nie pyta o imię. Pyta, ile wytrzymasz.",
       "Dali za ciebie tyle, co za dobry wieczór. I biorą swój wieczór."
+     ],
+     "jej ciało - nie ma już chuja, ma cipkę i dupę do ruchania, cycki i piękne nogi; jest tak piękna i ponętna, że oni nie mogą przestać": [
+      "Już nie masz chuja. Masz tylko cipkę i dupę do ruchania.",
+      "Masz cycki i piękne nogi. Oni patrzą tylko na to.",
+      "Jesteś taka piękna i ponętna, że oni nie mogą przestać.",
+      "Gdzie kiedyś był chuj, jest teraz mała, mokra szparka.",
+      "Twoje cycki podskakują przy każdym pchnięciu. Oni to kochają.",
+      "Nogi do nieba, dupa dla nich.",
+      "Każdy, kto na ciebie spojrzy, chce cię wyruchać.",
+      "Biodra, nogi, usta. Nie wiedzą, od czego zacząć.",
+      "Wystarczy, że wejdziesz do pokoju, i już im staje.",
+      "Taka śliczna. Szkoda, żeby się marnowała. Więc nie marnują.",
+      "Twoje nogi w pończochach, ich ręce na twoich udach.",
+      "Masz najładniejszą dupcię w tym pokoju. Wszyscy to wiedzą."
+     ],
+     "nienasyceni - oni się nigdy nie zaspokoją; naćpali ją i siebie, żeby lepiej ją wykorzystać; uwielbiają ją ruchać w dupcię": [
+      "Oni się nigdy nie zaspokoją.",
+      "Naćpali ciebie i siebie, żeby lepiej cię wykorzystać.",
+      "Uwielbiają cię ruchać w dupcię.",
+      "Kończą i zaczynają od nowa. Nie mają dość.",
+      "Twoja dupcia to ich ulubione miejsce na ziemi.",
+      "Dali ci coś do nosa. Sobie też. Teraz nikt nie przestanie.",
+      "Na tabletkach trwają godzinami. Ty też.",
+      "Są przy tobie jak zwierzęta. Tylko przy tobie.",
+      "Jeden kończy, drugi już stoi. Kolejka się nie kończy.",
+      "Mówią, że twoja dupcia jest lepsza niż wszystko, co brali.",
+      "Zrobią przerwę dopiero rano. Może.",
+      "Każdy z nich wraca po więcej. Do twojej dupci.",
+      "Patrzą na twoje źrenice i śmieją się. Tak cię lubią najbardziej."
      ]
     }
    },

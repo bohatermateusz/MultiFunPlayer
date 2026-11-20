@@ -388,7 +388,31 @@ class Controller:
             with self._lock:
                 self._last_heard = self.clock()
 
+    FOREIGN = re.compile(r"[\u0400-\u04ff]|[ěřůťďň]")
+    # English words that are not Polish words too ("on", "my", "i", "do" are)
+    EN_WORDS = {"the", "you", "and", "is", "it", "that", "what", "this", "oh", "yeah", "fuck", "baby", "come", "god", "yes",
+                "good", "so", "me", "your", "i'm", "it's", "don't", "like", "want", "gonna", "right", "she", "her", "he",
+                "his", "they", "fucking", "cock", "pussy", "ass", "cum", "suck", "harder", "deeper", "please"}
+
+    def is_film_voice(self, transcript):
+        """the film's dialogue (mostly English) or a foreign transcription of it ("Nech mě rucháju mocní", "Прими мат
+        нас") while the session is Polish: not his words. The safe word always counts."""
+        if self.language != "pl" or self.mentions_safe_word(transcript):
+            return False
+        if self.FOREIGN.search(transcript or ""):
+            return True
+        words = re.findall(r"[a-ząćęłńóśźż']+", (transcript or "").lower())
+        if len(words) < 2:
+            return False
+        if any(ch in transcript.lower() for ch in "ąćęłńóśźż"):
+            return False
+        return sum(1 for w in words if w in self.EN_WORDS) >= max(2, len(words) // 2)
+
     def _echo_outcome(self, transcript):
+        if self.is_film_voice(transcript):
+            o = Outcome("ignored", "the film's voice (not Polish)")
+            self._log(transcript, o)
+            return o
         if self.is_her_echo(transcript):
             o = Outcome("ignored", "her own voice (echo)")
             self._log(transcript, o)
@@ -534,6 +558,13 @@ class Controller:
         own = list((self._task or {}).get("done") or []) if refusal else []
         own += list((self._spont_task or {}).get("done") or []) if spont else []
         return [w for w in own + list(cfg.get("done_words") or []) if len(w.split()) == 1]
+
+    def film_paused(self):
+        """the film is paused (MFP says so): no narration, no nudges, her line in progress is cut by the main loop"""
+        try:
+            return self.scene is not None and bool(self.scene.paused())
+        except Exception:
+            return False
 
     def _changes_mode(self, intent):
         return intent is not None and any(MODE_ACTIONS.search(st.get("action", "")) for st in intent.steps)
@@ -978,6 +1009,8 @@ class Controller:
         what is happening, at once, outside the narration gap - but never over her own voice, right after the user
         spoke or within scene.event_gap (a cum: cum_gap) of her last line. Only pool lines (they may be
         pre-synthesized): a live model call would come too late. -> the line, or None."""
+        if self.film_paused():
+            return None
         cfg = self._scene_cfg()
         ncfg = self.persona_cfg.get("narration", {})
         if (self.scene is None or not cfg.get("enabled", True) or self.pool is None or not self.persona_active()
@@ -1770,6 +1803,8 @@ class Controller:
         """Called about once a second by the main loop. While a session is on she comments at random moments, whether
         the user talks or not: explicit, degrading, on a rotating theme; the gap is drawn from narration.gap_seconds
         by stage. Never while she is already speaking. -> the line, or None."""
+        if self.film_paused():
+            return None                          # the film stopped: she stops too
         cfg = self.persona_cfg["narration"]
         if not self.persona_active() or not cfg.get("enabled") or self.busy() or not cfg.get("themes"):
             return None
@@ -1879,6 +1914,8 @@ class Controller:
     def idle_nudge(self):
         """Called about once a second by the main loop. When a session is on and the user has been silent for
         idle_prompt_seconds, she says something herself (no commands). -> the line spoken, or None."""
+        if self.film_paused():
+            return None                          # the film stopped: she stops too
         ini = self.persona_cfg["initiative"]
         if not self.persona_active() or not ini.get("enabled", True) or self.busy() or self.listen_only:
             return None                          # (listening only: you are meant to be quiet, no "say something")

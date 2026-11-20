@@ -15,6 +15,7 @@ MFP = os.path.normpath(os.path.join(HERE, "..", "..", "..", "Source", "MultiFunP
 VIEWMODELS = [
     os.path.join(MFP, "OutputTarget", "ViewModels", "ButtplugOutputTarget.cs"),
     os.path.join(MFP, "OutputTarget", "ViewModels", "ButtplugOutputTarget.HismithModes.cs"),
+    os.path.join(MFP, "OutputTarget", "ViewModels", "ButtplugOutputTarget.MachineSide.cs"),
     os.path.join(MFP, "UI", "Controls", "ViewModels", "ScriptViewModel.cs"),
 ]
 TARGET = "Buttplug.io/0"

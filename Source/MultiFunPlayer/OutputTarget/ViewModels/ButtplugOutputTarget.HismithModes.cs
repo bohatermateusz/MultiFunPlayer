@@ -615,7 +615,11 @@ internal sealed partial class ButtplugOutputTarget
                 // a stopped machine (speed 0: a Stop, a paused film) does not start from a mode command alone - the
                 // S2 reported no movement after CC 04 n then. A running speed first, the mode right after it (the
                 // official app never hits this: its speed slider is never at 0 when a mode is picked).
-                await SetSpeedSurelyAsync(state.Speed > 0 ? state.Speed : PresetStartSpeed);
+                // a leftover low speed (a calm, a wind-down, many "slower") made a new mode look like a stop (14:31):
+                // a built-in mode starts at PresetStartSpeed at least
+                var startSpeed = Math.Max(state.Speed, PresetStartSpeed);
+                Logger.Info("Mode {0} on the {1} side at speed {2} (was mode {3})", mode, _sideScope.Value?.ToString() ?? "every", startSpeed, previous);
+                await SetSpeedSurelyAsync(startSpeed);
                 await Task.Delay(150);
                 _hismithPresetMode = mode;
                 NotifyOfPropertyChange(nameof(HismithPresetMode));
@@ -670,6 +674,7 @@ internal sealed partial class ButtplugOutputTarget
         s.RegisterAction($"{Identifier}::Hismith::Calm", () => SetHismithMode(ModeCalm));
         s.RegisterAction($"{Identifier}::Hismith::Cooldown", HismithCooldown);
         RegisterHismithSideActions(s);
+        RegisterMachineSideActions(s);
         s.RegisterAction($"{Identifier}::Hismith::Speed::Faster", HismithFaster);
         s.RegisterAction($"{Identifier}::Hismith::Speed::Slower", HismithSlower);
         s.RegisterAction($"{Identifier}::Hismith::Depth::Deeper", HismithDeeper);
@@ -697,6 +702,7 @@ internal sealed partial class ButtplugOutputTarget
         s.UnregisterAction($"{Identifier}::Hismith::Boost::Reset");
         s.UnregisterAction($"{Identifier}::Hismith::LubeLauncher::FireMany");
         UnregisterHismithSideActions(s);
+        UnregisterMachineSideActions(s);
     }
 
     private void SaveHismithModeSettings(JObject settings)
@@ -707,6 +713,7 @@ internal sealed partial class ButtplugOutputTarget
         settings[nameof(HismithHoldLoopSeconds)] = HismithHoldLoopSeconds;
         settings[nameof(HismithCooldownSeconds)] = HismithCooldownSeconds;
         SaveHismithSideSettings(settings);
+        SaveMachineSideSettings(settings);
     }
 
     private void LoadHismithModeSettings(JObject settings)
@@ -723,6 +730,7 @@ internal sealed partial class ButtplugOutputTarget
         if (settings.TryGetValue<int>(nameof(HismithCooldownSeconds), out var cooldown))
             HismithCooldownSeconds = cooldown;
         LoadHismithSideSettings(settings);
+        LoadMachineSideSettings(settings);
     }
 
     // Cooldown ("tryb uspokajania"): over HismithCooldownSeconds (default 5 min) every side winds down smoothly from

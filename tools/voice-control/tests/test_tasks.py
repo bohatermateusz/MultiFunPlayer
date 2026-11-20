@@ -540,3 +540,56 @@ class LouderWhispers(unittest.TestCase):
     def test_the_whisper_preset_is_louder(self):
         from tts import preset_gain
         self.assertGreaterEqual(preset_gain(CFG["persona"]["tts"]["delivery"], "whisper"), 8)
+
+
+class FourthSession(Server):
+    """user, 2026-11-20 afternoon"""
+
+    class Paused:
+        def __init__(self, paused):
+            self.p = paused
+
+        def paused(self):
+            return self.p
+
+        def progress(self):
+            return None
+
+        def now(self):
+            return None
+
+        def pending(self):
+            return None
+
+    def test_a_paused_film_silences_her(self):
+        self.c.scene = self.Paused(True)
+        self.assertTrue(self.c.film_paused())
+        self.c._last_user = self.clock.t
+        self.clock.t += 120
+        self.assertIsNone(self.c.idle_nudge())
+        self.assertIsNone(self.c.idle_narration())
+        self.c.scene = self.Paused(False)
+        self.assertFalse(self.c.film_paused())
+
+    def test_the_films_english_is_not_him(self):
+        for text in ("Oh yeah, fuck me harder baby.", "Come on, suck it, yes.", "Nech mě rucháju mocní.", "Прими мат нас."):
+            self.assertTrue(self.c.is_film_voice(text), text)
+        for text in ("kochanie, szybciej", "spuść się na mnie", "jestem ich dziwką", "zrobione", "kochanie, wróć do filmu",
+                     "mocniej", "trąbka", "spusc mi sie do ust"):
+            self.assertFalse(self.c.is_film_voice(text), text)
+        o = self.say("Oh yeah, fuck me harder baby.", request="hard")
+        self.assertEqual(o.detail, "the film's voice (not Polish)")
+
+    def test_the_machine_switch_is_a_voice_command(self):
+        o = self.say("kochanie, maszyna do przodu")
+        self.assertEqual((o.status, o.intent), ("executed", "machine_front"))
+        self.assertEqual(self.runs[-1], [{"action": "{target}::Hismith::MachineSide::Set", "args": ["front"]}])
+        self.clock.t += 5
+        o = self.say("kochanie, zamień maszynę")
+        self.assertEqual(o.intent, "machine_toggle")
+
+    def test_the_new_lines_are_in_the_bank(self):
+        seed = " | ".join(x for v in P["narration"]["pool"]["seed"].values() for x in v)
+        for needle in ("Już nie masz chuja", "Masz cycki i piękne nogi", "Oni się nigdy nie zaspokoją",
+                       "nie mogą przestać", "Naćpali ciebie i siebie", "Uwielbiają cię ruchać w dupcię", "Sprzedałam cię"):
+            self.assertIn(needle, seed)

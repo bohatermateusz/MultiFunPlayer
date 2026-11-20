@@ -258,6 +258,13 @@ class SceneTracker:
         self.feed(path, float(msg.get("position") or 0.0), bool(msg.get("playing")), msg.get("duration"))
         return True
 
+    def paused(self):
+        """True when the player is there (fresh news) and says the film is paused - she keeps quiet then"""
+        now = self.clock()
+        with self._lock:
+            return (self.path is not None and self._fed_at is not None and not self.playing
+                    and now - self._fed_at <= float(self.opt["stale_seconds"]))
+
     def progress(self):
         """-> (position s, duration s) of the film playing now, or None (nothing playing, the player went quiet)"""
         now = self.clock()

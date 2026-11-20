@@ -700,6 +700,8 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
 
             RebindByName(device);
             AvailableDevices.Add(device);
+            NotifyOfPropertyChange(nameof(HasMachineSideSwitch));
+            NotifyOfPropertyChange(nameof(MachineSideLabel));
 
             // the scripts drive the machine's auto mode: put it there on connect (its switch is not read back)
             if (device.ScalarActuators.Any(a => a.ActuatorType == ActuatorType.Position
@@ -876,6 +878,8 @@ internal sealed partial class ButtplugOutputTarget : AsyncAbstractOutputTarget
     // "PiuPiu Front") also has a fixed index there, so nothing is rebound: it takes the side its name says.
     private void RebindByName(ButtplugDevice device)
     {
+        if (ApplyMachineSide(device))
+            return;                          // the front / rear switch decides where the machine is
         if (SideFromDisplayName(device.DisplayName) is { } side)
         {
             var key = DeviceKey(device);
