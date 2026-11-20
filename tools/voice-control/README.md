@@ -257,6 +257,11 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   the sentence is doing it). Say it is done within 60 s ("zrobione", "gotowe", "wypinam", "tak, Pani") and you get a
   Lube Launcher shot on the order's side (mouth / face orders: the front one, 60 %; the rest: the rear one, 35 %) or the
   machine of that side faster (+2 speed steps) for 10-15 s, then back. Half of her orders come from the refusal bank.
+* **Deeper / shallower keep the strokes** (MFP): the film's whole stroke window is shifted and cut at the machine's
+  ends (a full-width script gets the same rhythm, only shallower / deeper), not just its centre moved.
+* **"trąbka uspakajająca" after "trąbka"**: the live mode hears "trąbka" first and stops; the password within 8 s
+  winds down from where it was before that stop (it used to start from standing still).
+* **The story moves on**: a new scenario every 8-14 minutes of a film (`narration.storyline_minutes`).
 * **No Calm mode** (removed 2026-11-20): "dość", "wystarczy", "spokojnie", "za mocno" ease off (two steps slower, one
   shallower, the film goes on); "stop", "stój", "przestań" pause the film ("graj" goes on). The MFP button is gone.
 * **The swap in any form**: a swap word (zamień / zamiana / zmień / przełóż / zamknij - a mishearing) with a word for

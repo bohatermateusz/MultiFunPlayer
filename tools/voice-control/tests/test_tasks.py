@@ -688,3 +688,18 @@ class SixthSession(Server):
         self.assertEqual([s["action"].split("::", 2)[-1] for s in calm.steps], ["Speed::Slower", "Speed::Slower", "Depth::Shallower"])
         pause = next(i for i in intents if i.id == "pause")
         self.assertIn("stop", pause.phrases)
+
+
+class StoryMovesOn(Server):
+    def test_a_new_story_comes_during_the_film(self):
+        class Film:
+            path = "A.mp4"
+        self.c.scene = Film()
+        first = tuple(self.c._refresh_storyline())
+        self.clock.t += 60
+        self.assertEqual(tuple(self.c._refresh_storyline()), first)           # a minute later: the same story
+        stories = {first}
+        for _ in range(6):
+            self.clock.t += 15 * 60                                            # past storyline_minutes
+            stories.add(tuple(self.c._refresh_storyline()))
+        self.assertGreater(len(stories), 3)

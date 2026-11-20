@@ -1145,8 +1145,12 @@ class Controller:
         except Exception:
             key = None
         key = key or ("session", int(self._last_user // 3600) if self._last_user else 0)
-        if key == self._storyline_key and self._storyline:
+        now = self.clock()
+        if key == self._storyline_key and self._storyline and now < getattr(self, "_storyline_until", 1e18):
             return self._storyline
+        # the story moves on during a film too (user, 2026-11-20): a new one every storyline_minutes
+        lo, hi = cfg.get("storyline_minutes", [8, 14])
+        self._storyline_until = now + self._story_rng.uniform(float(lo), float(hi)) * 60
         stages = cfg.get("theme_stages") or {}
         picks = []
         for st in ("1", "2", "3", "4"):

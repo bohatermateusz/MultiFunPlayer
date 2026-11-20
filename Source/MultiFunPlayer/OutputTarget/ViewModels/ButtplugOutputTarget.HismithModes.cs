@@ -166,11 +166,50 @@ internal sealed partial class ButtplugOutputTarget
          && scalar.FeatureDescriptor.StartsWith(SpeedDescription, StringComparison.OrdinalIgnoreCase))
             return BoostedSpeed(value, state.SpeedBoost);
 
-        if (state.DepthBoost != 0 && scalar.ActuatorType == ActuatorType.Position
-         && scalar.FeatureDescriptor.StartsWith(DepthDescription, StringComparison.OrdinalIgnoreCase))
-            return Math.Clamp(value + DepthBoostOffset(state.DepthBoost) / 100d, 0, 1);
+        if (state.DepthBoost != 0 && scalar.ActuatorType == ActuatorType.Position)
+        {
+            var isDepth = scalar.FeatureDescriptor.StartsWith(DepthDescription, StringComparison.OrdinalIgnoreCase);
+            var isWidth = scalar.FeatureDescriptor.StartsWith(WidthDescription, StringComparison.OrdinalIgnoreCase);
+            if (isDepth || isWidth)
+                return ShiftedWindow(GetDeviceFromSettings(settings), isDepth, value, DepthBoostOffset(state.DepthBoost) / 100d);
+        }
 
         return value;
+    }
+
+    // "Deeper" / "shallower" move the film's whole stroke window (the same strokes, only deeper / shallower - user,
+    // 2026-11-20): the window [centre - width/2, centre + width/2] is shifted by the offset and cut at the machine's
+    // ends, so a full-width script ends up with shorter strokes at the shallow (or the deep) end instead of the
+    // centre moving inside a window that has no room. -> the depth (window centre) or the width for this actuator.
+    private double ShiftedWindow(ButtplugDevice device, bool depth, double value, double offset)
+    {
+        double? width = null, centre = null;
+        if (device != null)
+        {
+            foreach (var row in GetSettingsForDevice(device).ToList())
+            {
+                if (!device.TryGetActuator(row.ActuatorIndex, row.ActuatorType, out var a) || a is not ButtplugDeviceScalarActuator sc
+                 || sc.ActuatorType != ActuatorType.Position || sc.FeatureDescriptor == null)
+                    continue;
+                if (sc.FeatureDescriptor.StartsWith(WidthDescription, StringComparison.OrdinalIgnoreCase))
+                    width = Math.Clamp(GetValue(row.SourceAxis), 0, 1);
+                else if (sc.FeatureDescriptor.StartsWith(DepthDescription, StringComparison.OrdinalIgnoreCase))
+                    centre = Math.Clamp(GetValue(row.SourceAxis), 0, 1);
+            }
+        }
+
+        if (width is not { } w || centre is not { } c)
+            return depth ? Math.Clamp(value + offset, 0, 1) : value;      // no window known: the centre moves, as before
+
+        var lo = Math.Clamp(c - w / 2 + offset, 0, 1);
+        var hi = Math.Clamp(c + w / 2 + offset, 0, 1);
+        var smallest = SmallestStrokeWidth / 100d;
+        if (hi - lo < smallest)
+        {
+            if (offset > 0) lo = Math.Max(0, hi - smallest);
+            else hi = Math.Min(1, lo + smallest);
+        }
+        return depth ? (lo + hi) / 2 : hi - lo;
     }
 
     // The film's speed scaled by the boost level, never above BoostMaxSpeed when boosted up (the film itself is never
@@ -246,6 +285,7 @@ internal sealed partial class ButtplugOutputTarget
     // the pause between the shots of a burst: one right after the other (user, 2026-11-20; it was 1 s); with the
     // 150 ms of one shot (1, then 0) a burst of 5 takes about 1.6 s
     private const int LubeShotGapMs = 250;
+    private const int HaltThenCooldownMs = 8000;
 
     private async Task FireLubeLauncherManyAsync(int count)
     {
@@ -601,6 +641,11 @@ internal sealed partial class ButtplugOutputTarget
             if (mode == ModeHalt)
             {
                 // stop: the script is held back for the machine and the speed goes to 0 at once
+                if (previous != ModeHalt)
+                {
+                    state.PreHaltMode = previous;
+                    state.HaltedAt = Environment.TickCount64;
+                }
                 state.Mode = mode;
                 NotifyModeChanged();
                 CancelLubeBurst();
@@ -822,7 +867,11 @@ internal sealed partial class ButtplugOutputTarget
             {
                 StopHismithSequence(sendToDevice: false);
                 var previous = state.Mode;
-                // after a stop ("trąbka" heard first in the live mode) it starts from the slowest, never jumps up again
+                // "trąbka uspakajająca": the live mode hears "trąbka" first and stops; the password right after it (within
+                // HaltThenCooldownMs) is a wind-down from where it was before that stop, not from standing still
+                // (user, 2026-11-20). An older stop still starts from the slowest.
+                if (previous == ModeHalt && Environment.TickCount64 - state.HaltedAt <= HaltThenCooldownMs)
+                    previous = state.PreHaltMode;
                 startSpeed = previous == ModeHalt ? _hismithSlowestSpeed : previous is >= 1 and <= ModeCalm ? state.Speed : 60;
                 startDepth = state.Depth;
                 state.Mode = ModeCooldown;      // the script output to this side's machine is suppressed from here on

@@ -28,6 +28,8 @@ internal sealed class HismithSideState
     public CancellationTokenSource LubeBurst;
     public CancellationTokenSource Cooldown;    // the running wind-down of this side
     public double CooldownRemaining;            // seconds left of it (0 = done or none)
+    public long HaltedAt;                       // Environment.TickCount64 of the last Stop ("trąbka")
+    public int PreHaltMode;                     // the mode before that Stop
 }
 
 // One row of the device roles list in the view: a connected device and the side it serves.

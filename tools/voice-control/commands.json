@@ -1750,6 +1750,7 @@
    "default_theme_stage": 2,
    "top_share": 0.6,
    "storyline_share": 0.5,
+   "storyline_minutes": [8, 14],
    "near_share": 0.25,
    "levels": {"1": "WERSJA OSTRZEJSZA (sesja poszła dalej niż ten wątek): wulgarniej, mocniej, bardziej uprzedmiotawiająco, mniej czułości", "2": "WERSJA NAJOSTRZEJSZA (szczyt sesji): skrajnie wulgarnie, bez litości i bez czułości; ona jest już tylko rzeczą, dziurą i ciałem do użytku"},
    "themes": [
