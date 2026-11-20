@@ -1428,7 +1428,7 @@ class Controller:
         top = int(esc.get("max_stage", 4))
         if pos < warm:
             self._film_peak = None
-            return min(0 if pos < warm / 2 else 1, top)
+            return min(0 if pos < warm * float(cfg.get("gentle_share", 0.5)) else 1, top)
         scene = self._scene_now()
         tempo = (scene or {}).get("tempo")
         target = int((cfg.get("by_tempo") or {}).get(tempo, cfg.get("default_stage", 2)))

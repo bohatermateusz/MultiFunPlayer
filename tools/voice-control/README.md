@@ -263,10 +263,10 @@ text-to-speech, voice `sage`, Polish, firm) and the things you ask for go throug
   plans, surprises, teases or programs; a mode request counts only when his words ask for one ("tryb", "program",
   "film", "skrypt", "sekwencja", ...) - the model reading "proszę" as "tryb ósmy" is dropped. A talk line of hers that
   says the machine changes ("przyspieszam", "tryb ósmy od teraz") while nothing ran is replaced by a plain line.
-* **Escalation follows the film** (`escalation.film`): gentle (stage 0, then 1) during the first 20 % of the film
-  (3-10 min), then from stage 2 up with the pace of the stroke script that drives the machine now (slow 2, medium 3,
+* **Escalation follows the film** (`escalation.film`): gentle (stage 0 for about a third, then 1) during the first 10 % of
+  the film (1.5-5 min), then from stage 2 up with the pace of the stroke script that drives the machine now (slow 2, medium 3,
   fast 4), down one step after 45 s of a slower pace. MFP now sends the names of the loaded scripts, so a Stash stream
-  is recognised as its film. Without a film the old heat decides, more slowly (`per_minute` 1.0, thresholds up to 45).
+  is recognised as its film. Without a film the old heat decides, more slowly (`per_minute` 1.5, thresholds up to 45).
 * **More whispers** (`tts.delivery.whisper_share` per stage, 60 % ... 30 %; tender lines always): any line may be
   whispered, a dirty one too; the cum moments stay loud.
 * **Every cum is 5 shots, half of them behind** (`persona.lube.shots_per_cum`, `rear_share`): any Lube Launcher shot

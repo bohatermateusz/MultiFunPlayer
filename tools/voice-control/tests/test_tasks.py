@@ -419,7 +419,7 @@ class FilmStage(Server):
         import copy
         self.c.persona_cfg = copy.deepcopy(self.c.persona_cfg)
         esc = self.c.persona_cfg["escalation"]
-        esc["film"] = {"enabled": True, "warmup_share": 0.2, "warmup_seconds": [180, 600],
+        esc["film"] = {"enabled": True, "warmup_share": 0.1, "gentle_share": 0.35, "warmup_seconds": [90, 300],
                        "by_tempo": {"still": 2, "slow": 2, "medium": 3, "fast": 4, "max": 4}, "default_stage": 2,
                        "drop_after_seconds": 45}
         self.s = self.FakeScene()
@@ -427,10 +427,12 @@ class FilmStage(Server):
 
     def test_gentle_while_it_warms_up(self):
         self.c._heat = 1000.0                                   # however hot the talk was
-        self.s.pos = 60
+        self.s.pos = 40                                         # 30 min film: warm-up 3 min, gentle the first ~63 s
         self.assertEqual(self.c.stage(), 0)
-        self.s.pos = 300
+        self.s.pos = 120
         self.assertEqual(self.c.stage(), 1)
+        self.s.pos = 200
+        self.assertEqual(self.c.stage(), 2)                     # no pace known: the middle
 
     def test_then_the_pace_decides_from_the_middle_up(self):
         self.s.pos = 900

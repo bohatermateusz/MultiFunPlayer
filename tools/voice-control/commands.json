@@ -1405,10 +1405,11 @@
   ],
   "escalation": {
    "film": {
-    "_comment": "While a film is playing and known (MFP media status: path or the names of its scripts): the first warmup_share of it (clamped to warmup_seconds) she is gentle - stage 0, then 1 in the second half of the warm-up; after that the stage follows the pace of the script that drives the machine now (by_tempo; default_stage when the pace is unknown), from the middle of the scale up. Up at once, down one step after drop_after_seconds of a slower pace. Without a film the heat (points, per_minute, thresholds) decides as before.",
+    "_comment": "While a film is playing and known (MFP media status: path or the names of its scripts): the first warmup_share of it (clamped to warmup_seconds) she is gentle - stage 0 for its first gentle_share, then 1; after that the stage follows the pace of the script that drives the machine now (by_tempo; default_stage when the pace is unknown), from the middle of the scale up. Up at once, down one step after drop_after_seconds of a slower pace. Without a film the heat (points, per_minute, thresholds) decides as before.",
     "enabled": true,
-    "warmup_share": 0.2,
-    "warmup_seconds": [180, 600],
+    "warmup_share": 0.1,
+    "gentle_share": 0.35,
+    "warmup_seconds": [90, 300],
     "by_tempo": {"still": 2, "slow": 2, "medium": 3, "fast": 4, "max": 4},
     "default_stage": 2,
     "drop_after_seconds": 45
@@ -1421,7 +1422,7 @@
     "confession": 2,
     "granted": 2
    },
-   "per_minute": 1.0,
+   "per_minute": 1.5,
    "thresholds": [
     0,
     8,
